@@ -1,6 +1,11 @@
-{{> jsp_header}}
+{{> jsp_header }}
 <!doctype html>
-<html>
+<html lang="eng">
+  <head>
+    {{> head_meta }}
+    {{> resources }}
+    <title>Welcome to the Red5 Pro Server!</title>
+  </head>
   <body>
     {{> header }}
     <br />
