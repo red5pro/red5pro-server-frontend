@@ -1,0 +1,21 @@
+{
+  "name": "red5pro-server-frontend",
+  "version": "1.0.0",
+  "description": "FrontEnd webapps distributed with the Red5 Pro Server",
+  "scripts": {
+    "start": "cd red5pro-server && ./red5.sh",
+    "stop": "cd red5pro-server && ./red5-shutdown.sh",
+    "build": "node node_modules/.bin/gulp build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Infrared5 Inc.",
+  "license": "MIT",
+  "devDependencies": {
+    "del": "^1.2.1",
+    "gulp": "^3.9.0",
+    "gulp-compile-handlebars": "^0.5.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sync": "^0.1.4",
+    "mkdirp": "^0.5.1"
+  }
+}
