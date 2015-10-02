@@ -19,7 +19,6 @@
     "gulp": "^3.9.0",
     "gulp-compile-handlebars": "^0.5.0",
     "gulp-rename": "^1.2.2",
-    "gulp-sync": "^0.1.4",
     "gulp-util": "^3.0.6",
     "mkdirp": "^0.5.1"
   }

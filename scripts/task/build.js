@@ -12,7 +12,7 @@ var options = {
   batch: [[process.cwd(), 'src', 'template', 'partial'].join(path.sep)]
 };
 
-module.exports = function(srcDir, distDir, gulp, gulpsync) {
+module.exports = function(srcDir, distDir, gulp) {
 
   var webappsDir = [srcDir, 'webapps'].join(path.sep);
 
@@ -23,7 +23,7 @@ module.exports = function(srcDir, distDir, gulp, gulpsync) {
         distDir = [distDir, 'webapps'].join(path.sep);
         gutil.log('Created new dist directory: ' + distDir);
     };
-    gutil.log('Starting...');
+
     if(fs.existsSync(distDir)) {
       rm(distDir, function(err) {
         if(err) {

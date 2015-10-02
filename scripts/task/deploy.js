@@ -3,9 +3,9 @@
 var path = require('path');
 var rm = require('del');
 
-module.exports = function(distDir, deployDir, gulp, gulpsync) {
+module.exports = function(distDir, deployDir, gulp) {
 
-  gulp.task('cleandeploy', function(cb) {
+  gulp.task('clean-deploy', function(cb) {
     rm(deployDir, function(err) {
       if(err) {
         console.error('Error in removing ' + deployDir + ': ' + err);
@@ -14,15 +14,15 @@ module.exports = function(distDir, deployDir, gulp, gulpsync) {
     });
   });
 
-  gulp.task('copydist', function(cb) {
-    return gulp.src([distDir, 'webapps', '**', '*'].join(path.sep))
-                .pipe(gulp.dest(deployDir));
+  gulp.task('copy-dist', ['clean-deploy'], function(cb) {
+    gulp.src([distDir, 'webapps', '**', '*'].join(path.sep))
+        .pipe(gulp.dest(deployDir))
+        .on('end', cb);
   });
 
-  gulp.task('deploy', gulpsync([
+  gulp.task('deploy', [
                         'clean-deploy',
                         'copy-dist'
-                        ], function() {
-  }));
+                        ]);
 
 };
