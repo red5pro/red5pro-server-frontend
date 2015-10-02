@@ -5,7 +5,7 @@ var rm = require('del');
 
 module.exports = function(distDir, deployDir, gulp) {
 
-  gulp.task('clean-deploy', function(cb) {
+  gulp.task('clean-deploy', ['build'], function(cb) {
     rm(deployDir, function(err) {
       if(err) {
         console.error('Error in removing ' + deployDir + ': ' + err);
@@ -21,6 +21,7 @@ module.exports = function(distDir, deployDir, gulp) {
   });
 
   gulp.task('deploy', [
+                        'build',
                         'clean-deploy',
                         'copy-dist'
                         ]);

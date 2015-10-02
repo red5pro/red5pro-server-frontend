@@ -26,5 +26,6 @@
     <hr />
     <h3>Additional Documentation</h3>
     Visit <a href="http://red5pro.com/docs/">http://red5pro.com/docs/</a> for documentation.
+    {{> footer }}
   </body>
 </html>

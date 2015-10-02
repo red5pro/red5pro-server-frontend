@@ -6,20 +6,22 @@
     "start": "cd red5pro-server && ./red5.sh",
     "stop": "cd red5pro-server && ./red5-shutdown.sh",
     "build": "node node_modules/.bin/gulp build",
-    "predeploy": "npm run build",
     "deploy": "node node_modules/.bin/gulp deploy",
-    "prewatch": "npm run deploy",
-    "watch": "node node_modules/.bin/gulp watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "launch": "node node_modules/.bin/gulp launch",
+    "watch": "node node_modules/.bin/gulp deploy && node node_modules/.bin/gulp watch"
   },
   "author": "Infrared5 Inc.",
   "license": "MIT",
   "devDependencies": {
+    "chokidar": "^1.2.0",
+    "colors": "^1.1.2",
     "del": "^1.2.1",
     "gulp": "^3.9.0",
     "gulp-compile-handlebars": "^0.5.0",
     "gulp-rename": "^1.2.2",
     "gulp-util": "^3.0.6",
-    "mkdirp": "^0.5.1"
+    "mkdirp": "^0.5.1",
+    "open": "0.0.5",
+    "tiny-lr": "^0.2.0"
   }
 }

@@ -2,6 +2,8 @@
 
 var path = require('path');
 var gulp = require('gulp');
+
+var port = 5080;
 var taskDirectory = [process.cwd(), 'scripts', 'task'].join(path.sep);
 
 var srcDir = [process.cwd(), 'src'].join(path.sep);
@@ -13,3 +15,10 @@ var buildSetup = require([taskDirectory, 'build.js'].join(path.sep))(srcDir, dis
 
 // Import deploy task
 var deploySetup = require([taskDirectory, 'deploy.js'].join(path.sep))(distDir, deployDir, gulp);
+
+// Import watch task
+var watchSetup = require([taskDirectory, 'watch.js'].join(path.sep))(srcDir, distDir, gulp, 'deploy');
+
+// Import launch task
+var launchSetup = require([taskDirectory, 'launch.js'].join(path.sep))(port, gulp);
+
