@@ -124,8 +124,50 @@ h3 {
   text-align: center;
 }
 
+#footer-email {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#footer-email-lead:before {
+    content: "";
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    margin-left: -48px;
+    margin-top: -6px;
+    opacity: 0.2;
+    background: url('../images/email.png') no-repeat;
+    background-size: 32px 32px;
+}
+
 .email-header {
   font-weight: 300;
   font-size: 24px;
   font-family: 'Lato', sans-serif;
+}
+
+.container:before {
+  display: table;
+  content: " ";
+}
+
+.container:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+
+#menu-section {
+  display: block;
+  position: relative;
+  float: left;
+  width: 25%;
+}
+
+#content-section {
+  display: block;
+  position: relative;
+  float: left;
+  width: 75%;
 }
