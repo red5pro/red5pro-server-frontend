@@ -58,14 +58,47 @@ h3 {
   color: rgb(227, 25, 0);
 }
 
+.white-text {
+  color: rgb(255, 255, 255);
+}
+
+.medium-font-size {
+  font-size: 16px;
+}
+
+.clear-fix {
+  overflow: auto;
+  zoom: 1;
+}
+
+#header-field {
+  position: relative;
+  float: left;
+  margin-top: 16px;
+}
+
+#ip-field {
+  text-align: right;
+  color: rgb(255, 255, 255);
+  position: relative;
+  float: right;
+  margin-top: 0px;
+}
+
 .red5pro-logo {
   display: inline-block;
-  margin-top: 2px;
+  margin-top: 3px;
   width: 16px;
   height: 16px;
   position: relative;
   box-sizing: content-box;
   padding-right: 10px;
+}
+
+.red5pro-logo-footer {
+  width: 16px;
+  height: 16px;
+  margin: -2px 2px -2px 5px;
 }
 
 .red5pro-header-link {
