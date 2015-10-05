@@ -135,7 +135,16 @@ a.link:hover {
  }
 
 .footer {
+  background-color: #f7f7f7;
+  border-top: 1px solid;
+  border-color: rgb(166, 168, 168);
   text-align: center;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.footer-copyright {
+  margin-top: 12px
 }
 
 #footer-email {
@@ -150,7 +159,7 @@ a.link:hover {
     height: 32px;
     margin-left: -48px;
     margin-top: -6px;
-    opacity: 0.2;
+    opacity: 0.4;
     background: url('../images/email.png') no-repeat;
     background-size: 32px 32px;
 }
