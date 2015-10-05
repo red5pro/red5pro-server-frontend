@@ -1,9 +1,20 @@
 <div id="menu-content">
-  <ul>
-    <li><a href="/streaming">Live Streaming</a></li>
-    <li><a href="/secondscreen">Second Screen</a></li>
-    <li><a href="http://red5pro.com">Red5 Pro Home</a></li>
-    <li><a href="http://account.red5pro.com">Red5 Pro Accounts</a></li>
-    <li><a href="http://red5pro.com/docs">Red5 Pro Docs</a></li>
+  <ul class="menu-listing container">
+    <li><a class="red-text menu-listing-internal" href="/streaming">Live Streaming</a></li>
+      <ul class="container">
+        <li><a class="red-text menu-listing-nested" href="/streaming/broadcast">Broadcast</a></li>
+        <li><a class="red-text menu-listing-nested" href="/streaming/subscribe">Subscribe</a></li>
+      </ul>
+    <li><a class="red-text menu-listing-internal" href="/secondscreen">Second Screen</a></li>
+    <ul class="container">
+        <li><a class="red-text menu-listing-nested" href="/secondscreen/basic">HTML Controller</a></li>
+        <li><a class="red-text menu-listing-nested" href="/secondscreen/gamepad">Gamepad Controller</a></li>
+        <li><a class="red-text menu-listing-nested" href="/secondscreen/dpad">DPAD Controller</a></li>
+    </ul>
+    <li><a class="red-text menu-listing-internal" href="http://red5pro.com">Red5 Pro Home</a></li>
+  </ul>
+  <ul class="menu-listing container">
+    <li><a class="red-text menu-listing-external" href="http://account.red5pro.com">Red5 Pro Accounts</a></li>
+    <li><a class="red-text menu-listing-external" href="http://red5pro.com/docs">Red5 Pro Docs</a></li>
   </ul>
 </div>
