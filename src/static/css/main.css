@@ -71,6 +71,19 @@ h3 {
   zoom: 1;
 }
 
+a.link {
+  color: rgb(227, 25, 0);
+  text-decoration: none;
+}
+
+a.link:hover {
+  text-decoration: underline;
+  color: rgb(149, 0, 0);
+}
+
+.header-subcontent {
+}
+
 #header-field {
   position: relative;
   float: left;
@@ -179,6 +192,7 @@ h3 {
   float: left;
   width: 75%;
   margin-bottom: 60px;
+  padding-left: 20px;
 }
 
 #menu-content {
@@ -192,8 +206,7 @@ h3 {
   list-style: none;
   margin-top: 0;
   margin-bottom: 0;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding: 10px 0;
   border-radius: 5px;
 }
 
@@ -211,26 +224,91 @@ h3 {
   text-decoration: none;
 }
 
+.menu-listing li a.menu-active {
+  border-right: 1px solid;
+}
+
+.menu-listing li a:hover {
+  text-decoration: underline;
+  color: rgb(149, 0, 0);
+  background-color: #f7f7f7;
+  border-right: 1px solid;
+}
+
+.menu-sublisting {
+  padding: 0;
+}
+
+.menu-sublisting li {
+  margin-left: 20px;
+}
+
 .menu-listing-internal {
   font-weight: bold;
 }
 
 .menu-listing-external {
-  font-weight: normal;
+  font-weight: bold;
 }
 
 .menu-listing-nested {
   font-weight: normal;
 }
 
+#main-page-subcontent {
+  text-align: center;
+  position: relative;
+  width: 100%;
+  height: 340px;
+  overflow: hidden;
+}
+
+#tablet-container, #features-container {
+  position: absolute;
+}
+
+#tablet-container {
+  width: 520px;
+}
+
+#features-container {
+  margin-left: 20px;
+  margin-top: 120px;
+  width: 460px;
+}
+
+#main-page-tablet-img {
+  width: 100%;
+}
+
+#main-page-features-img {
+  width: 100%;
+}
+
+.tag-line {
+  margin-top: 0px;
+  color: #a8a8a8;
+}
+
+.content-section-story {
+  max-width: 560px;
+}
+
 @media (min-width: 992px) {
 
-  .container {
+  .main-container {
     width: 970px;
   }
 
-  #menu-content {
+  #menu-section {
     width: 213px;
   }
+/*
+  #content-section {
+    width: 556px;
+  }
+*/
+}
 
+@media (max-width: 991px) {
 }
