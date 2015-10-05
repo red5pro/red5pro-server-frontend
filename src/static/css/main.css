@@ -50,6 +50,10 @@ h3 {
   color: rgb(227, 25, 0);
 }
 
+hr.top-padded-rule {
+  margin-top: 40px;
+}
+
 .black-text {
   color: #444;
 }
@@ -96,6 +100,24 @@ a.link:hover {
   position: relative;
   float: right;
   margin-top: 0px;
+}
+
+#ip-overlay {
+  position: absolute;
+  width: 230px;
+  right: 20px;
+  background-color: rgb(239, 239, 239);
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.hidden {
+  display: none;
+}
+.unhide {
+  display: block;
 }
 
 .red5pro-logo {
@@ -204,7 +226,7 @@ a.link:hover {
   padding-left: 20px;
 }
 
-#menu-content {
+.menu-content {
   background-color: rgb(239, 239, 239);
   border: 1px solid #e3e3e3;
   border-radius: 4px;
