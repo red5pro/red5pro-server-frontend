@@ -10,7 +10,7 @@
         text-align: center;
         position: relative;
         width: 100%;
-        height: 240px;
+        height: 230px;
         overflow: hidden;
       }
 
@@ -18,8 +18,8 @@
         position: absolute;
       }
 
-      #live-container {
-        width: 520px;
+      #live-image-container {
+        width: 540px;
       }
 
       #live-page-img {
@@ -47,19 +47,27 @@
             <img id="live-page-img" src="images/red5pro_live_streaming.png">
           </div>
         </div>
-        <h3><a href="broadcast.jsp?host=<%= NetworkUtil.getLocalIpAddress()%>">Broadcast</a></h3>
-    To start a broadcast session to subscribe to from a device integrated the <a href="http://red5pro.com/docs/streaming/overview/" target="_blank">Red5 Pro Streaming SDK</a>:
-        <br/>
-        <p><a href="broadcast.jsp?host=<%= NetworkUtil.getLocalIpAddress()%>">Start broadcasting here</a></p>
-        <br />
-        <h3><a href="streams.jsp">Subscribe</a></h3>
-    To start subscribing to a session currently being broadcast from a device integrated with the <a href="http://red5pro.com/docs/streaming/overview/">Red5 Pro Streaming SDK</a>:
-        <br />
-        <p><a href="streams.jsp">Access the list of active streams here</a></p>
-        <hr class="top-padded-rule" />
-        {{> applications }}
-        <hr class="top-padded-rule" />
-        {{> additional_info }}
+        <div class="content-section-story">
+          <p>Build Facetime-like experiences that connect seamlessly across platforms including Android, iOS, Flash and HTML5 (<span class="red-text"><em>coming soon</em></span>).</p>
+          <div>
+            <h3><a class="link" href="broadcast.jsp?host=<%= NetworkUtil.getLocalIpAddress()%>">Start Broadcasting</a></h3>
+            <p>We have provided an easy way for you to start a Red5 Pro Broadcast session.</p>
+            <p>Once you have started a Broadcast, invite a friend to Subscribe using a web browser or any device with a <a href="http://github.com/red5pro" target="_blank" class="link red-text">native application</a> integrated with the Red5 Pro SDKs!</p>
+            <p><a class="link medium-font-size" href="broadcast.jsp?host=<%= NetworkUtil.getLocalIpAddress()%>">&gt;&nbsp;Start a Broadcast now!</a></p>
+            <h3><a class="link" href="subscribe.jsp">Start Subscribing</a></h3>
+            <p>We have provided an easy way to Subscribe to a Red5 Pro Broadcast session.</p>
+            <p>The <a class="link" href="subscribe.jsp">Subscribe page</a> provides a list of Broadcast stream names. Select the desired stream to subscribe to and start watching!</p>
+            <p><a class="link medium-font-size" href="subscribe.jsp">&gt;&nbsp;Start Subscribing Now!</a></p>
+          </div>
+          <hr class="top-padded-rule" />
+          <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>
+          <p>You can download the Streaming SDKs from your <a class="link" href="http://account.red5pro.com/download" target="_blank">Red5 Pro Accounts</a> page.</p>
+          <p>Please visit the online <a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Red5 Pro Documentation</a> for further information about integrating the streaming SDKs into your own native application!</p>
+          <hr class="top-padded-rule" />
+          {{> applications }}
+          <hr class="top-padded-rule" />
+          {{> additional_info }}
+        </div>
       </div>
     </div>
     {{> footer }}
