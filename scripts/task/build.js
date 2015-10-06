@@ -16,11 +16,16 @@ module.exports = function(srcDir, distDir, gulp) {
 
   var webappsDist;
   var webappsDir = [srcDir, 'webapps'].join(path.sep);
-  var copyWebappContents = function(fromDirName, toDirName, cb) {
-    gulp.src([
-              [webappsDir, fromDirName, '**', '*'].join(path.sep),
-              '!' + [webappsDir, fromDirName, 'index.jsp'].join(path.sep)
-             ])
+  var copyWebappContents = function(fromDirName, toDirName, exclusions, cb) {
+    var src = [[webappsDir, fromDirName, '**', '*'].join(path.sep)];
+    var i;
+    if(exclusions && exclusions.length > 0) {
+      i = exclusions.length;
+      while(--i > -1) {
+        src.push('!' + [webappsDir, fromDirName, exclusions[i]].join(path.sep));
+      }
+    }
+    gulp.src(src)
              .pipe(gulp.dest([webappsDist, toDirName].join(path.sep)))
              .on('end', cb);
   };
@@ -62,11 +67,11 @@ module.exports = function(srcDir, distDir, gulp) {
   });
 
   gulp.task('copy-contents-root', ['copy-src'], function(cb) {
-    copyWebappContents('root', 'root', cb);
+    copyWebappContents('root', 'root', ['index.jsp'], cb);
   });
 
   gulp.task('copy-contents-live', ['copy-src'], function(cb) {
-    copyWebappContents('live', 'live', cb);
+    copyWebappContents('live', 'live', ['index.jsp', 'broadcast.jsp', 'subscribe.jsp'], cb);
   });
 
   gulp.task('copy-static-root', ['copy-contents-root'], function(cb) {
@@ -86,11 +91,29 @@ module.exports = function(srcDir, distDir, gulp) {
   });
 
   gulp.task('build-live', ['copy-static-live'], function(cb) {
+    var buildBroadcaster = function(cb) {
+      return function() {
+        gulp.src([webappsDir, 'live', 'broadcast.jsp'].join(path.sep))
+            .pipe(handlebars({}, options))
+            .pipe(rename('broadcast.jsp'))
+            .pipe(gulp.dest([webappsDist, 'live'].join(path.sep)))
+            .on('end', cb);
+      };
+    };
+    var buildSubscriber = function(cb) {
+      return function() {
+        gulp.src([webappsDir, 'live', 'subscribe.jsp'].join(path.sep))
+            .pipe(handlebars({}, options))
+            .pipe(rename('subscribe.jsp'))
+            .pipe(gulp.dest([webappsDist, 'live'].join(path.sep)))
+            .on('end', cb);
+      };
+    };
     gulp.src([webappsDir, 'live', 'index.jsp'].join(path.sep))
         .pipe(handlebars({}, options))
         .pipe(rename('index.jsp'))
         .pipe(gulp.dest([webappsDist, 'live'].join(path.sep)))
-        .on('end', cb);
+        .on('end', buildBroadcaster(buildSubscriber(cb)));
   });
 
   gulp.task('build', [
