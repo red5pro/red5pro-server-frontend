@@ -5,7 +5,7 @@
     </a>
   </div>
   <div id="ip-field">
-    <p><span class="black-text">Your server IP address is:</span>&nbsp;&nbsp;<span class="red-text medium-font-size"><%= Inet4Address.getLocalHost().getHostAddress()%></span></p>
+    <p><span class="black-text">Your server IP address is:</span>&nbsp;&nbsp;<span class="red-text medium-font-size"><%= NetworkUtil.getLocalHost().getHostAddress()%></span></p>
     <p><a id="ip-overlay-button" class="white-text" href="#">Why would I need to know this?</a>
   </div>
 </div>
