@@ -5,6 +5,37 @@
     {{> head_meta }}
     {{> resources }}
     <title>Welcome to the Red5 Pro Server!</title>
+    <style>
+      #main-page-subcontent {
+          text-align: center;
+          position: relative;
+          width: 100%;
+          height: 340px;
+          overflow: hidden;
+        }
+
+        #tablet-container, #features-container {
+          position: absolute;
+        }
+
+        #tablet-container {
+          width: 520px;
+        }
+
+        #features-container {
+          margin-left: 20px;
+          margin-top: 120px;
+          width: 460px;
+        }
+
+        #main-page-tablet-img {
+          width: 100%;
+        }
+
+        #main-page-features-img {
+          width: 100%;
+        }
+    </style>
   </head>
   <body>
     {{> header }}
@@ -14,7 +45,6 @@
       </div>
       <div id="content-section">
         <div>
-          <!--<img src="images/logo_full_large.png">-->
           <div id="header-field header-subcontent">
             <a class="red5pro-header-link" href="/">
               <img class="red5pro-logo" src="images/logo_68.png">&nbsp;<span class="red5pro-header black-text">RED5</span><span class="red5pro-header red-text">PRO</span>
