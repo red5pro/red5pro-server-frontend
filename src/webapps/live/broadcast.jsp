@@ -43,9 +43,9 @@
     </style>
     <script type="text/javascript" src="swf/swfobject.js"></script>
     <script type="text/javascript">
-      // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. 
+      // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.
       var swfVersionStr = "11.1.0";
-      // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
+      // To use express install, set to playerProductInstall.swf, otherwise the empty string.
       var xiSwfUrlStr = "swf/playerProductInstall.swf";
       var flashvars = {
         host: "<%=host %>"
@@ -62,7 +62,7 @@
       swfobject.embedSWF(
           "BroadcastNow.swf", "flashContent",
           "100%", "716",
-          swfVersionStr, xiSwfUrlStr, 
+          swfVersionStr, xiSwfUrlStr,
           flashvars, params, attributes);
       // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
       swfobject.createCSS("#flashContent", "display:block;text-align:left;");
@@ -89,17 +89,16 @@
           </div>
         </div>
         <div class="content-section-story">
-          <p>To start a Broadcast session, allow device access, provide a <strong>stream name</strong>, select broadcast options and click <strong>Start Broadcast</strong></p>
-        <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough 
+          <p>To start a Broadcast session, allow device access, provide a <strong>stream name</strong>, select any additional broadcast options, then click <strong>Start Broadcast.</strong></p>
+        <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough
              JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
              when JavaScript is disabled.
         -->
         <div id="flashContent">
             <p>
-                To view this page ensure that Adobe Flash Player version 
-                11.1.0 or greater is installed. 
+                To view this page ensure that Adobe Flash Player version 11.1.0 or greater is installed.
             </p>
-            <script type="text/javascript"> 
+            <script type="text/javascript">
                 var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");
                 document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='"
                                 + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" );
@@ -147,4 +146,3 @@
     {{> footer }}
    </body>
 </html>
-  
