@@ -10,15 +10,13 @@
   secondscreenClient.log.info(secondscreenClient.versionStr());
 
   var options = document.getElementById('options');
-  var panel = document.getElementById('log-panel');
+  var panel = document.getElementById('message-field');
   var appendMessage = function(value) {
-    var p = document.createElement('p'),
-        text = document.createTextNode(value);
-    p.appendChild(text);
+    var p = document.createElement('p')
+    p.innerHTML = value;
     panel.appendChild(p);
   };
   var addButton = function(config) {
-  // id, name, upClass, downClass, eventName
     var button = buttonFactory.create().init(config);
     options.appendChild(button.$view);
     button.render().activate();
@@ -42,17 +40,12 @@
         }, 'foo');
       });
 
-      secondscreenClient.on('test', function(data) {
-        appendMessage('received test: ' + data + '.');
-      });
-
-      secondscreenClient.on('testing', function(data) {
-        appendMessage('received testing: ' + data + '.');
-      });
-
       secondscreenClient.on('state', function(data) {
-        appendMessage('state: ' + data);
+        var json = JSON.parse(data);
+        appendMessage('Message from Host: (' + json.state + ')<br>&nbsp;&nbsp; - ' + json.message);
       });
+
+      document.getElementById('version-field').innerText = this.secondscreenClient.versionStr();
 
       return this;
     }

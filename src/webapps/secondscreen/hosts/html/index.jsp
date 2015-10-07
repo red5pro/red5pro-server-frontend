@@ -7,6 +7,8 @@
     {{> resources-secondscreen-host }}
     <title>Second Screen HTML Controller Example with the Red5 Pro Server!</title>
     <link rel="stylesheet" type="text/css" href="style/main.css">
+    <link rel="prefetch" href="assets/button-down.png">
+    <link rel="prefetch" href="assets/button-up.png">
     <script src="lib/host/secondscreen-host.min.js"></script>
     <script>
             (function(window) {
@@ -40,11 +42,12 @@
                 slot.style.background = e.color;
               });
 
-              secondscreenHost.on(secondscreenHost.EventTypes.DEVICE_CONNECTED, function (e){
+              secondscreenHost.on(secondscreenHost.EventTypes.DEVICE_CONNECTED, function (e) {
+                window.notifyClient('Host Welcome', 'Welcome!');
                 print("<p class=\"red-text medium-font-size\">Device Donnected (id, name):<br>&nbsp;&nbsp;" + e.device.id + ', ' + e.device.name + "</p>");
               });
 
-              secondscreenHost.on(secondscreenHost.EventTypes.DEVICE_DISCONNECTED, function (e){
+              secondscreenHost.on(secondscreenHost.EventTypes.DEVICE_DISCONNECTED, function (e) {
                 print("<p class=\"red-text medium-font-size\">Device Disconnected (id, name):<br>&nbsp;&nbsp;" + e.device.id + ', ' + e.device.name + "</p>");
               });
 
@@ -80,8 +83,11 @@
                secondscreenHost.log.info(message);
               }
 
-              window.notifyClient = function(message) {
-                secondscreenHost.allDevices().sendMessageToControls("state", encodeURIComponent(JSON.stringify({state:'host-available', message:message})));
+              window.notifyClient = function(type, message) {
+                secondscreenHost.allDevices().sendMessageToControls('state', {
+                  state: type,
+                  message: message
+                });
               };
             }(window));
     </script>
@@ -107,14 +113,21 @@
             <p>To connect and communicate with this page, open a native application integrated with the <a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Second Screen SDKs</a> on your favorite device to turn it into a <span class="red-text">Second Screen Client</span>!</p>
           </div>
           <div id="secondscreen-example-container">
+            <div id="version-field"></div>
             <div id="slot"></div>
             <p id="sendForm">
               <input type="text" id="sendInput" value="Hello, World!"></input>
-              <button id="sendButton" onclick="window.notifyClient(window.document.getElementById('sendInput').value);">Send Message!</button>
+              <button id="sendButton" onclick="window.notifyClient('Host Message', window.document.getElementById('sendInput').value);">Send Message!</button>
             </p>
           </div>
+          <script>
+            (function(window, document, host) {
+              document.getElementById('version-field').innerText = host.versionStr();
+             }(this, document, window.secondscreenHost.noConflict()));
+          </script>
           <div>
             <p>This example demonstrates how the <span class="red-text">Second Screen Host</span> can pass controller displays written using the webstack of HTML/CSS/JS to the <span class="red-text">Second Screen Client</span> running on a mobile device!</p>
+            <p>In fact, you can visit the actual page being delivered <a class="red-text link" href="scheme/basic-scheme.html" target="_blank">here</a>.</p>
             <p class="medium-font-size"><a class="red-text link" href="../downloads/html.zip">Download</a> this example.</p>
           </div>
         </div>
