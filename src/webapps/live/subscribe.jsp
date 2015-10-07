@@ -7,35 +7,36 @@
 <%
   //LIVE streams page.
   String ip =  NetworkUtil.getLocalIpAddress();
+  String host = ip;
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
   LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
   List<String> names = service.getLiveStreams();
   StringBuffer ret = new StringBuffer();
   if(names.size() == 0) {
-    ret.append("<div class=\"menu-content streaming-menu-content\">");
-    ret.append("<h3 class=\"no-streams-entry\">No streams found</h3>");
-    ret.append("</div>");
-    ret.append("<p>You can begin a Broadcast session by vising the <a class=\"link\" href=\"broadcast.jsp?host=\">Broadcast page</a>.</p>");
+    ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
+    ret.append("<h3 class=\"no-streams-entry\">No streams found</h3>\r\n");
+    ret.append("</div>\r\n");
+    ret.append("<p>You can begin a Broadcast session by vising the <a class=\"link\" href=\"broadcast.jsp?host=" + ip + "\" target=\"_blank\">Broadcast page</a>.</p>\r\n");
     ret.append("<p><em>Once a Broadcast session is started, return to this page to see the stream name listed.</em></p>");
   }
   else {
-    ret.append("<div class=\"menu-content streaming-menu-content\">");
-    ret.append("<ul class=\"stream-menu-listing\">");
-    for(String sName:names) {
-      String listEntry = "<li class=\"stream-listing\">" +
-        "<h2 class=\"red-text stream-header\">" + sName + "</h2>" +
-          "<p class=\"medium-font-size\">" +
-            "<span class=\"black-text\">View <strong>" + sName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"rtsp://" + ip + ":8554/live/" + sName + "\">RTSP</a>" +
+    ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
+    ret.append("<ul class=\"stream-menu-listing\">\r\n");
+    for(String streamName:names) {
+      String listEntry = "<li class=\"stream-listing\">\r\n" +
+        "<h2 class=\"red-text stream-header\">" + streamName + "</h2>\r\n" +
+          "<p class=\"medium-font-size\">\r\n" +
+            "<span class=\"black-text\">View <strong>" + streamName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
+            "<a class=\"medium-font-size link red-text\" href=\"rtsp://" + ip + ":8554/live/" + streamName + "\">RTSP</a>" +
             "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"flash.jsp?host=" + ip + "&stream=" + sName + "\">Flash</a>" +
-          "</p>" +
-       "</li>";
+            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>" +
+          "</p>\r\n" +
+       "</li>\r\n";
       ret.append(listEntry);
     }
-    ret.append("</ul>");
-    ret.append("</div>");
-    ret.append("<p>To begin your own Broadcast session, visit the <a class=\"red-text link\" href=\"broadcast.jsp?host=" + ip + "\">Broadcast page</a>!</p>");
+    ret.append("</ul>\r\n");
+    ret.append("</div>\r\n");
+    ret.append("<p>To begin your own Broadcast session, visit the <a class=\"red-text link\" href=\"broadcast.jsp?host=" + ip + "\">Broadcast page</a>!</p>\r\n");
   }
 %>
 {{> jsp_header }}
@@ -89,7 +90,75 @@
       .stream-header {
         margin: 10px 0;
       }
+
+      #swf-stream-container {
+        margin-top: 20px;
+        text-align: center;
+        background-color: rgb(239, 239, 239);
+        border: 1px solid #e3e3e3;
+        border-radius: 4px;
+      }
+
+      #viewing-header {
+        margin-top: 8px;
+      }
+
+      .container-hidden {
+        width: 0px;
+        height: 0px;
+        visibility: hidden;
+        margin-top: 0px;
+      }
+
+      .container-padding {
+        padding: 10px 0 20px 0;
+      }
     </style>
+    <script type="text/javascript" src="swf/swfobject.js"></script>
+    <script type="text/javascript">
+      // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.
+      var swfVersionStr = "11.1.0";
+      // To use express install, set to playerProductInstall.swf, otherwise the empty string.
+      var xiSwfUrlStr = "swf/playerProductInstall.swf";
+      var flashvars = {
+        streamName: "streamName",
+        host: "<%=host %>"
+      };
+      var params = {};
+      params.quality = "high";
+      params.bgcolor = "#000";
+      params.allowscriptaccess = "always";
+      params.allowfullscreen = "true";
+      var attributes = {};
+      attributes.id = "Subscriber";
+      attributes.name = "Subscriber";
+      attributes.align = "middle";
+      swfobject.embedSWF(
+          "Subscriber.swf", "flashContent",
+          "340", "280",
+          swfVersionStr, xiSwfUrlStr,
+          flashvars, params, attributes);
+      // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
+      swfobject.createCSS("#flashContent", "display:block; text-align:left; padding-top: 10px;");
+
+      (function(window, document) {
+        var viewHandler;
+        function accessSWF() {
+          return document.getElementById("Subscriber");
+        }
+        viewHandler = function viewStream(value) {
+          var swf = accessSWF();
+          var container = document.getElementById("swf-stream-container");
+          var header = document.getElementById("viewing-header");
+          header.innerText = 'Viewing ' + value + '\'s stream.';
+          container.classList.remove('container-hidden');
+          container.classList.add('container-padding');
+          swf.viewStream(value);
+          container.scrollIntoView({block: 'start', behavior: 'smooth'});
+        };
+        window.invokeViewStream = viewHandler;
+       }(this, document));
+  </script>
   </head>
   <body>
     {{> header }}
@@ -116,6 +185,52 @@
             <p>Below you will find the list of current live streams to subscribe to.</p>
             <p>If a stream is available to subscribe to, you can select to view over <span class="red-text">RTSP</span> or within a <span class="red-text">Flash Player</span> on this page.</p>
             <%=ret.toString()%>
+          </div>
+          <div id="swf-stream-container" class="container-hidden">
+                <h2 id="viewing-header" class="red-text">Viewing</h2>
+                <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough
+                     JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
+                     when JavaScript is disabled.
+                -->
+                <div id="flashContent">
+                    <hr>
+                    <p>
+                        To view this page ensure that Adobe Flash Player version 11.1.0 or greater is installed.
+                    </p>
+                    <script type="text/javascript">
+                        var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");
+                        document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='"
+                                        + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" );
+                    </script>
+                </div>
+                <noscript>
+                    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="Subscriber">
+                        <param name="movie" value="Subscriber.swf" />
+                        <param name="quality" value="high" />
+                        <param name="bgcolor" value="#000000" />
+                        <param name="allowScriptAccess" value="always" />
+                        <param name="allowFullScreen" value="true" />
+                        <!--[if !IE]>-->
+                        <object type="application/x-shockwave-flash" data="Subscriber.swf" width="100%" height="100%">
+                            <param name="quality" value="high" />
+                            <param name="bgcolor" value="#000000" />
+                            <param name="allowScriptAccess" value="always" />
+                            <param name="allowFullScreen" value="true" />
+                        <!--<![endif]-->
+                        <!--[if gte IE 6]>-->
+                            <p>
+                                Either scripts and active content are not permitted to run or Adobe Flash Player version
+                                11.1.0 or greater is not installed.
+                            </p>
+                        <!--<![endif]-->
+                            <a href="http://www.adobe.com/go/getflashplayer">
+                                <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash Player" />
+                            </a>
+                        <!--[if !IE]>-->
+                        </object>
+                        <!--<![endif]-->
+                    </object>
+                  </noscript>
           </div>
           <hr class="top-padded-rule" />
           <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>

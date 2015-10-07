@@ -56,11 +56,11 @@
       params.allowscriptaccess = "sameDomain";
       params.allowfullscreen = "true";
       var attributes = {};
-      attributes.id = "BroadcastNow";
-      attributes.name = "BroadcastNow";
+      attributes.id = "Broadcaster";
+      attributes.name = "Broadcaster";
       attributes.align = "middle";
       swfobject.embedSWF(
-          "BroadcastNow.swf", "flashContent",
+          "Broadcaster.swf", "flashContent",
           "100%", "716",
           swfVersionStr, xiSwfUrlStr,
           flashvars, params, attributes);
@@ -105,14 +105,14 @@
             </script>
         </div>
         <noscript>
-            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="BroadcastNow">
-                <param name="movie" value="BroadcastNow.swf" />
+            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="Broadcaster">
+                <param name="movie" value="Broadcaster.swf" />
                 <param name="quality" value="high" />
                 <param name="bgcolor" value="#ffffff" />
                 <param name="allowScriptAccess" value="sameDomain" />
                 <param name="allowFullScreen" value="true" />
                 <!--[if !IE]>-->
-                <object type="application/x-shockwave-flash" data="BroadcastNow.swf" width="100%" height="100%">
+                <object type="application/x-shockwave-flash" data="Broadcaster.swf" width="100%" height="100%">
                     <param name="quality" value="high" />
                     <param name="bgcolor" value="#ffffff" />
                     <param name="allowScriptAccess" value="sameDomain" />
