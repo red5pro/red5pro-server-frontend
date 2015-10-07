@@ -12,17 +12,30 @@
   List<String> names = service.getLiveStreams();
   StringBuffer ret = new StringBuffer();
   if(names.size() == 0) {
-    ret.append("<div class=\"menu-content\"><h3 class=\"no-streams-entry\">No streams found</h3></div>");
+    ret.append("<div class=\"menu-content streaming-menu-content\">");
+    ret.append("<h3 class=\"no-streams-entry\">No streams found</h3>");
+    ret.append("</div>");
     ret.append("<p>You can begin a Broadcast session by vising the <a class=\"link\" href=\"broadcast.jsp?host=\">Broadcast page</a>.</p>");
     ret.append("<p><em>Once a Broadcast session is started, return to this page to see the stream name listed.</em></p>");
   }
   else {
-    ret.append("<ul class=\"menu-listing application-listing\">");
+    ret.append("<div class=\"menu-content streaming-menu-content\">");
+    ret.append("<ul class=\"stream-menu-listing\">");
     for(String sName:names) {
-      ret.append("<b>"+sName+"</b><br/><a href=\"rtsp://"+ip+":8554/live/"+sName+"\">rtsp "+sName+"</a><br />\r\n");
-      ret.append( "<a href=\"flash.jsp?host="+ip+"&stream="+sName+"\">flash "+sName+"</a><br />\r\n");
+      String listEntry = "<li class=\"stream-listing\">" +
+        "<h2 class=\"red-text stream-header\">" + sName + "</h2>" +
+          "<p class=\"medium-font-size\">" +
+            "<span class=\"black-text\">View <strong>" + sName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
+            "<a class=\"medium-font-size link red-text\" href=\"rtsp://" + ip + ":8554/live/" + sName + "\">RTSP</a>" +
+            "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
+            "<a class=\"medium-font-size link red-text\" href=\"flash.jsp?host=" + ip + "&stream=" + sName + "\">Flash</a>" +
+          "</p>" +
+       "</li>";
+      ret.append(listEntry);
     }
     ret.append("</ul>");
+    ret.append("</div>");
+    ret.append("<p>To begin your own Broadcast session, visit the <a class=\"red-text link\" href=\"broadcast.jsp?host=" + ip + "\">Broadcast page</a>!</p>");
   }
 %>
 {{> jsp_header }}
@@ -53,8 +66,28 @@
         width: 100%;
       }
 
+      .stream-menu-listing {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
       .no-streams-entry {
         padding-left: 20px;
+      }
+
+      .streaming-menu-content {
+        margin-top: 30px;
+        margin-bottom: 30px;
+      }
+
+      .stream-listing {
+        padding-left: 20px;
+        border-bottom: 1px solid #e3e3e3;
+      }
+
+      .stream-header {
+        margin: 10px 0;
       }
     </style>
   </head>
@@ -80,7 +113,8 @@
         </div>
         <div class="content-section-story">
           <div>
-            <p>Below you will find the list of current live streams to subscribe to. Click an entry to begin consuming the broadcast stream:</p>
+            <p>Below you will find the list of current live streams to subscribe to.</p>
+            <p>If a stream is available to subscribe to, you can select to view over <span class="red-text">RTSP</span> or within a <span class="red-text">Flash Player</span> on this page.</p>
             <%=ret.toString()%>
           </div>
           <hr class="top-padded-rule" />
