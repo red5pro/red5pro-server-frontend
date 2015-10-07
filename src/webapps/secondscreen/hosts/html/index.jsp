@@ -41,11 +41,11 @@
               });
 
               secondscreenHost.on(secondscreenHost.EventTypes.DEVICE_CONNECTED, function (e){
-                print("device connected (id, name): " + e.device.id + ', ' + e.device.name);
+                print("<p class=\"red-text medium-font-size\">Device Donnected (id, name):<br>&nbsp;&nbsp;" + e.device.id + ', ' + e.device.name + "</p>");
               });
 
               secondscreenHost.on(secondscreenHost.EventTypes.DEVICE_DISCONNECTED, function (e){
-                print("device disconnected (id, name): " + e.device.id + ', ' + e.device.name);
+                print("<p class=\"red-text medium-font-size\">Device Disconnected (id, name):<br>&nbsp;&nbsp;" + e.device.id + ', ' + e.device.name + "</p>");
               });
 
               secondscreenHost.on(secondscreenHost.EventTypes.CONTROLS_URL_CHANGE, function(e) {
@@ -63,19 +63,20 @@
                   e.device.sendMessageToControls("testing", 1.126, "52 skidoo", [1, 2, 3]);
                 }
 
-                var log = 'Event.Message: ' +
-                          '(' + message + ') ' +
-                          '| From ' + deviceId + ' | ' +
-                          JSON.stringify(state,null,2);
+                if(state !== undefined) {
+                  var log = 'Event.Message: ' +
+                            '(' + message + ') ' +
+                            '<br>&nbsp;&nbsp;From: ' + deviceId +
+                            '<br>&nbsp;&nbsp;Message: ' + JSON.stringify(state,null,2);
+                  print(log);
+                }
 
-                print(log);
               });
 
               function print(message) {
                 var p = document.createElement('p');
-                var text = document.createTextNode(message);
-                p.appendChild(text);
-                document.body.appendChild(p);
+                p.innerHTML = message;
+                document.getElementById('secondscreen-example-container').appendChild(p);
                secondscreenHost.log.info(message);
               }
 
@@ -100,9 +101,22 @@
           </div>
           <h2 class="tag-line">SECOND SCREEN HTML CONTROLLER</h2>
         </div>
-        <div class="secondscreen-example-container">
-          <div id="slot"></div>
-          <button id="btn" onclick="window.notifyClient('hello, world!');">click me</button>
+        <div>
+          <div>
+            <p>Once the color chip below is no longer black, this page has become a <span class="red-text">Second Screen Host</span>!</p>
+            <p>To connect and communicate with this page, open a native application integrated with the <a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Second Screen SDKs</a> on your favorite device to turn it into a <span class="red-text">Second Screen Client</span>!</p>
+          </div>
+          <div id="secondscreen-example-container">
+            <div id="slot"></div>
+            <p id="sendForm">
+              <input type="text" id="sendInput" value="Hello, World!"></input>
+              <button id="sendButton" onclick="window.notifyClient(window.document.getElementById('sendInput').value);">Send Message!</button>
+            </p>
+          </div>
+          <div>
+            <p>This example demonstrates how the <span class="red-text">Second Screen Host</span> can pass controller displays written using the webstack of HTML/CSS/JS to the <span class="red-text">Second Screen Client</span> running on a mobile device!</p>
+            <p class="medium-font-size"><a class="red-text link" href="../downloads/html.zip">Download</a> this example.</p>
+          </div>
         </div>
         <hr class="top-padded-rule" />
         <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Second Screen SDKs</a></h3>
