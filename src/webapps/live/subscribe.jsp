@@ -45,7 +45,7 @@
   <head>
     {{> head_meta }}
     {{> resources }}
-    <title>Live Streaming with the Red5 Pro Server!</title>
+    <title>Stream Subscription with the Red5 Pro Server!</title>
     <style>
       #live-page-subcontent {
         text-align: center;
@@ -112,6 +112,10 @@
 
       .container-padding {
         padding: 10px 0 20px 0;
+      }
+
+      .download-link {
+        padding-top: 20px;
       }
     </style>
     <script type="text/javascript" src="swf/swfobject.js"></script>
@@ -231,6 +235,7 @@
                         <!--<![endif]-->
                     </object>
                   </noscript>
+            <p class="medium-font-size download-link"><a class="red-text link" href="downloads/subscriber.zip">Download</a> the source for this example.</p>
           </div>
           <hr class="top-padded-rule" />
           <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>

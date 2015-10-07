@@ -1,0 +1,54 @@
+body {
+  font-size: 100%;
+}
+
+.ui-button {
+  font-size: 1.4rem;
+  margin: 10px auto;
+}
+
+.ui-button-label {
+  width: 100%;
+  text-align: center;
+  position: relative;
+  padding: 0 20px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.control-button-state-up {
+  width: 209px;
+  height: 71px;
+  color: rgb(0, 0, 0);
+  background-image: url('../assets/btn_menu.png');
+}
+
+.control-button-state-down {
+  width: 209px;
+  height: 71px;
+  color: rgb(255, 255, 255);
+  background-image: url('../assets/btn_menu_dn.png');
+}
+
+.push-button-state-up {
+  width: 160px;
+  height: 160px;
+  color: rgb(0, 0, 0);
+  background-image: url('../assets/button-up.png');
+}
+
+.push-button-state-down {
+  width: 160px;
+  height: 160px;
+  color: rgb(255, 255, 255);
+  background-image: url('../assets/button-down.png');
+}
+
+.hidden {
+  display: none;
+  visibility: hidden;
+}

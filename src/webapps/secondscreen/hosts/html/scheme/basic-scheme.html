@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="cache-control" content="no-cache">
+    <link rel="stylesheet" type="text/css" href="style/basic-scheme.css" />
+    <script src="../lib/client/bm-inject.js"></script>
+    <script src="../lib/client/secondscreen-client.min.js"></script>
+    <script>
+      (function(window) {
+
+        // Object.create polyfill > https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create?redirectlocale=en-US&redirectslug=JavaScript%2FReference%2FGlobal_Objects%2FObject%2Fcreate
+        if (typeof Object.create != 'function') {
+          (function () {
+            var F = function () {};
+            Object.create = function (o) {
+              if (arguments.length > 1) { 
+                throw Error('Second argument not supported');
+              }
+              if (o === null) { 
+                throw Error('Cannot set a null [[Prototype]]');
+              }
+              if (typeof o != 'object') { 
+                throw TypeError('Argument must be an object');
+              }
+              F.prototype = o;
+              return new F();
+            };
+          })();
+        }
+
+        window.namespace = function(pkg) {
+          var paths = pkg.split('.');
+          var i, length = paths.length;
+          var tail = window;
+          var path;
+          for(i = 0; i < length; i++) {
+            path = paths[i];
+            tail[path] = tail[path] || {};
+            tail = tail[path];
+          }
+          return tail;
+        };
+      }(this));
+    </script>
+  </head>
+  <body>
+    <div id="options"></div>
+    <button onclick="window.sendToHost('hello', 1, 1.34, 'salads')">Send to Host!</button>
+    <div id="log-panel"></div>
+    <script src="script/event/bridge.js"></script>
+    <script src="script/util/bind.js"></script>
+    <script src="script/view/ui-button.js"></script>
+    <script src="script/basic-scheme.js"></script>
+  </body>
+</html>

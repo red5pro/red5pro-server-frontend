@@ -71,7 +71,20 @@ module.exports = function(srcDir, distDir, gulp) {
   });
 
   gulp.task('copy-contents-live', ['copy-src'], function(cb) {
-    copyWebappContents('live', 'live', ['index.jsp', 'broadcast.jsp', 'subscribe.jsp'], cb);
+    copyWebappContents('live', 'live', [
+      'index.jsp',
+      'broadcast.jsp',
+      'subscribe.jsp'
+    ], cb);
+  });
+
+  gulp.task('copy-contents-secondscreen', ['copy-src'], function(cb) {
+    copyWebappContents('secondscreen', 'secondscreen', [
+      'index.jsp',
+      ['hosts', 'html', 'index.jsp'].join(path.sep),
+      ['hosts', 'gamepad', 'index.jsp'].join(path.sep),
+      ['hosts', 'dpad', 'index.jsp'].join(path.sep)
+    ], cb);
   });
 
   gulp.task('copy-static-root', ['copy-contents-root'], function(cb) {
@@ -80,6 +93,10 @@ module.exports = function(srcDir, distDir, gulp) {
 
   gulp.task('copy-static-live', ['copy-contents-live'], function(cb) {
     copyStaticToWebapp('live', cb);
+  });
+
+  gulp.task('copy-static-secondscreen', ['copy-contents-secondscreen'], function(cb) {
+    copyStaticToWebapp('secondscreen', cb);
   });
 
   gulp.task('build-root', ['copy-static-root'], function(cb) {
@@ -91,36 +108,51 @@ module.exports = function(srcDir, distDir, gulp) {
   });
 
   gulp.task('build-live', ['copy-static-live'], function(cb) {
-    var buildBroadcaster = function(cb) {
+    var buildStreamPage = function(page, cb) {
       return function() {
-        gulp.src([webappsDir, 'live', 'broadcast.jsp'].join(path.sep))
+        gulp.src([webappsDir, 'live', page].join(path.sep))
             .pipe(handlebars({}, options))
-            .pipe(rename('broadcast.jsp'))
+            .pipe(rename(page))
             .pipe(gulp.dest([webappsDist, 'live'].join(path.sep)))
             .on('end', cb);
       };
     };
-    var buildSubscriber = function(cb) {
-      return function() {
-        gulp.src([webappsDir, 'live', 'subscribe.jsp'].join(path.sep))
-            .pipe(handlebars({}, options))
-            .pipe(rename('subscribe.jsp'))
-            .pipe(gulp.dest([webappsDist, 'live'].join(path.sep)))
-            .on('end', cb);
-      };
-    };
-    gulp.src([webappsDir, 'live', 'index.jsp'].join(path.sep))
+    var buildSubscriber = buildStreamPage('subscribe.jsp', cb);
+    var buildBroadcaster = buildStreamPage('broadcast.jsp', buildSubscriber);
+    buildStreamPage('index.jsp', buildBroadcaster)();
+  });
+
+  gulp.task('build-secondscreen', ['copy-static-secondscreen'], function(cb) {
+    gulp.src([webappsDir, 'secondscreen', 'index.jsp'].join(path.sep))
         .pipe(handlebars({}, options))
         .pipe(rename('index.jsp'))
-        .pipe(gulp.dest([webappsDist, 'live'].join(path.sep)))
-        .on('end', buildBroadcaster(buildSubscriber(cb)));
+        .pipe(gulp.dest([webappsDist, 'secondscreen'].join(path.sep)))
+        .on('end', cb);
+  });
+
+  gulp.task('build-secondscreen-examples', ['build-secondscreen'], function(cb) {
+    gutil.log('Building Second Screen examples...');
+    var buildSecondScreenHost = function(subdir, cb) {
+      return function() {
+        gutil.log('Building example in ' + subdir + '...');
+        gulp.src([webappsDir, 'secondscreen', subdir, 'index.jsp'].join(path.sep))
+            .pipe(handlebars({}, options))
+            .pipe(rename('index.jsp'))
+            .pipe(gulp.dest([webappsDist, 'secondscreen', subdir].join(path.sep)))
+            .on('end', cb);
+      };
+    };
+    var buildDpad = buildSecondScreenHost(['hosts', 'dpad'].join(path.sep), cb);
+    var buildGamepad = buildSecondScreenHost(['hosts', 'gamepad'].join(path.sep), buildDpad);
+    buildSecondScreenHost(['hosts', 'html'].join(path.sep), buildGamepad)();
   });
 
   gulp.task('build', [
                       'clean-build',
                       'copy-src',
                       'build-root', 'copy-contents-root', 'copy-static-root',
-                      'build-live', 'copy-contents-live', 'copy-static-live'
+                      'build-live', 'copy-contents-live', 'copy-static-live',
+                      'build-secondscreen', 'build-secondscreen-examples', 'copy-contents-secondscreen', 'copy-static-secondscreen'
                       ]);
 
 };
