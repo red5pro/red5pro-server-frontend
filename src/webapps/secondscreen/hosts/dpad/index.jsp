@@ -13,7 +13,7 @@
               var timestamp = new Date().getTime();
               var secondscreenHost = window.secondscreenHost.noConflict();
               var config = {
-                name: "GamePad Example",
+                name: "DPAD Example",
                 maxPlayers: 10,
                 registryUrl: "ws://<%= NetworkUtil.getLocalIpAddress()%>:6262/secondscreen",
                 appId: "secondscreen",
@@ -26,24 +26,12 @@
                 controlMode: secondscreenHost.ControlModes.GAMEPAD,
                 design: {
                   orientation: "portrait",
-                  touchEnabled: false,
-                  accelerometerEnabled: false,
-                  layout:[{
-                    type:   "image",
-                    src:    'images/background.png',
+                  layout: [{
+                    type: "dpad",
                     x:      0,
                     y:      0,
                     width:  320,
                     height: 480
-                  }, {
-                    type:       "button",
-                    id:         'pushButton',
-                    srcUp:      'images/button-up.png',
-                    srcDown:    'images/button-down.png',
-                    x:          (320-160)/2-3,
-                    y:          (480-160)/2,
-                    width:      160,
-                    height:     160
                   }]
                 },
                 error: function(error) {
@@ -67,29 +55,60 @@
 
               secondscreenHost.on(secondscreenHost.EventTypes.DEVICE_DISCONNECTED, function (e){
                 print("<p class=\"red-text medium-font-size\">Device Disconnected (id, name):<br>&nbsp;&nbsp;" + e.device.id + ', ' + e.device.name + "</p>");
+                printPosition('');
               });
 
-              secondscreenHost.on(secondscreenHost.EventTypes.BUTTON_UP, function(e) {
-                print('Event.Message: (Button Up) ' +
-                        '<br>&nbsp;&nbsp;From Button.id: ' + e.id +
+              secondscreenHost.on(secondscreenHost.EventTypes.DPAD, function(e) {
+                if(e.horizontal === 0 && e.vertical === 0) {
+                  printPosition('<span class="code-blue-text">DPAD Controller Idle...</span>', true);
+                }
+                else {
+                  printPosition('Event.Message: (DPAD) ' +
+                        '<br>&nbsp;&nbsp;For Position: ' + getPositionFromDpadEvent(e) +
                         '<br>&nbsp;&nbsp;On Device.id: ' + e.device.id);
+                }
               });
 
-              secondscreenHost.on(secondscreenHost.EventTypes.BUTTON_DOWN, function(e) {
-                print('Event.Message: (Button Down) ' +
-                        '<br>&nbsp;&nbsp;From Button.id: ' + e.id +
-                        '<br>&nbsp;&nbsp;On Device.id: ' + e.device.id);
-              });
+              function getPositionFromDpadEvent(event) {
+                var position = '';
+                if(event.horizontal === -1)  {
+                  position += 'Down';
+                }
+                else if(event.horizontal === 1) {
+                  position += 'Up';
+                }
+
+                if(event.vertical === -1) {
+                  position += 'Left';
+                }
+                else if(event.vertical === 1) {
+                  position += 'Right';
+                }
+
+                return position;
+              }
 
               function print(message) {
                 var p = document.createElement('p');
                 p.innerHTML = message;
-                document.getElementById('secondscreen-example-container').appendChild(p);
+                document.getElementById('secondscreen-hud').appendChild(p);
+              }
+
+              function printPosition(message, append) {
+                var parent = document.getElementById('dpad-position-container');
+                var p = document.createElement('p');
+                p.innerHTML = message;
+                if(!append) {
+                  while(parent.hasChildNodes()) {
+                    parent.removeChild(parent.lastChild);
+                  }
+                }
+                parent.appendChild(p);
               }
 
             }(window));
-    </script>
-    <style>
+  </script>
+  <style>
       #code-example {
         font-size: 12px;
       }
@@ -111,7 +130,7 @@
               <img class="red5pro-logo" src="../../images/logo_68.png">&nbsp;<span class="red5pro-header black-text">RED5</span><span class="red5pro-header red-text">PRO</span>
             </a>
           </div>
-          <h2 class="tag-line">SECOND SCREEN GAMEPAD CONTROLLER</h2>
+          <h2 class="tag-line">SECOND SCREEN DPAD CONTROLLER</h2>
         </div>
         <div>
           <div>
@@ -119,8 +138,11 @@
             <p>To connect and communicate with this page, open a native application integrated with the <a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Second Screen SDKs</a> on your favorite device to turn it into a <span class="red-text">Second Screen Client</span>!</p>
           </div>
           <div id="secondscreen-example-container">
-            <div id="version-field"></div>
-            <div id="slot"></div>
+            <div id="secondscreen-hud">
+              <div id="version-field"></div>
+              <div id="slot"></div>
+            </div>
+            <div id="dpad-position-container"></div>
           </div>
           <script>
             (function(window, document, host) {
@@ -128,33 +150,24 @@
              }(this, document, window.secondscreenHost.noConflict()));
           </script>
           <div style="width: 100%; text-align: right;">
-            <p><a class="red-text link" href="../downloads/gamepad.zip">Download</a> this example.</p>
+            <p><a class="red-text link" href="../downloads/dpad.zip">Download</a> this example.</p>
           </div>
           <div>
-            <p>This example demonstrates how the <span class="red-text">Second Screen Host</span> can pass a controller schema that defines design &amp; layout to the <span class="red-text">Second Screen Client</span> running on a mobile device! The controller schema is parsed by the Second Screen SDK and elements are rendered natively in the application on the device.</p>
+            <p>This example demonstrates how the <span class="red-text">Second Screen Host</span> can pass a controller schema that defines the controller type as a <strong>DPAD</strong> to the <span class="red-text">Second Screen Client</span> running on a mobile device!</p>
             <p>Here's the schema used for this example:</p>
             <div id="code-example" class="menu-content">
 <pre><code> {
     orientation:  <span class="red-text">'portrait'</span>,
     layout:[{
-      type:       <span class="red-text">'image'</span>,
-      src:        <span class="red-text">'images/background.png'</span>,
+      type:       <span class="red-text">'dpad'</span>,
       x:          <span class="code-blue-text">0</span>,
       y:          <span class="code-blue-text">0</span>,
       width:      <span class="code-blue-text">320</span>,
       height:     <span class="code-blue-text">480</span>
-    }, {
-      type:       <span class="red-text">'button'</span>,
-      id:         <span class="red-text">'pushButton'</span>,
-      srcUp:      <span class="red-text">'images/button-up.png'</span>,
-      srcDown:    <span class="red-text">'images/button-down.png'</span>,
-      x:          <span class="code-blue-text">(320-160)/2-3</span>,
-      y:          <span class="code-blue-text">(480-160)/2</span>,
-      width:      <span class="code-blue-text">160</span>,
-      height:     <span class="code-blue-text">160</span>
     }]
   }</code></pre>
             </div>
+            <p>The <strong>DPAD</strong> graphics are part of the <a class="link" href="http://account.red5pro.com/download" target="_blank">Second Screen SDK</a>. If you want more control over the look &amp; feel of the controller, visit the example for the <a class="link" href="/secondscreen/hosts/gamepad">Second Screen Gamepad Controller</a>.
             <p class="medium-font-size">Connect more devices and have some fun!</p>
           </div>
         </div>
