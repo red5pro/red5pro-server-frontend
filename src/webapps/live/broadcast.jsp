@@ -133,7 +133,7 @@
             </object>
           </noscript>
           <br><br>
-          <p class="medium-font-size"><a class="red-text link" href="downloads/broadcaster.zip">Download</a> the source for this example.</p>
+          <p class="medium-font-size"><a class="red-text link" href="https://github.com/red5pro/red5pro-server-examples/releases/download/0.1.0/Red5Pro-Broadcaster-Client.zip">Download</a> the source for this example.</p>
           <hr class="top-padded-rule" />
           <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>
           <p>You can download the Streaming SDKs from your <a class="link" href="http://account.red5pro.com/download" target="_blank">Red5 Pro Accounts</a> page.</p>
