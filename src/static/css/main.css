@@ -66,6 +66,10 @@ hr.top-padded-rule {
   color: rgb(255, 255, 255);
 }
 
+.small-font-size {
+  font-size: 12px;
+}
+
 .medium-font-size {
   font-size: 16px;
 }
@@ -94,6 +98,11 @@ a.link:hover {
   margin-top: 16px;
 }
 
+#server-version-field {
+  background-color: #e3e3e3;
+  padding: 2px 22px;
+}
+
 #ip-field {
   text-align: right;
   color: rgb(255, 255, 255);
@@ -106,6 +115,7 @@ a.link:hover {
   position: absolute;
   width: 230px;
   right: 20px;
+  top: 80px;
   background-color: rgb(239, 239, 239);
   border: 1px solid #e3e3e3;
   border-radius: 4px;
@@ -153,8 +163,7 @@ a.link:hover {
 .header-bar {
   background-color: #a8a8a8;
   border-color: rgb(166, 168, 168);
-  padding: 12px 30px;
-  margin-bottom: 20px;
+  padding: 12px 30px 12px 20px;
  }
 
 .footer {
@@ -209,6 +218,7 @@ a.link:hover {
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
+  margin-top: 20px
 }
 
 #menu-section {

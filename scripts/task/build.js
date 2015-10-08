@@ -8,8 +8,27 @@ var mkdir = require('mkdirp');
 var rm = require('del');
 var gutil = require('gulp-util');
 
+var nconf = require('nconf');
+nconf.argv().env().file({
+  file: 'settings.json'
+});
+
 var options = {
-  batch: [[process.cwd(), 'src', 'template', 'partial'].join(path.sep)]
+  batch: [[process.cwd(), 'src', 'template', 'partial'].join(path.sep)],
+  helpers: {
+    server_version: function() {
+      var version = 'UNKNOWN';
+      try {
+        version = nconf.get('version');
+      }
+      catch(e) {
+        gutil.log('COULD NOT LOCATE VERSION');
+      }
+      finally {
+        return version;
+      }
+    }
+  }
 };
 
 module.exports = function(srcDir, distDir, gulp) {
