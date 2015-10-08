@@ -7,8 +7,6 @@
     {{> resources-secondscreen-host }}
     <title>Second Screen HTML Controller Example with the Red5 Pro Server!</title>
     <link rel="stylesheet" type="text/css" href="style/main.css">
-    <link rel="prefetch" href="assets/button-down.png">
-    <link rel="prefetch" href="assets/button-up.png">
     <script src="lib/host/secondscreen-host.min.js"></script>
     <script>
             (function(window) {
@@ -125,10 +123,12 @@
               document.getElementById('version-field').innerText = host.versionStr();
              }(this, document, window.secondscreenHost.noConflict()));
           </script>
+          <div style="width: 100%; text-align: right;">
+            <p><a class="red-text link" href="../downloads/gamepad.zip">Download</a> this example.</p>
+          </div>
           <div>
-            <p>This example demonstrates how the <span class="red-text">Second Screen Host</span> can pass controller displays written using the webstack of HTML/CSS/JS to the <span class="red-text">Second Screen Client</span> running on a mobile device!</p>
-            <p>In fact, you can visit the actual page being delivered <a class="red-text link" href="scheme/basic-scheme.html" target="_blank">here</a>.</p>
-            <p class="medium-font-size"><a class="red-text link" href="../downloads/html.zip">Download</a> this example.</p>
+            <p>This example demonstrates how the <span class="red-text">Second Screen Host</span> can pass controller displays written using the webstack of HTML/CSS/JS to the <span class="red-text">Second Screen Client</span> running on a mobile device! In fact, you can visit the actual HTML page being delivered <a class="red-text link" href="scheme/basic-scheme.html" target="_blank">here</a>.</p>
+            <p class="medium-font-size">Connect more devices and have some fun!</p>
           </div>
         </div>
         <hr class="top-padded-rule" />
@@ -142,6 +142,6 @@
         </div>
       </div>
     </div>
-    {{> footer }}
+    {{> footer logo_url='../../images/logo_68.png' }}
   </body>
 </html>

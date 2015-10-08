@@ -2,6 +2,8 @@
   border: 1px solid #e3e3e3;
   padding: 20px;
   margin: 20px 0;
+  max-height: 340px;
+  overflow-y: auto;
 }
 
 #version-field {
