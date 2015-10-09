@@ -4,6 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var handlebars = require('gulp-compile-handlebars');
 var rename = require('gulp-rename');
+var zip = require('gulp-zip');
 var mkdir = require('mkdirp');
 var rm = require('del');
 var gutil = require('gulp-util');
@@ -166,12 +167,35 @@ module.exports = function(srcDir, distDir, gulp) {
     buildSecondScreenHost(['hosts', 'html'].join(path.sep), buildGamepad)();
   });
 
+  gulp.task('zip-secondscreen-examples', ['build-secondscreen-examples'], function(cb) {
+    var zipBuild = function(name, callback) {
+      return function() {
+        var sourceDir = [webappsDist, 'secondscreen', 'hosts', name, '**'].join(path.sep);
+        var downloadsDir = [webappsDist, 'secondscreen', 'downloads'].join(path.sep);
+        gutil.log('Zipping Second Screen example: ' + name + '...');
+        gulp.src(sourceDir)
+            .pipe(zip([name, 'zip'].join('.')))
+            .pipe(gulp.dest(downloadsDir))
+            .on('end', function(err) {
+              if(err) {
+                gutil.log('Error in zipping archive: ' + err);
+              }
+              callback();
+            });
+      };
+    };
+    var zipDPAD = zipBuild('dpad', cb);
+    var zipGamepad = zipBuild('gamepad', zipDPAD);
+    zipBuild('html', zipGamepad)();
+  });
+
   gulp.task('build', [
                       'clean-build',
                       'copy-src',
                       'build-root', 'copy-contents-root', 'copy-static-root',
                       'build-live', 'copy-contents-live', 'copy-static-live',
-                      'build-secondscreen', 'build-secondscreen-examples', 'copy-contents-secondscreen', 'copy-static-secondscreen'
+                      'build-secondscreen', 'build-secondscreen-examples', 'copy-contents-secondscreen', 'copy-static-secondscreen',
+                      'zip-secondscreen-examples'
                       ]);
 
 };
