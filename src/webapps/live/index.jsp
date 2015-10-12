@@ -52,7 +52,7 @@
           <div>
             <h3><a class="link" href="broadcast.jsp?host=<%= NetworkUtil.getLocalIpAddress()%>">Start Broadcasting</a></h3>
             <p>We have provided an easy way for you to start a Red5 Pro Broadcast session.</p>
-            <p>The <a class="link" href="broadcast.jsp?host=<%= NetworkUtil.getLocalIpAddress()%>">Broadcast page</a> provides a means to streaming video and audio. Once you have started a Broadcast, invite a friend to Subscribe using a web browser or any device with a <a href="http://github.com/red5pro" target="_blank" class="link red-text">native application</a> integrated with the Red5 Pro SDKs!</p>
+            <p>The <a class="link" href="broadcast.jsp?host=<%= NetworkUtil.getLocalIpAddress()%>">Broadcast page</a> provides a means to stream video and audio. Once you have started a Broadcast, invite a friend to Subscribe using a web browser or any device with a <a href="http://github.com/red5pro" target="_blank" class="link red-text">native application</a> integrated with the Red5 Pro SDKs!</p>
             <p><a class="link medium-font-size" href="broadcast.jsp?host=<%= NetworkUtil.getLocalIpAddress()%>">&gt;&nbsp;Start a Broadcast now!</a></p>
             <h3><a class="link" href="subscribe.jsp">Start Subscribing</a></h3>
             <p>We have provided an easy way to Subscribe to a Red5 Pro Broadcast session.</p>
