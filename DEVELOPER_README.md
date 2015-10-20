@@ -2,6 +2,21 @@ Developer Documentation
 ===
 This documentation pertains to developers maintaining the Red5 Pro Server FrontEnd project. There are several developer-related tasks and workflows that do not pertain to the End-Users of Red5 Pro; as such, the output generated from this project as a developer is the content that is available to End-Users.
 
+Quickstart
+===
+```
+$ npm install
+$ npm run start
+$ npm run build
+$ npm run launch
+```
+
+### Requirements
+
+* [NodeJS](https://nodejs.org/en/download/package-manager/) (>= 0.10)
+* NPM (>= 1+)
+* [Red5 Pro Server](https://account.red5pro.com/download) (see below)
+
 Developing Pages For a WebApp
 ===
 The site structure of a Red5 server - ultimately a tomcat server - is defined by the directories in the __webapps__ folder of the server.
