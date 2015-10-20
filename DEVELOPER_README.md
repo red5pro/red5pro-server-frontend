@@ -37,3 +37,33 @@ By default, Red5 Pro will start at [http://localhost:5080](http://localhost:5080
 Deploying to Red5 Pro Server
 ---
 
+### Deploy
+To deploy a build of the pages to the local Red5 Pro Server:
+
+```
+$ npm run deploy
+```
+
+This command will run a new build and place the generated files in /webapps.
+
+### Watch
+To interactively develop the pages that are generated and deployed to the local Red5 Pro Server:
+
+```
+$ npm run watch
+```
+
+This will watch the source files and re-generate the build upon any changes, allowing you to actively develop without having to restart the server or manually deploy each time.
+
+__You will need to install the [Live Reload Plugin](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en) for your browser.__
+
+### Launch
+To just launch the alreayd built and deployed pages in your system's default browser:
+
+```
+$ npm run launch
+```
+
+Continuous Integration
+===
+This project is not added as a solo project for Continuous Integration (CI) in the Red5 Pro CI. Instead, this project is pulled, built and distributed on CI of the Red5 Pro Server.
