@@ -47,6 +47,8 @@ $ npm run deploy
 This command will run a new build and place the generated files in /webapps.
 
 ### Watch
+_This build options requires you to have a Red5 Pro Server installed on your machine and its location defined in the [settings.json](settings.json) under the __red5pro-server__ param_
+
 To interactively develop the pages that are generated and deployed to the local Red5 Pro Server:
 
 ```
@@ -58,6 +60,8 @@ This will watch the source files and re-generate the build upon any changes, all
 __You will need to install the [Live Reload Plugin](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en) for your browser.__
 
 ### Launch
+_This build options requires you to have a Red5 Pro Server installed on your machine and its location defined in the [settings.json](settings.json) under the __red5pro-server__ param_
+
 To just launch the alreayd built and deployed pages in your system's default browser:
 
 ```
