@@ -56,6 +56,7 @@ module.exports = function(srcDir, distDir, gulp) {
   };
   var generateWebappsPage = function(directory, targetFile, callback) {
     return function() {
+      gutil.log('Generating Webapps Page: ' + [directory, targetFile].join(path.sep));
       gulp.src([webappsDir, directory, targetFile].join(path.sep))
           .pipe(handlebars({}, options))
           .pipe(rename(targetFile))
@@ -96,7 +97,7 @@ module.exports = function(srcDir, distDir, gulp) {
   });
 
   gulp.task('copy-contents-root', ['copy-src'], function(cb) {
-    copyWebappContents('root', 'root', ['index.jsp'], cb);
+    copyWebappContents('root', 'root', ['index.jsp', 'license.jsp'], cb);
   });
 
   gulp.task('copy-contents-live', ['copy-src'], function(cb) {
@@ -129,8 +130,9 @@ module.exports = function(srcDir, distDir, gulp) {
   });
 
   gulp.task('build-root', ['copy-static-root'], function(cb) {
-    var licensePage = generateWebappsPage('root', 'license.jsp', cb);
-    generateWebappsPage('root', 'index.jsp', licensePage)();
+    // [2105-10-23] Put on hold.
+    //    var licensePage = generateWebappsPage('root', 'license.jsp', cb);
+    generateWebappsPage('root', 'index.jsp', cb)();
   });
 
   gulp.task('build-live', ['copy-static-live'], function(cb) {
