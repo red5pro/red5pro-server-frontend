@@ -8,35 +8,39 @@
   // check for submitted key
   String licenseKey = request.getParameter("licenseKey") != null ? request.getParameter("licenseKey") : null;
   // license key string is at least 19 char long
-  if (licenseKey != null && licenseKey.length() >= 19) {
-    // first we up case with trim
-    String tmp = licenseKey.toUpperCase().trim();
-    // remove non-ascii chars
-    tmp = tmp.replaceAll("[^\\x00-\\x7F]", "");
-    // remove all non-alphanumic (hex) and non-dash
-    tmp = tmp.replaceAll("[^A-F0-9-]", "");
-    // ensure doesnt exceed proper length
-    if (tmp.length() < 19) {
-      errMessage = "License is too short";
+  if (licenseKey != null) {
+    if (licenseKey.length() < 19) {
+        errMessage = "License is too short";
     } else {
-      // if too long just chop it
-      tmp = tmp.substring(0, 19);
-      // match the license pattern
-      Pattern p = Pattern.compile("[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}");
-      Matcher m = p.matcher(tmp);
-      if (m.find()) {
-        // all checks pass, write to file
-        RandomAccessFile raf = null;
-        try {
-          Charset characterSet = Charset.forName("US-ASCII");
-          raf = new RandomAccessFile(keyFile, "rw");
-          raf.write(tmp.getBytes(characterSet));
-          raf.close();
-        } catch (Exception e) {
-          errMessage = e.getMessage();
-        }
+      // first we up case with trim
+      String tmp = licenseKey.toUpperCase().trim();
+      // remove non-ascii chars
+      tmp = tmp.replaceAll("[^\\x00-\\x7F]", "");
+      // remove all non-alphanumic (hex) and non-dash
+      tmp = tmp.replaceAll("[^A-F0-9-]", "");
+      // ensure doesnt exceed proper length
+      if (tmp.length() < 19) {
+        errMessage = "License is too short";
       } else {
-        errMessage = "License is not formatted correctly";
+        // if too long just chop it
+        tmp = tmp.substring(0, 19);
+        // match the license pattern
+        Pattern p = Pattern.compile("[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}");
+        Matcher m = p.matcher(tmp);
+        if (m.find()) {
+          // all checks pass, write to file
+          RandomAccessFile raf = null;
+          try {
+            Charset characterSet = Charset.forName("US-ASCII");
+            raf = new RandomAccessFile(keyFile, "rw");
+            raf.write(tmp.getBytes(characterSet));
+            raf.close();
+          } catch (Exception e) {
+            errMessage = e.getMessage();
+          }
+        } else {
+          errMessage = "License is not formatted correctly";
+        }
       }
     }
   }
