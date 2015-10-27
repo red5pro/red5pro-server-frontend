@@ -68,11 +68,18 @@
   <% } else { %>
     <p><span class="black-text">Uh-Oh!!</span></p>
   <% } %>
-  <p><a id="ip-overlay-button" class="white-text" href="#">Why would I need to know this?</a>
+  <p><a id="ip-overlay-button" class="white-text" href="#">Why would I need to know the server IP address?</a></p>
+  <p><a id="ip-incorrect-button" class="black-text" href="#">Not the correct IP address?</a></p>
 </div>
 <div id="ip-overlay" class="hidden">
   <p>This IP address needs to be provided to applications integrated with the Red5 Pro SDKs.</p>
-  <p>If using the example projects from our <a class="link" href="http://github.com/red5pro" targe="_blank">Github</a>, you will enter this IP into the <strong>Server</strong> input field of the Settings menu.</p>
+  <p>If using the example projects from our <a id="header-github-link" class="link" href="http://github.com/red5pro" target="_blank">Github</a>, you will enter this IP into the <strong>Server</strong> input field of the Settings menu.</p>
+  <p><a id="ip-overlay-ip-incorrect-button" href="#" class="red-text">Not the correct IP address?</a></p>
+</div>
+<div id="ip-address-overlay" class="hidden">
+  <p>Do you think the server IP address above is incorrect? Please enter in the correct address below:</p>
+  <input id="ip-address-input-field" type="text">
+  <button id="ip-address-input-submit">submit</button>
 </div>
 <script>
   (function(document) {
@@ -82,14 +89,18 @@
     var suggestHostIp = window.location.hostname;
 
     // IP Overlay
-    var isShown = false;
+    var isOverlayShown = false;
+    var isIPAddressOverlayShown = false;
     var ipOverlay = document.getElementById('ip-overlay');
+    var ipAddressOverlay = document.getElementById('ip-address-overlay');
     var ipOverlayButton = document.getElementById('ip-overlay-button');
+    var ipIncorrectButton = document.getElementById('ip-incorrect-button');
+    var ipOverlayIpIncorrectButton = document.getElementById('ip-overlay-ip-incorrect-button');
+    var githubLink = document.getElementById('header-github-link');
     var toggleOverlay = function(event) {
       event.preventDefault();
       event.stopPropagation();
-      isShown = !isShown;
-      if(isShown) {
+      if(!isOverlayShown) {
         showOverlay();
       }
       else {
@@ -97,14 +108,55 @@
       }
     };
     var showOverlay = function() {
+      isOverlayShown = true;
       ipOverlay.classList.remove('hidden');
     };
     var hideOverlay = function() {
+      isOverlayShown = false;
       ipOverlay.classList.add('hidden');
+    };
+    var handleOverlayClose = function(event) {
+      if(event.target !== githubLink &&
+          event.target !== ipOverlayIpIncorrectButton) {
+        event.stopPropagation();
+        event.preventDefault();
+        hideOverlay();
+        return false;
+      }
+      else if(event.target === ipOverlayIpIncorrectButton) {
+        toggleIpAddressOverlay(event);
+      }
+      return true;
+    };
+    var toggleIpAddressOverlay = function(event) {
+      event.stopPropagation();
+      event.preventDefault();
+      if(!isIPAddressOverlayShown) {
+        showAddressInputOverlay();
+      }
+      else {
+        hideAddressInputOverlay();
+      }
+      return false;
+    };
+    var showAddressInputOverlay = function() {
+      isIPAddressOverlayShown = true;
+      if(isOverlayShown) {
+        hideOverlay();
+      }
+      ipAddressOverlay.classList.remove('hidden');
+    };
+    var hideAddressInputOverlay = function() {
+      isIPAddressOverlayShown = false;
+      ipAddressOverlay.classList.add('hidden');
     };
     ipOverlayButton.addEventListener('click', toggleOverlay);
     ipOverlayButton.addEventListener('mouseover', showOverlay);
-    ipOverlayButton.addEventListener('mouseout', hideOverlay);
+    ipOverlay.addEventListener('mousedown', handleOverlayClose);
+    ipOverlay.addEventListener('touchstart', handleOverlayClose);
+
+    ipIncorrectButton.addEventListener('click', toggleIpAddressOverlay);
+
   }(document));
 </script>
 
