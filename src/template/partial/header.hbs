@@ -8,42 +8,8 @@
       {{/if}}
     </a>
   </div>
-  <div id="ip-field">
-    <p><span class="black-text">Your server IP address is:</span>&nbsp;&nbsp;<span class="red-text medium-font-size"><%= NetworkUtil.getLocalIpAddress()%></span></p>
-    <p><a id="ip-overlay-button" class="white-text" href="#">Why would I need to know this?</a>
-  </div>
+  {{> header_ip_field }}
 </div>
 <div id="server-version-field" class="small-font-size">
   <span class="black-text">Red5 Pro Server Version</span>&nbsp;&nbsp;<span class="red-text">{{server_version}}</span>
 </div>
-<div id="ip-overlay" class="hidden">
-  <p>This IP address needs to be provided to applications integrated with the Red5 Pro SDKs.</p>
-  <p>If using the example projects from our <a class="link" href="http://github.com/red5pro" targe="_blank">Github</a>, you will enter this IP into the <strong>Server</strong> input field of the Settings menu.</p>
-</div>
-<script>
-  (function(document) {
-    var isShown = false;
-    var ipOverlay = document.getElementById('ip-overlay');
-    var ipOverlayButton = document.getElementById('ip-overlay-button');
-    var toggleOverlay = function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      isShown = !isShown;
-      if(isShown) {
-        showOverlay();
-      }
-      else {
-        hideOverlay();
-      }
-    };
-    var showOverlay = function() {
-      ipOverlay.classList.remove('hidden');
-    };
-    var hideOverlay = function() {
-      ipOverlay.classList.add('hidden');
-    };
-    ipOverlayButton.addEventListener('click', toggleOverlay);
-    ipOverlayButton.addEventListener('mouseover', showOverlay);
-    ipOverlayButton.addEventListener('mouseout', hideOverlay);
-  }(document));
-</script>

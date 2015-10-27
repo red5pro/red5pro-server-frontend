@@ -1,0 +1,83 @@
+<%@ page import="java.io.*,java.util.regex.*,java.nio.charset.Charset"%>
+<%
+  Cookie cookie;
+  Cookie[] cookies;
+  String cookieName = "storedIpAddress";
+
+  String ip = NetworkUtil.getLocalIpAddress()  + "GAFFAW~";
+
+  // Matches valid IP Address
+  Pattern addressPattern = Pattern.compile("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
+  Matcher matcher = addressPattern.matcher(ip);
+
+  // Is a valid IP address
+  if(matcher.find()) {
+    // all is good, continue on...
+  }
+  else {
+
+    ip = null;
+    cookies = request.getCookies();
+
+    // If we have stored cookies check if already stored ip address by User.
+    if(cookies != null) {
+      for(int i = 0; i < cookies.length; i++) {
+        cookie = cookies[i];
+        if(cookie.getName() == cookieName) {
+          ip = cookie.getValue();
+          matcher = addressPattern.matcher(ip);
+          ip = matcher.find() ? ip : null;
+        }
+      }
+    }
+
+    // If no found cookie with ip address
+    if(cookies == null || ip == null) {
+      // Invoke AWS service
+      // If failure in AWS service and/or IP still null => flag to show alert.
+    }
+
+  }
+
+  boolean ipExists = ip != null && !ip.isEmpty();
+%>
+<div id="ip-field">
+  <% if (ipExists) { %>
+    <p><span class="black-text">Your server IP address is:</span>&nbsp;&nbsp;<span class="red-text medium-font-size"><%= ip %></span></p>
+  <% } else { &>
+    <p><span class="black-text">Uh-Oh!!</span></p>
+  <% } %>
+  <p><a id="ip-overlay-button" class="white-text" href="#">Why would I need to know this?</a>
+</div>
+<div id="ip-overlay" class="hidden">
+  <p>This IP address needs to be provided to applications integrated with the Red5 Pro SDKs.</p>
+  <p>If using the example projects from our <a class="link" href="http://github.com/red5pro" targe="_blank">Github</a>, you will enter this IP into the <strong>Server</strong> input field of the Settings menu.</p>
+</div>
+<script>
+  (function(document) {
+    var isShown = false;
+    var ipOverlay = document.getElementById('ip-overlay');
+    var ipOverlayButton = document.getElementById('ip-overlay-button');
+    var toggleOverlay = function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      isShown = !isShown;
+      if(isShown) {
+        showOverlay();
+      }
+      else {
+        hideOverlay();
+      }
+    };
+    var showOverlay = function() {
+      ipOverlay.classList.remove('hidden');
+    };
+    var hideOverlay = function() {
+      ipOverlay.classList.add('hidden');
+    };
+    ipOverlayButton.addEventListener('click', toggleOverlay);
+    ipOverlayButton.addEventListener('mouseover', showOverlay);
+    ipOverlayButton.addEventListener('mouseout', hideOverlay);
+  }(document));
+</script>
+
