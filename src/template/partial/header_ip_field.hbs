@@ -1,4 +1,4 @@
-<%@ page import="java.io.*,java.util.regex.*,java.nio.charset.Charset"%>
+<%@ page import="java.io.*,java.util.regex.*,java.net.URL,java.nio.charset.Charset"%>
 <%
   Cookie cookie;
   Cookie[] cookies;
@@ -33,7 +33,28 @@
 
     // If no found cookie with ip address
     if(cookies == null || ip == null) {
+
       // Invoke AWS service
+      URL whatismyip = new URL("http://checkip.amazonaws.com");
+      BufferedReader in = null;
+      try {
+        in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+        ip = in.readLine();
+      }
+      catch(Exception e) {
+        ip = null;
+      }
+      finally {
+        if (in != null) {
+          try {
+            in.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+
       // If failure in AWS service and/or IP still null => flag to show alert.
     }
 
@@ -44,7 +65,7 @@
 <div id="ip-field">
   <% if (ipExists) { %>
     <p><span class="black-text">Your server IP address is:</span>&nbsp;&nbsp;<span class="red-text medium-font-size"><%= ip %></span></p>
-  <% } else { &>
+  <% } else { %>
     <p><span class="black-text">Uh-Oh!!</span></p>
   <% } %>
   <p><a id="ip-overlay-button" class="white-text" href="#">Why would I need to know this?</a>
@@ -55,6 +76,12 @@
 </div>
 <script>
   (function(document) {
+
+    // Host IP state
+    var hasValidIp = <%= ipExists %>
+    var suggestHostIp = window.location.hostname;
+
+    // IP Overlay
     var isShown = false;
     var ipOverlay = document.getElementById('ip-overlay');
     var ipOverlayButton = document.getElementById('ip-overlay-button');
