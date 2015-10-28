@@ -11,6 +11,9 @@
   String localIp = NetworkUtil.getLocalIpAddress();
   boolean ipExists = false;
 
+  // Flip localIp to null if unknown.
+  localIp = addressPattern.matcher(localIp).find() ? localIp : null;
+
   // First check if provided as a query parameter...
   if(request.getParameter("host") != null) {
     ip = request.getParameter("host");

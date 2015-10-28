@@ -50,10 +50,18 @@
   window.r5pro_registerIpChangeListener = registerIpChangeListener;
   window.r5pro_unregisterIpChangeListener = unregisterIpChangeListener;
 
+  var normalizeIp = function(value) {
+    var isValid = value !== null;
+    isValid = isValid && value !== undefined;
+    isValid = isValid && value !== "null";
+    isValid = isValid && value !== "undefined";
+    return isValid ? value : null;
+  };
   var fillInIpSuggestions = function(currentIp) {
     var items = [];
+    var localIp = normalizeIp("<%= localIp %>");
     var addIpToList = function(value) {
-      if(currentIp !== value) {
+      if(value !== null && currentIp !== value) {
       items.push('<tr>' +
           '<td>' +
             '<a class="red-text ip-suggestion-link" href="#">' +
@@ -63,9 +71,11 @@
         '</tr>');
       }
     };
-    addIpToList("<%= localIp %>");
+    addIpToList(localIp);
     addIpToList(suggestHostIp);
-    ipSuggestionsTable.innerHTML = items.join('');
+    if(items.length > 0) {
+      ipSuggestionsTable.innerHTML = items.join('');
+    }
   }
   var updateAndStoreUserEnteredIpAddress = function(value) {
     var expiry = 60*60*24;
