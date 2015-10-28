@@ -26,8 +26,10 @@
 
   // Listeners to Change in IP
   var ipChangeListeners = [];
-  var registerIpChangeListener = function(func) {
-    func.call(null, currentIp);
+  var registerIpChangeListener = function(func, immediatelyInvoke) {
+    if(immediatelyInvoke) {
+      func.call(null, currentIp);
+    }
     ipChangeListeners.push(func);
   };
   var unregisterIpChangeListener = function(func) {
@@ -67,8 +69,13 @@
   }
   var updateAndStoreUserEnteredIpAddress = function(value) {
     var expiry = 60*60*24;
-    ipAddressField.innerText = value;
-    document.cookie = '<%= cookieName %>=' + value + '; max-age=' + expiry;
+    if(ipAddressField.hasOwnProperty('innerText')) {
+      ipAddressField.innerText = value;
+    }
+    else {
+      ipAddressField.textContent = value;
+    }
+    document.cookie = '<%= cookieName %>=' + value + '; path=/; max-age=' + expiry;
     currentIp = value;
     notifyIpChangeListeners(value);
   };
@@ -141,10 +148,17 @@
         return false;
     }
     else if(event.target.classList.contains('ip-suggestion-link')) {
+      var value;
       event.preventDefault();
       event.stopPropagation();
       hideIpAddressOverlay();
-      updateAndStoreUserEnteredIpAddress(event.target.innerText);
+      if(event.target.hasOwnProperty('innerText')) {
+        value = event.target.innerText;
+      }
+      else {
+        value = event.target.textContent;
+      }
+      updateAndStoreUserEnteredIpAddress(value);
       return false;
     }
     return true;
@@ -179,7 +193,7 @@
   ipAddressOverlay.addEventListener('mousedown', handleIpAddressOverlayClose);
   ipAddressOverlay.addEventListener('touchstart', handleIpAddressOverlayClose);
 
-  registerIpChangeListener(fillInIpSuggestions);
+  registerIpChangeListener(fillInIpSuggestions, true);
 
 }(this, document));
 
