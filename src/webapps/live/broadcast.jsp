@@ -1,10 +1,6 @@
 {{> jsp_header }}
 <%
-    String host="localhost";
-    if(request.getParameter("host")!=null) {
-      host=request.getParameter("host");
-    }
-    ip = host;
+  String host = ip;
 %>
 <!doctype html>
 <html lang="eng">

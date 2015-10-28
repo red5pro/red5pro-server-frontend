@@ -11,11 +11,17 @@
   String localIp = NetworkUtil.getLocalIpAddress();
   boolean ipExists = false;
 
+  // First check if provided as a query parameter...
+  if(request.getParameter("host") != null) {
+    ip = request.getParameter("host");
+    ip = addressPattern.matcher(ip).find() ? ip : null;
+  }
+
   Cookie cookie;
   Cookie[] cookies = request.getCookies();
 
   // If we have stored cookies check if already stored ip address by User.
-  if(cookies != null) {
+  if(ip == null && cookies != null) {
     for(int i = 0; i < cookies.length; i++) {
       cookie = cookies[i];
       cookieStr += cookie.getName() + "=" + cookie.getValue() + "; ";
