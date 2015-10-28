@@ -14,7 +14,7 @@
     ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
     ret.append("<h3 class=\"no-streams-entry\">No streams found</h3>\r\n");
     ret.append("</div>\r\n");
-    ret.append("<p>You can begin a Broadcast session by visiting the <a class=\"link\" href=\"broadcast.jsp?host=" + ip + "\" target=\"_blank\">Broadcast page</a>.</p>\r\n");
+    ret.append("<p>You can begin a Broadcast session by visiting the <a class=\"broadcast-link link\" href=\"broadcast.jsp?host=" + ip + "\" target=\"_blank\">Broadcast page</a>.</p>\r\n");
     ret.append("<p><em>Once a Broadcast session is started, return to this page to see the stream name listed.</em></p>");
   }
   else {
