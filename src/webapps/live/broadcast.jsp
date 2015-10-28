@@ -1,11 +1,10 @@
-<%@ page import="java.net.InetAddress"%>
+{{> jsp_header }}
 <%
     String host="localhost";
     if(request.getParameter("host")!=null) {
       host=request.getParameter("host");
     }
 %>
-{{> jsp_header }}
 <!doctype html>
 <html lang="eng">
   <head>
@@ -48,7 +47,7 @@
       // To use express install, set to playerProductInstall.swf, otherwise the empty string.
       var xiSwfUrlStr = "swf/playerProductInstall.swf";
       var flashvars = {
-        host: "<%=host %>"
+        host: "<%= host %>"
       };
       var params = {};
       params.quality = "high";
@@ -145,6 +144,14 @@
         </div>
       </div>
     </div>
+    <script>
+      (function(window, document) {
+        function handleBroadcastIpChange(value) {
+          // TODO: Invoke FlashObject with new host target.
+        }
+        window.r5pro_registerIpChangeListener(handleBroadcastIpChange);
+       }(this, document));
+    </script>
     {{> footer }}
    </body>
 </html>

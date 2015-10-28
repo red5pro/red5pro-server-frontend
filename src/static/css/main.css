@@ -137,6 +137,23 @@ a.link:hover {
   z-index: 1001;
 }
 
+.overlay-close-button {
+  text-align: right;
+  margin-top:-14px;
+}
+.top-nudge {
+  padding-top: 14px;
+}
+#ip-suggestions-table {
+  width: 100%;
+  margin-bottom: 14px;
+}
+#ip-suggestions-table tr td {
+  border: 1px solid #aaa;
+  padding: 6px;
+  margin: 0;
+}
+
 .hidden {
   display: none;
 }

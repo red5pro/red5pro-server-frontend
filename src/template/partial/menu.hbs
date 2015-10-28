@@ -1,9 +1,10 @@
+<!-- view jsp_header to view variables used in this page -->
 <div class="menu-content">
   <ul class="menu-listing">
     <li><a class="red-text menu-listing-internal" href="/">Welcome</a></li>
     <li><a class="red-text menu-listing-internal" href="/live">Live Streaming</a></li>
       <ul class="menu-sublisting">
-        <li><a class="red-text menu-listing-nested" href="/live/broadcast.jsp?host=<%= NetworkUtil.getLocalIpAddress()%>">Broadcast</a></li>
+        <li><a class="broadcast-link red-text menu-listing-nested" href="/live/broadcast.jsp?host=<%= ip %>">Broadcast</a></li>
         <li><a class="red-text menu-listing-nested" href="/live/subscribe.jsp">Subscribe</a></li>
       </ul>
     <li><a class="red-text menu-listing-internal" href="/secondscreen">Second Screen</a></li>
@@ -19,4 +20,18 @@
     <li><a class="red-text menu-listing-external" href="http://account.red5pro.com" target="_blank">&gt;&nbsp;Red5 Pro Accounts</a></li>
     <li><a class="red-text menu-listing-external" href="http://github.com/red5pro" target="_blank">&gt;&nbsp;Red5 Pro Github</a></li>
   </ul>
+  <script>
+    (function(window, document) {
+      var className = 'broadcast-link';
+      function handleLiveIpChange(value) {
+        var elements = document.getElementsByClassName(className);
+        var length = elements ? elements.length : 0;
+        var index = 0;
+        for(index = 0; index < length; index++) {
+          elements[index].href = ['broadcast.jsp?host', value].join('=');
+        }
+      }
+      window.r5pro_registerIpChangeListener(handleLiveIpChange);
+     }(this, document));
+  </script>
 </div>
