@@ -34,7 +34,7 @@
     }
     ret.append("</ul>\r\n");
     ret.append("</div>\r\n");
-    ret.append("<p>To begin your own Broadcast session, visit the <a class=\"red-text link\" href=\"broadcast.jsp?host=" + ip + "\">Broadcast page</a>!</p>\r\n");
+    ret.append("<p>To begin your own Broadcast session, visit the <a class=\"broadcast-link red-text link\" href=\"broadcast.jsp?host=" + ip + "\">Broadcast page</a>!</p>\r\n");
   }
 %>
 <!doctype html>
@@ -248,6 +248,13 @@
 
         function handleHostIpChange(value) {
           // TODO: Invoke FlashObject with new host target.
+          var className = 'broadcast-link';
+          var elements = document.getElementsByClassName(className);
+          var length = elements ? elements.length : 0;
+          var index = 0;
+          for(index = 0; index < length; index++) {
+            elements[index].href = ['broadcast.jsp?host', value].join('=');
+          }
         }
         window.r5pro_registerIpChangeListener(handleHostIpChange);
         window.invokeViewStream = viewHandler;
