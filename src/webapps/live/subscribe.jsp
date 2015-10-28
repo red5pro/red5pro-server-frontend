@@ -1,12 +1,10 @@
+{{> jsp_header }}
 <%@ page import="org.springframework.context.ApplicationContext,
-          com.red5pro.server.secondscreen.net.NetworkUtil,
           org.springframework.web.context.WebApplicationContext,
           com.infrared5.red5pro.examples.service.LiveStreamListService,
-          java.util.List,
-          java.net.Inet4Address"%>
+          java.util.List"%>
 <%
   //LIVE streams page.
-  String ip =  NetworkUtil.getLocalIpAddress();
   String host = ip;
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
   LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
@@ -16,7 +14,7 @@
     ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
     ret.append("<h3 class=\"no-streams-entry\">No streams found</h3>\r\n");
     ret.append("</div>\r\n");
-    ret.append("<p>You can begin a Broadcast session by visiting the <a class=\"link\" href=\"broadcast.jsp?host=" + ip + "\" target=\"_blank\">Broadcast page</a>.</p>\r\n");
+    ret.append("<p>You can begin a Broadcast session by visiting the <a class=\"broadcast-link link\" href=\"broadcast.jsp?host=" + ip + "\" target=\"_blank\">Broadcast page</a>.</p>\r\n");
     ret.append("<p><em>Once a Broadcast session is started, return to this page to see the stream name listed.</em></p>");
   }
   else {
@@ -36,10 +34,9 @@
     }
     ret.append("</ul>\r\n");
     ret.append("</div>\r\n");
-    ret.append("<p>To begin your own Broadcast session, visit the <a class=\"red-text link\" href=\"broadcast.jsp?host=" + ip + "\">Broadcast page</a>!</p>\r\n");
+    ret.append("<p>To begin your own Broadcast session, visit the <a class=\"broadcast-link red-text link\" href=\"broadcast.jsp?host=" + ip + "\">Broadcast page</a>!</p>\r\n");
   }
 %>
-{{> jsp_header }}
 <!doctype html>
 <html lang="eng">
   <head>
@@ -126,7 +123,7 @@
       var xiSwfUrlStr = "swf/playerProductInstall.swf";
       var flashvars = {
         streamName: "streamName",
-        host: "<%=host %>"
+        host: "<%= host %>"
       };
       var params = {};
       params.quality = "high";
@@ -144,24 +141,6 @@
           flashvars, params, attributes);
       // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
       swfobject.createCSS("#flashContent", "display:block; text-align:left; padding-top: 10px;");
-
-      (function(window, document) {
-        var viewHandler;
-        function accessSWF() {
-          return document.getElementById("Subscriber");
-        }
-        viewHandler = function viewStream(value) {
-          var swf = accessSWF();
-          var container = document.getElementById("swf-stream-container");
-          var header = document.getElementById("viewing-header");
-          header.innerText = 'Viewing ' + value + '\'s stream.';
-          container.classList.remove('container-hidden');
-          container.classList.add('container-padding');
-          swf.viewStream(value);
-          container.scrollIntoView({block: 'start', behavior: 'smooth'});
-        };
-        window.invokeViewStream = viewHandler;
-       }(this, document));
   </script>
   </head>
   <body>
@@ -248,6 +227,40 @@
         </div>
       </div>
     </div>
+    <script>
+      (function(window, document) {
+
+        var viewHandler;
+        function accessSWF() {
+          return document.getElementById("Subscriber");
+        }
+
+        viewHandler = function viewStream(value) {
+          var swf = accessSWF();
+          var container = document.getElementById("swf-stream-container");
+          var header = document.getElementById("viewing-header");
+          header.innerText = 'Viewing ' + value + '\'s stream.';
+          container.classList.remove('container-hidden');
+          container.classList.add('container-padding');
+          swf.viewStream(value);
+          container.scrollIntoView({block: 'start', behavior: 'smooth'});
+        };
+
+        function handleHostIpChange(value) {
+          var className = 'broadcast-link';
+          var elements = document.getElementsByClassName(className);
+          var length = elements ? elements.length : 0;
+          var index = 0;
+          for(index = 0; index < length; index++) {
+            elements[index].href = ['broadcast.jsp?host', value].join('=');
+          }
+          accessSWF().resetHost(value);
+        }
+        window.r5pro_registerIpChangeListener(handleHostIpChange);
+        window.invokeViewStream = viewHandler;
+
+       }(this, document));
+    </script>
     {{> footer }}
   </body>
 </html>

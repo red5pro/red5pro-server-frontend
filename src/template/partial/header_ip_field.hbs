@@ -1,0 +1,42 @@
+<!-- view jsp_header for details on variables used. -->
+
+<!-- Display IP Address used through the page -->
+<div id="ip-field">
+  <% if (ipExists) { %>
+    <p><span class="black-text">Your server IP address is:</span>&nbsp;&nbsp;<span id="ip-address-field" class="red-text medium-font-size"><%= ip %></span></p>
+  <% } else { %>
+    <p><span class="black-text">Uh-Oh!!</span></p>
+  <% } %>
+  <p><a id="ip-overlay-button" class="white-text" href="#">Why would I need to know the server IP address?</a></p>
+  <p><a id="ip-incorrect-button" class="black-text" href="#">Not the correct IP address?</a></p>
+</div>
+
+<!-- Overlay explaining what the IP Address is used for. -->
+<div id="ip-overlay" class="hidden">
+  <p class="overlay-close-button"><a id="ip-overlay-close" href="#" class="red-text">Close</a></p>
+  <p>This IP address needs to be provided to applications integrated with the Red5 Pro SDKs.</p>
+  <p>If using the example projects from our <a id="header-github-link" class="link" href="http://github.com/red5pro" target="_blank">Github</a>, you will enter this IP into the <strong>Server</strong> input field of the Settings menu.</p>
+  <hr>
+  <p class="top-nudge"><a id="ip-overlay-ip-incorrect-button" href="#" class="red-text">Not the correct IP address?</a></p>
+</div>
+
+<!-- Overlay to allow User to update IP Address to be used. -->
+<div id="ip-address-overlay" class="hidden">
+  <p class="overlay-close-button"><a id="ip-overlay-close" href="#" class="red-text">Close</a></p>
+  <p class="black-text" style="font-weight: bold">Do you think the server IP address above is incorrect?</p>
+  <div>
+    <p>Select from the following suggestions:</p>
+    <table id="ip-suggestions-table">
+      <tbody><tr><td class="red-text">No suggestions.</tr></td>
+    </table>
+  </div>
+  <hr>
+  <p class="black-text"> Or enter in the correct address below:</p>
+  <p id="ip-input-error-field" class="hidden red-text">Invalid IP address.</p>
+  <input id="ip-address-input-field" type="text">
+  <button id="ip-address-input-submit">submit</button>
+</div>
+<script>
+{{> ip_address_script }}
+</script>
+

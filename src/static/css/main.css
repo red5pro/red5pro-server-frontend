@@ -124,6 +124,36 @@ a.link:hover {
   z-index: 1000;
 }
 
+#ip-address-overlay {
+  position: absolute;
+  width: 230px;
+  right: 20px;
+  top: 106px;
+  background-color: rgb(239, 239, 239);
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  box-shadow: 3px 3px 5px #e3e3e3;
+  padding: 20px;
+  z-index: 1001;
+}
+
+.overlay-close-button {
+  text-align: right;
+  margin-top:-14px;
+}
+.top-nudge {
+  padding-top: 14px;
+}
+#ip-suggestions-table {
+  width: 100%;
+  margin-bottom: 14px;
+}
+#ip-suggestions-table tr td {
+  border: 1px solid #aaa;
+  padding: 6px;
+  margin: 0;
+}
+
 .hidden {
   display: none;
 }

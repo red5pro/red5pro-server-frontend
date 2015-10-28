@@ -1,3 +1,76 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.net.Inet4Address"%>
 <%@ page import="com.red5pro.server.secondscreen.net.NetworkUtil"%>
+<%@ page import="java.io.*,java.util.regex.*,java.net.URL,java.nio.charset.Charset"%>
+<%
+  String cookieStr = "";
+  String cookieName = "storedIpAddress";
+  Pattern addressPattern = Pattern.compile("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$");
+
+  String ip = null;
+  String localIp = NetworkUtil.getLocalIpAddress();
+  boolean ipExists = false;
+
+  // Flip localIp to null if unknown.
+  localIp = addressPattern.matcher(localIp).find() ? localIp : null;
+
+  // First check if provided as a query parameter...
+  if(request.getParameter("host") != null) {
+    ip = request.getParameter("host");
+    ip = addressPattern.matcher(ip).find() ? ip : null;
+  }
+
+  Cookie cookie;
+  Cookie[] cookies = request.getCookies();
+
+  // If we have stored cookies check if already stored ip address by User.
+  if(ip == null && cookies != null) {
+    for(int i = 0; i < cookies.length; i++) {
+      cookie = cookies[i];
+      cookieStr += cookie.getName() + "=" + cookie.getValue() + "; ";
+      if(cookie.getName().equals(cookieName)) {
+        ip = cookie.getValue();
+        ip = addressPattern.matcher(ip).find() ? ip : null;
+        break;
+      }
+    }
+  }
+
+  // Is a valid IP address from stored IP by User:
+  if(ip == null) {
+
+    ip = localIp;
+
+    if(ip != null && addressPattern.matcher(ip).find()) {
+      // The IP returned from NetworkUtils is valid...
+    }
+    else {
+
+      // Invoke AWS service
+      URL whatismyip = new URL("http://checkip.amazonaws.com");
+      BufferedReader in = null;
+      try {
+        in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+        ip = in.readLine();
+      }
+      catch(Exception e) {
+        ip = null;
+      }
+      finally {
+        if (in != null) {
+          try {
+            in.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+
+      // If failure in AWS service and/or IP still null => flag to show alert.
+    }
+
+  }
+
+  ipExists = ip != null && !ip.isEmpty();
+%>
