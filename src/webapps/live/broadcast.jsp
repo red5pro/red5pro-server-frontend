@@ -49,7 +49,7 @@
       var params = {};
       params.quality = "high";
       params.bgcolor = "#ffffff";
-      params.allowscriptaccess = "sameDomain";
+      params.allowscriptaccess = "always";
       params.allowfullscreen = "true";
       var attributes = {};
       attributes.id = "Broadcaster";
@@ -143,10 +143,16 @@
     </div>
     <script>
       (function(window, document) {
+
+       function accessSWF() {
+          return document.getElementById("Broadcaster");
+        }
+
         function handleBroadcastIpChange(value) {
-          // TODO: Invoke FlashObject with new host target.
+          accessSWF().resetHost(value);
         }
         window.r5pro_registerIpChangeListener(handleBroadcastIpChange);
+
        }(this, document));
     </script>
     {{> footer }}

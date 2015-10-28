@@ -247,7 +247,6 @@
         };
 
         function handleHostIpChange(value) {
-          // TODO: Invoke FlashObject with new host target.
           var className = 'broadcast-link';
           var elements = document.getElementsByClassName(className);
           var length = elements ? elements.length : 0;
@@ -255,6 +254,7 @@
           for(index = 0; index < length; index++) {
             elements[index].href = ['broadcast.jsp?host', value].join('=');
           }
+          accessSWF().resetHost(value);
         }
         window.r5pro_registerIpChangeListener(handleHostIpChange);
         window.invokeViewStream = viewHandler;
