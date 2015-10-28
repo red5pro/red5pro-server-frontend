@@ -4,6 +4,7 @@
     if(request.getParameter("host")!=null) {
       host=request.getParameter("host");
     }
+    ip = host;
 %>
 <!doctype html>
 <html lang="eng">
