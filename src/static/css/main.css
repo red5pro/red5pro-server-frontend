@@ -54,6 +54,10 @@ hr.top-padded-rule {
   margin-top: 40px;
 }
 
+.left {
+  float: left;
+}
+
 .black-text {
   color: #444;
 }
@@ -188,6 +192,11 @@ a.link:hover {
 
 .red5pro-header {
   font-size: 32px;
+}
+
+.red5pro-header.registration-mark {
+  font-size: 16px;
+  vertical-align: text-top;
 }
 
 .header-bar {
