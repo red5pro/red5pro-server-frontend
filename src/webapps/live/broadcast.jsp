@@ -1,11 +1,7 @@
-<%@ page import="java.net.InetAddress"%>
-<%
-    String host="localhost";
-    if(request.getParameter("host")!=null) {
-      host=request.getParameter("host");
-    }
-%>
 {{> jsp_header }}
+<%
+  String host = ip;
+%>
 <!doctype html>
 <html lang="eng">
   <head>
@@ -48,12 +44,12 @@
       // To use express install, set to playerProductInstall.swf, otherwise the empty string.
       var xiSwfUrlStr = "swf/playerProductInstall.swf";
       var flashvars = {
-        host: "<%=host %>"
+        host: "<%= host %>"
       };
       var params = {};
       params.quality = "high";
       params.bgcolor = "#ffffff";
-      params.allowscriptaccess = "sameDomain";
+      params.allowscriptaccess = "always";
       params.allowfullscreen = "true";
       var attributes = {};
       attributes.id = "Broadcaster";
@@ -145,6 +141,20 @@
         </div>
       </div>
     </div>
+    <script>
+      (function(window, document) {
+
+       function accessSWF() {
+          return document.getElementById("Broadcaster");
+        }
+
+        function handleBroadcastIpChange(value) {
+          accessSWF().resetHost(value);
+        }
+        window.r5pro_registerIpChangeListener(handleBroadcastIpChange);
+
+       }(this, document));
+    </script>
     {{> footer }}
    </body>
 </html>

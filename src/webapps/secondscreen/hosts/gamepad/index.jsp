@@ -8,87 +8,6 @@
     <title>Second Screen GamePad Controller Example with the Red5 Pro Server!</title>
     <link rel="stylesheet" type="text/css" href="style/main.css">
     <script src="lib/host/secondscreen-host.min.js"></script>
-    <script>
-            (function(window) {
-              var timestamp = new Date().getTime();
-              var secondscreenHost = window.secondscreenHost.noConflict();
-              var config = {
-                name: "GamePad Example",
-                maxPlayers: 10,
-                registryUrl: "ws://<%= NetworkUtil.getLocalIpAddress()%>:6262/secondscreen",
-                appId: "secondscreen",
-                swfobjectUrl: 'lib/host/swf/swfobject.js',
-                swfUrl: "lib/host/swf/secondscreenHost.swf",
-                minimumVersion: {
-                  major: 0,
-                  minor: 0
-                },
-                controlMode: secondscreenHost.ControlModes.GAMEPAD,
-                design: {
-                  orientation: "portrait",
-                  touchEnabled: false,
-                  accelerometerEnabled: false,
-                  layout:[{
-                    type:   "image",
-                    src:    'images/background.png',
-                    x:      0,
-                    y:      0,
-                    width:  320,
-                    height: 480
-                  }, {
-                    type:       "button",
-                    id:         'pushButton',
-                    srcUp:      'images/button-up.png',
-                    srcDown:    'images/button-down.png',
-                    x:          (320-160)/2-3,
-                    y:          (480-160)/2,
-                    width:      160,
-                    height:     160
-                  }]
-                },
-                error: function(error) {
-                  secondscreenHost.log.error('Registry connection error: ' + error);
-                },
-                success: function() {
-                  secondscreenHost.log.info('Registry connected.');
-                }
-              };
-              secondscreenHost.setLogLevel(secondscreenHost.LogLevels.INFO);
-              secondscreenHost.start(config);
-
-              secondscreenHost.on(secondscreenHost.EventTypes.SHOW_SLOT_COLOR, function(e) {
-                var slot = document.getElementById('slot');
-                slot.style.background = e.color;
-              });
-
-              secondscreenHost.on(secondscreenHost.EventTypes.DEVICE_CONNECTED, function (e){
-                print("<p class=\"red-text medium-font-size\">Device Donnected (id, name):<br>&nbsp;&nbsp;" + e.device.id + ', ' + e.device.name + "</p>");
-              });
-
-              secondscreenHost.on(secondscreenHost.EventTypes.DEVICE_DISCONNECTED, function (e){
-                print("<p class=\"red-text medium-font-size\">Device Disconnected (id, name):<br>&nbsp;&nbsp;" + e.device.id + ', ' + e.device.name + "</p>");
-              });
-
-              secondscreenHost.on(secondscreenHost.EventTypes.BUTTON_UP, function(e) {
-                print('Event.Message: (Button Up) ' +
-                        '<br>&nbsp;&nbsp;From Button.id: ' + e.id +
-                        '<br>&nbsp;&nbsp;On Device.id: ' + e.device.id);
-              });
-
-              secondscreenHost.on(secondscreenHost.EventTypes.BUTTON_DOWN, function(e) {
-                print('Event.Message: (Button Down) ' +
-                        '<br>&nbsp;&nbsp;From Button.id: ' + e.id +
-                        '<br>&nbsp;&nbsp;On Device.id: ' + e.device.id);
-              });
-
-              function print(message) {
-                var p = document.createElement('p');
-                p.innerHTML = message;
-                document.getElementById('secondscreen-example-container').appendChild(p);
-              }
-
-            }(window));
-    </script>
     <style>
       #code-example {
         font-size: 12px;
@@ -169,6 +88,94 @@
         </div>
       </div>
     </div>
-    {{> footer logo_url='../../images/logo_68.png' }}
+    <script>
+            (function(window) {
+              var timestamp = new Date().getTime();
+              var secondscreenHost = window.secondscreenHost.noConflict();
+              var config = {
+                name: 'GamePad Example',
+                maxPlayers: 10,
+                registryAddress: '<%= ip %>',
+                swfobjectUrl: 'lib/host/swf/swfobject.js',
+                swfUrl: "lib/host/swf/secondscreenHost.swf",
+                minimumVersion: {
+                  major: 0,
+                  minor: 0
+                },
+                controlMode: secondscreenHost.ControlModes.GAMEPAD,
+                design: {
+                  orientation: "portrait",
+                  touchEnabled: false,
+                  accelerometerEnabled: false,
+                  layout:[{
+                    type:   "image",
+                    src:    'images/background.png',
+                    x:      0,
+                    y:      0,
+                    width:  320,
+                    height: 480
+                  }, {
+                    type:       "button",
+                    id:         'pushButton',
+                    srcUp:      'images/button-up.png',
+                    srcDown:    'images/button-down.png',
+                    x:          (320-160)/2-3,
+                    y:          (480-160)/2,
+                    width:      160,
+                    height:     160
+                  }]
+                },
+                error: function(error) {
+                  secondscreenHost.log.error('Registry connection error: ' + error);
+                },
+                success: function() {
+                  secondscreenHost.log.info('Registry connected.');
+                }
+              };
+              secondscreenHost.setLogLevel(secondscreenHost.LogLevels.INFO);
+              secondscreenHost.start(config);
+
+              secondscreenHost.on(secondscreenHost.EventTypes.SHOW_SLOT_COLOR, function(e) {
+                var slot = document.getElementById('slot');
+                slot.style.background = e.color;
+              });
+
+              secondscreenHost.on(secondscreenHost.EventTypes.DEVICE_CONNECTED, function (e){
+                print("<p class=\"red-text medium-font-size\">Device Donnected (id, name):<br>&nbsp;&nbsp;" + e.device.id + ', ' + e.device.name + "</p>");
+              });
+
+              secondscreenHost.on(secondscreenHost.EventTypes.DEVICE_DISCONNECTED, function (e){
+                print("<p class=\"red-text medium-font-size\">Device Disconnected (id, name):<br>&nbsp;&nbsp;" + e.device.id + ', ' + e.device.name + "</p>");
+              });
+
+              secondscreenHost.on(secondscreenHost.EventTypes.BUTTON_UP, function(e) {
+                print('Event.Message: (Button Up) ' +
+                        '<br>&nbsp;&nbsp;From Button.id: ' + e.id +
+                        '<br>&nbsp;&nbsp;On Device.id: ' + e.device.id);
+              });
+
+              secondscreenHost.on(secondscreenHost.EventTypes.BUTTON_DOWN, function(e) {
+                print('Event.Message: (Button Down) ' +
+                        '<br>&nbsp;&nbsp;From Button.id: ' + e.id +
+                        '<br>&nbsp;&nbsp;On Device.id: ' + e.device.id);
+              });
+
+              function print(message) {
+                var p = document.createElement('p');
+                p.innerHTML = message;
+                document.getElementById('secondscreen-example-container').appendChild(p);
+              }
+
+              function handleSecondScreenHostIpChange(value) {
+                var slot = document.getElementById('slot');
+                secondscreenHost.stop();
+                slot.style.backgroundColor = "#000";
+                config.registryAddress = value;
+                secondscreenHost.start(config);
+              }
+              window.r5pro_registerIpChangeListener(handleSecondScreenHostIpChange);
+
+            }(window));
+    </script>    {{> footer logo_url='../../images/logo_68.png' }}
   </body>
 </html>

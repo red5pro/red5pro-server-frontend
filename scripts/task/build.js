@@ -54,6 +54,16 @@ module.exports = function(srcDir, distDir, gulp) {
         .pipe(gulp.dest([webappsDist, webappDirName].join(path.sep)))
         .on('end', cb);
   };
+  var generateWebappsPage = function(directory, targetFile, callback) {
+    return function() {
+      gutil.log('Generating Webapps Page: ' + [directory, targetFile].join(path.sep));
+      gulp.src([webappsDir, directory, targetFile].join(path.sep))
+          .pipe(handlebars({}, options))
+          .pipe(rename(targetFile))
+          .pipe(gulp.dest([webappsDist, directory].join(path.sep)))
+          .on('end', callback);
+    };
+  }
 
   gulp.task('clean-build', function(cb) {
     var generate = function() {
@@ -87,7 +97,7 @@ module.exports = function(srcDir, distDir, gulp) {
   });
 
   gulp.task('copy-contents-root', ['copy-src'], function(cb) {
-    copyWebappContents('root', 'root', ['index.jsp'], cb);
+    copyWebappContents('root', 'root', ['index.jsp', 'license.jsp'], cb);
   });
 
   gulp.task('copy-contents-live', ['copy-src'], function(cb) {
@@ -120,11 +130,9 @@ module.exports = function(srcDir, distDir, gulp) {
   });
 
   gulp.task('build-root', ['copy-static-root'], function(cb) {
-    gulp.src([webappsDir, 'root', 'index.jsp'].join(path.sep))
-        .pipe(handlebars({}, options))
-        .pipe(rename('index.jsp'))
-        .pipe(gulp.dest([webappsDist, 'root'].join(path.sep)))
-        .on('end', cb);
+    // [2105-10-23] Put on hold.
+    //    var licensePage = generateWebappsPage('root', 'license.jsp', cb);
+    generateWebappsPage('root', 'index.jsp', cb)();
   });
 
   gulp.task('build-live', ['copy-static-live'], function(cb) {
@@ -143,11 +151,7 @@ module.exports = function(srcDir, distDir, gulp) {
   });
 
   gulp.task('build-secondscreen', ['copy-static-secondscreen'], function(cb) {
-    gulp.src([webappsDir, 'secondscreen', 'index.jsp'].join(path.sep))
-        .pipe(handlebars({}, options))
-        .pipe(rename('index.jsp'))
-        .pipe(gulp.dest([webappsDist, 'secondscreen'].join(path.sep)))
-        .on('end', cb);
+    generateWebappsPage('secondscreen', 'index.jsp', cb)();
   });
 
   gulp.task('build-secondscreen-examples', ['build-secondscreen'], function(cb) {
