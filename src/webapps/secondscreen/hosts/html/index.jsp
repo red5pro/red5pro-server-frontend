@@ -112,9 +112,9 @@
                     state = e.state;
 
                 if(message === 'ready') {
-                  e.device.sendMessageToControls("test");
-                  e.device.sendMessageToControls("testing", 1, 2, 3);
-                  e.device.sendMessageToControls("testing", 1.126, "52 skidoo", [1, 2, 3]);
+                  e.device.send("test");
+                  e.device.send("testing", 1, 2, 3);
+                  e.device.send("testing", 1.126, "52 skidoo", [1, 2, 3]);
                 }
 
                 if(state !== undefined) {
@@ -135,7 +135,7 @@
               }
 
               window.notifyClient = function(type, message) {
-                secondscreenHost.allDevices().sendMessageToControls('state', {
+                secondscreenHost.allDevices().send('state', {
                   state: type,
                   message: message
                 });
