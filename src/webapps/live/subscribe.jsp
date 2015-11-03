@@ -48,6 +48,16 @@
     {{> resources }}
     <title>Stream Subscription with the Red5 Pro Server!</title>
     <style>
+      object:focus {
+        outline:none;
+      }
+
+      #flashContent {
+        border-radius: 5px;
+        background-color: #e3e3e3;
+        padding: 10px;
+      }
+
       #live-page-subcontent {
         text-align: center;
         position: relative;
@@ -138,13 +148,18 @@
       attributes.id = "Subscriber";
       attributes.name = "Subscriber";
       attributes.align = "middle";
-      swfobject.embedSWF(
-          "Subscriber.swf", "flashContent",
-          "340", "280",
-          swfVersionStr, xiSwfUrlStr,
-          flashvars, params, attributes);
-      // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
-      swfobject.createCSS("#flashContent", "display:block; text-align:left; padding-top: 10px;");
+      if(swfobject.hasFlashPlayerVersion("11.1.0")) {
+        swfobject.embedSWF(
+            "Subscriber.swf", "flashContent",
+            "340", "280",
+            swfVersionStr, xiSwfUrlStr,
+            flashvars, params, attributes);
+        // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
+        swfobject.createCSS("#flashContent", "display:block; text-align:left; padding-top: 10px;");
+      }
+      else {
+        // nada
+      }
   </script>
   </head>
   <body>

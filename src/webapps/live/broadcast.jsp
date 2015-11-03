@@ -14,7 +14,9 @@
       }
 
       #flashContent {
-        display:none;
+        border-radius: 5px;
+        background-color: #e3e3e3;
+        padding: 10px;
       }
 
       #live-page-subcontent {
@@ -55,13 +57,19 @@
       attributes.id = "Broadcaster";
       attributes.name = "Broadcaster";
       attributes.align = "middle";
-      swfobject.embedSWF(
-          "Broadcaster.swf", "flashContent",
-          "100%", "716",
-          swfVersionStr, xiSwfUrlStr,
-          flashvars, params, attributes);
-      // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
-      swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+      if(swfobject.hasFlashPlayerVersion("11.1.0")) {
+        swfobject.embedSWF(
+            "Broadcaster.swf", "flashContent",
+            "100%", "716",
+            swfVersionStr, xiSwfUrlStr,
+            flashvars, params, attributes);
+        // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
+        swfobject.createCSS("#flashContent", "display:block; text-align:left; padding: 0; background-color: #ffffff");
+      }
+      else {
+        // nada.
+
+      }
   </script>
   </head>
   <body>
