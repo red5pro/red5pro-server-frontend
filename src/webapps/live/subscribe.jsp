@@ -10,6 +10,7 @@
   LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
   List<String> names = service.getLiveStreams();
   StringBuffer ret = new StringBuffer();
+  String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
   if(names.size() == 0) {
     ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
     ret.append("<h3 class=\"no-streams-entry\">No streams found</h3>\r\n");
@@ -28,6 +29,9 @@
             "<a class=\"medium-font-size link red-text\" href=\"rtsp://" + ip + ":8554/live/" + streamName + "\">RTSP</a>" +
             "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
             "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>" +
+          "</p>\r\n" +
+          "<p>\r\n" +
+            "<span class=\"black-text\">Open in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</span>\r\n" +
           "</p>\r\n" +
        "</li>\r\n";
       ret.append(listEntry);
