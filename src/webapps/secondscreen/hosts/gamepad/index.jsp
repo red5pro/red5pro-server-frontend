@@ -144,7 +144,7 @@
               });
 
               secondscreenHost.on(secondscreenHost.EventTypes.DEVICE_CONNECTED, function (e){
-                print("<p class=\"red-text medium-font-size\">Device Donnected (id, name):<br>&nbsp;&nbsp;" + e.device.id + ', ' + e.device.name + "</p>");
+                print("<p class=\"red-text medium-font-size\">Device Connected (id, name):<br>&nbsp;&nbsp;" + e.device.id + ', ' + e.device.name + "</p>");
               });
 
               secondscreenHost.on(secondscreenHost.EventTypes.DEVICE_DISCONNECTED, function (e){
