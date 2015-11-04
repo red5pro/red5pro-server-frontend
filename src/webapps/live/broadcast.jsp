@@ -14,7 +14,9 @@
       }
 
       #flashContent {
-        display:none;
+        border-radius: 5px;
+        background-color: #e3e3e3;
+        padding: 10px;
       }
 
       #live-page-subcontent {
@@ -55,13 +57,19 @@
       attributes.id = "Broadcaster";
       attributes.name = "Broadcaster";
       attributes.align = "middle";
-      swfobject.embedSWF(
-          "Broadcaster.swf", "flashContent",
-          "100%", "716",
-          swfVersionStr, xiSwfUrlStr,
-          flashvars, params, attributes);
-      // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
-      swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+      if(swfobject.hasFlashPlayerVersion("11.1.0")) {
+        swfobject.embedSWF(
+            "Broadcaster.swf", "flashContent",
+            "100%", "716",
+            swfVersionStr, xiSwfUrlStr,
+            flashvars, params, attributes);
+        // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
+        swfobject.createCSS("#flashContent", "display:block; text-align:left; padding: 0; background-color: #ffffff");
+      }
+      else {
+        // nada.
+
+      }
   </script>
   </head>
   <body>
@@ -72,10 +80,13 @@
       </div>
       <div id="content-section">
         <div>
-          <div id="header-field header-subcontent">
-            <a class="red5pro-header-link" href="/">
-              <img class="red5pro-logo" src="images/logo_68.png">&nbsp;<span class="red5pro-header black-text">RED5</span><span class="red5pro-header red-text">PRO</span>
-            </a>
+          <div class="clear-fix">
+            <p class="left">
+                <a class="red5pro-header-link" href="/">
+                  <img class="red5pro-logo" src="images/logo_68.png">&nbsp;<span class="red5pro-header black-text">RED5</span>&nbsp;&nbsp;<span class="red5pro-header red-text">PRO</span>
+               </a>
+            </p>
+            <p class="left" style="padding-left: 6px; padding-top: 5px;"><span class="red5pro-header registration-mark">&reg;</span></p>
           </div>
           <h2 class="tag-line">LIVE BROADCAST FOR ANY SCREEN</h2>
         </div>
