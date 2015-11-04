@@ -54,6 +54,10 @@ hr.top-padded-rule {
   margin-top: 40px;
 }
 
+.left {
+  float: left;
+}
+
 .black-text {
   color: #444;
 }
@@ -79,6 +83,15 @@ hr.top-padded-rule {
   zoom: 1;
 }
 
+.clear-fix:after {
+    clear: both;
+}
+
+.clear-fix:before, .clear-fix:after {
+    display: table;
+    content: " ";
+}
+
 a.link {
   color: rgb(227, 25, 0);
   text-decoration: none;
@@ -87,9 +100,6 @@ a.link {
 a.link:hover {
   text-decoration: underline;
   color: rgb(149, 0, 0);
-}
-
-.header-subcontent {
 }
 
 #header-field {
@@ -188,6 +198,11 @@ a.link:hover {
 
 .red5pro-header {
   font-size: 32px;
+}
+
+.red5pro-header.registration-mark {
+  font-size: 16px;
+  vertical-align: text-top;
 }
 
 .header-bar {
