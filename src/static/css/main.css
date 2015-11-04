@@ -83,6 +83,15 @@ hr.top-padded-rule {
   zoom: 1;
 }
 
+.clear-fix:after {
+    clear: both;
+}
+
+.clear-fix:before, .clear-fix:after {
+    display: table;
+    content: " ";
+}
+
 a.link {
   color: rgb(227, 25, 0);
   text-decoration: none;
@@ -91,9 +100,6 @@ a.link {
 a.link:hover {
   text-decoration: underline;
   color: rgb(149, 0, 0);
-}
-
-.header-subcontent {
 }
 
 #header-field {
