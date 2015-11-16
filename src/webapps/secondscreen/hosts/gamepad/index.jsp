@@ -41,13 +41,25 @@
             <p>To connect and communicate with this page, open a native application integrated with the <a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Second Screen SDKs</a> on your favorite device to turn it into a <span class="red-text">Second Screen Client</span>!</p>
           </div>
           <div id="secondscreen-example-container">
-            <div id="version-field"></div>
+            <div id="version-field">Red5 Pro Second Screen Not Loaded.</div>
             <div id="slot"></div>
           </div>
           <script>
-            (function(window, document, host) {
-              document.getElementById('version-field').innerText = host.versionStr();
-             }(this, document, window.secondscreenHost.noConflict()));
+            (function(window, document) {
+              var host;
+              var checkId;
+              var checkForHost = function() {
+                clearTimeout(checkId);
+                if(typeof window.secondscreenHost !== 'undefined') {
+                  host = window.secondscreenHost.noConflict();
+                  document.getElementById('version-field').innerText = host.versionStr();
+                }
+                else {
+                  checkId = setTimeout(checkForHost, 100);
+                }
+              }
+              checkForHost();
+             }(this, document));
           </script>
           <div style="width: 100%; text-align: right;">
             <p><a class="red-text link" href="../downloads/gamepad.zip">Download</a> this example.</p>

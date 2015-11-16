@@ -42,15 +42,27 @@
           </div>
           <div id="secondscreen-example-container">
             <div id="secondscreen-hud">
-              <div id="version-field"></div>
+              <div id="version-field">Red5 Pro Second Screen Not Loaded.</div>
               <div id="slot"></div>
             </div>
             <div id="dpad-position-container"></div>
           </div>
           <script>
-            (function(window, document, host) {
-              document.getElementById('version-field').innerText = host.versionStr();
-             }(this, document, window.secondscreenHost.noConflict()));
+            (function(window, document) {
+              var host;
+              var checkId;
+              var checkForHost = function() {
+                clearTimeout(checkId);
+                if(typeof window.secondscreenHost !== 'undefined') {
+                  host = window.secondscreenHost.noConflict();
+                  document.getElementById('version-field').innerText = host.versionStr();
+                }
+                else {
+                  checkId = setTimeout(checkForHost, 100);
+                }
+              }
+              checkForHost();
+             }(this, document));
           </script>
           <div style="width: 100%; text-align: right;">
             <p><a class="red-text link" href="../downloads/dpad.zip">Download</a> this example.</p>
@@ -65,8 +77,8 @@
       type:       <span class="red-text">'dpad'</span>,
       x:          <span class="code-blue-text">0</span>,
       y:          <span class="code-blue-text">0</span>,
-      width:      <span class="code-blue-text">320</span>,
-      height:     <span class="code-blue-text">480</span>
+      width:      <span class="code-blue-text">240</span>,
+      height:     <span class="code-blue-text">240</span>
     }]
   }</code></pre>
             </div>
@@ -104,10 +116,10 @@
                   orientation: "portrait",
                   layout: [{
                     type: "dpad",
-                    x:      0,
-                    y:      0,
-                    width:  320,
-                    height: 480
+                    x:      (320-240)*0.5,
+                    y:      (480-240)*0.5,
+                    width:  240,
+                    height: 240
                   }]
                 },
                 error: function(error) {
