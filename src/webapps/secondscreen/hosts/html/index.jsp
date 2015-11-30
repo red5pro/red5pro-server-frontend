@@ -10,7 +10,7 @@
     <script src="lib/host/secondscreen-host.min.js"></script>
   </head>
   <body>
-    {{> header logo_url='../../images/logo_68.png' }}
+    {{> header logo_url='../../images/red5pro_logo.svg' }}
     <div class="container main-container clear-fix">
       <div id="menu-section">
         {{> menu }}
@@ -20,10 +20,9 @@
           <div class="clear-fix">
             <p class="left">
                 <a class="red5pro-header-link" href="/">
-                  <img class="red5pro-logo" src="../../images/logo_68.png">&nbsp;<span class="red5pro-header black-text">RED5</span>&nbsp;&nbsp;<span class="red5pro-header red-text">PRO</span>
+                  <img class="red5pro-logo-page" src="../../images/red5pro_logo.svg">
                </a>
             </p>
-            <p class="left" style="padding-left: 6px; padding-top: 5px;"><span class="red5pro-header registration-mark">&reg;</span></p>
           </div>
           <h2 class="tag-line">SECOND SCREEN HTML CONTROLLER</h2>
         </div>
@@ -33,7 +32,7 @@
             <p>To connect and communicate with this page, open a native application integrated with the <a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Second Screen SDKs</a> on your favorite device to turn it into a <span class="red-text">Second Screen Client</span>!</p>
           </div>
           <div id="secondscreen-example-container">
-            <div id="version-field"></div>
+            <div id="version-field">Red5 Pro Second Screen Not loaded.</div>
             <div id="slot"></div>
             <p id="sendForm">
               <input type="text" id="sendInput" value="Hello, World!"></input>
@@ -41,9 +40,21 @@
             </p>
           </div>
           <script>
-            (function(window, document, host) {
-              document.getElementById('version-field').innerText = host.versionStr();
-             }(this, document, window.secondscreenHost.noConflict()));
+            (function(window, document) {
+              var host;
+              var checkId;
+              var checkForHost = function() {
+                clearTimeout(checkId);
+                if(typeof window.secondscreenHost !== 'undefined') {
+                  host = window.secondscreenHost.noConflict();
+                  document.getElementById('version-field').innerText = host.versionStr();
+                }
+                else {
+                  checkId = setTimeout(checkForHost, 100);
+                }
+              }
+              checkForHost();
+             }(this, document));
           </script>
           <div style="width: 100%; text-align: right;">
             <p><a class="red-text link" href="../downloads/html.zip">Download</a> this example.</p>
@@ -155,6 +166,6 @@
 
       }(window));
     </script>
-   {{> footer logo_url='../../images/logo_68.png' }}
+   {{> footer logo_url='../../images/red5pro_logo.svg' }}
   </body>
 </html>

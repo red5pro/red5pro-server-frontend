@@ -18,7 +18,7 @@
     </style>
   </head>
   <body>
-    {{> header logo_url='../../images/logo_68.png' }}
+    {{> header logo_url='../../images/red5pro_logo.svg' }}
     <div class="container main-container clear-fix">
       <div id="menu-section">
         {{> menu }}
@@ -28,10 +28,9 @@
           <div class="clear-fix">
             <p class="left">
                 <a class="red5pro-header-link" href="/">
-                  <img class="red5pro-logo" src="../../images/logo_68.png">&nbsp;<span class="red5pro-header black-text">RED5</span>&nbsp;&nbsp;<span class="red5pro-header red-text">PRO</span>
+                  <img class="red5pro-logo-page" src="../../images/red5pro_logo.svg">
                </a>
             </p>
-            <p class="left" style="padding-left: 6px; padding-top: 5px;"><span class="red5pro-header registration-mark">&reg;</span></p>
           </div>
           <h2 class="tag-line">SECOND SCREEN DPAD CONTROLLER</h2>
         </div>
@@ -42,15 +41,27 @@
           </div>
           <div id="secondscreen-example-container">
             <div id="secondscreen-hud">
-              <div id="version-field"></div>
+              <div id="version-field">Red5 Pro Second Screen Not Loaded.</div>
               <div id="slot"></div>
             </div>
             <div id="dpad-position-container"></div>
           </div>
           <script>
-            (function(window, document, host) {
-              document.getElementById('version-field').innerText = host.versionStr();
-             }(this, document, window.secondscreenHost.noConflict()));
+            (function(window, document) {
+              var host;
+              var checkId;
+              var checkForHost = function() {
+                clearTimeout(checkId);
+                if(typeof window.secondscreenHost !== 'undefined') {
+                  host = window.secondscreenHost.noConflict();
+                  document.getElementById('version-field').innerText = host.versionStr();
+                }
+                else {
+                  checkId = setTimeout(checkForHost, 100);
+                }
+              }
+              checkForHost();
+             }(this, document));
           </script>
           <div style="width: 100%; text-align: right;">
             <p><a class="red-text link" href="../downloads/dpad.zip">Download</a> this example.</p>
@@ -65,8 +76,8 @@
       type:       <span class="red-text">'dpad'</span>,
       x:          <span class="code-blue-text">0</span>,
       y:          <span class="code-blue-text">0</span>,
-      width:      <span class="code-blue-text">320</span>,
-      height:     <span class="code-blue-text">480</span>
+      width:      <span class="code-blue-text">240</span>,
+      height:     <span class="code-blue-text">240</span>
     }]
   }</code></pre>
             </div>
@@ -104,10 +115,10 @@
                   orientation: "portrait",
                   layout: [{
                     type: "dpad",
-                    x:      0,
-                    y:      0,
-                    width:  320,
-                    height: 480
+                    x:      (320-240)*0.5,
+                    y:      (480-240)*0.5,
+                    width:  240,
+                    height: 240
                   }]
                 },
                 error: function(error) {
@@ -193,6 +204,6 @@
 
             }(window));
     </script>
-    {{> footer logo_url='../../images/logo_68.png' }}
+    {{> footer logo_url='../../images/red5pro_logo.svg' }}
   </body>
 </html>

@@ -41,15 +41,14 @@
       </div>
       <div id="content-section">
         <div>
-          <div class="clear-fix">
+           <div class="clear-fix">
             <p class="left">
                 <a class="red5pro-header-link" href="/">
-                  <img class="red5pro-logo" src="images/logo_68.png">&nbsp;<span class="red5pro-header black-text">RED5</span>&nbsp;&nbsp;<span class="red5pro-header red-text">PRO</span>
+                  <img class="red5pro-logo-page" src="images/red5pro_logo.svg">
                </a>
             </p>
-            <p class="left" style="padding-left: 6px; padding-top: 5px;"><span class="red5pro-header registration-mark">&reg;</span></p>
           </div>
-          <h2 class="tag-line">SECOND SCREEN EXPERIENCES</h2>
+         <h2 class="tag-line">SECOND SCREEN EXPERIENCES</h2>
         </div>
         <div id="secondscreen-page-subcontent" class="clear-fix">
           <div id="secondscreen-image-container">
