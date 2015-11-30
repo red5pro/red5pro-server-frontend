@@ -171,20 +171,20 @@ a.link:hover {
   display: block;
 }
 
-.red5pro-logo {
+.red5pro-logo-page {
+  margin-left: -12px;
+}
+
+.red5pro-logo-header {
   display: inline-block;
-  width: 32px;
-  height: 32px;
+  width: 205px;
   position: relative;
-  box-sizing: content-box;
-  padding-right: 6px;
-  vertical-align: sub;
+  padding-top: 12px;
 }
 
 .red5pro-logo-footer {
-  width: 16px;
-  height: 16px;
-  margin: -2px 2px -2px 5px;
+  width: 100px;
+  margin: -5px 0px -3px -5px;
 }
 
 .red5pro-header-link {

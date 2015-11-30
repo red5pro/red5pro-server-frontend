@@ -18,7 +18,7 @@
     </style>
   </head>
   <body>
-    {{> header logo_url='../../images/logo_68.png' }}
+    {{> header logo_url='../../images/red5pro_logo.svg' }}
     <div class="container main-container clear-fix">
       <div id="menu-section">
         {{> menu }}
@@ -28,10 +28,9 @@
           <div class="clear-fix">
             <p class="left">
                 <a class="red5pro-header-link" href="/">
-                  <img class="red5pro-logo" src="../../images/logo_68.png">&nbsp;<span class="red5pro-header black-text">RED5</span>&nbsp;&nbsp;<span class="red5pro-header red-text">PRO</span>
+                  <img class="red5pro-logo-page" src="../../images/red5pro_logo.svg">
                </a>
             </p>
-            <p class="left" style="padding-left: 6px; padding-top: 5px;"><span class="red5pro-header registration-mark">&reg;</span></p>
           </div>
           <h2 class="tag-line">SECOND SCREEN GAMEPAD CONTROLLER</h2>
         </div>
@@ -191,6 +190,6 @@
               window.r5pro_registerIpChangeListener(handleSecondScreenHostIpChange);
 
             }(window));
-    </script>    {{> footer logo_url='../../images/logo_68.png' }}
+    </script>    {{> footer logo_url='../../images/red5pro_logo.svg' }}
   </body>
 </html>
