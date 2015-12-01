@@ -28,17 +28,17 @@
             "<span class=\"black-text\">View <strong>" + streamName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
             "<a class=\"medium-font-size link red-text\" href=\"rtsp://" + ip + ":8554/live/" + streamName + "\">RTSP</a>" +
             "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>" +
+            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>\r\n" +
           "</p>\r\n" +
           "<p>\r\n" +
-            "<span class=\"black-text\">Open in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</span>\r\n" +
+            "<span class=\"black-text\">Open in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
           "</p>\r\n" +
        "</li>\r\n";
       ret.append(listEntry);
     }
     ret.append("</ul>\r\n");
     ret.append("</div>\r\n");
-    ret.append("<p>To begin your own Broadcast session, visit the <a class=\"broadcast-link red-text link\" href=\"broadcast.jsp?host=" + ip + "\">Broadcast page</a>!</p>\r\n");
+    ret.append("<p>To begin your own Broadcast session, visit the <a class=\"broadcast-link link\" href=\"broadcast.jsp?host=" + ip + "\">Broadcast page</a>!</p>\r\n");
   }
 %>
 <!doctype html>
