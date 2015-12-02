@@ -15,6 +15,9 @@
         <bean id="scopeServiceResolver" class="org.red5.server.service.ScopeServiceResolver"/>
         <bean id="handlerServiceResolver" class="org.red5.server.service.HandlerServiceResolver"/>
         <bean id="contextServiceResolver" class="org.red5.server.service.ContextServiceResolver"/>
+        <!-- Uncomment as part of the clustering configuration
+        <bean id="clusterServiceResolver" class="com.red5pro.cluster.plugin.ClusterServiceResolver"/>
+         -->
       </list>
     </property>
   </bean>
