@@ -11,6 +11,26 @@
 		<param-name>webAppRootKey</param-name>
 		<param-value>/app_name</param-value>
 	</context-param>
+	
+    <!-- HLS served from RAM -->
+	<servlet>
+        <servlet-name>hls</servlet-name>
+        <servlet-class>com.red5pro.stream.transform.mpegts.server.TSServlet</servlet-class>
+        <load-on-startup>-1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>hls</servlet-name>
+        <url-pattern>*.m3u8</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>hls2</servlet-name>
+        <servlet-class>com.red5pro.stream.transform.mpegts.server.TSServlet</servlet-class>
+        <load-on-startup>-1</load-on-startup>
+    </servlet>
+     <servlet-mapping>
+        <servlet-name>hls2</servlet-name>
+        <url-pattern>*.ts</url-pattern>
+    </servlet-mapping>
      
    	<servlet>
 		<servlet-name>rtmpt</servlet-name>
