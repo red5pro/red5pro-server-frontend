@@ -3,7 +3,20 @@
 	 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
 	<display-name>root</display-name>
+	
+   <servlet>
+        <servlet-name>cluster</servlet-name>
+        <servlet-class>
+            com.red5pro.cluster.plugin.agent.ClusterWebService
+        </servlet-class>
+        <load-on-startup>-1</load-on-startup>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>cluster</servlet-name>
+        <url-pattern>/cluster</url-pattern>
+    </servlet-mapping>
+    
 	<servlet>
 		<servlet-name>gateway</servlet-name>
 		<servlet-class>
