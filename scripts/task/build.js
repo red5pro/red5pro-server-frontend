@@ -91,7 +91,7 @@ module.exports = function(srcDir, distDir, gulp) {
   });
 
   gulp.task('copy-src', ['clean-build'], function(cb) {
-    gulp.src([webappsDir, '*'].join(path.sep))
+    gulp.src([[webappsDir, '*'].join(path.sep), '!' + [webappsDir, 'tmp'].join(path.sep)])
         .pipe(gulp.dest(webappsDist))
         .on('end', cb);
   });

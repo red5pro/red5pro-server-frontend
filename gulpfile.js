@@ -2,6 +2,7 @@
 
 var path = require('path');
 var gulp = require('gulp');
+var argv = require('minimist')(process.argv.slice(2));
 
 var port = 5080;
 var nconf = require('nconf');
@@ -28,4 +29,16 @@ var watchSetup = require([taskDirectory, 'watch.js'].join(path.sep))(srcDir, dis
 
 // Import launch task
 var launchSetup = require([taskDirectory, 'launch.js'].join(path.sep))(port, gulp);
+
+// Import new task
+var newTask = require([taskDirectory, 'new.js'].join(path.sep))(srcDir, distDir, gulp);
+gulp.task('new', function() {
+  var webappNameOption = argv.name;
+  if(webappNameOption) {
+    newTask(webappNameOption);
+  }
+  else {
+    console.log('You need to provide a --name option.');
+  }
+});
 
