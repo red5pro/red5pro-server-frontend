@@ -14,6 +14,7 @@ Table of Contents
     * [root](#root)
     * [live](#live)
     * [secondscreen](#secondscreen)
+    * [Creating A New WebApp?](#creating-a-new-webapp)
 * [Developer Documentation](#developer-documentation)
   * [Quickstart](#quickstart)
   * [Developing Pages for a WebApp](#developing-pages for a WebApp)
@@ -22,6 +23,7 @@ Table of Contents
       * [Deploy](#deploy)
       * [Watch](#watch)
       * [Launch](#launch)
+  * [How To Create a New WebApp](#how-to-create-a-new-webapp)
 * [Continuous Integration](#continuous-integration)
 
 Developer Quickstart
@@ -110,6 +112,8 @@ webapps
 ---
 The __src/webapps__ is the top level directory for each webapp to be shipped along with released of the Red5 Pro Server.
 
+Currently the Red5 Pro Server is shipped with the following webapps:
+
 ### root
 The __root__ directory is the default directory entered when visiting the server in a browser, [http://localhost:5080](http://localhost:5080).
 
@@ -124,6 +128,9 @@ The SWF files for broadcaster and subscriber are generated from the __flash-clie
 The __src/webapps/secondscreen__ directory contains the webapp that demonstrates the Second Screen capabilities of the Red5 Pro Server.
 
 Additionally, there are subdirectories of different examples that show how to use the Second Screen HTML SDK and different control scheme flavors.
+
+### Creating A New WebApp?
+If you would like to create a new webapp, please refer to the [How To Create a New WebApp](#how-to-create-a-new-webapp) documentation.
 
 Developer Documentation
 ===
@@ -200,6 +207,36 @@ To just launch the alreayd built and deployed pages in your system's default bro
 ```
 $ npm run launch
 ```
+
+How To Create a New WebApp
+---
+The following section describes how to easily start a new webapp to be distributed with the Red5 Pro Server.
+
+The `new` task is available from the __gulp__ builds and takes a `--name` option:
+
+```
+$ node_modules/.bin/gulp new --name=your-awesome-app
+```
+
+Be sure that the `your-awesome-app` value for the `--name` option is unique. This will be the directory name that will be generated in the __/webapps__ directory of the Red5 Pro Server. __If you do not provide a unique name, previous webapp files may be overwritten!__
+
+### Generated Project & Build Task
+Upon issuing the command above, the following will be generated:
+
+* src/webapps/your-awesome-app - The home directory for the webapp, along with the default __index.jsp__ file and necessary _WEB-INF_ directory and contents.
+* scripts/task/webapp/your-awesome-app.js - The default build file for your webapp which will be loaded into the build process. Modify as seen fit (comments are included).
+
+### Viewing Your New WebApp
+_You will need to restart the target Red5 Pro Server in order to see your webapp on [http://localhost:5080/your-awesome-app](http://localhost:5080/your-awesome-app)_.
+
+Do as you normally would when starting development:
+```
+$ npm run build
+$ npm run deploy
+$ npm run watch
+```
+
+These commands will 1) build the new webapp into the distribution directory 2) deploy the webapp to the target Red5 Pro Server and 3) start watching changes to the webapp files to enable live preview.
 
 Continuous Integration
 ===
