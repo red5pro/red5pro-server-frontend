@@ -29,7 +29,7 @@ var options = {
   }
 };
 
-module.exports = function(srcDir, distDir, gulp) {
+module.exports = function(srcDir, distDir, webappBuildScriptDir, gulp) {
 
   var webappsDist;
   var webappsDir = [srcDir, 'webapps'].join(path.sep);
@@ -65,13 +65,18 @@ module.exports = function(srcDir, distDir, gulp) {
         .on('end', cb);
   });
 
-  var rootBuilder = require('./webapp/root');
-  var liveBuilder = require('./webapp/live');
-  var secondscreenBuilder = require('./webapp/secondscreen');
+  var webapps = fs.readdirSync(webappsDir).filter(function(filepath) {
+    return fs.statSync([webappsDir, filepath].join(path.sep)).isDirectory();
+  });
+  var excludeFromWebappBuilds = function(filepath) {
+    return webapps.indexOf(filepath.split('.js').shift()) > -1;
+  };
   var tasks = ['clean-build', 'copy-src'];
-  tasks = tasks.concat(rootBuilder(srcDir, distDir, gulp, options)('copy-src'));
-  tasks = tasks.concat(liveBuilder(srcDir, distDir, gulp, options)('copy-src'));
-  tasks = tasks.concat(secondscreenBuilder(srcDir, distDir, gulp, options)('copy-src'));
+  var buildTasks = fs.readdirSync(webappBuildScriptDir).filter(excludeFromWebappBuilds);
+  buildTasks.forEach(function(taskFile) {
+    var builder = require([webappBuildScriptDir, taskFile].join(path.sep));
+    tasks = tasks.concat(builder(srcDir, distDir, gulp, options)('copy-src'));
+  });
 
   gulp.task('build', tasks);
 

@@ -6,35 +6,6 @@
     {{> resources }}
     <title>Welcome to the Red5 Pro Server!</title>
     <style>
-      #main-page-subcontent {
-          text-align: center;
-          position: relative;
-          width: 100%;
-          height: 340px;
-          overflow: hidden;
-        }
-
-        #tablet-container, #features-container {
-          position: absolute;
-        }
-
-        #tablet-container {
-          width: 520px;
-        }
-
-        #features-container {
-          margin-left: 20px;
-          margin-top: 120px;
-          width: 460px;
-        }
-
-        #main-page-tablet-img {
-          width: 100%;
-        }
-
-        #main-page-features-img {
-          width: 100%;
-        }
     </style>
   </head>
   <body>
@@ -54,10 +25,14 @@
           </div>
           <h2 class="tag-line">@webapp@!</h2>
         </div>
-        <div id="main-page-subcontent" class="clear-fix">
-          <div>
-            Content Here
-          </div>
+        <div class="content-section-story">
+          <p>Content Here</p>
+          <hr class="top-padded-rule">
+          <p>
+            <strong>Also, be sure to add you page to the</strong>
+            <br>
+            <strong>&lt; menu here. You can modify that in </strong><em>/src/template/partial/menu.hbs</em>.
+          </p>
           <hr class="top-padded-rule">
           {{> applications }}
           <hr class="top-padded-rule">
