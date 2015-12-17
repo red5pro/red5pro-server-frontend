@@ -215,7 +215,7 @@ The following section describes how to easily start a new webapp to be distribut
 The `new` task is available from the __gulp__ builds and takes a `--name` option:
 
 ```
-$ node_modules/.bin/gulp new --name=your-awesome-app
+$ npm run new -- --name=your-awesome-app
 ```
 
 Be sure that the `your-awesome-app` value for the `--name` option is unique. This will be the directory name that will be generated in the __/webapps__ directory of the Red5 Pro Server. __If you do not provide a unique name, previous webapp files may be overwritten!__
@@ -223,8 +223,8 @@ Be sure that the `your-awesome-app` value for the `--name` option is unique. Thi
 ### Generated Project & Build Task
 Upon issuing the command above, the following will be generated:
 
-* src/webapps/your-awesome-app - The home directory for the webapp, along with the default __index.jsp__ file and necessary _WEB-INF_ directory and contents.
-* scripts/task/webapp/your-awesome-app.js - The default build file for your webapp which will be loaded into the build process. Modify as seen fit (comments are included).
+* __src/webapps/your-awesome-app__ - The home directory for the webapp, along with the default __index.jsp__ file and necessary _WEB-INF_ directory and contents.
+* __scripts/task/webapp/your-awesome-app.js__ - The default build file for your webapp which will be loaded into the build process. Modify as seen fit (comments are included).
 
 ### Viewing Your New WebApp
 _You will need to restart the target Red5 Pro Server in order to see your webapp on [http://localhost:5080/your-awesome-app](http://localhost:5080/your-awesome-app)_.

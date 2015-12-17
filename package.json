@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "FrontEnd webapps distributed with the Red5 Pro Server",
   "scripts": {
+    "new": "gulp new",
     "start": "cd red5pro-server && ./red5.sh",
     "stop": "cd red5pro-server && ./red5-shutdown.sh",
-    "build": "node node_modules/.bin/gulp build",
-    "deploy": "node node_modules/.bin/gulp deploy",
-    "launch": "node node_modules/.bin/gulp launch",
-    "watch": "node node_modules/.bin/gulp deploy && node node_modules/.bin/gulp watch"
+    "build": "gulp build",
+    "deploy": "gulp deploy",
+    "launch": "gulp launch",
+    "watch": "gulp deploy && gulp watch"
   },
   "author": "Infrared5 Inc.",
   "license": "MIT",
