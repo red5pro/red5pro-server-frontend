@@ -45,8 +45,8 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
       var buildSecondScreenHost = function(subdir, cb) {
         return function() {
           gutil.log('Building example in ' + subdir + '...');
-          var target = [Builder.webappsSourceDirectory, subdir, 'index.jsp'].join(path.sep);
-          var out = [Builder.webappsDestinationDirectory, subdir].join(path.sep);
+          var target = [Builder.webappSourceDirectory, subdir, 'index.jsp'].join(path.sep);
+          var out = [Builder.webappDestinationDirectory, subdir].join(path.sep);
           gulp.src(target)
               .pipe(handlebars({}, templateOptions))
               .pipe(rename('index.jsp'))
@@ -62,8 +62,8 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
     gulp.task(zipExamplesTaskLabel, [buildExamplesTaskLabel], function(cb) {
       var zipBuild = function(name, callback) {
         return function() {
-          var sourceDir = [Builder.webappsDestinationDirectory, 'secondscreen', 'hosts', name, '**'].join(path.sep);
-          var downloadsDir = [Builder.webappsDestinationDirectory, 'secondscreen', 'downloads'].join(path.sep);
+          var sourceDir = [Builder.webappDestinationDirectory, 'hosts', name, '**'].join(path.sep);
+          var downloadsDir = [Builder.webappDestinationDirectory, 'downloads'].join(path.sep);
           gutil.log('Zipping Second Screen example: ' + name + '...');
           gulp.src(sourceDir)
               .pipe(zip([name, 'zip'].join('.')))
