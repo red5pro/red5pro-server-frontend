@@ -39,7 +39,7 @@
 
   <bean id="red5.scopeResolver" class="org.red5.server.scope.ScopeResolver">
     <property name="globalScope" ref="global.scope" />
-  </bean> 
+  </bean>
 
 </beans>
 
