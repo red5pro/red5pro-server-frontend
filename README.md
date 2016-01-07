@@ -1,4 +1,4 @@
-red5pro-server-frontend
+Red5 Pro Server Front-End
 ===
 This project is the front-end facing default __webapps__ pages distributed with the Red5 Pro Server.
 
