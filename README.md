@@ -241,3 +241,5 @@ These commands will 1) build the new webapp into the distribution directory 2) d
 Continuous Integration
 ===
 This project is not added as a solo project for Continuous Integration (CI) in the Red5 Pro CI. Instead, this project is pulled, built and distributed on CI of the Red5 Pro Server.
+
+[![Analytics](https://ga-beacon.appspot.com/UA-59819838-3/red5pro/red5pro-server-frontend?pixel)](https://github.com/igrigorik/ga-beacon)
