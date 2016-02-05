@@ -31,7 +31,10 @@
     "watch": "gulp deploy && gulp watch",
     "predeploy:local": "npm run build",
     "deploy:local": "gulp deploy",
-    "predeploy:feature": "npm run build",
-    "deploy:feature": "shipit feature buildAndDeploy"
+    "pretmp:deploy": "rm -rf /tmp/red5pro-server-frontend && mkdir /tmp/red5pro-server-frontend",
+    "tmp:deploy": "npm run build -c dist && cp -r . /tmp/red5pro-server-frontend",
+    "predeploy:feature": "npm run tmp:deploy",
+    "deploy:feature": "shipit feature buildAndDeploy",
+    "postdeploy:feature": "rm -rf /tmp/red5pro-server-frontend"
   }
 }
