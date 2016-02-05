@@ -2,7 +2,7 @@ module.exports = {
   default: {
     workspace: '/tmp/red5pro-server-frontend',
     dirToCopy: '/tmp/red5pro-server-frontend/dist',
-    deployTo: '/opt/local/red5pro-server/webapps',
+    deployTo: '/opt/local/webapps',
     repositoryUrl: 'git@github.com:red5pro/red5pro-server-frontend.git',
     ignores: [
       '.git',
