@@ -2,15 +2,6 @@
   "name": "red5pro-server-frontend",
   "version": "1.0.0",
   "description": "FrontEnd webapps distributed with the Red5 Pro Server",
-  "scripts": {
-    "new": "gulp new",
-    "start": "cd red5pro-server && ./red5.sh",
-    "stop": "cd red5pro-server && ./red5-shutdown.sh",
-    "build": "gulp build",
-    "deploy": "gulp deploy",
-    "launch": "gulp launch",
-    "watch": "gulp deploy && gulp watch"
-  },
   "author": "Infrared5 Inc.",
   "license": "MIT",
   "devDependencies": {
@@ -27,6 +18,20 @@
     "mkdirp": "^0.5.1",
     "nconf": "^0.8.2",
     "open": "0.0.5",
+    "shipit-cli": "^1.4.1",
+    "shipit-deploy": "^2.1.3",
     "tiny-lr": "^0.2.0"
+  },
+  "scripts": {
+    "new": "gulp new",
+    "start": "cd red5pro-server && ./red5.sh",
+    "stop": "cd red5pro-server && ./red5-shutdown.sh",
+    "build": "gulp build",
+    "launch": "gulp launch",
+    "watch": "gulp deploy && gulp watch",
+    "predeploy:local": "npm run build",
+    "deploy:local": "gulp deploy",
+    "predeploy:feature": "npm run build",
+    "deploy:feature": "shipit feature buildAndDeploy"
   }
 }
