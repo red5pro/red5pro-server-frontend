@@ -32,7 +32,7 @@
     "predeploy:local": "npm run build",
     "deploy:local": "gulp deploy",
     "pretmp:deploy": "rm -rf /tmp/red5pro-server-frontend && mkdir /tmp/red5pro-server-frontend",
-    "tmp:deploy": "npm run build -c dist && cp -r . /tmp/red5pro-server-frontend",
+    "tmp:deploy": "npm run build && cp -r . /tmp/red5pro-server-frontend",
     "predeploy:feature": "npm run tmp:deploy",
     "deploy:feature": "shipit feature buildAndDeploy",
     "postdeploy:feature": "rm -rf /tmp/red5pro-server-frontend"
