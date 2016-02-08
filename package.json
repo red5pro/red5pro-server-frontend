@@ -6,6 +6,7 @@
   "license": "MIT",
   "devDependencies": {
     "bluebird": "^3.2.1",
+    "chalk": "^1.1.1",
     "chokidar": "^1.2.0",
     "colors": "^1.1.2",
     "del": "^1.2.1",
