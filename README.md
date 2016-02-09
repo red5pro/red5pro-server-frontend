@@ -164,7 +164,7 @@ It is recommended to download a copy of the Red5 Pro Server in order to continuo
 
 1. Download the latest Red5 Pro Server: [https://account.red5pro.com/download](https://account.red5pro.com/download)
 2. Unzip the download into a location you prefer. For the purposes of my development, I simply added it to the same location as my local checkout of this repository, then added that to the __.gitignore__ file (_red5pro-server_). You can do the same if you prefer.
-  * If you decide to not download and unzip the Red5 Pro Server in this repository root, you will need to modify the location for `red5pro-server` in [settings.json](settings.json).
+  * If you decide to not download and unzip the Red5 Pro Server in this repository root, you will need to modify the location for `red5pro-server-local` in [settings.json](settings.json).
 4. Start the Red5 Pro server:
 
 ```
@@ -184,7 +184,7 @@ To deploy a build of the pages to the local Red5 Pro Server:
 $ npm run deploy
 ```
 
-This command will run a new build and place the generated files in /webapps.
+This command will run a new build and place the generated files in __webapps__.
 
 ### Watch
 _This build options requires you to have a Red5 Pro Server installed on your machine and its location defined in the [settings.json](settings.json) under the __red5pro-server__ param_
