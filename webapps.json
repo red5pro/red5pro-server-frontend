@@ -1,10 +1,6 @@
 {
-  "streammanager": {
-    "title": "Stream Manager",
+  "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-webapp-streammanager.git",
-    "branch": "develop",
-    "workspace": "/tmp/r5pro-streammanager",
-    "buildCommand": "cd streammanager && mvn clean compile package",
-    "webappDir": "streammanager/target/streammanager"
+    "branch": "develop"
   }
 }
