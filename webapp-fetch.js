@@ -4,10 +4,20 @@ var fs = require('fs');
 var path = require('path');
 var del = require('del');
 var mkdir = require('mkdirp');
-var replace = require('replace');
 var chalk = require('chalk');
 var exec = require('child_process').exec;
 var Promise = require('bluebird');
+var fileReplace = require('replace');
+
+var gulp = require('gulp');
+var replace = require('gulp-replace');
+var rename = require('gulp-rename');
+
+var log = console.log.bind(console);
+var srcDirectory = [process.cwd(), 'src'].join(path.sep);
+var distDirectory = [process.cwd(), 'dist'].join(path.sep);
+var webappTaskDirectory = [process.cwd(), 'scripts', 'task', 'webapp'].join(path.sep);
+var buildFile = [webappTaskDirectory, 'build.template.js'].join(path.sep);
 
 var manifest = require([process.cwd(), 'webapps.json'].join(path.sep));
 var keys = Object.keys(manifest);
@@ -18,8 +28,6 @@ var webapps = keys.map(function(key) {
   });
 });
 
-var log = console.log.bind(console);
-var distDirectory = [process.cwd(), 'dist'].join(path.sep);
 var menuListItemTemplate = '<li><a class="red-text menu-listing-internal" href="/$webappName">$title</a></li>';
 var menuListItems = [];
 var insertLineRegex = '<!-- webapps -->';
@@ -228,20 +236,25 @@ var generateWebapps = function() {
 var updateMenuListing = function() {
   log(chalk.yellow('Updating menu listing.'));
   return new Promise(function(resolve, reject) {
-    replace({
-      regex: insertLineRegex,
-      replacement: menuListItems.join('/r/n'),
-      paths: [[process.cwd(), 'src', 'template', 'partial', 'menu.hbs'].join(path.sep)],
-      recursive: false,
-      silent: false
-    });
-    resolve();
+    try {
+        fileReplace({
+          regex: insertLineRegex,
+          replacement: menuListItems.join('/r/n'),
+          paths: [[process.cwd(), 'src', 'template', 'partial', 'menu.hbs'].join(path.sep)],
+          recursive: false,
+          silent: false
+        });
+        resolve();
+      }
+      catch(e) {
+        reject(e)
+      }
   });
 };
 
 var buildFrontEnd = function() {
-  var distDirectory = chalk.magenta([process.cwd(), 'dist'].join(path.sep));
-  log(chalk.yellow('Running build of front-end to ' + distDirectory + '...'));
+  var dir = chalk.magenta(distDirectory);
+  log(chalk.yellow('Running build of front-end to ' + dir + '...'));
   return new Promise(function(resolve, reject) {
     var child = exec('npm run build', {cwd:process.cwd()}, function(err) {
       if(err) {
@@ -261,11 +274,47 @@ var buildFrontEnd = function() {
 var moveWebapps = function() {
   log(chalk.yellow('Moving built webapps...'));
   return Promise.each(webapps, function(config) {
+    var toDir = [srcDirectory, 'webapps', config.webappName].join(path.sep);
+    del.sync(toDir, {force: true});
     return moveWebapp({
       cwd: config.workspace,
       name: config.name,
       outDir: config.webappOutput,
-      toDir: [distDirectory, 'webapps', config.webappName].join(path.sep)
+      toDir: toDir
+    });
+  });
+};
+
+var addWebappsToBuild = function() {
+  return Promise.each(webapps, function(config) {
+    return new Promise(function(resolve, reject) {
+      log(chalk.yellow('Adding ' + config.webappName + ' to build process...'));
+      try {
+        gulp.src(buildFile)
+            .pipe(replace('@webapp@', config.webappName))
+            .pipe(rename([config.webappName, 'js'].join('.')))
+            .pipe(gulp.dest(webappTaskDirectory))
+            .on('end', resolve)
+            .on('error', reject);
+      }
+      catch(e) {
+        reject(e)
+      }
+    });
+  });
+};
+
+var cleanWebapps = function() {
+  return Promise.each(webapps, function(config) {
+    log(chalk.yellow('Cleaning build of ' + config.workspace + '...'));
+    return new Promise(function(resolve, reject) {
+      try {
+        del.sync(config.workspace, {force: true});
+        resolve();
+      }
+      catch(e) {
+        reject(e);
+      }
     });
   });
 };
@@ -278,10 +327,16 @@ generateWebapps()
     return updateMenuListing();
   })
   .then(function() {
+    return moveWebapps();
+  })
+  .then(function() {
+    return addWebappsToBuild();
+  })
+  .then(function() {
     return buildFrontEnd();
   })
   .then(function() {
-    return moveWebapps();
+    return cleanWebapps();
   })
   .then(function() {
     log(chalk.blue('Build complete.'));

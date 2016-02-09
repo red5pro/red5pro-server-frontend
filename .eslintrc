@@ -1,0 +1,10 @@
+{
+  "env": {
+    "node": true,
+  },
+  "rules": {
+    "strict": 0,
+    "vars-on-top": 2,
+    "no-undef": 2
+  }
+}
