@@ -41,7 +41,7 @@ var clean = function(options) {
       resolve();
     }
     catch(e) {
-      reject(e.getMessage());
+      reject(e);
     }
   });
 };
