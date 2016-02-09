@@ -24,7 +24,7 @@ var menuListItemTemplate = '<li><a class="red-text menu-listing-internal" href="
 var menuListItems = [];
 var insertLineRegex = '<!-- webapps -->';
 
-// 1. Clean old build, prep for new build.
+// 1. Clean old webapp build, prep for new build.
 var clean = function(options) {
   return new Promise(function(resolve, reject) {
     try {
@@ -168,9 +168,9 @@ var moveWebapp = function(options) {
   });
 };
 
-var generate = function() {
+var generateWebapps = function() {
 
-  Promise.each(webapps, function(config) {
+  return Promise.each(webapps, function(config) {
 
     console.log(chalk.blue('Generating WebApp with config:\n' + JSON.stringify(config, null, 2)));
 
@@ -212,25 +212,22 @@ var generate = function() {
       });
     })
     .then(function() {
-      return moveWebapp({
-        cwd: config.workspace,
-        name: config.name,
-        outDir: config.webappOutput,
-        toDir: [distDirectory, 'webapps', config.webappName].join(path.sep)
-      });
-    })
-    .then(function() {
-      var entry = menuListItemTemplate.replace('$webappName', config.webappName).replace('$title', config.title);
-      menuListItems.push(entry);
-      log(chalk.blue('Build complete for ' + config.name + '.'));
+      // Add menu item list entry.
+      if(config.title && config.title.length > 0) {
+        var entry = menuListItemTemplate.replace('$webappName', config.webappName).replace('$title', config.title);
+        menuListItems.push(entry);
+      }
     })
     .catch(function(e) {
-      log(chalk.red('Error: ' + e));
+      log(chalk.red('Build Failed: ' + e));
     });
 
-  }).
-  then(function() {
-    // 1. Update src/template/partial/menu with menuListItems...
+  });
+};
+
+var updateMenuListing = function() {
+  log(chalk.yellow('Updating menu listing.'));
+  return new Promise(function(resolve, reject) {
     replace({
       regex: insertLineRegex,
       replacement: menuListItems.join('/r/n'),
@@ -238,16 +235,59 @@ var generate = function() {
       recursive: false,
       silent: false
     });
-    // 2. Generate build.
+    resolve();
   });
 };
 
-var child = exec('npm run build', {cwd:process.cwd()}, function(err) {
-  if(err) {
-    log(chalk.red('Error in building: ' + err));
-  }
-  else {
-    generate();
-  }
-});
-child.stdout.pipe(process.stdout);
+var buildFrontEnd = function() {
+  var distDirectory = chalk.magenta([process.cwd(), 'dist'].join(path.sep));
+  log(chalk.yellow('Running build of front-end to ' + distDirectory + '...'));
+  return new Promise(function(resolve, reject) {
+    var child = exec('npm run build', {cwd:process.cwd()}, function(err) {
+      if(err) {
+        log(chalk.red('Error in building: ' + err));
+        reject(err);
+      }
+      else {
+        resolve({
+          child: child
+        });
+      }
+    });
+    child.stdout.pipe(process.stdout);
+  });
+};
+
+var moveWebapps = function() {
+  log(chalk.yellow('Moving built webapps...'));
+  return Promise.each(webapps, function(config) {
+    return moveWebapp({
+      cwd: config.workspace,
+      name: config.name,
+      outDir: config.webappOutput,
+      toDir: [distDirectory, 'webapps', config.webappName].join(path.sep)
+    });
+  });
+};
+
+// Clean distribution.
+del.sync([process.cwd(), 'dist'].join(path.sep), {force: true});
+// Build webapps and frontend.
+generateWebapps()
+  .then(function() {
+    return updateMenuListing();
+  })
+  .then(function() {
+    return buildFrontEnd();
+  })
+  .then(function() {
+    return moveWebapps();
+  })
+  .then(function() {
+    log(chalk.blue('Build complete.'));
+  })
+  .catch(function(err) {
+    log(
+      chalk.red('Build failed: ' + err)
+    )
+  });
