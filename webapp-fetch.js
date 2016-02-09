@@ -124,7 +124,7 @@ var checkout = function(options) {
 var buildWebapp = function(options) {
   return new Promise(function(resolve, reject) {
     if(options.cmd) {
-      const command = chalk.magenta([options.cwd, options.cmd].join(' $'));
+      const command = chalk.magenta([options.cwd, options.cmd].join(' $ '));
       log(
         chalk.yellow('Building ' + options.name + ' using ' + command + '...')
       );
