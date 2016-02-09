@@ -34,6 +34,7 @@
     "launch": "gulp launch",
     "watch": "gulp deploy && gulp watch",
     "deploy:local": "gulp deploy",
+    "deploy:prod": "shipit production buildAndDeploy",
     "deploy:qa": "shipit staging buildAndDeploy",
     "deploy:feature": "shipit feature buildAndDeploy"
   }

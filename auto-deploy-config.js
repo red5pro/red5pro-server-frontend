@@ -18,16 +18,16 @@ module.exports = {
     deleteOnRollback: false,
     shallowClone: true
   },
-  staging: {
-    branch: 'qa',
-    servers: [
-      'ec2-user@ec2-54-174-142-30.compute-1.amazonaws.com',
-    ]
-  },
   feature: {
     branch: '#target_feature_branch#',
     servers: [
       'ec2-user@ec2-54-174-142-30.compute-1.amazonaws.com'
+    ]
+  },
+  staging: {
+    branch: 'qa',
+    servers: [
+      'ec2-user@ec2-54-174-142-30.compute-1.amazonaws.com',
     ]
   },
   production: {
