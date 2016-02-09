@@ -1,4 +1,5 @@
 .DS_Store
+auto-deploy-config.custom.js
 
 dist/
 node_modules/
