@@ -128,7 +128,7 @@ var buildWebapp = function(options) {
       log(
         chalk.yellow('Building ' + options.name + ' using ' + command + '...')
       );
-      var child = exec(options.cmd, options, function(err) {
+      var child = exec([options.cmd, '> /dev/null'].join(' '), options, function(err) {
         if(err) {
           reject(err);
         }

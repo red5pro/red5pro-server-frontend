@@ -67,6 +67,9 @@ module.exports = function (shipit) {
   shipit.task('buildAndDeploy', function () {
     shipit.local('node webapp-fetch.js', {cwd: process.cwd()})
       .then(function() {
+        return shipit.local('rm -rf ' + config.default.workspace, {cwd: process.cwd()});
+      })
+      .then(function() {
         return shipit.local('cp -r ' + process.cwd() + ' ' + config.default.workspace, {cwd: process.cwd()});
       })
       .then(function() {
