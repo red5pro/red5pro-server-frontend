@@ -21,19 +21,19 @@ module.exports = {
   feature: {
     branch: '#target_feature_branch#',
     servers: [
-      'ec2-user@ec2-54-174-142-30.compute-1.amazonaws.com'
+      '#target_deployment_server#'
     ]
   },
   staging: {
     branch: 'qa',
     servers: [
-      'ec2-user@ec2-54-174-142-30.compute-1.amazonaws.com',
+      '#target_deployment_server#',
     ]
   },
   production: {
     branch: 'master',
     servers: [
-      'ec2-user@ec2-54-174-142-30.compute-1.amazonaws.com'
+      '#target_deployment_server#'
     ]
   }
 }
