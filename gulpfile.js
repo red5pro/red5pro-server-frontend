@@ -16,8 +16,8 @@ var srcDir = [process.cwd(), 'src'].join(path.sep);
 var distDir = [process.cwd(), 'dist'].join(path.sep);
 var scriptsDir = [process.cwd(), 'scripts'].join(path.sep);
 var webappBuildScriptDir = [scriptsDir, 'task', 'webapp'].join(path.sep);
-var deployDir = nconf.get('red5pro-server')
-  ? [nconf.get('red5pro-server'), 'webapps'].join(path.sep)
+var deployDir = nconf.get('red5pro-server-local')
+  ? [nconf.get('red5pro-server-local'), 'webapps'].join(path.sep)
   : [process.cwd(), 'red5pro-server', 'webapps'].join(path.sep);
 
 // Import build task
