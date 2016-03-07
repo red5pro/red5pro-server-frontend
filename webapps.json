@@ -1,6 +1,2 @@
 {
-  "r5pro-streammanager": {
-    "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
-    "branch": "develop"
-  }
 }
