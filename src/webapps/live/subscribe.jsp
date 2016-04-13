@@ -235,7 +235,7 @@
                         <!--<![endif]-->
                     </object>
                   </noscript>
-            <p class="medium-font-size download-link"><a class="red-text link" href="https://github.com/red5pro/red5pro-server-examples/releases/download/0.1.0/Red5Pro-Subscriber-Client.zip">Download</a> the source for this example.</p>
+            <p class="medium-font-size download-link"><a class="red-text link" href="https://github.com/red5pro/red5pro-server-examples/releases/download/0.1.1/Red5Pro-Subscriber-Client.zip">Download</a> the source for this example.</p>
           </div>
           <hr class="top-padded-rule" />
           <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>
