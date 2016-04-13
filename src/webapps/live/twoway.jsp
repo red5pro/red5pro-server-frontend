@@ -60,7 +60,7 @@
       if(swfobject.hasFlashPlayerVersion("11.1.0")) {
         swfobject.embedSWF(
             "Main.swf", "flashContent",
-            "800", "600",
+            "100%", "600",
             swfVersionStr, xiSwfUrlStr,
             flashvars, params, attributes);
         // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
