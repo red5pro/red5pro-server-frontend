@@ -7,7 +7,7 @@
   <head>
     {{> head_meta }}
     {{> resources }}
-    <title>Stream Broadcasting with the Red5 Pro Server!</title>
+    <title>Two-Way Live Streaming with the Red5 Pro Server!</title>
     <style>
       object:focus {
         outline:none;
@@ -50,17 +50,17 @@
       };
       var params = {};
       params.quality = "high";
-      params.bgcolor = "#ffffff";
+      params.bgcolor = "#989696";
       params.allowscriptaccess = "always";
       params.allowfullscreen = "true";
       var attributes = {};
-      attributes.id = "Broadcaster";
+      attributes.id = "Main";
       attributes.name = "Broadcaster";
       attributes.align = "middle";
       if(swfobject.hasFlashPlayerVersion("11.1.0")) {
         swfobject.embedSWF(
-            "Broadcaster.swf", "flashContent",
-            "100%", "716",
+            "Main.swf", "flashContent",
+            "100%", "600",
             swfVersionStr, xiSwfUrlStr,
             flashvars, params, attributes);
         // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
@@ -87,7 +87,7 @@
                </a>
             </p>
           </div>
-          <h2 class="tag-line">LIVE BROADCAST FOR ANY SCREEN</h2>
+          <h2 class="tag-line">TWO-WAY LIVE STREAMING EXAMPLE</h2>
         </div>
         <div id="live-page-subcontent" class="clear-fix">
           <div id="live-image-container">
@@ -95,7 +95,15 @@
           </div>
         </div>
         <div class="content-section-story">
-          <p>To start a Broadcast session, allow device access, provide a <strong>stream name</strong>, select any additional broadcast options, then click <strong>Start Broadcast.</strong></p>
+          <p>To start a Broadcast session:
+            <ol>
+                    <li>Allow device access.</li>
+                    <li>Provide a <strong>stream name</strong>.</li>
+                    <li>Click <strong>Ready</strong>.</li>
+                    <li>Wait for the <strong>stream name</strong> to show up in the drop-down element.</li>
+                    <li>Click <strong>Subscribe</strong>.</li>
+            </ol>
+          </p>
         <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough
              JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
              when JavaScript is disabled.
@@ -112,15 +120,15 @@
         </div>
         <noscript>
             <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="Broadcaster">
-                <param name="movie" value="Broadcaster.swf" />
+                <param name="movie" value="Main.swf" />
                 <param name="quality" value="high" />
-                <param name="bgcolor" value="#ffffff" />
+                <param name="bgcolor" value="#989696" />
                 <param name="allowScriptAccess" value="sameDomain" />
                 <param name="allowFullScreen" value="true" />
                 <!--[if !IE]>-->
-                <object type="application/x-shockwave-flash" data="Broadcaster.swf" width="100%" height="100%">
+                <object type="application/x-shockwave-flash" data="Main.swf" width="100%" height="100%">
                     <param name="quality" value="high" />
-                    <param name="bgcolor" value="#ffffff" />
+                    <param name="bgcolor" value="#989696" />
                     <param name="allowScriptAccess" value="sameDomain" />
                     <param name="allowFullScreen" value="true" />
                 <!--<![endif]-->
@@ -139,7 +147,6 @@
             </object>
           </noscript>
           <br><br>
-          <p class="medium-font-size"><a class="red-text link" href="https://github.com/red5pro/red5pro-server-examples/releases/download/0.1.1/Red5Pro-Broadcaster-Client.zip">Download</a> the source for this example.</p>
           <hr class="top-padded-rule" />
           <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>
           <p>You can download the Streaming SDKs from your <a class="link" href="http://account.red5pro.com/download" target="_blank">Red5 Pro Accounts</a> page.</p>
