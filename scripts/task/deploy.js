@@ -2,6 +2,7 @@
 
 var path = require('path');
 var rm = require('del');
+var gutil = require('gulp-util');
 var flatten = require('gulp-flatten');
 
 module.exports = function(distDir, deployWebappDir, deployLibDir, gulp) {
@@ -22,7 +23,9 @@ module.exports = function(distDir, deployWebappDir, deployLibDir, gulp) {
   });
 
   gulp.task('copy-libs', ['copy-dist'], function(cb) {
-    gulp.src([distDir, 'webapps', '**', 'lib', '**', '*.jar'].join(path.sep))
+    var srcDir = [distDir, 'webapps', '**', 'lib', '**', '*.jar'].join(path.sep);
+    gutil.log('[task/deploy:copy-libs] Moving libs from ' + srcDir + ' to ' + deployLibDir + '...');
+    gulp.src(srcDir)
         .pipe(flatten())
         .pipe(gulp.dest(deployLibDir))
         .on('end', cb);
