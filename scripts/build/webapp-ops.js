@@ -134,6 +134,41 @@ var buildWebapp = function(options) {
   });
 };
 
+var addWebappLibDependencies = function(options) {
+  return new Promise(function(resolve, reject) {
+    if(options.libDir) {
+      var cmd = 'mkdir -p ' + options.outLibDir + ' && ' +
+                'cp -rf ' + options.libDir + '/* ' + options.outLibDir
+      log(
+        chalk.yellow([options.cwd, cmd].join(' $ '))
+      )
+      var child = exec(cmd, options, function(err) {
+        if(err) {
+          reject(err);
+        }
+        else {
+          var output = [options.cwd, options.outLibDir].join(path.sep);
+          try {
+            log(chalk.white('Lib Exists? ' + output));
+            log(chalk.white(JSON.stringify(fs.statSync(output), null, 2)));
+            resolve({
+              child: child
+            });
+          }
+          catch(e) {
+            log(chalk.red('Output path does not exist.'));
+            reject(e);
+          }
+        }
+      });
+      child.stdout.pipe(process.stdout);
+    }
+    else {
+      resolve();
+    }
+  });
+};
+
 
 module.exports = {
   clean: clean,
@@ -141,5 +176,6 @@ module.exports = {
   addRemote: addRemote,
   fetch: fetch,
   checkout: checkout,
-  buildWebapp: buildWebapp
+  buildWebapp: buildWebapp,
+  addLibs: addWebappLibDependencies
 };

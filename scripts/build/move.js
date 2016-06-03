@@ -27,7 +27,7 @@ var move = function(options) {
   });
 };
 
-var webapp = function(config, srcDirectory) {
+var webapp = function(config, srcDirectory, libDirectory) {
   var toDir = [srcDirectory, 'webapps', config.webappName].join(path.sep);
   log(chalk.yellow('Removing previous webapp build at ' + toDir + '...'));
   del.sync(toDir, {force: true});
@@ -35,7 +35,8 @@ var webapp = function(config, srcDirectory) {
     cwd: config.workspace,
     name: config.name,
     outDir: config.webappOutput,
-    toDir: toDir
+    toDir: toDir,
+    toLibDir: libDirectory
   });
 };
 

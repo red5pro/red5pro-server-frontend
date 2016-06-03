@@ -12,6 +12,7 @@ var frontEndBuilder = require([__dirname, 'frontend-builder'].join(path.sep));
 var cleanWebapps = require([__dirname, 'clean'].join(path.sep));
 
 var srcDirectory = [process.cwd(), 'src'].join(path.sep);
+var libDirectory = [srcDirectory, 'lib'].join(path.sep);
 var buildDirectory = [process.cwd(), 'dist'].join(path.sep);
 var webappTaskDirectory = [process.cwd(), 'scripts', 'task', 'webapp'].join(path.sep);
 var buildFile = [webappTaskDirectory, 'build.template.js'].join(path.sep);
@@ -33,7 +34,7 @@ module.exports = function(manifest) {
           return menuBuilder.update(webapps);
         })
         .then(function() {
-          return moveWebapps.all(webapps, srcDirectory);
+          return moveWebapps.all(webapps, srcDirectory, libDirectory);
         })
         .then(function() {
           return frontEndBuilder.addWebappsToBuild(webapps, buildFile, webappTaskDirectory);
