@@ -44,6 +44,14 @@ var webapp = function(config) {
           cmd: config.buildCommand,
           outDir: config.webappOutput
         });
+      })
+      .then(function() {
+        log(chalk.blue('Moving optional lib dependencies...'))
+        return webappOps.addLibs({
+          cwd: config.workspace,
+          libDir: config.libOutput || undefined,
+          outLibDir: [config.webappOutput, 'lib'].join(path.sep)
+        })
       });
 };
 
