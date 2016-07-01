@@ -44,7 +44,7 @@ module.exports = function(srcDir, distDir, webappBuildScriptDir, gulp) {
     };
 
     if(fs.existsSync(distDir)) {
-      rm(distDir, function(err) {
+      rm(distDir, {force:true}, function(err) {
         if(err) {
           gutil.log('Error in removing ' + distDir + ': ' + err);
         }
