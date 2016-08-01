@@ -4,6 +4,7 @@
   <head>
     {{> head_meta }}
     {{> resources }}
+    <link rel="stylesheet" href="css/dashboard.css">
     <title>Welcome to the Red5 Pro Server!</title>
     <style>
     </style>
@@ -23,7 +24,7 @@
         </div>
       </div>
       <div class="row">
-        <div class='one-third-col left'>
+        <div class='float-left one-third-col'>
           <h3>Server Statistics</h3>
           <table>
             <tbody>
@@ -42,7 +43,7 @@
             </tbody>
           </table>
         </div>
-        <div class='one-third-col center'>
+        <div class='float-center one-third-col'>
           <h3>Version Information</h3>
           <table>
             <tbody>
@@ -69,7 +70,7 @@
             </tbody>
           </table>
         </div>
-        <div class='one-third-col right'>
+        <div class='float-right one-third-col'>
           <h3>Server Status</h3>
           <table>
             <tbody>

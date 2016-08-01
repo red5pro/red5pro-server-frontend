@@ -4,7 +4,7 @@ export default class WS {
   constructor (securityToken = 'xyz123', interval = 1000) {
     this.securityToken = securityToken
     this.interval = interval
-    this.url = `ws://${window.location.hostname}/api?accessToken=${this.securityToken}`
+    this.url = `ws://${window.location.hostname}:8081/api?accessToken=${this.securityToken}`
     this.wsCalls = {
       // Server Calls
       getServerInfo: '/server',
@@ -28,38 +28,42 @@ export default class WS {
       terminateClient: '/clients/client/delete',
       terminateClients: '/clients/delete'
     }
-    this.currentConnection = []
+    this.currentConnections = []
   }
   addConnection (apiCall, content = []) {
     this.currentConnections.push({
       apiCall: apiCall,
       content: content
     })
+    console.log(this.currentConnections)
   }
   removeConnection (connection) {
     console.log('Must implement Remove Connection')
   }
   openConnection (cb) {
-    let socket = new WebSocket('ws://${this.host}:8081/api?accessToken=${this.securityToken}', 'api')
-
+    let socket = new WebSocket(this.url, 'api')
+    let currentConnections = this.currentConnections
     socket.onopen = function () {
-      setInterval(this.currentConnections.forEach((connection) => {
-        let request = {}
-        request.invocation_id = new Date().getTime().toString()
-        request.type = 'RMI'
-        request.path = this.wsCalls[connection.apiCall]
-        request.content = connection.content
+      setInterval(() => {
+        console.log(currentConnections)
+        currentConnections.forEach((connection) => {
+          let request = {}
+          request.invocation_id = new Date().getTime().toString()
+          request.type = 'RMI'
+          request.path = this.wsCalls[connection.apiCall]
+          request.content = connection.content
 
-        let payload = JSON.stringify(request)
-        socket.send(payload)
-      }), this.interval)
+          let payload = JSON.stringify(request)
+          socket.send(payload)
+        })
+      }, this.interval)
     }
 
     socket.onmessage = function (evt) {
       if (cb) {
-        cb(evt, this.currentConnections.content, this.currentConnections.apiCall)
-        let first = this.currentConnections.shift()
-        this.currentConnections.push(first)
+        cb(evt, currentConnections[0].content, currentConnections[0].apiCall)
+        let first = currentConnections.shift()
+        currentConnections.push(first)
       } else {
         console.log('Error, must specify a Callback function')
       }

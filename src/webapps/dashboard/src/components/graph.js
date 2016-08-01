@@ -1,12 +1,8 @@
-import Chart from '../lib/Chart.min.js'
+import Chart from '../lib/Chart.min'
 
 class Graph {
-  constructor () {
-    this.data = {
-      dataset: [{
-        borderColor: '#E31900'
-      }]
-    }
+  constructor (id) {
+    this.context = document.getElementById(id)
   }
 }
 
@@ -18,7 +14,8 @@ export default class LineGraph extends Graph {
       data: {
         datasets: [{
           label: title,
-          data: [{}]
+          data: [{}],
+          borderColor: '#E31900'
         }]
       },
       options: {
@@ -31,8 +28,8 @@ export default class LineGraph extends Graph {
       }
     }
   }
-  makeGraph (ctx) {
-    return new Chart(ctx, this.data)
+  makeGraph () {
+    return new Chart(this.context, this.data)
   }
 }
 // class BarGraph{
