@@ -4,8 +4,14 @@ require('isomorphic-fetch')
 
 export default class REST {
   constructor (securityToken) {
-    this.host = window.location.hostname
+    this.host = window.location.host
     this.securityToken = securityToken
+    this.contents = {
+      appname: '',
+      streamname: '',
+      filename: '',
+      extension: ''
+    }
     this.apiCalls = {
       // Server Calls
       getServerInfo: `http://${this.host}/api/v1/server?accessToken=${this.securityToken}`,
@@ -15,23 +21,26 @@ export default class REST {
       getApplications: `http://${this.host}/api/v1/applications?accessToken=${this.securityToken}`,
       getApplicationStatistics: `http://${this.host}/api/v1/applications/${this.contents.appname}?accessToken=${this.securityToken}`,
       invoke: `http://${this.host}/api/v1/applications/${this.contents.appname}/invoke?accessToken=${this.securityToken}`,
-      // Steram Calls
+      // VoD Calls
+      getVodFiles: `http://${this.host}/api/v1/applications/${this.contents.appname}/media?accessToken=${this.securityToken}`,
+      deleteVodFiles: `http://${this.host}/api/v1/applications/${this.contents.appname}/media?filename=${this.contents.filename}&extension=${this.contents.extension}&accessToken=${this.securityToken}`,
+      // Stream Calls
       getLiveStreams: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams?accessToken=${this.securityToken}`,
       getLiveStreamStatistics: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}?accessToken=${this.securityToken}`,
       recordLiveStream: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}/action/startrecord?accessToken=$t{this.securityToken}`,
       stopStreamRecord: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}/action/stoprecord?accessToken=$t{this.securityToken}`
     }
-    this.contents = {
-      appname: '',
-      streamname: ''
-    }
   }
 
-  makeAPICall (apiCall) {
+  makeAPICall (apiCall, contents, cb) {
+    if (contents) {
+      this.contents = contents
+      this.updateCalls()
+    }
     fetch(this.apiCalls[apiCall])
       .then((response) => response.json())
       .then((json) => {
-        console.log(json)
+        cb(json)
       })
       .catch((e) => {
         console.log(e)

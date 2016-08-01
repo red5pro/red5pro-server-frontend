@@ -10,37 +10,79 @@
   </head>
   <body>
     {{> header }}
-    <div class="container main-container clear-fix">
-      <div id="menu-section">
-        {{> menu }}
-      </div>
-      <div id="content-section">
-        <div>
-          <div class="clear-fix">
-            <p class="left">
-                <a class="red5pro-header-link" href="/">
-                  <img class="red5pro-logo-page" src="images/red5pro_logo.svg">
-               </a>
-            </p>
-          </div>
-          <h2 class="tag-line">dashboard!</h2>
+    <div class="container">
+      <div class="row">
+        <div class="one-third-container">
+          <canvas id = 'serverChart' width="400" height="400"></canvas>
         </div>
-        <div class="content-section-story">
-          <p>Content Here</p>
-          <hr class="top-padded-rule">
-          <p>
-            <strong>Also, be sure to add you page to the</strong>
-            <br>
-            <strong>&lt; menu here. You can modify that in </strong><em>/src/template/partial/menu.hbs</em>.
-          </p>
-          <hr class="top-padded-rule">
-          {{> applications }}
-          <hr class="top-padded-rule">
-          {{> additional_info }}
+        <div class="one-third-container">
+          <canvas id = 'memoryChart' width="400" height="400"></canvas>
+        </div>
+        <div class="one-third-container">
+          <canvas id = 'bandwidthChart' width="400" height="400"></canvas>
+        </div>
+      </div>
+      <div class="row">
+        <div class='one-third-col left'>
+          <h3>Server Statistics</h3>
+          <table>
+            <tbody>
+              <tr>
+                <td>Processors</td>
+                <td id = 'Processors'> </td>
+              </tr>
+              <tr>
+                <td>Active Sub Scopes</td>
+                <td id = 'activeSubScopes'> </td>
+              </tr>
+              <tr>
+                <td>Total Sub Scopes</td>
+                <td id = 'totalSubScopes'> </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class='one-third-col center'>
+          <h3>Version Information</h3>
+          <table>
+            <tbody>
+              <tr>
+                <td> Red5 Pro Server Version </td>
+                <td id = 'Red5Version'></td>
+              </tr>
+              <tr>
+                <td> Architecture </td>
+                <td id = 'Architecture'></td>
+              </tr>
+              <tr>
+                <td> FMS Version </td>
+                <td id = 'FMSVersion'></td>
+              </tr>
+              <tr>
+                <td> Operating System </td>
+                <td id = 'OSName'> </td>
+              </tr>
+              <tr>
+                <td> Operating System Version</td>
+                <td id = 'OSVersion'> </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class='one-third-col right'>
+          <h3>Server Status</h3>
+          <table>
+            <tbody>
+              <tr>
+                <td id = 'Uptime'> </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
     {{> footer }}
   </body>
-  <script href="./src/index.js"></script>
+  <script src="./dist/bundle.js"></script>
+  <script src="./src/lib/Chart.min.js"></script>
 </html>

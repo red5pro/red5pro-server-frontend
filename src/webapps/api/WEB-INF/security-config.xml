@@ -1,0 +1,59 @@
+<beans xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+        
+        
+   <!--
+	Defines a properties file for dereferencing variables
+	-->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="location" value="/WEB-INF/red5-web.properties" />
+	</bean>
+        
+       
+     <bean id="rtmpSecurity" class="com.red5pro.services.api.authentication.policies.RTMPSecurityPolicy" init-method="init">
+			<property name="hostSecurity" value="${security.rtmp.hostSecurity}" />
+			<property name="tokenSecurity" value="${security.rtmp.tokenSecurity}" />
+			<property name="pageHostCheck" value="${security.rtmp.pageHostCheck}" />
+			<property name="swfHostCheck" value="${security.rtmp.swfHostCheck}" />
+			<property name="connectionHostCheck" value="${security.rtmp.connectionHostCheck}" />
+	</bean> 
+	
+	
+	
+	<bean id="wsSecurity" class="com.red5pro.services.api.authentication.policies.WSSecurityPolicy" init-method="init">
+			<property name="hostSecurity" value="${security.ws.hostSecurity}" />
+			<property name="tokenSecurity" value="${security.ws.tokenSecurity}" />
+			<property name="pageHostCheck" value="${security.ws.pageHostCheck}" />
+			<property name="connectionHostCheck" value="${security.ws.connectionHostCheck}" />
+	</bean> 
+	
+	
+	
+	<bean id="restSecurity" class="com.red5pro.services.api.authentication.policies.RESTSecurityPolicy" init-method="init">
+			<property name="hostSecurity" value="${security.http.hostSecurity}" />
+			<property name="tokenSecurity" value="${security.http.tokenSecurity}" />
+	</bean> 
+        
+
+
+	<bean id="authProvider" class="com.red5pro.services.api.authentication.AuthenticationProvider" init-method="initialize">
+			<property name="hostSecurity" value="${security.hostSecurity}" />
+			<property name="tokenSecurity" value="${security.tokenSecurity}" />
+			<property name="accessToken" value="${security.accessToken}" />
+			<property name="allowedOrigins" value="/WEB-INF/security/hosts.txt" />			
+			<property name="rtmpSecurityPolicy" ref="rtmpSecurity" />
+			<property name="wsSecurityPolicy" ref="wsSecurity" />
+			<property name="restSecurityPolicy" ref="restSecurity" />
+	</bean>
+	
+	
+	<bean id="authFilter" class="com.red5pro.services.api.rest.filter.AuthenticationFilter">
+		<property name="authProvider" ref="authProvider"/>
+	</bean>
+
+</beans>
