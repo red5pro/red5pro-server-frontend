@@ -39,5 +39,8 @@
     "deploy:qa": "shipit staging buildAndDeploy",
     "deploy:feature": "shipit feature buildAndDeploy",
     "reap": "node red5pro-frontendfile.js"
+  },
+  "dependencies": {
+    "chart.js": "^2.2.1"
   }
 }
