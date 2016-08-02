@@ -3,24 +3,32 @@
 <html lang="eng">
   <head>
     {{> head_meta }}
-    {{> resources }}
+    <link href="http://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/dashboard.css">
     <title>Welcome to the Red5 Pro Server!</title>
     <style>
     </style>
   </head>
   <body>
-    {{> header }}
+    <header>
+      <a href="#">Dashboard</a>
+      <a href="#">Clients</a>
+      <a href="#">Server</a>
+      <a href="#">VoD</a>
+    </header>
     <div class="container">
+      <h1>Server Overview</h1>
+      <hr>
+      <h3>Quick Glance</h3>
       <div class="row">
-        <div class="float-left one-third-container">
+        <div class="float-left one-third-col">
           <canvas id = 'connectionsGraph' width="200" height="200"></canvas>
         </div>
-        <div class="float-center one-third-container">
-          <canvas id = 'memoryChart' width="200" height="200"></canvas>
+        <div class="float-center one-third-col">
+          <canvas id = 'memoryGraph' width="200" height="200"></canvas>
         </div>
-        <div class="float-right one-third-container">
-          <canvas id = 'bandwidthChart' width="200" height="200"></canvas>
+        <div class="float-right one-third-col">
+          <canvas id = 'bandwidthGraph' width="200" height="200"></canvas>
         </div>
       </div>
       <div class="row">
@@ -82,9 +90,7 @@
         </div>
       </div>
     </div>
-    {{> footer }}
   </body>
+  <script src="./src/lib/Chart.bundle.min.js" defer></script>
   <script src="./dist/bundle.js" defer></script>
-  <script src="./src/lib/Moment.min.js" defer></script>
-  <script src="./src/lib/Chart.min.js" defer></script>
 </html>

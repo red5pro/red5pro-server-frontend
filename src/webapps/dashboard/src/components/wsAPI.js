@@ -65,7 +65,7 @@ export default class WS {
       if (!cb) {
         return console.log('Error, must specify a Callback function')
       }
-      cb(evt, currentConnections[0].content, currentConnections[0].apiCall)
+      cb(JSON.parse(evt.data), currentConnections[0].content, currentConnections[0].apiCall)
 
       let first = currentConnections.shift()
       currentConnections.push(first)

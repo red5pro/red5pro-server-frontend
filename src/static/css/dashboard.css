@@ -56,11 +56,9 @@ hr.top-padded-rule {
 
 .float-left {
   float: left;
-  margin: 0;
 }
 .float-right {
   float: left;
-  margin: 0;
 }
 .float-center {
   float: left;
@@ -100,7 +98,12 @@ hr.top-padded-rule {
     display: table;
     content: " ";
 }
-
+a {
+  float: right;
+  margin: 0;
+  padding: 10px;
+  color: red;
+}
 a.link {
   color: rgb(227, 25, 0);
   text-decoration: none;
@@ -117,7 +120,6 @@ a.link:hover {
   overflow: hidden;
   margin: auto;
   width: 100%;
-  max-width: 1000px;
 }
 .one-half-col{
   width: 50%;
@@ -125,6 +127,10 @@ a.link:hover {
 .one-third-col{
   width: 30%;
   text-align: center;
+}
+
+.two-third-col{
+  width: 70%;
 }
 
 table tbody tr td:first-child {

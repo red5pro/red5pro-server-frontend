@@ -20,11 +20,27 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
       gutil.log('Generating Webapps Page: ' + webappDirName);
       Builder.generateIndexPage(cb);
     });
+    gulp.task(generateTaskLabel, [initChain], function(cb) {
+      gutil.log('Generating Webapps Page: ' + webappDirName);
+      var buildPage = function(page, cb) {
+        return function() {
+          gutil.log('Generating [' + webappDirName + '] Page: ' + page);
+          return Builder.generatePage(page, cb);
+        };
+      };
+      var buildClients= buildPage('clients.jsp', cb);
+      var buildVOD = buildPage('vod.jsp', buildClients);
+      Builder.generateIndexPage(buildVOD);
+    });
 
     gulp.task(copyContentsTaskLabel, [generateTaskLabel], function(cb) {
       // Add relative file paths to exclude to the array.
       // * File paths are relative to the src/webapps/<your-webapp> directory
-      Builder.copyWebappContents(['index.jsp'], cb);
+      Builder.copyWebappContents([
+        'index.jsp',
+        'clients.jsp',
+        'vod.jsp'
+      ], cb);
     });
 
     gulp.task(copyStaticTaskLabel, [copyContentsTaskLabel], function(cb) {
