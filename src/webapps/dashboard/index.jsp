@@ -13,14 +13,14 @@
     {{> header }}
     <div class="container">
       <div class="row">
-        <div class="one-third-container">
-          <canvas id = 'serverChart' width="400" height="400"></canvas>
+        <div class="float-left one-third-container">
+          <canvas id = 'connectionsGraph' width="200" height="200"></canvas>
         </div>
-        <div class="one-third-container">
-          <canvas id = 'memoryChart' width="400" height="400"></canvas>
+        <div class="float-center one-third-container">
+          <canvas id = 'memoryChart' width="200" height="200"></canvas>
         </div>
-        <div class="one-third-container">
-          <canvas id = 'bandwidthChart' width="400" height="400"></canvas>
+        <div class="float-right one-third-container">
+          <canvas id = 'bandwidthChart' width="200" height="200"></canvas>
         </div>
       </div>
       <div class="row">
@@ -84,6 +84,7 @@
     </div>
     {{> footer }}
   </body>
-  <script src="./dist/bundle.js"></script>
-  <script src="./src/lib/Chart.min.js"></script>
+  <script src="./dist/bundle.js" defer></script>
+  <script src="./src/lib/Moment.min.js" defer></script>
+  <script src="./src/lib/Chart.min.js" defer></script>
 </html>

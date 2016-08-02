@@ -40,33 +40,35 @@ export default class WS {
   removeConnection (connection) {
     console.log('Must implement Remove Connection')
   }
-  openConnection (cb) {
+  openConnection (cb = null) {
     let socket = new WebSocket(this.url, 'api')
     let currentConnections = this.currentConnections
+    let wsCalls = this.wsCalls
+    let interval = this.interval
+
     socket.onopen = function () {
       setInterval(() => {
-        console.log(currentConnections)
         currentConnections.forEach((connection) => {
           let request = {}
           request.invocation_id = new Date().getTime().toString()
           request.type = 'RMI'
-          request.path = this.wsCalls[connection.apiCall]
+          request.path = wsCalls[connection.apiCall]
           request.content = connection.content
 
           let payload = JSON.stringify(request)
           socket.send(payload)
         })
-      }, this.interval)
+      }, interval)
     }
 
     socket.onmessage = function (evt) {
-      if (cb) {
-        cb(evt, currentConnections[0].content, currentConnections[0].apiCall)
-        let first = currentConnections.shift()
-        currentConnections.push(first)
-      } else {
-        console.log('Error, must specify a Callback function')
+      if (!cb) {
+        return console.log('Error, must specify a Callback function')
       }
+      cb(evt, currentConnections[0].content, currentConnections[0].apiCall)
+
+      let first = currentConnections.shift()
+      currentConnections.push(first)
     }
 
     socket.onclose = function () {
