@@ -27,8 +27,8 @@ export default class REST {
       // Stream Calls
       getLiveStreams: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams?accessToken=${this.securityToken}`,
       getLiveStreamStatistics: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}?accessToken=${this.securityToken}`,
-      recordLiveStream: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}/action/startrecord?accessToken=$t{this.securityToken}`,
-      stopStreamRecord: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}/action/stoprecord?accessToken=$t{this.securityToken}`
+      recordLiveStream: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}/action/startrecord?accessToken=${this.securityToken}`,
+      stopStreamRecord: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}/action/stoprecord?accessToken=${this.securityToken}`
     }
   }
 
@@ -40,7 +40,9 @@ export default class REST {
     fetch(this.apiCalls[apiCall])
       .then((response) => response.json())
       .then((json) => {
-        cb(json)
+        if (cb) {
+          cb(json)
+        }
       })
       .catch((e) => {
         console.log(e)
@@ -59,8 +61,8 @@ export default class REST {
       // Steram Calls
       getLiveStreams: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams?accessToken=${this.securityToken}`,
       getLiveStreamStatistics: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}?accessToken=${this.securityToken}`,
-      recordLiveStream: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}/action/startrecord?accessToken=$t{this.securityToken}`,
-      stopStreamRecord: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}/action/stoprecord?accessToken=$t{this.securityToken}`
+      recordLiveStream: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}/action/startrecord?accessToken=${this.securityToken}`,
+      stopStreamRecord: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}/action/stoprecord?accessToken=${this.securityToken}`
     }
   }
 }

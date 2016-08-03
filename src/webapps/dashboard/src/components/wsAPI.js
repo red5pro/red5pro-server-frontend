@@ -18,7 +18,7 @@ export default class WS {
       getVodFiles: '/media',
       deleteVodFile: '/media/delete',
       // Stream Calls
-      getLiveStream: '/streams',
+      getLiveStreams: '/streams',
       getLiveStreamStatistics: '/streams/stream/statistics',
       recordLiveStream: '/streams/stream/action/startrecord',
       stopStreamRecord: '/streams/stream/action/stoprecord',
@@ -33,12 +33,16 @@ export default class WS {
   addConnection (apiCall, content) {
     this.currentConnections.push({
       apiCall: apiCall,
-      content: [content] || []
+      content: content || []
     })
     console.log(this.currentConnections)
   }
-  removeConnection (connection) {
-    console.log('Must implement Remove Connection')
+  removeConnection (apiCall, content) {
+    this.currentConnections.forEach((connection, index) => {
+      if ((connection.apiCall === apiCall) && ((connection.content === content) || (content === '*'))) {
+        this.currentConnections.splice(index, 1)
+      }
+    })
   }
   openConnection (cb = null) {
     let socket = new WebSocket(this.url, 'api')

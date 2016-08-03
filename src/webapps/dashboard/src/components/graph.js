@@ -1,10 +1,12 @@
 let moment = require('moment')
 import Chart from '../lib/Chart.bundle.min.js'
+
 Chart.defaults.global.responsive = true
 
 export class LineGraph {
   constructor (context) {
     this.context = context
+    this.length = 11
     this.data = {
       type: 'line',
       data: {
@@ -49,7 +51,7 @@ export class LineGraph {
     let currentData = this.data.data.datasets[0].data
     let now = moment()
     for (let ii = 0; ii < 11; ii++) {
-      currentData.push({
+      currentData.unshift({
         x: now.subtract(1, 'seconds').format(),
         y: 0
       })
@@ -74,6 +76,19 @@ export class LineGraph {
     this.data.data.datasets[0].data = currentData
     this.currentChart.update()
   }
+  reset () {
+    let resetData = []
+    let now = moment()
+
+    for (let ii = 0; ii < 11; ii++) {
+      resetData.unshift({
+        x: now.subtract(1, 'seconds').format(),
+        y: 0
+      })
+    }
+    this.data.data.datasets[0].data = resetData
+    this.currentChart.update()
+  }
 }
 export class DoughnutGraph {
   constructor (context) {
@@ -86,7 +101,7 @@ export class DoughnutGraph {
           data: [1, 1],
           backgroundColor: [
             '#E31900',
-            'lightgrey'
+            '#a8a8a8'
           ]
         }]
       },
@@ -150,6 +165,10 @@ export class BarGraph {
   }
   updateGraph (newData) {
     this.data.data.datasets[0].data = [newData]
+    this.currentChart.update()
+  }
+  reset () {
+    this.data.data.datasets[0].datasets = [0]
     this.currentChart.update()
   }
 }

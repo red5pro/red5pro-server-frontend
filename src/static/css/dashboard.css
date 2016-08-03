@@ -57,6 +57,7 @@ hr.top-padded-rule {
 header {
   width: 90%;
   margin: auto;
+  overflow: hidden;
 }
 
 .float-left {
@@ -126,6 +127,13 @@ a.link:hover {
   margin: auto;
   width: 90%;
 }
+
+.one-fifth-col {
+  width:20%;
+}
+.four-fifth-col{
+  width: 80%;
+}
 .one-half-col{
   width: 50%;
 }
@@ -133,7 +141,6 @@ a.link:hover {
   width: 30%;
   text-align: center;
 }
-
 .two-third-col{
   width: 70%;
 }
@@ -143,6 +150,26 @@ table tbody tr td:first-child {
   text-align: left;
 }
 table tbody tr td:nth-child(2) {
-  color: lightgrey;
+  color: #a8a8a8;
   text-align: center;
+}
+#activeConnections {
+}
+#activeConnectionsTable{
+  border: solid;
+  border-color: black;
+  width: 100%;
+  overflow: scroll;
+  height: 100%;
+}
+#activeConnectionsTableBody {
+  margin: 0;
+}
+#activeConnectionsTableBody tr td a{
+  margin: 0;
+  padding: 0;
+  float: left;
+}
+#activeConnectionsTableBody tr td:hover {
+  color: #E31900;
 }

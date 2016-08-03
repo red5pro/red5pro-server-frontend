@@ -34,10 +34,17 @@ websocket.openConnection((data, content, apiCall) => {
   connectionsGraph.updateGraph(data.active_connections)
   console.log(data.free_memory)
   console.log(data.total_memory)
-  memoryGraph.updateGraph([data.free_memory, data.total_memory])
-  bandwidthGraph.updateGraph(data.bytes_in)
+  memoryGraph.updateGraph(convertMemory(data.free_memory, data.total_memory))
+  bandwidthGraph.updateGraph(data.bytes_in / (1024 * 1024))
 
   // Uptime
   document.getElementById('Uptime').innerHTML = data.uptime
   // bandwidthGraph.updateGraph(data.bytes_in)
 })
+
+function convertMemory (free, total) {
+  let used = total - free
+  used = used / (1024 * 1024)
+  free = free / (1024 * 1024)
+  return [free, used]
+}
