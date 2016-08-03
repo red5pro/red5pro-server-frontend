@@ -54,6 +54,11 @@ hr.top-padded-rule {
   margin-top: 40px;
 }
 
+header {
+  width: 90%;
+  margin: auto;
+}
+
 .float-left {
   float: left;
 }
@@ -119,7 +124,7 @@ a.link:hover {
 .row {
   overflow: hidden;
   margin: auto;
-  width: 100%;
+  width: 90%;
 }
 .one-half-col{
   width: 50%;

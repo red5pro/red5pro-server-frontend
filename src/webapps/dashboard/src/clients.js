@@ -1,46 +1,50 @@
-// import REST from './components/restAPI.js'
-// import WS from './components/wsAPI.js'
+import REST from './components/restAPI.js'
+import WS from './components/wsAPI.js'
 
-// let restAPI = new REST('xyz123')
-// let websocket = new WS('xyz123', 2000)
+let restAPI = new REST('xyz123')
+let websocket = new WS('xyz123')
 
 // let activeClients = []
 
-// restAPI.makeAPICall('getApplications', null, (applications) => {
-//   applications.forEach((application) => {
-//     websocket.addConnection('getClients', {appname: application})
-//   })
-// })
+restAPI.makeAPICall('getApplications', null, (applications) => {
+  console.log(applications)
+  applications.data.forEach((application) => {
+    websocket.addConnection('getLiveStreams', application)
+  })
+})
 
-// websocket.openConnection((data, content, apiCall) => {
-//   console.log(data)
-//   switch (apiCall) {
-//     case 'getClients':
-//       const newClients = data.data
-//       const oldClients = activeClients
+websocket.openConnection((data, content, apiCall) => {
+  switch (apiCall) {
+    case 'getLiveStreams':
+      console.log(data)
+      console.log(content)
+      console.log(apiCall)
+      // const newClients = data.data
+      // const oldClients = activeClients
 
-//       if (arraysEqual(newClients, oldClients)) {
-//         return
-//       }
+      // if (arraysEqual(newClients, oldClients)) {
+      //   return
+      // }
 
-//       const addClients = filterConnections(newClients, oldClients)
-//       const removeClients = filterConnections(oldClients, newClients)
+      // const addClients = filterConnections(newClients, oldClients)
+      // const removeClients = filterConnections(oldClients, newClients)
 
-//       if (addClients) {
+      // if (addClients) {
 
-//       }
-//       if (removeClients) {
-//         activeClients.filter((client) => {
-//           if (removeClients.indexOf(client)) {
-//           }
-//         })
-//       }
-//       removeConnections(removeClients, activeClients)
-//       addConnections(addClients, activeClients)
-
-//       break
-//   }
-// })
+      // }
+      // if (removeClients) {
+      //   activeClients.filter((client) => {
+      //     if (removeClients.indexOf(client)) {
+      //     }
+      //   })
+      // }
+      // removeConnections(removeClients, activeClients)
+      // addConnections(addClients, activeClients)
+      break
+    case 'getClientStatistics':
+      break
+  }
+})
 
 // function arraysEqual (a, b) {
 //   if (a.length !== b.length) {

@@ -1,23 +1,22 @@
 import REST from './components/restAPI.js'
 import WS from './components/wsAPI.js'
-import {LineGraph, BarGraph} from './components/graph.js'
+import {LineGraph, DoughnutGraph, BarGraph} from './components/graph.js'
 
 let restAPI = new REST('xyz123')
 let websocket = new WS('xyz123', 1000)
 
 let connectionsGraph = new LineGraph(document.getElementById('connectionsGraph'))
-// let memoryGraph = new DoughnutGraph(document.getElementById('memoryGraph'))
+let memoryGraph = new DoughnutGraph(document.getElementById('memoryGraph'))
 let bandwidthGraph = new BarGraph(document.getElementById('bandwidthGraph'))
 
 connectionsGraph.makeGraph()
+memoryGraph.makeGraph()
 bandwidthGraph.makeGraph()
-// memoryGraph.makeGraph()
-// bandwidthGraph.makeGraph()
 
 restAPI.makeAPICall('getServerStatistics', null, (data) => {
   console.log(data)
   data = data.data
-  // Versino Information
+  // Version Information
   document.getElementById('OSName').innerHTML = data.os_name
   document.getElementById('OSVersion').innerHTML = data.os_version
   document.getElementById('Architecture').innerHTML = data.architecture
@@ -33,5 +32,12 @@ websocket.openConnection((data, content, apiCall) => {
 
   // Graph Data
   connectionsGraph.updateGraph(data.active_connections)
-  bandwidthGraph.updateGraph(data.bytes_in / (1024 * 1024 * 1024))
+  console.log(data.free_memory)
+  console.log(data.total_memory)
+  memoryGraph.updateGraph([data.free_memory, data.total_memory])
+  bandwidthGraph.updateGraph(data.bytes_in)
+
+  // Uptime
+  document.getElementById('Uptime').innerHTML = data.uptime
+  // bandwidthGraph.updateGraph(data.bytes_in)
 })

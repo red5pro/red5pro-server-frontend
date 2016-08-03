@@ -19,8 +19,8 @@
     <div class="container">
       <h1>Server Overview</h1>
       <hr>
-      <h3>Quick Glance</h3>
       <div class="row">
+        <h3>Quick Glance</h3>
         <div class="float-left one-third-col">
           <canvas id = 'connectionsGraph' width="200" height="200"></canvas>
         </div>
@@ -31,6 +31,7 @@
           <canvas id = 'bandwidthGraph' width="200" height="200"></canvas>
         </div>
       </div>
+      <hr>
       <div class="row">
         <div class='float-left one-third-col'>
           <h3>Server Statistics</h3>
@@ -83,6 +84,7 @@
           <table>
             <tbody>
               <tr>
+                <td> Uptime </td>
                 <td id = 'Uptime'> </td>
               </tr>
             </tbody>

@@ -10,12 +10,11 @@
     </style>
   </head>
   <body>
-    {{> header }}
     <div class="container">
       <h1>Clients Overview</h1>
       <hr>
-      <h3>Quick Glance</h3>
       <div class="row">
+        <h3>Quick Glance</h3>
         <div class="float-left one-third-col">
           <h3>Active Connections</h3>
           <table></table>
@@ -27,5 +26,5 @@
     </div>
   </body>
   <script src="./src/lib/Chart.bundle.min.js" defer></script>
-  <script src="./dist/bundle.js" defer></script>
+  <script src="./dist/bundle-clients.js" defer></script>
 </html>

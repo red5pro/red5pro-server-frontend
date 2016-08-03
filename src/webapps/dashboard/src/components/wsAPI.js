@@ -30,10 +30,10 @@ export default class WS {
     }
     this.currentConnections = []
   }
-  addConnection (apiCall, content = []) {
+  addConnection (apiCall, content) {
     this.currentConnections.push({
       apiCall: apiCall,
-      content: content
+      content: [content] || []
     })
     console.log(this.currentConnections)
   }
