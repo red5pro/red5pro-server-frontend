@@ -3,6 +3,7 @@
 import REST from './components/restAPI.js'
 import WS from './components/wsAPI.js'
 import {LineGraph, BarGraph} from './components/graph.js'
+import {DemoVideoHandler, DemoSocketHandler} from './components/HLS.js'
 
 // import Datamap from '../lib/datamaps.world.min.js'
 
@@ -35,15 +36,13 @@ document.getElementById('viewMap').onclick = viewMap
 
 restAPI.makeAPICall('getApplications', null, (applications) => {
   applications.data.forEach((application) => {
-    if (application !== 'dashboard') {
+    if (application !== 'api') {
       activeClients[application] = []
       websocket.addConnection('getLiveStreams', [application])
     }
   })
 })
-
 websocket.openConnection((data, content, apiCall) => {
-  console.log(activeClients)
   switch (apiCall) {
     case 'getLiveStreams':
       const newClients = data.content.data || []
@@ -52,22 +51,12 @@ websocket.openConnection((data, content, apiCall) => {
       if (arraysEqual(newClients, oldClients)) {
         return
       }
-      console.log('The new clients are')
-      console.log(newClients)
-      console.log('The old clients are')
-      console.log(oldClients)
+
       const addClients = filterConnections(newClients, oldClients)
       const removeClients = filterConnections(oldClients, newClients)
 
-      console.log('We will add these clients')
-      console.log(addClients)
-      console.log('We will remove these clients')
-      console.log(removeClients)
-
       if (removeClients) {
         removeClients.forEach((clientToTerminate) => {
-          console.log('removing')
-          console.log(clientToTerminate)
           document.getElementById(clientToTerminate).remove()
         })
       }
@@ -75,6 +64,9 @@ websocket.openConnection((data, content, apiCall) => {
       if (addClients) {
         addClients.forEach((clientToAdd) => {
           console.log('adding')
+          console.log(apiCall)
+          console.log(content)
+          console.log(data)
           console.log(clientToAdd)
           // Add Client UI
           let tr = document.createElement('tr')
@@ -104,6 +96,18 @@ websocket.openConnection((data, content, apiCall) => {
             }
           })
 
+          ;(function () {
+            'use strict'
+
+            function onDomContentLoaded (e) {
+              console.log('GGOGOGOGOOGOGOG')
+              const videoHandler = new DemoVideoHandler()
+              const socketHandler = new DemoSocketHandler(videoHandler) // eslint-disable-line no-unused-vars
+            }
+
+            window.addEventListener('DOMContentLoaded', onDomContentLoaded)
+          })()
+
           // Add Graph data
         })
       }
@@ -111,9 +115,14 @@ websocket.openConnection((data, content, apiCall) => {
 
       break
     case 'getLiveStreamStatistics':
+      console.log('getLiveStreamStatistics')
+      console.log(apiCall)
+      console.log(content)
       console.log(data)
-      connectionsGraph.updateGraph(data.content.data.active_subscribers)
-      bandwidthGraph.updateGraph(data.content.data.bytes_recieved / (1024 * 1024))
+      // connectionsGraph.updateGraph(data.content.data.active_subscribers)
+      // bandwidthGraph.updateGraph(data.content.data.bytes_recieved / (1024 * 1024))
+      break
+    default:
       break
   }
 })
@@ -159,8 +168,7 @@ function getMoreStreamInfo () {
   bandwidthGraph.reset()
 
   websocket.removeConnection('getLiveStreamStatistics', '*')
-  websocket.addConnection('getLiveStreamStatistics', [content[0], null, content[1]])
-  console.log(activeClients)
+  websocket.addConnection('getLiveStreamStatistics', [content[0], content[1]])
 }
 
 function toggleRecord () {

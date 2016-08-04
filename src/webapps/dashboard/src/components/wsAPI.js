@@ -31,18 +31,27 @@ export default class WS {
     this.currentConnections = []
   }
   addConnection (apiCall, content) {
+    console.log('adding Connection')
+    console.log(apiCall)
+    console.log(content)
     this.currentConnections.push({
       apiCall: apiCall,
       content: content || []
     })
+    console.log('result')
     console.log(this.currentConnections)
   }
   removeConnection (apiCall, content) {
+    console.log('removing Connection')
+    console.log(apiCall)
+    console.log(content)
     this.currentConnections.forEach((connection, index) => {
       if ((connection.apiCall === apiCall) && ((connection.content === content) || (content === '*'))) {
         this.currentConnections.splice(index, 1)
       }
     })
+    console.log('result')
+    console.log(this.currentConnections)
   }
   openConnection (cb = null) {
     let socket = new WebSocket(this.url, 'api')
@@ -52,6 +61,8 @@ export default class WS {
 
     socket.onopen = function () {
       setInterval(() => {
+        console.log('currentConnections')
+        console.log(currentConnections)
         currentConnections.forEach((connection) => {
           let request = {}
           request.invocation_id = new Date().getTime().toString()
@@ -59,7 +70,10 @@ export default class WS {
           request.path = wsCalls[connection.apiCall]
           request.content = connection.content
 
+          console.log(request)
+
           let payload = JSON.stringify(request)
+          console.log(payload)
           socket.send(payload)
         })
       }, interval)
