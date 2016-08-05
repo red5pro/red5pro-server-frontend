@@ -1,8 +1,6 @@
-/* global Datamap */
-
 import REST from './components/restAPI.js'
 import WS from './components/wsAPI.js'
-import {LineGraph, BarGraph} from './components/graph.js'
+import {LineGraph, BarGraph, MAP} from './components/graph.js'
 import {DemoVideoHandler, DemoSocketHandler} from './components/HLS.js'
 
 let restAPI = new REST('xyz123')
@@ -10,24 +8,13 @@ let websocket = new WS('xyz123')
 
 let connectionsGraph = new LineGraph(document.getElementById('connectionsGraph'))
 let bandwidthGraph = new BarGraph(document.getElementById('bandwidthGraph'))
-
-let map = new Datamap({ // eslint-disable-line no-unused-vars
-  element: document.getElementById('dataMap'),
-  fills: {
-    defaultFill: '#E31900'
-  },
-  height: null,
-  width: document.getElementById('mapData').offsetWidth,
-  responsive: true,
-  bubblesConfig: {
-    borderColor: 'lightgrey'
-  }
-})
+let map = new MAP(document.getElementById('dataMap'), document.getElementById('mapData').offsetWidth)
 
 let activeClients = {}
 
 connectionsGraph.makeGraph()
 bandwidthGraph.makeGraph()
+map.makeMap()
 
 document.getElementById('viewMap').onclick = viewMap
 
@@ -72,20 +59,11 @@ websocket.openConnection((data, content, apiCall) => {
 
           tr.appendChild(td)
           document.getElementById('activeConnectionsTableBody').appendChild(tr)
+          /* For API v2 – Make restAPI call to get publisher and subscriber ip addresses, determine location, and update bubbles
+          */
 
-          // Add Bubble to map
-          let newBubble = {
-            name: clientToAdd,
-            radius: 10,
-            latitude: 50.07,
-            longitude: 78.43
-          }
-
-          map.bubbles([newBubble], {
-            popupTemplate: function (geography, data) {
-              return ['<div class="hoverinfo"><strong>' + data.name + '</strong>' + '</div>'].join('')
-            }
-          })
+          // map.addPublisher(origin, name)
+          // map.addSubscriber(origin, destination, name)
         })
       }
       activeClients[content[0]] = newClients
@@ -153,6 +131,7 @@ function getMoreStreamInfo () {
 
   video.id = 'streamVid'
 
+  // Reset video DOM
   document.getElementById('streamVidParent').appendChild(video)
 
   // Reset graphs and connections
@@ -161,6 +140,8 @@ function getMoreStreamInfo () {
 
   websocket.removeConnection('getLiveStreamStatistics', '*')
   websocket.addConnection('getLiveStreamStatistics', [content[0], content[1]])
+
+  // Add HLS
   ;(function () {
     'use strict'
     const videoHandler = new DemoVideoHandler()
@@ -170,8 +151,9 @@ function getMoreStreamInfo () {
     socketHandler.onChange(content[0], content[1])
   })()
 
+  // Format some video presets
   document.getElementById('streamVid_html5_api').controls = true
-  document.querySelector('.vjs-big-play-button').display = 'block'
+  document.querySelector('.vjs-big-play-button').display = 'none'
 }
 
 function toggleRecord () {

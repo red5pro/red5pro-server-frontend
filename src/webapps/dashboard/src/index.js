@@ -14,7 +14,6 @@ memoryGraph.makeGraph()
 bandwidthGraph.makeGraph()
 
 restAPI.makeAPICall('getServerStatistics', null, (data) => {
-  console.log(data)
   data = data.data
   // Version Information
   document.getElementById('OSName').innerHTML = data.os_name
@@ -32,8 +31,6 @@ websocket.openConnection((data, content, apiCall) => {
 
   // Graph Data
   connectionsGraph.updateGraph(data.active_connections)
-  console.log(data.free_memory)
-  console.log(data.total_memory)
   memoryGraph.updateGraph(convertMemory(data.free_memory, data.total_memory))
   bandwidthGraph.updateGraph((data.bytes_in / (1024 * 1024)).toFixed(2))
 

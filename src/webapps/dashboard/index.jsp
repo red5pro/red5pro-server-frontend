@@ -11,13 +11,19 @@
   </head>
   <body>
     <div class="container">
-      <header>
-        <h1>Server Overview</h1>
-        <a href="/dashboard/index.jsp">Dashboard</a>
-        <a href="/dashboard/clients.jsp">Clients</a>
-        <a href="#">Server</a>
-        <a href="#">VoD</a>
-      </header>
+      <div class="row position-relative">
+        <div class = 'one-half-col float-left'>
+          <h1>Server Overview</h1>
+        </div>
+        <div class = 'one-half-col float-right position-absolute bottom right'>
+          <header>
+            <a href="/dashboard/index.jsp">Dashboard</a>
+            <a href="/dashboard/clients.jsp">Clients</a>
+            <a href="#">Server</a>
+            <a href="#">VoD</a>
+          </header>
+        </div>
+      </div>
       <hr>
       <div class="row">
         <h3>Quick Glance</h3>

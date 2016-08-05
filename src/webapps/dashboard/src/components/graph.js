@@ -1,7 +1,80 @@
+/* global Datamap */
 let moment = require('moment')
 import Chart from '../lib/Chart.bundle.min.js'
-
 Chart.defaults.global.responsive = true
+
+export class MAP {
+  constructor (context, width) {
+    this.context = context
+    this.width = width
+    this.map
+    this.bubbles = []
+    this.arcs = []
+  }
+  makeMap () {
+    this.map = new Datamap({
+      element: this.context,
+      fills: {
+        defaultFill: '#E31900',
+        publisher: '#a8a8a8',
+        subscriber: '#a8a8a8'
+      },
+      height: null,
+      width: this.width,
+      responsive: true,
+      bubblesConfig: {
+        borderColor: '#a8a8a8'
+      }
+    })
+  }
+  addPublisher (location, name) {
+    let newPublisher = {
+      name: name,
+      radius: 5,
+      latitude: location[0],
+      longitude: location[1],
+      fillKey: 'publisher'
+    }
+
+    this.bubbles.push(newPublisher)
+    this.map.bubbles(this.bubbles, {
+      popupTemplate: function (geography, data) {
+        return ['<div class="hoverinfo"><strong>' + data.name + '</strong>' + '</div>'].join('')
+      }
+    })
+  }
+  addSubscriber (origin, destination, name) {
+    let newSubscriber = {
+      name: name,
+      radius: 1,
+      latitude: origin[0],
+      longitude: origin[1],
+      fillKey: 'publisher'
+    }
+    let newArc = {
+      origin: {
+        latitude: origin[0],
+        longitude: origin[1]
+      },
+      destination: {
+        latitude: destination[0],
+        longitude: destination[1]
+      }
+    }
+    this.bubbles.push(newSubscriber)
+    this.arcs.push(newArc)
+    this.map.bubbles(this.bubbles, {
+      popupTemplate: function (geography, data) {
+        return ['<div class="hoverinfo"><strong>' + data.name + '</strong>' + '</div>'].join('')
+      }
+    })
+    this.map.arc(this.arcs, {
+      strokeWidth: 2,
+      arcSharpness: 1,
+      strokeColor: '#a8a8a8'
+    })
+  }
+}
 
 export class LineGraph {
   constructor (context, title) {
@@ -136,7 +209,7 @@ export class BarGraph {
     this.data = {
       type: 'horizontalBar',
       data: {
-        labels: [],
+        labels: [this.title],
         datasets: [{
           backgroundColor: [
             '#E31900'
@@ -148,8 +221,13 @@ export class BarGraph {
         scales: {
           xAxes: [{
             type: 'linear',
-            min: 0,
-            suggestedMax: 5
+            ticks: {
+              suggestedMax: 5,
+              beginAtZero: true
+            }
+          }],
+          yAxes: [{
+            display: false
           }]
         },
         title: {

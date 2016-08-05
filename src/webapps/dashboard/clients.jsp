@@ -19,13 +19,19 @@
   <body>
 
     <div class="container">
-      <header>
-        <h1>Clients Overview</h1>
-        <a href="/dashboard/index.jsp">Dashboard</a>
-        <a href="/dashboard/clients.jsp">Clients</a>
-        <a href="#">Server</a>
-        <a href="">VoD</a>
-      </header>
+      <div class="row position-relative">
+        <div class = 'one-half-col float-left'>
+          <h1>Clients Overview</h1>
+        </div>
+        <div class = 'one-half-col float-right position-absolute bottom right'>
+          <header>
+            <a href="/dashboard/index.jsp">Dashboard</a>
+            <a href="/dashboard/clients.jsp">Clients</a>
+            <a href="#">Server</a>
+            <a href="#">VoD</a>
+          </header>
+        </div>
+      </div>
       <hr>
       <div class="row">
         <h3>Active Connections</h3>
@@ -38,7 +44,7 @@
           <button id = 'viewMap' style="display:none">View Map</button>
         </div>
         <div class="float-right four-fifth-col">
-          <div class = 'row' id = mapData>
+          <div class = 'top row' id = mapData>
             <div id = 'dataMapContainer'>
               <div id="dataMap" style="position: relative; width: 100%; height: 100%;"></div>
             </div>

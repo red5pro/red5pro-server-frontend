@@ -36,6 +36,7 @@ h1 {
   font-weight: 400;
   font-size: 42px;
   color: #444;
+  margin: 0;
 }
 
 h2 {
@@ -55,14 +56,17 @@ h4 {
   font-size: 20px;
   margin-top: 0;
 }
-hr.top-padded-rule {
-  margin-top: 40px;
+hr {
+  margin-top: 1%;
+  margin-bottom: 1%;
 }
 
 header {
   width: 90%;
   margin: auto;
   overflow: hidden;
+  bottom: 0;
+  right: 0;
 }
 header a{
   float: right;
@@ -75,6 +79,24 @@ header a:hover {
   cursor: pointer;
 }
 
+.position-relative {
+  position: relative;
+}
+.position-absolute {
+  position: absolute;
+}
+.bottom{
+  bottom: 0;
+  margin-bottom: 0;
+}
+.right{
+  right:0;
+  margin-right: 0;
+}
+.top {
+  top: 0;
+  margin-top: 0;
+}
 .float-left {
   float: left;
 }
@@ -141,7 +163,7 @@ a.link:hover {
   overflow: hidden;
   margin: auto;
   width: 90%;
-  padding-bottom: 1%;
+  margin-top: 2%;
 }
 
 .one-fifth-col {
@@ -162,6 +184,7 @@ a.link:hover {
 }
 table {
   margin: auto;
+  font-size: 16px;
 }
 table tbody tr td:first-child {
   color: #E31900;
@@ -182,8 +205,13 @@ button {
   border-width: 2px;
   padding: 2px;
   background-color: white;
-  border-radius: 3px
-  margin: 1% 0 1% 0;
+  border-radius: 3px;
+  margin: 3% auto;
+  font-size: 16px;
+}
+button:hover {
+  color: #a8a8a8;
+  cursor: pointer;
 }
 #activeConnections {
 }

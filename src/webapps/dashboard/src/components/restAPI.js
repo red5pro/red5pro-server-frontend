@@ -37,6 +37,7 @@ export default class REST {
       this.contents = contents
       this.updateCalls()
     }
+
     fetch(this.apiCalls[apiCall])
       .then((response) => response.json())
       .then((json) => {
@@ -58,6 +59,9 @@ export default class REST {
       getApplications: `http://${this.host}/api/v1/applications?accessToken=${this.securityToken}`,
       getApplicationStatistics: `http://${this.host}/api/v1/applications/${this.contents.appname}?accessToken=${this.securityToken}`,
       invoke: `http://${this.host}/api/v1/applications/${this.contents.appname}/invoke?accessToken=${this.securityToken}`,
+      // VoD Calls
+      getVodFiles: `http://${this.host}/api/v1/applications/${this.contents.appname}/media?accessToken=${this.securityToken}`,
+      deleteVodFiles: `http://${this.host}/api/v1/applications/${this.contents.appname}/media?filename=${this.contents.filename}&extension=${this.contents.extension}&accessToken=${this.securityToken}`,
       // Steram Calls
       getLiveStreams: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams?accessToken=${this.securityToken}`,
       getLiveStreamStatistics: `http://${this.host}/api/v1/applications/${this.contents.appname}/streams/${this.contents.streamname}?accessToken=${this.securityToken}`,
