@@ -10,14 +10,14 @@
     </style>
   </head>
   <body>
-    <header>
-      <a href="#">Dashboard</a>
-      <a href="#">Clients</a>
-      <a href="#">Server</a>
-      <a href="#">VoD</a>
-    </header>
     <div class="container">
-      <h1>Server Overview</h1>
+      <header>
+        <h1>Server Overview</h1>
+        <a href="/dashboard/index.jsp">Dashboard</a>
+        <a href="/dashboard/clients.jsp">Clients</a>
+        <a href="#">Server</a>
+        <a href="#">VoD</a>
+      </header>
       <hr>
       <div class="row">
         <h3>Quick Glance</h3>

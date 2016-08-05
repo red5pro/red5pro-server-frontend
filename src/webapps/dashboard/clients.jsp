@@ -17,8 +17,15 @@
     <script src="./dist/bundle-clients.js" defer></script>
   </head>
   <body>
+
     <div class="container">
-      <h1>Clients Overview</h1>
+      <header>
+        <h1>Clients Overview</h1>
+        <a href="/dashboard/index.jsp">Dashboard</a>
+        <a href="/dashboard/clients.jsp">Clients</a>
+        <a href="#">Server</a>
+        <a href="">VoD</a>
+      </header>
       <hr>
       <div class="row">
         <h3>Active Connections</h3>
@@ -27,24 +34,28 @@
             <tbody id = 'activeConnectionsTableBody'>
             </tbody>
           </table>
-          <button id = 'recordStream'>Record Stream</button>
-          <button id = 'viewMap' onclick="viewMap()" style="display:none">View Map</button>
+          <button id = 'recordStream' style="display:none">Record Stream</button>
+          <button id = 'viewMap' style="display:none">View Map</button>
         </div>
-        <div class="float-right four-fifth-col" style="display:none">
+        <div class="float-right four-fifth-col">
           <div class = 'row' id = mapData>
             <div id = 'dataMapContainer'>
               <div id="dataMap" style="position: relative; width: 100%; height: 100%;"></div>
             </div>
           </div>
-          <div class = 'row' id = 'streamData'>
+          <div class = 'row' id = 'streamData' style="display:none">
+            <h4 id = 'streamDataLabel'></h4>
+            <div class = 'row' id = 'streamVidParent'>
+              <video id = 'streamVid' controls style='background-color: black'></video>
+            </div>
+            <hr>
             <div class = 'row'>
-              <video id = 'streamVid' controls></video>
-            </div>
-            <div class = "float-right one-half-col">
-              <canvas id = 'connectionsGraph' width="200" height="200"></canvas>
-            </div>
-            <div class = "float-left one-half-col">
-              <canvas id = 'bandwidthGraph' width="200" height="200"></canvas>
+              <div class = "float-right one-half-col">
+                <canvas id = 'connectionsGraph' width="200" height="200"></canvas>
+              </div>
+              <div class = "float-left one-half-col">
+                <canvas id = 'bandwidthGraph' width="200" height="200"></canvas>
+              </div>
             </div>
           </div>
         </div>

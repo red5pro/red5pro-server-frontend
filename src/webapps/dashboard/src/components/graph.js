@@ -4,9 +4,10 @@ import Chart from '../lib/Chart.bundle.min.js'
 Chart.defaults.global.responsive = true
 
 export class LineGraph {
-  constructor (context) {
+  constructor (context, title) {
     this.context = context
     this.length = 11
+    this.title = title
     this.data = {
       type: 'line',
       data: {
@@ -31,13 +32,13 @@ export class LineGraph {
             type: 'linear',
             ticks: {
               min: 0,
-              suggestedMax: 250
+              suggestedMax: 125
             }
           }]
         },
         title: {
           display: true,
-          text: 'Server Connections'
+          text: this.title
         },
         legend: {
           display: false
@@ -76,10 +77,12 @@ export class LineGraph {
     this.data.data.datasets[0].data = currentData
     this.currentChart.update()
   }
-  reset () {
+  reset (title) {
     let resetData = []
     let now = moment()
-
+    if (title) {
+      this.data.options.title.text = title
+    }
     for (let ii = 0; ii < 11; ii++) {
       resetData.unshift({
         x: now.subtract(1, 'seconds').format(),
@@ -91,8 +94,9 @@ export class LineGraph {
   }
 }
 export class DoughnutGraph {
-  constructor (context) {
+  constructor (context, title) {
     this.context = context
+    this.title = title
     this.data = {
       type: 'doughnut',
       data: {
@@ -108,7 +112,7 @@ export class DoughnutGraph {
       options: {
         title: {
           display: true,
-          text: 'Memory'
+          text: this.title
         },
         legend: {
           position: 'bottom'
@@ -126,12 +130,13 @@ export class DoughnutGraph {
   }
 }
 export class BarGraph {
-  constructor (context) {
+  constructor (context, title) {
     this.context = context
+    this.title = title
     this.data = {
       type: 'horizontalBar',
       data: {
-        labels: [''],
+        labels: [],
         datasets: [{
           backgroundColor: [
             '#E31900'
@@ -144,13 +149,12 @@ export class BarGraph {
           xAxes: [{
             type: 'linear',
             min: 0,
-            suggestedMin: 0,
             suggestedMax: 5
           }]
         },
         title: {
           display: true,
-          text: 'Bandwidth'
+          text: this.title
         },
         legend: {
           display: false
@@ -167,8 +171,11 @@ export class BarGraph {
     this.data.data.datasets[0].data = [newData]
     this.currentChart.update()
   }
-  reset () {
+  reset (title) {
     this.data.data.datasets[0].datasets = [0]
+    if (title) {
+      this.data.options.title.text = title
+    }
     this.currentChart.update()
   }
 }

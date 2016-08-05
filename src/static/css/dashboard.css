@@ -50,6 +50,11 @@ h3 {
   color: rgb(227, 25, 0);
 }
 
+h4 {
+  text-align: center;
+  font-size: 20px;
+  margin-top: 0;
+}
 hr.top-padded-rule {
   margin-top: 40px;
 }
@@ -58,6 +63,16 @@ header {
   width: 90%;
   margin: auto;
   overflow: hidden;
+}
+header a{
+  float: right;
+  text-decoration: none;
+  padding: 4px 6px 4px 6px;
+  font-size: 16px;
+}
+header a:hover {
+  color: #a8a8a8;
+  cursor: pointer;
 }
 
 .float-left {
@@ -126,6 +141,7 @@ a.link:hover {
   overflow: hidden;
   margin: auto;
   width: 90%;
+  padding-bottom: 1%;
 }
 
 .one-fifth-col {
@@ -144,7 +160,9 @@ a.link:hover {
 .two-third-col{
   width: 70%;
 }
-
+table {
+  margin: auto;
+}
 table tbody tr td:first-child {
   color: #E31900;
   text-align: left;
@@ -152,6 +170,20 @@ table tbody tr td:first-child {
 table tbody tr td:nth-child(2) {
   color: #a8a8a8;
   text-align: center;
+}
+video {
+  background-color: black;
+  margin-bottom: 5%;
+}
+
+button {
+  border: solid;
+  color: #E31900;
+  border-width: 2px;
+  padding: 2px;
+  background-color: white;
+  border-radius: 3px
+  margin: 1% 0 1% 0;
 }
 #activeConnections {
 }
@@ -165,11 +197,8 @@ table tbody tr td:nth-child(2) {
 #activeConnectionsTableBody {
   margin: 0;
 }
-#activeConnectionsTableBody tr td a{
-  margin: 0;
-  padding: 0;
-  float: left;
-}
+
 #activeConnectionsTableBody tr td:hover {
-  color: #E31900;
+  background-color: #a8a8a8;
+  cursor: pointer;
 }

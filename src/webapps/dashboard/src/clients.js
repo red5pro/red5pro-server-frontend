@@ -5,17 +5,13 @@ import WS from './components/wsAPI.js'
 import {LineGraph, BarGraph} from './components/graph.js'
 import {DemoVideoHandler, DemoSocketHandler} from './components/HLS.js'
 
-// import Datamap from '../lib/datamaps.world.min.js'
-
 let restAPI = new REST('xyz123')
 let websocket = new WS('xyz123')
 
 let connectionsGraph = new LineGraph(document.getElementById('connectionsGraph'))
 let bandwidthGraph = new BarGraph(document.getElementById('bandwidthGraph'))
-connectionsGraph.makeGraph()
-bandwidthGraph.makeGraph()
 
-let map = new Datamap({
+let map = new Datamap({ // eslint-disable-line no-unused-vars
   element: document.getElementById('dataMap'),
   fills: {
     defaultFill: '#E31900'
@@ -28,20 +24,22 @@ let map = new Datamap({
   }
 })
 
-console.log(map)
-
 let activeClients = {}
+
+connectionsGraph.makeGraph()
+bandwidthGraph.makeGraph()
 
 document.getElementById('viewMap').onclick = viewMap
 
 restAPI.makeAPICall('getApplications', null, (applications) => {
   applications.data.forEach((application) => {
-    if (application !== 'api') {
+    if (application !== 'dashboard') {
       activeClients[application] = []
       websocket.addConnection('getLiveStreams', [application])
     }
   })
 })
+
 websocket.openConnection((data, content, apiCall) => {
   switch (apiCall) {
     case 'getLiveStreams':
@@ -63,22 +61,15 @@ websocket.openConnection((data, content, apiCall) => {
 
       if (addClients) {
         addClients.forEach((clientToAdd) => {
-          console.log('adding')
-          console.log(apiCall)
-          console.log(content)
-          console.log(data)
-          console.log(clientToAdd)
           // Add Client UI
           let tr = document.createElement('tr')
           tr.id = clientToAdd
 
           let td = document.createElement('td')
-          let a = document.createElement('a')
-          a.innerHTML = clientToAdd
-          a.id = `${content[0]}:${clientToAdd}`
-          a.onclick = getMoreStreamInfo
+          td.onclick = getMoreStreamInfo
+          td.innerHTML = clientToAdd
+          td.id = `${content[0]}:${clientToAdd}`
 
-          td.appendChild(a)
           tr.appendChild(td)
           document.getElementById('activeConnectionsTableBody').appendChild(tr)
 
@@ -95,34 +86,23 @@ websocket.openConnection((data, content, apiCall) => {
               return ['<div class="hoverinfo"><strong>' + data.name + '</strong>' + '</div>'].join('')
             }
           })
-
-          ;(function () {
-            'use strict'
-
-            function onDomContentLoaded (e) {
-              console.log('GGOGOGOGOOGOGOG')
-              const videoHandler = new DemoVideoHandler()
-              const socketHandler = new DemoSocketHandler(videoHandler) // eslint-disable-line no-unused-vars
-            }
-
-            window.addEventListener('DOMContentLoaded', onDomContentLoaded)
-          })()
-
-          // Add Graph data
         })
       }
       activeClients[content[0]] = newClients
 
       break
     case 'getLiveStreamStatistics':
-      console.log('getLiveStreamStatistics')
-      console.log(apiCall)
-      console.log(content)
-      console.log(data)
-      // connectionsGraph.updateGraph(data.content.data.active_subscribers)
-      // bandwidthGraph.updateGraph(data.content.data.bytes_recieved / (1024 * 1024))
+      if (data.content.code !== 200) {
+        websocket.removeConnection('getLiveStreamStatistics', content)
+        document.getElementById('streamData').style.display = 'none'
+        break
+      }
+      connectionsGraph.updateGraph(data.content.data.active_subscribers)
+      bandwidthGraph.updateGraph(data.content.data.bytes_recieved / (1024 * 1024))
       break
+
     default:
+
       break
   }
 })
@@ -155,20 +135,43 @@ function filterConnections (a, b) {
 
 function getMoreStreamInfo () {
   let content = this.id.split(':')
+
+  // Manipulate DOM elements
   document.getElementById('streamData').style.display = 'block'
   document.getElementById('mapData').style.display = 'none'
   document.getElementById('viewMap').style.display = 'block'
+  document.getElementById('streamDataLabel').innerHTML = `${content[1]}`
+  document.getElementById('streamVid').remove()
 
+  // Create some elements
   const recordButton = document.getElementById('recordStream')
+  const video = document.createElement('video')
 
+  recordButton.style.display = 'block'
   recordButton.name = this.id
   recordButton.onclick = toggleRecord
 
-  connectionsGraph.reset()
-  bandwidthGraph.reset()
+  video.id = 'streamVid'
+
+  document.getElementById('streamVidParent').appendChild(video)
+
+  // Reset graphs and connections
+  connectionsGraph.reset(`Connections to Stream ${content[1]}`)
+  bandwidthGraph.reset('Bandwidth')
 
   websocket.removeConnection('getLiveStreamStatistics', '*')
   websocket.addConnection('getLiveStreamStatistics', [content[0], content[1]])
+  ;(function () {
+    'use strict'
+    const videoHandler = new DemoVideoHandler()
+    const socketHandler = new DemoSocketHandler(videoHandler) // eslint-disable-line no-unused-vars
+
+    videoHandler.onChange(content[0], content[1])
+    socketHandler.onChange(content[0], content[1])
+  })()
+
+  document.getElementById('streamVid_html5_api').controls = true
+  document.querySelector('.vjs-big-play-button').display = 'block'
 }
 
 function toggleRecord () {
@@ -195,6 +198,7 @@ function startRecord (content) {
   }, (blank) => {
     console.log('Recording Stream')
   })
+  document.getElementById(`${content[0]}:${content[1]}`).innerHTML = content[1] + ' &#x25cf;'
 }
 
 function stopRecord (content) {
@@ -204,11 +208,13 @@ function stopRecord (content) {
   }, (blank) => {
     console.log('Recording Terminated')
   })
+  document.getElementById(`${content[0]}:${content[1]}`).innerHTML = content[1]
 }
 
 function viewMap () {
   document.getElementById('mapData').style.display = 'block'
   document.getElementById('streamData').style.display = 'none'
+  document.getElementById('recordStream').style.display = 'none'
 
   websocket.removeConnection('getLiveStreamStatistics', '*')
   this.style.display = 'none'

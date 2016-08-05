@@ -94,17 +94,15 @@ class DemoVideoLoaderFixer {
 }
 
 export class DemoVideoHandler extends VideoHandler {
-  constructor () {
+  constructor (appName, streamName) {
     const vid = document.getElementById('streamVid')
     super(vid, vid.parentNode)
-    this.url = '192.168.1.5:5080/live/1.m3u8'
     this.videoID = 'streamVid'
     // this.preview = document.getElementById('stream-url-preview')
     this.rotation = 0
     this.sizeCache = new DemoVideoSizeCache()
     this.loaderFixer = new DemoVideoLoaderFixer()
 
-    this.url =
     this.onRAF(0)
   }
 
@@ -113,25 +111,11 @@ export class DemoVideoHandler extends VideoHandler {
     console.warn(JSON.stringify(e))
   }
 
-  //  Format the form values into an appropriate value for display or use
-  cleanURL (obj) {
-    const url = obj.url.replace(/\/$/, '')
-
-    if (!obj.isCluster) {
-      return `${url}:${obj.port}/${obj.context}/${obj.stream}.m3u8`
-    } else {
-      return `${url}:5080/cluster`
-    }
-  }
-
-  //  As the form is being typed in, update our preview URL
-  onInputChange (obj) {
-    this.preview.innerHTML = this.cleanURL(obj)
-  }
-
   //  When the form has been submitted, update our video's size and rotation
-  onChange (obj) {
-    if (obj.isCluster) {
+  onChange (appName, streamName, obj = null) {
+    this.url = `http://${window.location.hostname}:5080/${appName}/${streamName}.m3u8`
+
+    if (obj) {
       /*
       1.  Retrieve the stream IP from the Red5 Pro Cluster origin
         i.  Catch and handle any errors that happen
@@ -371,7 +355,7 @@ export class DemoSocketHandler extends SocketHandler {
   }
 
   //  When the form has been submitted, close (if necessary) and reconnect our websocket
-  onChange (obj) {
+  onChange (appName, streamName) {
     // const url = obj.url.replace(/\/$/, '').replace(/^(?!http(?:s)?:\/\/)(.)/i, 'http://$1')
     // const socketURL = url.replace(/^https?:\/\//i, '')
 
@@ -379,9 +363,9 @@ export class DemoSocketHandler extends SocketHandler {
       this.socket.close()
     }
 
-    this.url = 'ws://192.168.1.5:6262/metadata'
-    this.context = '/live'
-    this.stream = '/1'
+    this.url = `ws://${window.location.hostname}:6262/metadata`
+    this.context = `/${appName}`
+    this.stream = `/${streamName}`
 
     this.connect()
   }

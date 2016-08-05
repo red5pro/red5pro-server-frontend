@@ -5,9 +5,9 @@ import {LineGraph, DoughnutGraph, BarGraph} from './components/graph.js'
 let restAPI = new REST('xyz123')
 let websocket = new WS('xyz123', 1000)
 
-let connectionsGraph = new LineGraph(document.getElementById('connectionsGraph'))
-let memoryGraph = new DoughnutGraph(document.getElementById('memoryGraph'))
-let bandwidthGraph = new BarGraph(document.getElementById('bandwidthGraph'))
+let connectionsGraph = new LineGraph(document.getElementById('connectionsGraph'), 'Server Connections')
+let memoryGraph = new DoughnutGraph(document.getElementById('memoryGraph'), 'Memory')
+let bandwidthGraph = new BarGraph(document.getElementById('bandwidthGraph'), 'Bandwidth')
 
 connectionsGraph.makeGraph()
 memoryGraph.makeGraph()
@@ -35,10 +35,10 @@ websocket.openConnection((data, content, apiCall) => {
   console.log(data.free_memory)
   console.log(data.total_memory)
   memoryGraph.updateGraph(convertMemory(data.free_memory, data.total_memory))
-  bandwidthGraph.updateGraph(data.bytes_in / (1024 * 1024))
+  bandwidthGraph.updateGraph((data.bytes_in / (1024 * 1024)).toFixed(2))
 
   // Uptime
-  document.getElementById('Uptime').innerHTML = data.uptime
+  document.getElementById('Uptime').innerHTML = `${(data.uptime / 3600).toFixed(1)} seconds`
   // bandwidthGraph.updateGraph(data.bytes_in)
 })
 
@@ -46,5 +46,5 @@ function convertMemory (free, total) {
   let used = total - free
   used = used / (1024 * 1024)
   free = free / (1024 * 1024)
-  return [free, used]
+  return [free.toFixed(2), used.toFixed(2)]
 }
