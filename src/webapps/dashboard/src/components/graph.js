@@ -15,9 +15,9 @@ export class MAP {
     this.map = new Datamap({
       element: this.context,
       fills: {
-        defaultFill: '#E31900',
-        publisher: '#a8a8a8',
-        subscriber: '#a8a8a8'
+        defaultFill: '#a8a8a8',
+        publisher: '#E31900',
+        subscriber: '#E31900'
       },
       height: null,
       width: this.width,
@@ -111,7 +111,10 @@ export class LineGraph {
         },
         title: {
           display: true,
-          text: this.title
+          text: this.title,
+          fontSize: 20,
+          fontColor: '#a8a8a8',
+          fontStyle: 400
         },
         legend: {
           display: false
@@ -185,7 +188,10 @@ export class DoughnutGraph {
       options: {
         title: {
           display: true,
-          text: this.title
+          text: this.title,
+          fontSize: 20,
+          fontColor: '#a8a8a8',
+          fontStyle: 400
         },
         legend: {
           position: 'bottom'
@@ -232,7 +238,10 @@ export class BarGraph {
         },
         title: {
           display: true,
-          text: this.title
+          text: this.title,
+          fontSize: 20,
+          fontColor: '#a8a8a8',
+          fontStyle: 400
         },
         legend: {
           display: false

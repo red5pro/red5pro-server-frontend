@@ -40,15 +40,15 @@ h1 {
 }
 
 h2 {
-  font-weight: 300;
-  font-size: 30px;
-  color: #444;
+  font-weight: 400;
+  font-size: 24px;
+  color: #E31900;
 }
 
 h3 {
-  font-weight: 300;
-  font-size: 24px;
-  color: rgb(227, 25, 0);
+  font-weight: 400;
+  font-size: 20px;
+  color: #a8a8a8;
 }
 
 h4 {
@@ -111,7 +111,6 @@ header a:hover {
 .black-text {
   color: #444;
 }
-
 .red-text {
   color: rgb(227, 25, 0);
 }
@@ -187,11 +186,11 @@ table {
   font-size: 16px;
 }
 table tbody tr td:first-child {
-  color: #E31900;
+  color: #a8a8a8;
   text-align: left;
 }
 table tbody tr td:nth-child(2) {
-  color: #a8a8a8;
+  color: #E31900;
   text-align: center;
 }
 video {
@@ -201,32 +200,55 @@ video {
 
 button {
   border: solid;
-  color: #E31900;
+  color: white;
   border-width: 2px;
   padding: 2px;
-  background-color: white;
+  background-color: #a8a8a8;
   border-radius: 3px;
   margin: 3% auto;
   font-size: 16px;
+  display: block;
+  outline: none;
 }
 button:hover {
   color: #a8a8a8;
   cursor: pointer;
 }
-#activeConnections {
+.active {
 }
-#activeConnectionsTable{
-  border: solid;
-  border-color: black;
+.activeTable{
+  border: solid 2px;
+  border-color: #a8a8a8;
   width: 100%;
   overflow: scroll;
   height: 100%;
 }
-#activeConnectionsTableBody {
+.activeTableBody {
   margin: 0;
+  color: #E31900;
 }
-
-#activeConnectionsTableBody tr td:hover {
+.activeTableBody tr td {
+  color: #E31900;
+}
+.activeTableBody tr td:hover {
   background-color: #a8a8a8;
   cursor: pointer;
+}
+
+.logo {
+  width: 50%;
+}
+.video-js {
+  width: 100%;
+  height: 100%;
+}
+.vjs-tech{
+  width: 100%;
+  height: 100%;
+}
+.vjs-control-bar{
+  display: none;
+}
+.vjs-hidden{
+  display: none;
 }

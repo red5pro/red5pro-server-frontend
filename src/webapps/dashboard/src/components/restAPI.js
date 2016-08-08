@@ -49,6 +49,25 @@ export default class REST {
         console.log(e)
       })
   }
+
+  makeDeleteCall (apiCall, contents, cb) {
+    if (contents) {
+      this.contents = contents
+      this.updateCalls()
+    }
+    console.log(this.apiCalls[apiCall])
+
+    fetch(this.apiCalls[apiCall], {method: 'DELETE'})
+      .then((response) => response.json())
+      .then((json) => {
+        if (cb) {
+          cb(json)
+        }
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
   updateCalls () {
     this.apiCalls = {
       // Server Calls

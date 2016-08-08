@@ -13,20 +13,20 @@
     <div class="container">
       <div class="row position-relative">
         <div class = 'one-half-col float-left'>
-          <h1>Server Overview</h1>
+          <img class = 'logo' src="./images/red5pro_logo.svg">
         </div>
         <div class = 'one-half-col float-right position-absolute bottom right'>
           <header>
             <a href="/dashboard/index.jsp">Dashboard</a>
             <a href="/dashboard/clients.jsp">Clients</a>
             <a href="#">Server</a>
-            <a href="#">VoD</a>
+            <a href="/dashboard/vod.jsp">VoD</a>
           </header>
         </div>
       </div>
       <hr>
       <div class="row">
-        <h3>Quick Glance</h3>
+        <h2>Server Overview</h2>
         <div class="float-left one-third-col">
           <canvas id = 'connectionsGraph' width="200" height="200"></canvas>
         </div>

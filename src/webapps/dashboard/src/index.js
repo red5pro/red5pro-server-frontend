@@ -36,6 +36,8 @@ websocket.openConnection((data, content, apiCall) => {
 
   // Uptime
   document.getElementById('Uptime').innerHTML = `${(data.uptime / 3600).toFixed(1)} seconds`
+  document.getElementById('activeSubScopes').innerHTML = data.active_sub_scopes
+  document.getElementById('totalSubScopes').innerHTML = data.total_sub_scopes
   // bandwidthGraph.updateGraph(data.bytes_in)
 })
 

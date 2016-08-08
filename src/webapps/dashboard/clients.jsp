@@ -21,23 +21,28 @@
     <div class="container">
       <div class="row position-relative">
         <div class = 'one-half-col float-left'>
-          <h1>Clients Overview</h1>
+          <img class = 'logo' src="./images/red5pro_logo.svg">
         </div>
         <div class = 'one-half-col float-right position-absolute bottom right'>
           <header>
             <a href="/dashboard/index.jsp">Dashboard</a>
             <a href="/dashboard/clients.jsp">Clients</a>
             <a href="#">Server</a>
-            <a href="#">VoD</a>
+            <a href="/dashboard/vod.jsp">VoD</a>
           </header>
         </div>
       </div>
       <hr>
       <div class="row">
-        <h3>Active Connections</h3>
-        <div class="float-left one-fifth-col" id = 'activeConnections'>
-          <table id = 'activeConnectionsTable'>
-            <tbody id = 'activeConnectionsTableBody'>
+        <div class = 'float-right one-half-col'>
+          <h2>Active Connections</h2>
+        </div>
+        <div class = 'float-left one-half-col'>
+          <h2>Clients Overview</h2>
+        </div>
+        <div class="float-left one-fifth-col active">
+          <table class = 'activeTable'>
+            <tbody class = 'activeTableBody'>
             </tbody>
           </table>
           <button id = 'recordStream' style="display:none">Record Stream</button>
@@ -52,7 +57,8 @@
           <div class = 'row' id = 'streamData' style="display:none">
             <h4 id = 'streamDataLabel'></h4>
             <div class = 'row' id = 'streamVidParent'>
-              <video id = 'streamVid' controls style='background-color: black'></video>
+              <video id='streamVid' width=100% class="video-js vjs-default-skin" controls>
+              </video>
             </div>
             <hr>
             <div class = 'row'>

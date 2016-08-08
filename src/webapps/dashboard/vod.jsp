@@ -9,34 +9,45 @@
     <style>
     </style>
     <script src="./dist/bundle-vod.js" defer></script>
+    <script src="https://content.jwplatform.com/libraries/dasWifC7.js" defer></script>
   </head>
   <body>
 
     <div class="container">
       <div class="row position-relative">
         <div class = 'one-half-col float-left'>
-          <h1>VoD Overview</h1>
+          <img class = 'logo' src="./images/red5pro_logo.svg">
         </div>
         <div class = 'one-half-col float-right position-absolute bottom right'>
           <header>
             <a href="/dashboard/index.jsp">Dashboard</a>
             <a href="/dashboard/clients.jsp">Clients</a>
             <a href="#">Server</a>
-            <a href="#">VoD</a>
+            <a href="/dashboard/vod.jsp">VoD</a>
           </header>
         </div>
       </div>
       <hr>
       <div class="row">
-        <h3>VoD Files</h3>
-        <div class="float-left one-fifth-col" id = 'vodFiles'>
-          <table id = 'vodFilesTable'>
-            <tbody id = 'vodFilesTableBody'>
+        <div class = 'float-right one-half-col'>
+          <h2>VoD Files</h2>
+        </div>
+        <div class = 'float-left one-half-col'>
+          <h2>VoD Overview</h2>
+        </div>
+        <div class="float-left one-fifth-col active">
+          <table class = 'activeTable'>
+            <tbody class = 'activeTableBody'>
             </tbody>
           </table>
+          <button id = 'deleteVodFile'>Delete File</button>
+          <button id = 'refreshVOD'>Refresh</button>
         </div>
-        <div class="float-right four-fifth-col">
-          
+        <div class="float-right four-fifth-col" id = vodView>
+          <div class = 'row'>
+            <h4 id = 'vodDataLabel'></h4>
+            <div id="playbackVideo"></div>
+          </div>
         </div>
       </div>
     </div>

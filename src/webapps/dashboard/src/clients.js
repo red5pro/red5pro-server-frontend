@@ -1,7 +1,9 @@
+/* global videojs */
+
 import REST from './components/restAPI.js'
 import WS from './components/wsAPI.js'
 import {LineGraph, BarGraph, MAP} from './components/graph.js'
-import {DemoVideoHandler, DemoSocketHandler} from './components/HLS.js'
+// import {DemoVideoHandler, DemoSocketHandler} from './components/HLS.js'
 
 let restAPI = new REST('xyz123')
 let websocket = new WS('xyz123')
@@ -9,6 +11,11 @@ let websocket = new WS('xyz123')
 let connectionsGraph = new LineGraph(document.getElementById('connectionsGraph'))
 let bandwidthGraph = new BarGraph(document.getElementById('bandwidthGraph'))
 let map = new MAP(document.getElementById('dataMap'), document.getElementById('mapData').offsetWidth)
+let player = videojs('streamVid')
+// Add HLS
+
+// const videoHandler = new DemoVideoHandler()
+// const socketHandler = new DemoSocketHandler(videoHandler) // eslint-disable-line no-unused-vars
 
 let activeClients = {}
 
@@ -58,7 +65,7 @@ websocket.openConnection((data, content, apiCall) => {
           td.id = `${content[0]}:${clientToAdd}`
 
           tr.appendChild(td)
-          document.getElementById('activeConnectionsTableBody').appendChild(tr)
+          document.querySelector('.activeTableBody').appendChild(tr)
           /* For API v2 – Make restAPI call to get publisher and subscriber ip addresses, determine location, and update bubbles
           */
 
@@ -114,25 +121,40 @@ function filterConnections (a, b) {
 function getMoreStreamInfo () {
   let content = this.id.split(':')
 
+  player.pause()
+  player.src({
+    type: 'application/x-mpegURL',
+    src: `http://10.1.10.18:5080/${content[0]}/${content[1]}.m3u8`
+  })
   // Manipulate DOM elements
   document.getElementById('streamData').style.display = 'block'
   document.getElementById('mapData').style.display = 'none'
   document.getElementById('viewMap').style.display = 'block'
   document.getElementById('streamDataLabel').innerHTML = `${content[1]}`
-  document.getElementById('streamVid').remove()
 
   // Create some elements
   const recordButton = document.getElementById('recordStream')
-  const video = document.createElement('video')
+
+  // const video = document.createElement('video')
 
   recordButton.style.display = 'block'
   recordButton.name = this.id
   recordButton.onclick = toggleRecord
 
-  video.id = 'streamVid'
+  restAPI.makeAPICall('getLiveStreamStatistics', {
+    appname: content[0],
+    streamname: content[1]
+  }, (recording) => {
+    if (recording.data.is_recording) {
+      recordButton.innerHTML = 'Record Stream'
+    } else {
+      recordButton.innerHTML = 'Stop Record'
+    }
+  })
+  // video.id = 'streamVid'
 
   // Reset video DOM
-  document.getElementById('streamVidParent').appendChild(video)
+  // document.getElementById('streamVidParent').appendChild(video)
 
   // Reset graphs and connections
   connectionsGraph.reset(`Connections to Stream ${content[1]}`)
@@ -142,18 +164,18 @@ function getMoreStreamInfo () {
   websocket.addConnection('getLiveStreamStatistics', [content[0], content[1]])
 
   // Add HLS
-  ;(function () {
-    'use strict'
-    const videoHandler = new DemoVideoHandler()
-    const socketHandler = new DemoSocketHandler(videoHandler) // eslint-disable-line no-unused-vars
-
-    videoHandler.onChange(content[0], content[1])
-    socketHandler.onChange(content[0], content[1])
-  })()
+  // videoHandler.onChange(content[0], content[1])
+  // socketHandler.onChange(content[0], content[1])
 
   // Format some video presets
-  document.getElementById('streamVid_html5_api').controls = true
-  document.querySelector('.vjs-big-play-button').display = 'none'
+  // document.getElementById('streamVid_html5_api').controls = true
+  // document.querySelector('.vjs-big-play-button').display = 'none'
+  player.play()
+  let rows = document.getElementsByTagName('td')
+  for (let ii = 0; ii < rows.length; ii++) {
+    rows[ii].style.backgroundColor = 'white'
+  }
+  this.style.backgroundColor = '#a8a8a8'
 }
 
 function toggleRecord () {
