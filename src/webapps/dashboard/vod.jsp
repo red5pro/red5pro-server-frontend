@@ -12,7 +12,6 @@
     <script src="https://content.jwplatform.com/libraries/dasWifC7.js" defer></script>
   </head>
   <body>
-
     <div class="container">
       <div class="row position-relative">
         <div class = 'one-half-col float-left'>
@@ -29,13 +28,8 @@
       </div>
       <hr>
       <div class="row">
-        <div class = 'float-right one-half-col'>
-          <h2>VoD Files</h2>
-        </div>
-        <div class = 'float-left one-half-col'>
-          <h2>VoD Overview</h2>
-        </div>
         <div class="float-left one-fifth-col active">
+          <h2 class = 'center-text'>VoD Files</h2>
           <table class = 'activeTable'>
             <tbody class = 'activeTableBody'>
             </tbody>
@@ -44,8 +38,8 @@
           <button id = 'refreshVOD'>Refresh</button>
         </div>
         <div class="float-right four-fifth-col" id = vodView>
-          <div class = 'row'>
-            <h4 id = 'vodDataLabel'></h4>
+          <h2 class = 'center-text'>VoD Overview</h2>
+          <div class = 'top row'>
             <div id="playbackVideo"></div>
           </div>
         </div>

@@ -76,19 +76,36 @@ export class MAP {
   }
 }
 
-export class LineGraph {
-  constructor (context, title) {
+class Graph {
+  constructor () {
+    this.titlePreferences = {
+      display: true,
+      fontSize: 20,
+      fontColor: '#a8a8a8',
+      fontStyle: 400,
+      fontFamily: 'Lato'
+    }
+    this.red = '#E31900'
+    this.grey = '#a8a8a8'
+  }
+}
+
+export class LineGraph extends Graph {
+  constructor (context, label = 'label', title = 'title') {
+    super()
+    this.titlePreferences.text = title
+
     this.context = context
+    this.label = label
     this.length = 11
-    this.title = title
     this.data = {
       type: 'line',
       data: {
         datasets: [{
-          label: 'connections',
+          label: this.label,
           data: [],
-          borderColor: '#E31900',
-          backgroundColor: '#E31900'
+          borderColor: this.red,
+          backgroundColor: this.red
         }]
       },
       options: {
@@ -109,13 +126,7 @@ export class LineGraph {
             }
           }]
         },
-        title: {
-          display: true,
-          text: this.title,
-          fontSize: 20,
-          fontColor: '#a8a8a8',
-          fontStyle: 400
-        },
+        title: this.titlePreferences,
         legend: {
           display: false
         }
@@ -169,30 +180,27 @@ export class LineGraph {
     this.currentChart.update()
   }
 }
-export class DoughnutGraph {
-  constructor (context, title) {
+export class DoughnutGraph extends Graph {
+  constructor (context, label = ['label'], title = 'title') {
+    super()
     this.context = context
-    this.title = title
+    this.titlePreferences.text = title
+    this.type = 'doughnut'
+    this.label = label
     this.data = {
-      type: 'doughnut',
+      type: this.type,
       data: {
-        labels: ['Used Memory', 'Free Memory'],
+        labels: this.label,
         datasets: [{
           data: [1, 1],
           backgroundColor: [
-            '#E31900',
-            '#a8a8a8'
+            this.red,
+            this.grey
           ]
         }]
       },
       options: {
-        title: {
-          display: true,
-          text: this.title,
-          fontSize: 20,
-          fontColor: '#a8a8a8',
-          fontStyle: 400
-        },
+        title: this.titlePreferences,
         legend: {
           position: 'bottom'
         }
@@ -208,17 +216,19 @@ export class DoughnutGraph {
     this.currentChart.update()
   }
 }
-export class BarGraph {
-  constructor (context, title) {
+export class BarGraph extends Graph {
+  constructor (context, label = ['label'], title = 'title') {
+    super()
     this.context = context
-    this.title = title
+    this.titlePreferences.text = title
+    this.label = label
     this.data = {
       type: 'horizontalBar',
       data: {
-        labels: [this.title],
+        labels: this.label,
         datasets: [{
           backgroundColor: [
-            '#E31900'
+            this.red
           ],
           data: [0]
         }]
@@ -236,13 +246,7 @@ export class BarGraph {
             display: false
           }]
         },
-        title: {
-          display: true,
-          text: this.title,
-          fontSize: 20,
-          fontColor: '#a8a8a8',
-          fontStyle: 400
-        },
+        title: this.titlePreferences,
         legend: {
           display: false
         }

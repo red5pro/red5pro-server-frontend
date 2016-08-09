@@ -11,13 +11,12 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
     <script src="./src/lib/datamaps.world.min.js"></script>
-    <script src="./src/lib/videojs/video.min.js" defer></script>
-    <script src="./src/lib/videojs/videojs-media-sources.min.js" defer></script>
-    <script src="./src/lib/videojs/videojs.hls.min.js" defer></script>
+    <script src="./src/lib/video.min.js" defer></script>
+    <script src="./src/lib/videojs-contrib-media-sources.min.js" defer></script>
+    <script src="./src/lib/videojs-contrib-hls.min.js" defer></script>
     <script src="./dist/bundle-clients.js" defer></script>
   </head>
   <body>
-
     <div class="container">
       <div class="row position-relative">
         <div class = 'one-half-col float-left'>
@@ -34,13 +33,8 @@
       </div>
       <hr>
       <div class="row">
-        <div class = 'float-right one-half-col'>
-          <h2>Active Connections</h2>
-        </div>
-        <div class = 'float-left one-half-col'>
-          <h2>Clients Overview</h2>
-        </div>
         <div class="float-left one-fifth-col active">
+          <h2 class = 'center-text'>Active Connections</h2>
           <table class = 'activeTable'>
             <tbody class = 'activeTableBody'>
             </tbody>
@@ -49,14 +43,14 @@
           <button id = 'viewMap' style="display:none">View Map</button>
         </div>
         <div class="float-right four-fifth-col">
+          <h2 class = 'center-text'>Clients Overview</h2>
           <div class = 'top row' id = mapData>
             <div id = 'dataMapContainer'>
               <div id="dataMap" style="position: relative; width: 100%; height: 100%;"></div>
             </div>
           </div>
-          <div class = 'row' id = 'streamData' style="display:none">
-            <h4 id = 'streamDataLabel'></h4>
-            <div class = 'row' id = 'streamVidParent'>
+          <div class = 'top row' id = 'streamData' style="display:none">
+            <div class = 'top row' id = 'streamVidParent'>
               <video id='streamVid' width=100% class="video-js vjs-default-skin" controls>
               </video>
             </div>

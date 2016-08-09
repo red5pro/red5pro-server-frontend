@@ -95,7 +95,7 @@ header a:hover {
 }
 .top {
   top: 0;
-  margin-top: 0;
+  margin-top: 0 !important;
 }
 .float-left {
   float: left;
@@ -107,6 +107,9 @@ header a:hover {
   float: left;
   margin-left: 5%;
   margin-right: 5%;
+}
+.center-text {
+  text-align: center
 }
 .black-text {
   color: #444;
@@ -199,9 +202,9 @@ video {
 }
 
 button {
-  border: solid;
+  border: solid #a8a8a8;
   color: white;
-  border-width: 2px;
+  border-width: 0px;
   padding: 2px;
   background-color: #a8a8a8;
   border-radius: 3px;
@@ -211,7 +214,7 @@ button {
   outline: none;
 }
 button:hover {
-  color: #a8a8a8;
+  background-color: '#E31900';
   cursor: pointer;
 }
 .active {
@@ -227,10 +230,10 @@ button:hover {
   margin: 0;
   color: #E31900;
 }
-.activeTableBody tr td {
+.activeTable .activeTableBody tr td {
   color: #E31900;
 }
-.activeTableBody tr td:hover {
+.activeTable .activeTableBody tr td:hover {
   background-color: #a8a8a8;
   cursor: pointer;
 }
@@ -250,5 +253,8 @@ button:hover {
   display: none;
 }
 .vjs-hidden{
+  display: none;
+}
+.vjs-big-play-button{
   display: none;
 }
