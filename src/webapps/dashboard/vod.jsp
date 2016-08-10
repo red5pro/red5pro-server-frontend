@@ -5,11 +5,16 @@
     {{> head_meta }}
     <link href="http://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/dashboard.css">
+
     <title>Welcome to the Red5 Pro Server!</title>
     <style>
     </style>
+  <!--   <script src="http://vjs.zencdn.net/4.7/video.js"></script> -->
+
+<!--     <script src="./src/lib/video.min.js" defer></script>
+    <script src="./src/lib/videojs-contrib-media-sources.min.js" defer></script> -->
+    
     <script src="./dist/bundle-vod.js" defer></script>
-    <script src="https://content.jwplatform.com/libraries/dasWifC7.js" defer></script>
   </head>
   <body>
     <div class="container">
@@ -40,7 +45,8 @@
         <div class="float-right four-fifth-col" id = vodView>
           <h2 class = 'center-text'>VoD Overview</h2>
           <div class = 'top row'>
-            <div id="playbackVideo"></div>
+            <video id='streamVid' width=100% class="video-js vjs-default-skin" controls data-setup='{}'>
+            </video>
           </div>
         </div>
       </div>

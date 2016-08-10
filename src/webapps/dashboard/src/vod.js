@@ -1,11 +1,17 @@
-/* global jwplayer */
 import REST from './components/restAPI.js'
+import videojs from 'video.js'
 
 let restAPI = new REST('xyz123')
 
 // Initialize
 updateVodFiles()
 document.getElementById('refreshVOD').onclick = updateVodFiles
+
+let player = videojs('streamVid', {
+  techorder: [
+    'flash'
+  ]
+})
 
 // Functions
 function deleteVODFile () {
@@ -53,11 +59,27 @@ function updateVodFiles () {
 
 function viewVODFile () {
   const content = this.id.split(':')
+  console.log(content)
+  player.src([
+    {
+      type: 'video/x-mp4',
+      src: `http://${window.location.host}/${content[0]}/streams/${content[1]}`
+    },
+    {
+      type: 'video/x-flv',
+      src: `http://${window.location.host}/${content[0]}/streams/${content[1]}`
+    },
+    {
+      type: 'video/x-f4v',
+      src: `http://${window.location.host}/${content[0]}/streams/${content[1]}`
+    },
+    {
+      type: 'video/x-3gp',
+      src: `http://${window.location.host}/${content[0]}/streams/${content[1]}`
+    }
+  ])
+  player.play()
 
-  jwplayer('playbackVideo').setup({
-    file: `rtmp://10.1.10.18/${content[0]}/${content[1]}`,
-    mediaid: 'tester'
-  })
   document.getElementById('deleteVodFile').name = this.id
   document.getElementById('deleteVodFile').onclick = deleteVODFile
 

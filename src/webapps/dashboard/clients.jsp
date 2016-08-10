@@ -5,15 +5,14 @@
     {{> head_meta }}
     <link href="http://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/dashboard.css">
+
     <title>Welcome to the Red5 Pro Server!</title>
     <style>
     </style>
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
     <script src="./src/lib/datamaps.world.min.js"></script>
-    <script src="./src/lib/video.min.js" defer></script>
-    <script src="./src/lib/videojs-contrib-media-sources.min.js" defer></script>
-    <script src="./src/lib/videojs-contrib-hls.min.js" defer></script>
+
     <script src="./dist/bundle-clients.js" defer></script>
   </head>
   <body>

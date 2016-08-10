@@ -1,9 +1,10 @@
-/* global videojs */
-
 import REST from './components/restAPI.js'
 import WS from './components/wsAPI.js'
 import {LineGraph, BarGraph, MAP} from './components/graph.js'
+import videojs from 'video.js'
+import Hls from 'videojs-contrib-hls'
 
+console.log(Hls)
 let restAPI = new REST('xyz123')
 let websocket = new WS('xyz123')
 
@@ -13,7 +14,7 @@ let map = new MAP(document.getElementById('dataMap'), document.getElementById('m
 
 let player = videojs('streamVid', {
   techorder: [
-    // 'html5',
+    'html5',
     'flash'
   ]
 })
@@ -156,14 +157,15 @@ function getMoreStreamInfo () {
   console.log(content[1])
   player.pause()
   player.src([
-    // {
-    //   type: 'application/x-mpegURL',
-    //   src: `http://localhost:5080/${content[0]}/${content[1]}.m3u8`
-    // },
     {
-      type: 'application/x-shockwave-flash',
+      type: 'application/x-mpegURL',
+      src: `http://localhost:5080/${content[0]}/${content[1]}.m3u8`
+    },
+    {
+      type: 'rtmp/x-flv',
       src: `rtmp://192.168.0.133/${content[0]}/${content[1]}`
     }])
+  console.log(`rtmp://192.168.0.133/${content[0]}/${content[1]}`)
   player.play()
 
   // Manipulate DOM elements
