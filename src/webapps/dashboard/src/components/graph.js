@@ -23,7 +23,7 @@ export class MAP {
       width: this.width,
       responsive: true,
       bubblesConfig: {
-        borderColor: '#a8a8a8'
+        borderColor: '#E31900'
       }
     })
   }
@@ -49,7 +49,7 @@ export class MAP {
       radius: 1,
       latitude: origin[0],
       longitude: origin[1],
-      fillKey: 'publisher'
+      fillKey: 'subscriber'
     }
     let newArc = {
       origin: {
@@ -71,7 +71,7 @@ export class MAP {
     this.map.arc(this.arcs, {
       strokeWidth: 2,
       arcSharpness: 1,
-      strokeColor: '#a8a8a8'
+      strokeColor: '#E31900'
     })
   }
 }

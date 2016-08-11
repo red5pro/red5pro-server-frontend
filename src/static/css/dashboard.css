@@ -73,9 +73,10 @@ header a{
   text-decoration: none;
   padding: 4px 6px 4px 6px;
   font-size: 16px;
+  color: #a8a8a8;
 }
 header a:hover {
-  color: #a8a8a8;
+  color: #E31900;
   cursor: pointer;
 }
 
@@ -214,7 +215,7 @@ button {
   outline: none;
 }
 button:hover {
-  background-color: '#E31900';
+  background-color: #E31900;
   cursor: pointer;
 }
 .active {
@@ -228,13 +229,12 @@ button:hover {
 }
 .activeTableBody {
   margin: 0;
-  color: #E31900;
 }
 .activeTable .activeTableBody tr td {
-  color: #E31900;
+  color: #a8a8a8;
 }
 .activeTable .activeTableBody tr td:hover {
-  background-color: #a8a8a8;
+  color: #E31900;
   cursor: pointer;
 }
 
@@ -257,4 +257,19 @@ button:hover {
 }
 .vjs-big-play-button{
   display: none;
+}
+
+#streamVid_Flash_api{
+
+}
+
+.dashboard header a.dashboard {
+  color: #E31900;
+}
+
+.clients header a.clients {
+  color: #E31900;
+}
+.vod header a.vod {
+  color: #E31900;
 }

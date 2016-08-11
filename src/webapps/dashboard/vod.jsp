@@ -16,19 +16,17 @@
     
     <script src="./dist/bundle-vod.js" defer></script>
   </head>
-  <body>
+  <body class = 'vod'>
     <div class="container">
       <div class="row position-relative">
         <div class = 'one-half-col float-left'>
           <img class = 'logo' src="./images/red5pro_logo.svg">
         </div>
         <div class = 'one-half-col float-right position-absolute bottom right'>
-          <header>
-            <a href="/dashboard/index.jsp">Dashboard</a>
-            <a href="/dashboard/clients.jsp">Clients</a>
-            <a href="#">Server</a>
-            <a href="/dashboard/vod.jsp">VoD</a>
-          </header>
+          <header id = 'navBar'>
+            <a href="/dashboard/vod.jsp" class = 'vod'>VoD</a>
+            <a href="/dashboard/clients.jsp" class = 'clients'>Clients</a>
+            <a href="/dashboard/index.jsp" class = 'dashboard'>Dashboard</a>
         </div>
       </div>
       <hr>
@@ -42,9 +40,9 @@
           <button id = 'deleteVodFile'>Delete File</button>
           <button id = 'refreshVOD'>Refresh</button>
         </div>
-        <div class="float-right four-fifth-col" id = vodView>
+        <div class="float-right four-fifth-col">
           <h2 class = 'center-text'>VoD Overview</h2>
-          <div class = 'top row'>
+          <div class = 'top row' id = 'vodContainer' style="display:none">
             <video id='streamVid' width=100% class="video-js vjs-default-skin" controls data-setup='{}'>
             </video>
           </div>

@@ -6,8 +6,8 @@ let restAPI = new REST('xyz123')
 let websocket = new WS('xyz123', 1000)
 
 let connectionsGraph = new LineGraph(document.getElementById('connectionsGraph'), 'Connections', 'Server Connections')
-let memoryGraph = new DoughnutGraph(document.getElementById('memoryGraph'), ['Free Memory', 'Used Memory'], 'Memory')
-let bandwidthGraph = new BarGraph(document.getElementById('bandwidthGraph'), ['Bandwidth'], 'Bandwidth')
+let memoryGraph = new DoughnutGraph(document.getElementById('memoryGraph'), ['Free Memory (Mb)', 'Used Memory (Mb)'], 'Memory')
+let bandwidthGraph = new BarGraph(document.getElementById('bandwidthGraph'), ['Data Transfered (Mb)'], 'Data Transfered (Mb)')
 
 connectionsGraph.makeGraph()
 memoryGraph.makeGraph()
@@ -36,8 +36,10 @@ websocket.openConnection((data, content, apiCall) => {
   memoryGraph.updateGraph(convertMemory(data.free_memory, data.total_memory))
   bandwidthGraph.updateGraph((data.bytes_in / (1024 * 1024)).toFixed(2))
 
-  // Uptime
-  document.getElementById('Uptime').innerHTML = `${(data.uptime / 3600).toFixed(1)} seconds`
+  // Server Status
+  document.getElementById('Uptime').innerHTML = `${(data.uptime / 1000).toFixed(0)} seconds`
+
+  // Server Statistics
   document.getElementById('activeSubScopes').innerHTML = data.active_sub_scopes
   document.getElementById('totalSubScopes').innerHTML = data.total_sub_scopes
 })

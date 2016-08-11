@@ -5,6 +5,9 @@ let restAPI = new REST('xyz123')
 
 // Initialize
 updateVodFiles()
+window.onresize = () => {
+  document.getElementById('vodContainer').style.height = document.getElementById('vodContainer').offsetWidth * 0.5 + 'px'
+}
 document.getElementById('refreshVOD').onclick = updateVodFiles
 
 let player = videojs('streamVid', {
@@ -20,8 +23,7 @@ function deleteVODFile () {
 
   restAPI.makeDeleteCall('deleteVodFiles', {appname: content[0], filename: file[0], extension: file[1]}, () => {})
 
-  document.getElementById('vodView').style.display = 'none'
-  document.getElementById(this.name).remove()
+  document.getElementById(content[1]).remove()
 }
 
 function updateVodFiles () {
@@ -40,7 +42,7 @@ function updateVodFiles () {
               let tr = document.createElement('tr')
               let td = document.createElement('td')
 
-              tr.class = application
+              tr.id = name.name
               td.innerHTML = name.name.split('.')[0]
 
               td.id = `${application}:${name.name}`
@@ -59,7 +61,10 @@ function updateVodFiles () {
 
 function viewVODFile () {
   const content = this.id.split(':')
-  console.log(content)
+
+  document.getElementById('vodContainer').style.display = 'block'
+  document.getElementById('vodContainer').style.height = document.getElementById('vodContainer').offsetWidth * 0.5 + 'px'
+
   player.src([
     {
       type: 'video/x-mp4',
@@ -80,13 +85,15 @@ function viewVODFile () {
   ])
   player.play()
 
+  // DOM Manipulation
   document.getElementById('deleteVodFile').name = this.id
   document.getElementById('deleteVodFile').onclick = deleteVODFile
 
   let rows = document.getElementsByTagName('td')
 
   for (let ii = 0; ii < rows.length; ii++) {
-    rows[ii].style.backgroundColor = ''
+    // rows[ii].style.backgroundColor = ''
+    rows[ii].style.color = ''
   }
-  this.style.backgroundColor = '#a8a8a8'
+  this.style.color = '#E31900'
 }

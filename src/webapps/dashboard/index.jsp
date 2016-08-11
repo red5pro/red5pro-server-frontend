@@ -9,18 +9,17 @@
     <style>
     </style>
   </head>
-  <body>
+  <body class = 'dashboard'>
     <div class="container">
       <div class="row position-relative">
         <div class = 'one-half-col float-left'>
           <img class = 'logo' src="./images/red5pro_logo.svg">
         </div>
         <div class = 'one-half-col float-right position-absolute bottom right'>
-          <header>
-            <a href="/dashboard/index.jsp">Dashboard</a>
-            <a href="/dashboard/clients.jsp">Clients</a>
-            <a href="#">Server</a>
-            <a href="/dashboard/vod.jsp">VoD</a>
+          <header id = 'navBar'>
+            <a href="/dashboard/vod.jsp" class = 'vod'>VoD</a>
+            <a href="/dashboard/clients.jsp" class = 'clients'>Clients</a>
+            <a href="/dashboard/index.jsp" class = 'dashboard'>Dashboard</a>
           </header>
         </div>
       </div>
