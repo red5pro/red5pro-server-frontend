@@ -1,4 +1,5 @@
 /* global Datamap */
+/* global jQuery */
 let moment = require('moment')
 import Chart from '../lib/Chart.bundle.min.js'
 Chart.defaults.global.responsive = true
@@ -106,6 +107,12 @@ export class LineGraph extends Graph {
           data: [],
           borderColor: this.red,
           backgroundColor: this.red
+        },
+        {
+          label: 'Max Connections',
+          data: [],
+          borderColor: this.red,
+          backgroundColor: this.grey
         }]
       },
       options: {
@@ -122,7 +129,7 @@ export class LineGraph extends Graph {
             type: 'linear',
             ticks: {
               min: 0,
-              suggestedMax: 125
+              suggestedMax: 10
             }
           }]
         },
@@ -137,6 +144,7 @@ export class LineGraph extends Graph {
   }
   makeGraph () {
     let currentData = this.data.data.datasets[0].data
+
     let now = moment()
     for (let ii = 0; ii < 11; ii++) {
       currentData.unshift({
@@ -144,13 +152,15 @@ export class LineGraph extends Graph {
         y: 0
       })
     }
-    this.data.data.datasets[0].data = currentData
+    for (let jj = 0; jj < this.data.data.datasets.length; jj++) {
+      this.data.data.datasets[jj].data = currentData
+    }
 
     this.currentChart = new Chart(this.context, this.data)
     this.currentChart.update()
   }
 
-  updateGraph (newData) {
+  updateGraph (newData, moreData = []) {
     let currentData = this.data.data.datasets[0].data
     let now = moment()
 
@@ -162,6 +172,20 @@ export class LineGraph extends Graph {
     }
     currentData[currentData.length - 1].y = newData
     this.data.data.datasets[0].data = currentData
+
+    if (moreData) {
+      for (let jj = 0; jj < moreData.length; jj++) {
+        let copiedObject = jQuery.extend(true, [], currentData)
+        for (let kk = 0; kk < currentData.length - 1; kk++) {
+          copiedObject[kk].y = this.data.data.datasets[jj + 1].data[kk + 1].y
+        }
+
+        copiedObject[copiedObject.length - 1].y = moreData[jj]
+        this.data.data.datasets[jj + 1].data = copiedObject
+        console.log(copiedObject)
+      }
+    }
+
     this.currentChart.update()
   }
   reset (title) {
@@ -194,8 +218,8 @@ export class DoughnutGraph extends Graph {
         datasets: [{
           data: [1, 1],
           backgroundColor: [
-            this.red,
-            this.grey
+            this.grey,
+            this.red
           ]
         }]
       },
