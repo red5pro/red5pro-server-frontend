@@ -55,6 +55,8 @@ h4 {
   text-align: center;
   font-size: 20px;
   margin-top: 0;
+  color: #a8a8a8;
+  font-weight: 400;
 }
 hr {
   margin-top: 1%;
@@ -62,7 +64,7 @@ hr {
 }
 
 header {
-  width: 90%;
+  width: 100%;
   margin: auto;
   overflow: hidden;
   bottom: 0;
@@ -102,7 +104,7 @@ header a:hover {
   float: left;
 }
 .float-right {
-  float: left;
+  float: right;
 }
 .float-center {
   float: left;
@@ -168,7 +170,9 @@ a.link:hover {
   width: 90%;
   margin-top: 2%;
 }
-
+.wide{
+  width: 100%;
+}
 .one-fifth-col {
   width:20%;
 }
@@ -195,7 +199,7 @@ table tbody tr td:first-child {
 }
 table tbody tr td:nth-child(2) {
   color: #E31900;
-  text-align: center;
+  text-align: left
 }
 video {
   background-color: black;
@@ -226,12 +230,16 @@ button:hover {
   width: 100%;
   overflow: scroll;
   height: 100%;
+  max-width: 100%;
+  word-break: break-all;
 }
 .activeTableBody {
   margin: 0;
+  max-width: 100%;
 }
 .activeTable .activeTableBody tr td {
   color: #a8a8a8;
+  max-width: 100%;
 }
 .activeTable .activeTableBody tr td:hover {
   color: #E31900;
@@ -271,5 +279,19 @@ button:hover {
   color: #E31900;
 }
 .vod header a.vod {
+  color: #E31900;
+}
+.no-padding{
+  padding: 0;
+}
+.no-margin{
+  margin: 0;
+}
+
+#mapData header .map {
+  color: #E31900;
+}
+
+#streamData header .stream {
   color: #E31900;
 }

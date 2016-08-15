@@ -1,6 +1,6 @@
 import REST from './components/restAPI.js'
 import WS from './components/wsAPI.js'
-import {LineGraph, BarGraph, MAP} from './components/graph.js'
+import {LineGraph, MAP} from './components/graph.js'
 import videojs from 'video.js'
 import Hls from 'videojs-contrib-hls' // eslint-disable-line no-unused-vars
 
@@ -10,7 +10,7 @@ let websocket = new WS('xyz123')
 
 // Initialize graphs
 let connectionsGraph = new LineGraph(document.getElementById('connectionsGraph'), 'Connections', 'Server Connections')
-let bandwidthGraph = new BarGraph(document.getElementById('bandwidthGraph'), ['Bandwidth'], 'Bandwidth')
+// let bandwidthGraph = new BarGraph(document.getElementById('bandwidthGraph'), ['Bandwidth'], 'Bandwidth')
 let map = new MAP(document.getElementById('dataMap'), document.getElementById('mapData').offsetWidth)
 let activeClients = {}
 let player = videojs('streamVid', {
@@ -30,7 +30,7 @@ window.onresize = () => {
 
 // Plot
 connectionsGraph.makeGraph()
-bandwidthGraph.makeGraph()
+// bandwidthGraph.makeGraph()
 map.makeMap()
 
 map.addPublisher([42.309736, -71.115143], 'Infrared5')
@@ -39,8 +39,11 @@ map.addSubscriber([35.861660, 104.195397], [42.309736, -71.115143], 'B')
 map.addSubscriber([-8.783195, 34.508523], [42.309736, -71.115143], 'C')
 map.addSubscriber([-25.274398, 133.775136], [42.309736, -71.115143], 'D')
 map.addSubscriber([-14.235004, -51.925280], [42.309736, -71.115143], 'E')
+
 // DOM housekeeping
-document.getElementById('viewMap').onclick = viewMap
+for (let ii = 0; ii < document.getElementsByClassName('map').length; ii++) {
+  document.getElementsByClassName('map')[ii].onclick = viewMap
+}
 
 // Get active applications
 restAPI.makeAPICall('getApplications', null, (applications) => {
@@ -93,11 +96,10 @@ websocket.openConnection((data, content, apiCall) => {
           }, (recording) => {
             if (recording.data.is_recording) {
               recordButton.innerHTML = 'Stop Record'
-              recordButton.style.backgroundColor = '#E31900'
+              recordButton.style.color = '#E31900'
               td.innerHTML = clientToAdd + ' &#x25cf;'
             } else {
               recordButton.innerHTML = 'Record Stream'
-              recordButton.style.backgroundColor = ''
               td.innerHTML = clientToAdd
             }
           })
@@ -117,8 +119,10 @@ websocket.openConnection((data, content, apiCall) => {
         document.getElementById('streamData').style.display = 'none'
         break
       }
-      connectionsGraph.updateGraph(data.content.data.active_subscribers)
-      bandwidthGraph.updateGraph(data.content.data.bytes_received / (1024 * 1024))
+      document.getElementById('Uptime').innerHTML = `${((data.content.timestamp - data.content.data.creation_time) / 1000).toFixed()} seconds`
+
+      connectionsGraph.updateGraph(data.content.data.active_subscribers, [data.content.data.max_subscribers])
+      // bandwidthGraph.updateGraph(data.content.data.bytes_received / (1024 * 1024))
       break
     case 'getClientStatistics':
       /* For API v2 – Make WS call to get publisher and subscriber ip addresses, determine location, and update bubbles
@@ -171,7 +175,7 @@ function arraysEqual (a, b) {
   }
   for (let ii = 0; ii < a.length; ii++) {
     if (a.indexOf(b[ii]) === -1) {
-      return false
+      return
     }
   }
   for (let jj = 0; jj < b.length; jj++) {
@@ -192,8 +196,22 @@ function filterConnections (a, b) {
 }
 
 function getMoreStreamInfo () {
-  let content = this.id.split(':')
+  let content
+  console.log(this.id)
+  console.log(this.name)
+  if (this.id !== '') {
+    content = this.id.split(':')
+  } else {
+    content = this.name.split(':')
+  }
 
+  for (let ii = 0; ii < document.getElementsByClassName('map').length; ii++) {
+    let streamButton = document.getElementsByClassName('stream')[ii]
+    if (this.id !== '') {
+      streamButton.name = this.id
+    }
+    streamButton.onclick = getMoreStreamInfo
+  }
   // Pause player, edit source based on clicked stream, play
   player.pause()
   player.src([
@@ -212,7 +230,6 @@ function getMoreStreamInfo () {
   document.getElementById('streamData').style.width = '90%'
   document.getElementById('streamData').style.height = '100%'
   document.getElementById('mapData').style.display = 'none'
-  document.getElementById('viewMap').style.display = 'block'
 
   if (document.getElementById('streamVid_html5_api')) {
     document.getElementById('streamVid_html5_api').controls = true
@@ -223,14 +240,17 @@ function getMoreStreamInfo () {
   restAPI.makeAPICall('getLiveStreamStatistics', {
     appname: content[0],
     streamname: content[1]
-  }, (recording) => {
-    if (recording.data.is_recording) {
+  }, (data) => {
+    if (data.data.is_recording) {
       recordButton.innerHTML = 'Stop Record'
-      recordButton.style.backgroundColor = '#E31900'
+      recordButton.style.color = '#E31900'
     } else {
       recordButton.innerHTML = 'Record Stream'
-      recordButton.style.backgroundColor = ''
+      recordButton.style.color = ''
     }
+    document.getElementById('Id').innerHTML = data.data.id
+    document.getElementById('Name').innerHTML = data.data.name
+    document.getElementById('scopePath').innerHTML = data.data.scope_path
   })
 
   recordButton.style.display = 'block'
@@ -239,7 +259,7 @@ function getMoreStreamInfo () {
 
   // Reset graphs and connections
   connectionsGraph.reset(`Connections to Stream ${content[1]}`)
-  bandwidthGraph.reset('Bandwidth')
+  // bandwidthGraph.reset('Bandwidth')
 
   // Change WS connection to new stream
   websocket.removeConnection('getLiveStreamStatistics', '*')
@@ -251,8 +271,12 @@ function getMoreStreamInfo () {
     // rows[ii].style.backgroundColor = ''
     rows[ii].style.color = ''
   }
+  if (this.id !== '') {
+    this.style.color = '#E31900'
+  } else {
+    this.style.color = ''
+  }
   // this.style.backgroundColor = '#a8a8a8'
-  this.style.color = '#E31900'
 
   document.getElementById('streamVidParent').style.height = document.getElementById('streamVidParent').offsetWidth * 0.5 + 'px'
   if (document.getElementById('streamVid_Flash_api')) {
@@ -285,7 +309,7 @@ function startRecord (content) {
     console.log('Recording Stream')
   })
   document.getElementById(`${content[0]}:${content[1]}`).innerHTML = content[1] + ' &#x25cf;'
-  document.getElementById('recordStream').style.backgroundColor = '#E31900'
+  document.getElementById('recordStream').style.color = '#E31900'
 }
 
 function stopRecord (content) {
@@ -296,7 +320,7 @@ function stopRecord (content) {
     console.log('Recording Terminated')
   })
   document.getElementById(`${content[0]}:${content[1]}`).innerHTML = content[1]
-  document.getElementById('recordStream').style.backgroundColor = ''
+  document.getElementById('recordStream').style.color = ''
 }
 
 function viewMap () {
@@ -312,5 +336,4 @@ function viewMap () {
   }
 
   websocket.removeConnection('getLiveStreamStatistics', '*')
-  this.style.display = 'none'
 }

@@ -27,6 +27,7 @@
       <div class="row">
         <h2>Server Overview</h2>
         <div class="float-left one-third-col">
+          <h4>Server Statistics</h4>
           <!-- <canvas id = 'connectionsGraph' width="200" height="200"></canvas> -->
           <table>
             <tbody>

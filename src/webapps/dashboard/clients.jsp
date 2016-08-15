@@ -12,7 +12,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
     <script src="./src/lib/datamaps.world.min.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js" defer></script>
     <script src="./dist/bundle-clients.js" defer></script>
   </head>
   <body class = 'clients'>
@@ -37,18 +37,25 @@
             <tbody class = 'activeTableBody'>
             </tbody>
           </table>
-          <button id = 'recordStream' style="display:none">Record Stream</button>
-          <button id = 'viewMap' style="display:none">View Map</button>
         </div>
         <div class="float-right four-fifth-col">
           <h2 class = 'center-text'>Clients Overview</h2>
           <div class = 'top row' id = mapData>
+            <header>
+              <a class = 'map'>Map</a>
+              <a class = 'stream'>Stream</a>
+            </header>
             <div id = 'dataMapContainer'>
               <div id="dataMap" style="position: relative; width: 100%; height: 100%;"></div>
             </div>
           </div>
           <div class = 'top row' id = 'streamData' style="display:none">
-            <div class = 'top row' id = 'streamVidParent'>
+            <header>
+              <a class = 'map'>Map</a>
+              <a class = 'stream'>Stream</a>
+              <a class = 'record' id = 'recordStream' style='float: left'>Record</a>
+            </header>
+            <div class = 'top row wide' id = 'streamVidParent'>
               <video id='streamVid' width=100% class="video-js vjs-default-skin" controls>
               </video>
             </div>
@@ -58,7 +65,27 @@
                 <canvas id = 'connectionsGraph' width="200" height="200"></canvas>
               </div>
               <div class = "float-left one-half-col">
-                <canvas id = 'bandwidthGraph' width="200" height="200"></canvas>
+              <h4>Stream Statistics</h4>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Uptime</td>
+                    <td id = 'Uptime'></td>
+                  </tr>
+                  <tr>
+                    <td>Id</td>
+                    <td id = 'Id'></td>
+                  </tr>
+                  <tr>
+                    <td>Name</td>
+                    <td id = 'Name'></td>
+                  </tr>
+                  <tr>
+                    <td>Scope Path</td>
+                    <td id = 'scopePath'></td>
+                  </tr>
+                </tbody>
+              </table>
               </div>
             </div>
           </div>

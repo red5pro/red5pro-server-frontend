@@ -106,13 +106,17 @@ export class LineGraph extends Graph {
           label: this.label,
           data: [],
           borderColor: this.red,
-          backgroundColor: this.red
+          backgroundColor: this.red,
+          radius: 1,
+          tension: 0
         },
         {
           label: 'Max Connections',
           data: [],
-          borderColor: this.red,
-          backgroundColor: this.grey
+          borderColor: this.grey,
+          backgroundColor: this.grey,
+          radius: 1,
+          tension: 0
         }]
       },
       options: {
@@ -123,6 +127,11 @@ export class LineGraph extends Graph {
               displayFormats: {
                 hour: 'hh:mm'
               }
+            },
+            ticks: {
+              maxRotation: 30,
+              minRotation: 30,
+              autoSkip: true
             }
           }],
           yAxes: [{
@@ -164,28 +173,49 @@ export class LineGraph extends Graph {
     let currentData = this.data.data.datasets[0].data
     let now = moment()
 
-    currentData[currentData.length - 1].x = now.format()
+    if (currentData.length < 3599) {
+      currentData.push({
+        x: now.format(),
+        y: newData
+      })
+      for (let ii = 0; ii < currentData.length - 1; ii++) {
+        currentData[currentData.length - 2 - ii].x = now.subtract(1, 'seconds').format()
+      }
+      this.data.data.datasets[0].data = currentData
+      if (moreData) {
+        for (let jj = 0; jj < moreData.length; jj++) {
+          let copiedObject = jQuery.extend(true, [], currentData)
 
-    for (let ii = 0; ii < currentData.length - 1; ii++) {
-      currentData[ii].y = currentData[ii + 1].y
-      currentData[currentData.length - 2 - ii].x = now.subtract(1, 'seconds').format()
-    }
-    currentData[currentData.length - 1].y = newData
-    this.data.data.datasets[0].data = currentData
+          for (let kk = 0; kk < copiedObject.length - 1; kk++) {
+            copiedObject[kk].y = this.data.data.datasets[jj + 1].data[kk].y
+          }
 
-    if (moreData) {
-      for (let jj = 0; jj < moreData.length; jj++) {
-        let copiedObject = jQuery.extend(true, [], currentData)
-        for (let kk = 0; kk < currentData.length - 1; kk++) {
-          copiedObject[kk].y = this.data.data.datasets[jj + 1].data[kk + 1].y
+          copiedObject[copiedObject.length - 1].y = moreData[jj]
+          this.data.data.datasets[jj + 1].data = copiedObject
         }
+      }
+    } else {
+      currentData[currentData.length - 1].x = now.format()
 
-        copiedObject[copiedObject.length - 1].y = moreData[jj]
-        this.data.data.datasets[jj + 1].data = copiedObject
-        console.log(copiedObject)
+      for (let ii = 0; ii < currentData.length - 1; ii++) {
+        currentData[ii].y = currentData[ii + 1].y
+        currentData[currentData.length - 2 - ii].x = now.subtract(1, 'seconds').format()
+      }
+      currentData[currentData.length - 1].y = newData
+      this.data.data.datasets[0].data = currentData
+
+      if (moreData) {
+        for (let jj = 0; jj < moreData.length; jj++) {
+          let copiedObject = jQuery.extend(true, [], currentData)
+          for (let kk = 0; kk < currentData.length - 1; kk++) {
+            copiedObject[kk].y = this.data.data.datasets[jj + 1].data[kk + 1].y
+          }
+
+          copiedObject[copiedObject.length - 1].y = moreData[jj]
+          this.data.data.datasets[jj + 1].data = copiedObject
+        }
       }
     }
-
     this.currentChart.update()
   }
   reset (title) {
@@ -200,7 +230,10 @@ export class LineGraph extends Graph {
         y: 0
       })
     }
-    this.data.data.datasets[0].data = resetData
+
+    for (let jj = 0; jj < this.data.data.datasets.length; jj++) {
+      this.data.data.datasets[jj].data = resetData
+    }
     this.currentChart.update()
   }
 }
