@@ -4,6 +4,7 @@
   <head>
     {{> head_meta }}
     <link href="http://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
+    <link href="http://vjs.zencdn.net/5.10.8/video-js.css" rel="stylesheet">
     <link rel="stylesheet" href="css/dashboard.css">
 
     <title>Welcome to the Red5 Pro Server!</title>
@@ -24,7 +25,7 @@
         <div class = 'one-half-col float-right position-absolute bottom right'>
           <header id = 'navBar'>
             <a href="/dashboard/vod.jsp" class = 'vod'>VoD</a>
-            <a href="/dashboard/clients.jsp" class = 'clients'>Clients</a>
+            <a href="/dashboard/clients.jsp" class = 'clients'>Streams</a>
             <a href="/dashboard/index.jsp" class = 'dashboard'>Dashboard</a>
           </header>
         </div>
@@ -32,14 +33,14 @@
       <hr>
       <div class="row">
         <div class="float-left one-fifth-col active">
-          <h2 class = 'center-text'>Active Connections</h2>
+          <h2 class = 'center-text'>Active Streams</h2>
           <table class = 'activeTable'>
             <tbody class = 'activeTableBody'>
             </tbody>
           </table>
         </div>
         <div class="float-right four-fifth-col">
-          <h2 class = 'center-text'>Clients Overview</h2>
+          <h2 class = 'center-text'>Streams Overview</h2>
           <div class = 'top row' id = mapData>
             <header>
               <a class = 'map'>Map</a>

@@ -7,11 +7,9 @@ let websocket = new WS('xyz123', 1000)
 
 let connectionsGraph = new LineGraph(document.getElementById('connectionsGraph'), 'Connections', 'Server Connections')
 let memoryGraph = new DoughnutGraph(document.getElementById('memoryGraph'), ['Free Memory (Mb)', 'Used Memory (Mb)'], 'Memory')
-// let bandwidthGraph = new BarGraph(document.getElementById('bandwidthGraph'), ['Data Transfered (Mb)'], 'Data Transfered (Mb)')
 
 connectionsGraph.makeGraph()
 memoryGraph.makeGraph()
-// bandwidthGraph.makeGraph()
 
 restAPI.makeAPICall('getServerStatistics', null, (data) => {
   data = data.data
@@ -34,7 +32,6 @@ websocket.openConnection((data, content, apiCall) => {
   // Graph Data
   connectionsGraph.updateGraph(data.active_connections, [data.max_connections])
   memoryGraph.updateGraph(convertMemory(data.free_memory, data.total_memory))
-  // bandwidthGraph.updateGraph((data.bytes_in / (1024 * 1024)).toFixed(2))
 
   // Server Status
   document.getElementById('Uptime').innerHTML = `${(data.uptime / 1000).toFixed()} seconds`

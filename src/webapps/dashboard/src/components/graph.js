@@ -130,8 +130,7 @@ export class LineGraph extends Graph {
             },
             ticks: {
               maxRotation: 30,
-              minRotation: 30,
-              autoSkip: true
+              minRotation: 30
             }
           }],
           yAxes: [{

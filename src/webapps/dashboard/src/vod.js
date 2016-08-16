@@ -1,3 +1,4 @@
+/* global confirm */
 import REST from './components/restAPI.js'
 import videojs from 'video.js'
 
@@ -6,7 +7,7 @@ let restAPI = new REST('xyz123')
 // Initialize
 updateVodFiles()
 window.onresize = () => {
-  document.getElementById('vodContainer').style.height = document.getElementById('vodContainer').offsetWidth * 0.5 + 'px'
+  document.getElementById('vodContainer').style.height = document.getElementById('vodContainer').offsetWidth * 9 / 16 + 'px'
 }
 document.getElementById('refreshVOD').onclick = updateVodFiles
 
@@ -18,12 +19,23 @@ let player = videojs('streamVid', {
 
 // Functions
 function deleteVODFile () {
+  if (!this.name) {
+    return
+  }
+
   const content = this.name.split(':')
   const file = content[1].split('.')
 
-  restAPI.makeDeleteCall('deleteVodFiles', {appname: content[0], filename: file[0], extension: file[1]}, () => {})
+  if (confirm('Are you sure you want to delete this file?')) {
+    restAPI.makeDeleteCall('deleteVodFiles', {appname: content[0], filename: file[0], extension: file[1]}, () => {})
 
-  document.getElementById(content[1]).remove()
+    document.getElementById(content[1]).remove()
+    document.getElementById('vodContainer').style.width = '0%'
+    document.getElementById('vodContainer').style.height = '0%'
+
+    this.name = null
+  }
+  return
 }
 
 function updateVodFiles () {
@@ -62,8 +74,9 @@ function updateVodFiles () {
 function viewVODFile () {
   const content = this.id.split(':')
 
+  document.getElementById('vodContainer').style.width = '90%'
   document.getElementById('vodContainer').style.display = 'block'
-  document.getElementById('vodContainer').style.height = document.getElementById('vodContainer').offsetWidth * 0.5 + 'px'
+  document.getElementById('vodContainer').style.height = document.getElementById('vodContainer').offsetWidth * 9 / 16 + 'px'
 
   player.src([
     {
@@ -92,7 +105,6 @@ function viewVODFile () {
   let rows = document.getElementsByTagName('td')
 
   for (let ii = 0; ii < rows.length; ii++) {
-    // rows[ii].style.backgroundColor = ''
     rows[ii].style.color = ''
   }
   this.style.color = '#E31900'

@@ -10,46 +10,19 @@ let websocket = new WS('xyz123')
 
 // Initialize graphs
 let connectionsGraph = new LineGraph(document.getElementById('connectionsGraph'), 'Connections', 'Server Connections')
-// let bandwidthGraph = new BarGraph(document.getElementById('bandwidthGraph'), ['Bandwidth'], 'Bandwidth')
 let map = new MAP(document.getElementById('dataMap'), document.getElementById('mapData').offsetWidth)
-let activeClients = {}
-let player = videojs('streamVid', {
-  techorder: [
-    'html5',
-    'flash'
-  ]
-})
 
-window.onresize = () => {
-  document.getElementById('streamVidParent').style.height = document.getElementById('streamVidParent').offsetWidth * 0.5 + 'px'
-  if (document.getElementById('streamVid_Flash_api')) {
-    document.getElementById('streamVid_Flash_api').style.height = document.getElementById('streamVid_Flash_api').offsetWidth * 0.5 + 'px'
-  }
-}
-// Initialize object to keep track of active clients (stream)
-
-// Plot
 connectionsGraph.makeGraph()
-// bandwidthGraph.makeGraph()
 map.makeMap()
 
-map.addPublisher([42.309736, -71.115143], 'Infrared5')
-map.addSubscriber([64.200841, -149.493673], [42.309736, -71.115143], 'Random Alaskan Dude')
-map.addSubscriber([35.861660, 104.195397], [42.309736, -71.115143], 'B')
-map.addSubscriber([-8.783195, 34.508523], [42.309736, -71.115143], 'C')
-map.addSubscriber([-25.274398, 133.775136], [42.309736, -71.115143], 'D')
-map.addSubscriber([-14.235004, -51.925280], [42.309736, -71.115143], 'E')
-
-// DOM housekeeping
-for (let ii = 0; ii < document.getElementsByClassName('map').length; ii++) {
-  document.getElementsByClassName('map')[ii].onclick = viewMap
-}
+let activeStreams = {}
+let player = videojs('streamVid')
 
 // Get active applications
 restAPI.makeAPICall('getApplications', null, (applications) => {
   applications.data.forEach((application) => {
     if (application !== 'dashboard') {
-      activeClients[application] = []
+      activeStreams[application] = []
       websocket.addConnection('getLiveStreams', [application])
     }
   })
@@ -60,30 +33,30 @@ websocket.addConnection('getServerStatistics')
 websocket.openConnection((data, content, apiCall) => {
   switch (apiCall) {
     case 'getLiveStreams':
-      const newClients = data.content.data || []
-      const oldClients = activeClients[content[0]] || []
+      const newStreams = data.content.data || []
+      const oldStreams = activeStreams[content[0]] || []
 
-      if (arraysEqual(newClients, oldClients)) {
+      if (arraysEqual(newStreams, oldStreams)) {
         return
       }
       if (document.getElementById('NA')) {
         document.getElementById('NA').remove()
       }
 
-      const addClients = filterConnections(newClients, oldClients)
-      const removeClients = filterConnections(oldClients, newClients)
+      const addStreams = filterConnections(newStreams, oldStreams)
+      const removeStreams = filterConnections(oldStreams, newStreams)
 
-      if (removeClients) {
-        removeClients.forEach((clientToTerminate) => {
-          document.getElementById(clientToTerminate).remove()
+      if (removeStreams) {
+        removeStreams.forEach((streamToTerminate) => {
+          document.getElementById(streamToTerminate).remove()
         })
       }
 
-      if (addClients) {
-        addClients.forEach((clientToAdd) => {
+      if (addStreams) {
+        addStreams.forEach((streamToAdd) => {
           // Add Client UI
           const tr = document.createElement('tr')
-          tr.id = clientToAdd
+          tr.id = streamToAdd
 
           const td = document.createElement('td')
           td.onclick = getMoreStreamInfo
@@ -92,26 +65,26 @@ websocket.openConnection((data, content, apiCall) => {
 
           restAPI.makeAPICall('getLiveStreamStatistics', {
             appname: content[0],
-            streamname: clientToAdd
+            streamname: streamToAdd
           }, (recording) => {
             if (recording.data.is_recording) {
               recordButton.innerHTML = 'Stop Record'
               recordButton.style.color = '#E31900'
-              td.innerHTML = clientToAdd + ' &#x25cf;'
+              td.innerHTML = streamToAdd + ' &#x25cf;'
             } else {
               recordButton.innerHTML = 'Record Stream'
-              td.innerHTML = clientToAdd
+              td.innerHTML = streamToAdd
             }
           })
-          td.innerHTML = clientToAdd
-          td.id = `${content[0]}:${clientToAdd}`
+          td.innerHTML = streamToAdd
+          td.id = `${content[0]}:${streamToAdd}`
 
           tr.appendChild(td)
           document.querySelector('.activeTableBody').appendChild(tr)
         })
       }
 
-      activeClients[content[0]] = newClients
+      activeStreams[content[0]] = newStreams
       break
     case 'getLiveStreamStatistics':
       if (data.content.code !== 200) {
@@ -164,7 +137,6 @@ websocket.openConnection((data, content, apiCall) => {
 
       break
     default:
-
       break
   }
 })
@@ -197,8 +169,7 @@ function filterConnections (a, b) {
 
 function getMoreStreamInfo () {
   let content
-  console.log(this.id)
-  console.log(this.name)
+
   if (this.id !== '') {
     content = this.id.split(':')
   } else {
@@ -217,12 +188,13 @@ function getMoreStreamInfo () {
   player.src([
     {
       type: 'application/x-mpegURL',
-      src: `http://localhost:5080/${content[0]}/${content[1]}.m3u8`
+      src: `http://${window.location.host}/${content[0]}/${content[1]}.m3u8`
     },
     {
       type: 'rtmp/x-flv',
-      src: `rtmp://192.168.0.133/${content[0]}/${content[1]}`
-    }])
+      src: `rtmp://192.168.1.13/${content[0]}/${content[1]}`
+    }
+  ])
   player.play()
 
   // Manipulate DOM elements
@@ -231,11 +203,7 @@ function getMoreStreamInfo () {
   document.getElementById('streamData').style.height = '100%'
   document.getElementById('mapData').style.display = 'none'
 
-  if (document.getElementById('streamVid_html5_api')) {
-    document.getElementById('streamVid_html5_api').controls = true
-  }
   const recordButton = document.getElementById('recordStream')
-  // Create some elements
 
   restAPI.makeAPICall('getLiveStreamStatistics', {
     appname: content[0],
@@ -259,7 +227,6 @@ function getMoreStreamInfo () {
 
   // Reset graphs and connections
   connectionsGraph.reset(`Connections to Stream ${content[1]}`)
-  // bandwidthGraph.reset('Bandwidth')
 
   // Change WS connection to new stream
   websocket.removeConnection('getLiveStreamStatistics', '*')
@@ -268,7 +235,6 @@ function getMoreStreamInfo () {
   // Highlight selected stream
   let rows = document.getElementsByTagName('td')
   for (let ii = 0; ii < rows.length; ii++) {
-    // rows[ii].style.backgroundColor = ''
     rows[ii].style.color = ''
   }
   if (this.id !== '') {
@@ -276,11 +242,10 @@ function getMoreStreamInfo () {
   } else {
     this.style.color = ''
   }
-  // this.style.backgroundColor = '#a8a8a8'
 
-  document.getElementById('streamVidParent').style.height = document.getElementById('streamVidParent').offsetWidth * 0.5 + 'px'
+  document.getElementById('streamVidParent').style.height = document.getElementById('streamVidParent').offsetWidth * 9 / 16 + 'px'
   if (document.getElementById('streamVid_Flash_api')) {
-    document.getElementById('streamVid_Flash_api').style.height = document.getElementById('streamVid_Flash_api').offsetWidth * 0.5 + 'px'
+    document.getElementById('streamVid_Flash_api').style.height = document.getElementById('streamVid_Flash_api').offsetWidth * 9 / 16 + 'px'
   }
 }
 
@@ -331,9 +296,53 @@ function viewMap () {
 
   let rows = document.getElementsByTagName('td')
   for (let ii = 0; ii < rows.length; ii++) {
-    // rows[ii].style.backgroundColor = ''
     rows[ii].style.color = ''
   }
 
   websocket.removeConnection('getLiveStreamStatistics', '*')
+}
+// let socket
+// function orientation () {
+//   if (socket) {
+//     socket.close()
+//   }
+
+//   let url = 'ws://192.168.1.13:6262/metadata'
+//   let context = '/live'
+//   let stream = '/1'
+
+//   socket = new WebSocket(`${url}${context}${stream}`)
+
+//   socket.onopen = (e) => {
+//     console.log('opened')
+//     let request = {}
+//     request.evt = e
+//     request.id = 1233415424
+//     socket.send(JSON.stringify(request))
+//   }
+//   socket.onclose = () => {
+//     console.log('closed')
+//   }
+//   socket.onmessage = (obj) => {
+//     console.log('message')
+//     if (obj.name === 'onMetaData') {
+//       console.log(obj)
+//     }
+//   }
+//   socket.onerror = () => {
+//     console.log('error')
+//   }
+// }
+
+// Dynamic view for flash fallback
+window.onresize = () => {
+  document.getElementById('streamVidParent').style.height = document.getElementById('streamVidParent').offsetWidth * 9 / 16 + 'px'
+  if (document.getElementById('streamVid_Flash_api')) {
+    document.getElementById('streamVid_Flash_api').style.height = document.getElementById('streamVid_Flash_api').offsetWidth * 9 / 16 + 'px'
+  }
+}
+
+// DOM housekeeping
+for (let ii = 0; ii < document.getElementsByClassName('map').length; ii++) {
+  document.getElementsByClassName('map')[ii].onclick = viewMap
 }

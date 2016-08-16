@@ -81,7 +81,16 @@ header a:hover {
   color: #E31900;
   cursor: pointer;
 }
-
+a {
+  color: #a8a8a8;
+  float: right;
+  margin: 0;
+  padding: 10px;
+}
+a:hover {
+  color: #E31900;
+  cursor: pointer;
+}
 .position-relative {
   position: relative;
 }
@@ -135,7 +144,6 @@ header a:hover {
 
 .clear-fix {
   overflow: auto;
-  zoom: 1;
 }
 
 .clear-fix:after {
@@ -145,21 +153,6 @@ header a:hover {
 .clear-fix:before, .clear-fix:after {
     display: table;
     content: " ";
-}
-a {
-  float: right;
-  margin: 0;
-  padding: 10px;
-  color: red;
-}
-a.link {
-  color: rgb(227, 25, 0);
-  text-decoration: none;
-}
-
-a.link:hover {
-  text-decoration: underline;
-  color: rgb(149, 0, 0);
 }
 .container {
   width: 100%;
