@@ -1,3 +1,4 @@
+/* global ip, WebSocket */
 import REST from './components/restAPI.js'
 import WS from './components/wsAPI.js'
 import {LineGraph, MAP} from './components/graph.js'
@@ -17,6 +18,7 @@ map.makeMap()
 
 let activeStreams = {}
 let player = videojs('streamVid')
+let socket // For video meta data
 
 // Get active applications
 restAPI.makeAPICall('getApplications', null, (applications) => {
@@ -39,6 +41,8 @@ websocket.openConnection((data, content, apiCall) => {
       if (arraysEqual(newStreams, oldStreams)) {
         return
       }
+
+      // If table empty
       if (document.getElementById('NA')) {
         document.getElementById('NA').remove()
       }
@@ -54,13 +58,14 @@ websocket.openConnection((data, content, apiCall) => {
 
       if (addStreams) {
         addStreams.forEach((streamToAdd) => {
-          // Add Client UI
+          // Add Stream UI
           const tr = document.createElement('tr')
           tr.id = streamToAdd
 
           const td = document.createElement('td')
           td.onclick = getMoreStreamInfo
 
+          // Configure Record Button
           const recordButton = document.getElementById('recordStream')
 
           restAPI.makeAPICall('getLiveStreamStatistics', {
@@ -90,6 +95,7 @@ websocket.openConnection((data, content, apiCall) => {
       if (data.content.code !== 200) {
         websocket.removeConnection('getLiveStreamStatistics', content)
         document.getElementById('streamData').style.display = 'none'
+        document.getElementById('mapData').style.display = 'block'
         break
       }
       document.getElementById('Uptime').innerHTML = `${((data.content.timestamp - data.content.data.creation_time) / 1000).toFixed()} seconds`
@@ -176,6 +182,7 @@ function getMoreStreamInfo () {
     content = this.name.split(':')
   }
 
+  // Switch back to correct stream on map click
   for (let ii = 0; ii < document.getElementsByClassName('map').length; ii++) {
     let streamButton = document.getElementsByClassName('stream')[ii]
     if (this.id !== '') {
@@ -183,26 +190,29 @@ function getMoreStreamInfo () {
     }
     streamButton.onclick = getMoreStreamInfo
   }
-  // Pause player, edit source based on clicked stream, play
+  // Rotate player if needed, Pause player, edit source based on clicked stream, play
+  orientation(content[0], content[1])
   player.pause()
+  player.width(300)
   player.src([
-    {
-      type: 'application/x-mpegURL',
-      src: `http://${window.location.host}/${content[0]}/${content[1]}.m3u8`
-    },
+    // {
+    //   type: 'application/x-mpegURL',
+    //   src: `http://${window.location.host}/${content[0]}/${content[1]}.m3u8`
+    // },
     {
       type: 'rtmp/x-flv',
-      src: `rtmp://192.168.1.13/${content[0]}/${content[1]}`
+      src: `rtmp://${ip}/${content[0]}/${content[1]}`
     }
   ])
   player.play()
 
-  // Manipulate DOM elements
+  // Manipulate DOM elements on tab change
   document.getElementById('streamData').style.display = 'block'
   document.getElementById('streamData').style.width = '90%'
   document.getElementById('streamData').style.height = '100%'
   document.getElementById('mapData').style.display = 'none'
 
+  // Configure record button and update statistics
   const recordButton = document.getElementById('recordStream')
 
   restAPI.makeAPICall('getLiveStreamStatistics', {
@@ -243,6 +253,7 @@ function getMoreStreamInfo () {
     this.style.color = ''
   }
 
+  // Set aspect ratio of video to 9 / 16 for HLS and flash fallback
   document.getElementById('streamVidParent').style.height = document.getElementById('streamVidParent').offsetWidth * 9 / 16 + 'px'
   if (document.getElementById('streamVid_Flash_api')) {
     document.getElementById('streamVid_Flash_api').style.height = document.getElementById('streamVid_Flash_api').offsetWidth * 9 / 16 + 'px'
@@ -252,6 +263,7 @@ function getMoreStreamInfo () {
 function toggleRecord () {
   let content = this.name.split(':')
 
+  // Toggle record
   restAPI.makeAPICall('getLiveStreamStatistics', {
     appname: content[0],
     streamname: content[1]
@@ -301,40 +313,78 @@ function viewMap () {
 
   websocket.removeConnection('getLiveStreamStatistics', '*')
 }
-// let socket
-// function orientation () {
-//   if (socket) {
-//     socket.close()
-//   }
 
-//   let url = 'ws://192.168.1.13:6262/metadata'
-//   let context = '/live'
-//   let stream = '/1'
+function orientation (context, stream) {
+  let video = document.querySelector('.vjs-tech')
+  video.style.height = '450px'
 
-//   socket = new WebSocket(`${url}${context}${stream}`)
+  // close the socket if it is open
+  if (socket) {
+    console.log('Previous Socket detected. Closing.')
+    socket.close(1000)
+  }
 
-//   socket.onopen = (e) => {
-//     console.log('opened')
-//     let request = {}
-//     request.evt = e
-//     request.id = 1233415424
-//     socket.send(JSON.stringify(request))
-//   }
-//   socket.onclose = () => {
-//     console.log('closed')
-//   }
-//   socket.onmessage = (obj) => {
-//     console.log('message')
-//     if (obj.name === 'onMetaData') {
-//       console.log(obj)
-//     }
-//   }
-//   socket.onerror = () => {
-//     console.log('error')
-//   }
-// }
+  // Return video to original position
+  if (video.style.transform !== 'rotate(0deg)') {
+    console.log('Previous rotation detected, correcting to 0 deg.')
+    video.style.transform = 'rotate(0deg)'
+    video.style.width = '100%'
+    video.style.margin = '0px'
+  }
 
-// Dynamic view for flash fallback
+  // define and connect
+  let url = `ws://${ip}:6262/metadata/${context}/${stream}`
+  socket = new WebSocket(url)
+
+  socket.onopen = (e) => {
+    console.log('Socket Opened.')
+  }
+  // on message,
+  socket.onmessage = (msg) => {
+    console.log('message')
+    let data = JSON.parse(msg.data)
+
+    // if there is no name, return (usually a ping)
+    if (!data.name) {
+      console.log(msg)
+      console.log('No name detected, returning.')
+      socket.close(1000)
+      return
+    }
+    // if meta data is being sent
+    if (data.name === 'onMetaData') {
+      console.log('meta data detected')
+      data = data.data
+      // and it contains an orientation, rotate to said value
+      if (data.orientation) {
+        console.log('rotating to', data.orientation, 'degrees and closing the socket')
+        video.style.transform = `rotate(${data.orientation}deg)`
+        if (data.orientation !== 180) {
+          // If it's sideways, change the CSS to make it look nice
+          console.log('changing width')
+          video.style.width = '56.25%' // aspect ratio 9 / 16
+          console.log((document.getElementById('streamVidParent').offsetWidth - video.offsetHeight) / 2 + 'px')
+          video.style.marginLeft = (((document.getElementById('streamVidParent').offsetWidth - video.offsetHeight) / 2) / document.getElementById('streamVidParent').offsetWidth) * 100 + '%'
+        }
+        socket.close()
+        return
+      }
+    } else {
+      console.log('no meta data detected, returning position to 0 degrees')
+      video.style.transform = 'rotate(0deg)'
+    }
+    // close the connection once we have gotten the data we need
+
+    socket.close(1000)
+  }
+  socket.onclose = () => {
+    console.log('Socket Closed')
+  }
+  socket.onerror = () => {
+    console.log('error')
+  }
+}
+// Dynamic resize for flash fallback
 window.onresize = () => {
   document.getElementById('streamVidParent').style.height = document.getElementById('streamVidParent').offsetWidth * 9 / 16 + 'px'
   if (document.getElementById('streamVid_Flash_api')) {
@@ -342,7 +392,7 @@ window.onresize = () => {
   }
 }
 
-// DOM housekeeping
+// Some DOM housekeeping
 for (let ii = 0; ii < document.getElementsByClassName('map').length; ii++) {
   document.getElementsByClassName('map')[ii].onclick = viewMap
 }

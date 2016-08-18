@@ -1,4 +1,7 @@
 {{> jsp_header }}
+<%
+  String host = ip;
+%>
 <!doctype html>
 <html lang="eng">
   <head>
@@ -10,6 +13,9 @@
     <title>Welcome to the Red5 Pro Server!</title>
     <style>
     </style>
+    <script defer>
+      var ip = "<%= host %>"
+    </script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
     <script src="./src/lib/datamaps.world.min.js"></script>
