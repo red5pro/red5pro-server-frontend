@@ -17,6 +17,7 @@ connectionsGraph.makeGraph()
 map.makeMap()
 
 let activeStreams = {}
+let activeClients = {}
 let player = videojs('streamVid')
 let socket // For video meta data
 
@@ -26,6 +27,7 @@ restAPI.makeAPICall('getApplications', null, (applications) => {
     if (application !== 'dashboard') {
       activeStreams[application] = []
       websocket.addConnection('getLiveStreams', [application])
+      websocket.addConnection('getClients', [application])
     }
   })
 })
@@ -35,11 +37,13 @@ websocket.addConnection('getServerStatistics')
 websocket.openConnection((data, content, apiCall) => {
   switch (apiCall) {
     case 'getLiveStreams':
+      // Get new streams from ws call and old streams from dict
       const newStreams = data.content.data || []
       const oldStreams = activeStreams[content[0]] || []
 
+      // If they are the same, there is nothing to update
       if (arraysEqual(newStreams, oldStreams)) {
-        return
+        break
       }
 
       // If table empty
@@ -47,25 +51,30 @@ websocket.openConnection((data, content, apiCall) => {
         document.getElementById('NA').remove()
       }
 
+      // Determine which streams need to be removed and which need to be added from the HTML Table
       const addStreams = filterConnections(newStreams, oldStreams)
       const removeStreams = filterConnections(oldStreams, newStreams)
 
+      // Remove the streams from the table
       if (removeStreams) {
         removeStreams.forEach((streamToTerminate) => {
           document.getElementById(streamToTerminate).remove()
         })
       }
 
+      // Add the streams to the table
       if (addStreams) {
         addStreams.forEach((streamToAdd) => {
-          // Add Stream UI
+          // Create the row and give it an id
           const tr = document.createElement('tr')
           tr.id = streamToAdd
 
+          // create the column and give it a function
           const td = document.createElement('td')
           td.onclick = getMoreStreamInfo
+          td.id = `${content[0]}:${streamToAdd}`
 
-          // Configure Record Button
+          // Configure Record Button and stream names to reflect which streams are and are not recording in case user left page
           const recordButton = document.getElementById('recordStream')
 
           restAPI.makeAPICall('getLiveStreamStatistics', {
@@ -81,29 +90,65 @@ websocket.openConnection((data, content, apiCall) => {
               td.innerHTML = streamToAdd
             }
           })
-          td.innerHTML = streamToAdd
-          td.id = `${content[0]}:${streamToAdd}`
 
+          // add the elements to the table
           tr.appendChild(td)
           document.querySelector('.activeTableBody').appendChild(tr)
         })
       }
-
+      // Changes implemented.  The old streams are now the new streams.  Ready for next cycle.
       activeStreams[content[0]] = newStreams
       break
+    // If a stream is selected, this call will be added to the ws dict
     case 'getLiveStreamStatistics':
+      // If we recieve a bad code, remove everything and revert back to the map.  Usually happens when a stream is disconnected by publisher.
       if (data.content.code !== 200) {
         websocket.removeConnection('getLiveStreamStatistics', content)
         document.getElementById('streamData').style.display = 'none'
         document.getElementById('mapData').style.display = 'block'
+
+        for (let ii = 0; ii < document.getElementsByClassName('stream').length; ii++) {
+          let streamButton = document.getElementsByClassName('stream')[ii]
+          streamButton.removeAttribute('name')
+          streamButton.removeEventListener('click', getMoreStreamInfo)
+        }
         break
       }
-      document.getElementById('Uptime').innerHTML = `${((data.content.timestamp - data.content.data.creation_time) / 1000).toFixed()} seconds`
 
+      // Update some stream statistics
+      document.getElementById('Uptime').innerHTML = `${((data.content.timestamp - data.content.data.creation_time) / 1000).toFixed()} seconds`
       connectionsGraph.updateGraph(data.content.data.active_subscribers, [data.content.data.max_subscribers])
-      // bandwidthGraph.updateGraph(data.content.data.bytes_received / (1024 * 1024))
+      break
+    case 'getClients':
+      const newClients = data.content.data || []
+      const oldClients = activeClients[content[0]] || []
+
+      if (arraysEqual(newClients, oldClients)) {
+        break
+      }
+
+      const addClients = filterConnections(newClients, oldClients)
+      const removeClients = filterConnections(oldClients, newClients)
+
+      if (addClients) {
+        for (let ii = 0; ii < addClients.length; ii++) {
+          let ipAddress = [ii].remote_address
+          restAPI.makeAPICall('getIPAddress', {ipaddress: ipAddress}, (coordinates) => {
+            let longitude = coordinates.longitude
+            let latitude = coordinates.latitude
+            map.addPublisher([longitude, latitude], coordinates.city)
+          })
+        }
+
+      }
+
+      if (removeClients) {
+
+      }
+
       break
     case 'getClientStatistics':
+      console.log(data)
       /* For API v2 – Make WS call to get publisher and subscriber ip addresses, determine location, and update bubbles
 
         let subscriberIp = get IP Address
@@ -127,6 +172,7 @@ websocket.openConnection((data, content, apiCall) => {
       // map.addSubscriber(origin, [-71.115143, 42.309736], name)
       // map.addSubscriber(origin, [-71.115143, 42.309736], name)
       break
+    // If there are no active streams, display a message reflecting so.
     case 'getServerStatistics':
       if (document.getElementById('NA')) {
         break
@@ -176,29 +222,30 @@ function filterConnections (a, b) {
 function getMoreStreamInfo () {
   let content
 
-  if (this.id !== '') {
+  // Get content from either clicking the stream name or stream tab button.
+  if (this.id) {
     content = this.id.split(':')
   } else {
     content = this.name.split(':')
   }
 
   // Switch back to correct stream on map click
-  for (let ii = 0; ii < document.getElementsByClassName('map').length; ii++) {
+  for (let ii = 0; ii < document.getElementsByClassName('stream').length; ii++) {
     let streamButton = document.getElementsByClassName('stream')[ii]
     if (this.id !== '') {
       streamButton.name = this.id
     }
-    streamButton.onclick = getMoreStreamInfo
+    streamButton.addEventListener('click', getMoreStreamInfo)
   }
-  // Rotate player if needed, Pause player, edit source based on clicked stream, play
-  orientation(content[0], content[1])
+
+  // Pause player, rotate if needed, edit source based on clicked stream, play
   player.pause()
-  player.width(300)
+  orient(content[0], content[1])
   player.src([
-    // {
-    //   type: 'application/x-mpegURL',
-    //   src: `http://${window.location.host}/${content[0]}/${content[1]}.m3u8`
-    // },
+    {
+      type: 'application/x-mpegURL',
+      src: `http://${window.location.host}/${content[0]}/${content[1]}.m3u8`
+    },
     {
       type: 'rtmp/x-flv',
       src: `rtmp://${ip}/${content[0]}/${content[1]}`
@@ -212,8 +259,11 @@ function getMoreStreamInfo () {
   document.getElementById('streamData').style.height = '100%'
   document.getElementById('mapData').style.display = 'none'
 
-  // Configure record button and update statistics
+  // Configure Record Button to reflect which streams are and are not recording in case user left page.  Also update some stream statistics.
   const recordButton = document.getElementById('recordStream')
+  recordButton.style.display = 'block'
+  recordButton.name = this.id
+  recordButton.onclick = toggleRecord
 
   restAPI.makeAPICall('getLiveStreamStatistics', {
     appname: content[0],
@@ -231,10 +281,6 @@ function getMoreStreamInfo () {
     document.getElementById('scopePath').innerHTML = data.data.scope_path
   })
 
-  recordButton.style.display = 'block'
-  recordButton.name = this.id
-  recordButton.onclick = toggleRecord
-
   // Reset graphs and connections
   connectionsGraph.reset(`Connections to Stream ${content[1]}`)
 
@@ -247,17 +293,15 @@ function getMoreStreamInfo () {
   for (let ii = 0; ii < rows.length; ii++) {
     rows[ii].style.color = ''
   }
-  if (this.id !== '') {
+  if (this.id) {
     this.style.color = '#E31900'
   } else {
     this.style.color = ''
+    document.getElementById(this.name).style.color = '#E31900'
   }
 
   // Set aspect ratio of video to 9 / 16 for HLS and flash fallback
   document.getElementById('streamVidParent').style.height = document.getElementById('streamVidParent').offsetWidth * 9 / 16 + 'px'
-  if (document.getElementById('streamVid_Flash_api')) {
-    document.getElementById('streamVid_Flash_api').style.height = document.getElementById('streamVid_Flash_api').offsetWidth * 9 / 16 + 'px'
-  }
 }
 
 function toggleRecord () {
@@ -301,27 +345,27 @@ function stopRecord (content) {
 }
 
 function viewMap () {
+  // Manipulate DOM elements on tab change
   document.getElementById('mapData').style.display = 'block'
   document.getElementById('streamData').style.width = '0%'
   document.getElementById('streamData').style.height = '0%'
   document.getElementById('recordStream').style.display = 'none'
 
-  let rows = document.getElementsByTagName('td')
-  for (let ii = 0; ii < rows.length; ii++) {
-    rows[ii].style.color = ''
-  }
+  // let rows = document.getElementsByTagName('td')
+  // for (let ii = 0; ii < rows.length; ii++) {
+  //   rows[ii].style.color = ''
+  // }
 
   websocket.removeConnection('getLiveStreamStatistics', '*')
 }
 
-function orientation (context, stream) {
+function orient (context, stream) {
   let video = document.querySelector('.vjs-tech')
-  video.style.height = '450px'
 
   // close the socket if it is open
   if (socket) {
     console.log('Previous Socket detected. Closing.')
-    socket.close(1000)
+    socket.close()
   }
 
   // Return video to original position
@@ -332,7 +376,7 @@ function orientation (context, stream) {
     video.style.margin = '0px'
   }
 
-  // define and connect
+  // define and connect ws
   let url = `ws://${ip}:6262/metadata/${context}/${stream}`
   socket = new WebSocket(url)
 
@@ -346,9 +390,7 @@ function orientation (context, stream) {
 
     // if there is no name, return (usually a ping)
     if (!data.name) {
-      console.log(msg)
-      console.log('No name detected, returning.')
-      socket.close(1000)
+      socket.close()
       return
     }
     // if meta data is being sent
@@ -362,8 +404,9 @@ function orientation (context, stream) {
         if (data.orientation !== 180) {
           // If it's sideways, change the CSS to make it look nice
           console.log('changing width')
-          video.style.width = '56.25%' // aspect ratio 9 / 16
+          video.style.width = '56.25%' // aspect ratio 9 / 16 when sideways
           console.log((document.getElementById('streamVidParent').offsetWidth - video.offsetHeight) / 2 + 'px')
+          // This is math... ((Container - Video / 2) / Container) * 100 gives us the % offset from the left
           video.style.marginLeft = (((document.getElementById('streamVidParent').offsetWidth - video.offsetHeight) / 2) / document.getElementById('streamVidParent').offsetWidth) * 100 + '%'
         }
         socket.close()
@@ -375,7 +418,7 @@ function orientation (context, stream) {
     }
     // close the connection once we have gotten the data we need
 
-    socket.close(1000)
+    socket.close()
   }
   socket.onclose = () => {
     console.log('Socket Closed')
@@ -387,9 +430,6 @@ function orientation (context, stream) {
 // Dynamic resize for flash fallback
 window.onresize = () => {
   document.getElementById('streamVidParent').style.height = document.getElementById('streamVidParent').offsetWidth * 9 / 16 + 'px'
-  if (document.getElementById('streamVid_Flash_api')) {
-    document.getElementById('streamVid_Flash_api').style.height = document.getElementById('streamVid_Flash_api').offsetWidth * 9 / 16 + 'px'
-  }
 }
 
 // Some DOM housekeeping

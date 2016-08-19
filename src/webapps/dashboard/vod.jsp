@@ -35,6 +35,7 @@
             </tbody>
           </table>
           <button id = 'deleteVodFile'>Delete File</button>
+          <button id = 'rotate'>Rotate</button>
         </div>
         <div class="float-right four-fifth-col">
           <h2 class = 'center-text'>VoD Overview</h2>

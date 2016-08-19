@@ -10,9 +10,12 @@ export default class REST {
       appname: '',
       streamname: '',
       filename: '',
-      extension: ''
+      extension: '',
+      ipaddress: ''
     }
     this.apiCalls = {
+      // IP Location Call
+      getIPAddress: `http://freegeoip.net/json/${this.contents.ipaddress}`,
       // Server Calls
       getServerInfo: `http://${this.host}/api/v1/server?accessToken=${this.securityToken}`,
       ping: `http://${this.host}/api/v1/server/ping?accessToken=${this.securityToken}`,
@@ -70,6 +73,8 @@ export default class REST {
   }
   updateCalls () {
     this.apiCalls = {
+      // IP Location Call
+      getIPAddress: `http://freegeoip.net/json/${this.contents.ipaddress}`,
       // Server Calls
       getServerInfo: `http://${this.host}/api/v1/server?accessToken=${this.securityToken}`,
       ping: `http://${this.host}/api/v1/server/ping?accessToken=${this.securityToken}`,
