@@ -1,16 +1,21 @@
 /* global confirm */
-import REST from './components/restAPI.js'
+import Red5RESTAPI from './components/restAPI.js'
 import videojs from 'video.js'
 
-let restAPI = new REST('xyz123')
+const SECURITY_TOKEN = 'xyz123'
+const HOSTNAME = window.location.hostname
+const PORT = window.location.port
+
+let restAPI = new Red5RESTAPI(SECURITY_TOKEN, HOSTNAME, PORT)
 
 // Initialize
 updateVodFiles()
+document.getElementById('refreshVOD').onclick = updateVodFiles
+document.getElementById('rotate').onclick = rotate
+
 window.onresize = () => {
   document.getElementById('vodContainer').style.height = document.getElementById('vodContainer').offsetWidth * 9 / 16 + 'px'
 }
-document.getElementById('refreshVOD').onclick = updateVodFiles
-document.getElementById('rotate').onclick = rotate
 
 let player = videojs('streamVid', {
   techorder: [
@@ -28,32 +33,44 @@ function deleteVODFile () {
   const file = content[1].split('.')
 
   if (confirm('Are you sure you want to delete this file?')) {
-    restAPI.makeDeleteCall('deleteVodFiles', {appname: content[0], filename: file[0], extension: file[1]}, () => {})
+    restAPI.DELETE('deleteVodFiles', {appname: content[0], filename: file[0], extension: file[1]}, () => {})
 
     document.getElementById(content[1]).remove()
     document.getElementById('vodContainer').style.width = '0%'
     document.getElementById('vodContainer').style.height = '0%'
-
-    this.name = null
+    document.getElementById('rotate').style.display = 'none'
+    this.removeAttribute('name')
   }
   return
 }
-
+// On refresh click
 function updateVodFiles () {
-  const tbody = document.createElement('tbody')
+  let tbody = document.createElement('tbody')
   tbody.className = 'activeTableBody'
-
+  // Delete the table body
   document.querySelector('.activeTableBody').remove()
   document.querySelector('.activeTable').appendChild(tbody)
 
-  restAPI.makeAPICall('getApplications', null, (applications) => {
+  document.getElementById('vodContainer').style.width = '0%'
+  document.getElementById('vodContainer').style.height = '0%'
+  document.getElementById('rotate').style.display = 'none'
+  document.getElementById('deleteVodFile').removeAttribute('name')
+
+  // Get the active applications
+  restAPI.GET('getApplications', null, (applications) => {
     applications.data.forEach((application) => {
       if (application !== 'dashboard') {
-        restAPI.makeAPICall('getVodFiles', {appname: application}, (vodFile) => {
+        // For each appplication, get the VOD Files
+        restAPI.GET('getVodFiles', {appname: application}, (vodFile) => {
+          // If they exist
           if (vodFile.code === 200) {
             vodFile.data.forEach((name) => {
-              const tr = document.createElement('tr')
-              const td = document.createElement('td')
+              // Create e table row for them and add relevent DOM attributes
+              if (document.getElementById('NA')) {
+                document.getElementById('NA').remove()
+              }
+              let tr = document.createElement('tr')
+              let td = document.createElement('td')
 
               tr.id = name.name
               td.innerHTML = name.name.split('.')[0]
@@ -63,37 +80,36 @@ function updateVodFiles () {
 
               tr.appendChild(td)
 
-              document.querySelector('.activeTableBody').appendChild(tr)
-
-              if (document.getElementById('NA')) {
-                console.log('remove')
-                document.getElementById('NA').remove()
-              }
-
-              if (tbody.children.length < 1) {
-                console.log('adding')
-                let tr = document.createElement('tr')
-                let td = document.createElement('td')
-
-                tr.id = 'NA'
-                td.innerHTML = 'No streams are currently active'
-                tr.appendChild(td)
-                tbody.appendChild(tr)
-              }
+              // Add the rows to the body
+              tbody.appendChild(tr)
             })
           }
         })
       }
     })
   })
+
+  // Otherwise inform user there are no files
+  if (document.querySelector('.activeTableBody').children.length < 1) {
+    let tr = document.createElement('tr')
+    let td = document.createElement('td')
+
+    tr.id = 'NA'
+    td.innerHTML = 'There are no VOD files'
+    tr.appendChild(td)
+    tbody.appendChild(tr)
+  }
 }
 
+// View the clicked file
 function viewVODFile () {
   const content = this.id.split(':')
 
   document.getElementById('vodContainer').style.width = '90%'
   document.getElementById('vodContainer').style.display = 'block'
   document.getElementById('vodContainer').style.height = document.getElementById('vodContainer').offsetWidth * 9 / 16 + 'px'
+
+  document.getElementById('rotate').style.display = 'block'
 
   player.src([
     {
@@ -132,8 +148,8 @@ function viewVODFile () {
   this.style.color = '#E31900'
 }
 
+// If the video is sideways, add the ability to rotate it.
 function rotate () {
-  console.log('rotating')
   const video = document.getElementById('streamVid_Flash_api')
   let val = parseInt(video.style.transform.split('(')[1]) + 90 // Do some string voodoo to get the current rotation
   video.style.transform = `rotate(${val}deg)`
@@ -141,7 +157,6 @@ function rotate () {
     video.style.width = '56.25%'
     video.style.marginLeft = (((document.getElementById('vodContainer').offsetWidth - video.offsetHeight) / 2) / document.getElementById('vodContainer').offsetWidth) * 100 + '%'
   } else {
-    console.log('flat')
     video.style.width = '100%'
     video.style.marginLeft = 0
   }

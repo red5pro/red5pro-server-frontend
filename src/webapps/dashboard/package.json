@@ -19,6 +19,7 @@
     "standard": "^7.1.2"
   },
   "dependencies": {
+    "chart.js": "^2.2.1",
     "moment": "^2.14.1",
     "video.js": "^5.10.8"
   }

@@ -11,16 +11,9 @@
     <link rel="stylesheet" href="css/dashboard.css">
 
     <title>Welcome to the Red5 Pro Server!</title>
-    <style>
-    </style>
     <script defer>
       var ip = "<%= host %>"
     </script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
-    <script src="./src/lib/datamaps.world.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js" defer></script>
-    <script src="./dist/bundle-clients.js" defer></script>
   </head>
   <body class = 'clients'>
     <div class="container">
@@ -72,27 +65,27 @@
                 <canvas id = 'connectionsGraph' width="200" height="200"></canvas>
               </div>
               <div class = "float-left one-half-col">
-              <h4>Stream Statistics</h4>
-              <table>
-                <tbody>
-                  <tr>
-                    <td>Uptime</td>
-                    <td id = 'Uptime'></td>
-                  </tr>
-                  <tr>
-                    <td>Id</td>
-                    <td id = 'Id'></td>
-                  </tr>
-                  <tr>
-                    <td>Name</td>
-                    <td id = 'Name'></td>
-                  </tr>
-                  <tr>
-                    <td>Scope Path</td>
-                    <td id = 'scopePath'></td>
-                  </tr>
-                </tbody>
-              </table>
+                <h4>Stream Statistics</h4>
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>Uptime</td>
+                      <td id = 'Uptime'></td>
+                    </tr>
+                    <tr>
+                      <td>Id</td>
+                      <td id = 'Id'></td>
+                    </tr>
+                    <tr>
+                      <td>Name</td>
+                      <td id = 'Name'></td>
+                    </tr>
+                    <tr>
+                      <td>Scope Path</td>
+                      <td id = 'scopePath'></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -100,4 +93,9 @@
       </div>
     </div>
   </body>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js" defer></script>
+  <script src="https://npmcdn.com/datamaps@0.5.7/dist/datamaps.world.min.js" defer></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js" defer></script>
+  <script src="./dist/bundle-clients.js" defer></script>
 </html>

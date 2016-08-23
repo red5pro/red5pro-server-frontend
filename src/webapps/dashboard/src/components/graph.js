@@ -1,7 +1,8 @@
 /* global Datamap */
 /* global jQuery */
 let moment = require('moment')
-import Chart from '../lib/Chart.bundle.min.js'
+import Chart from 'chart.js'
+
 Chart.defaults.global.responsive = true
 
 export class MAP {
@@ -9,8 +10,8 @@ export class MAP {
     this.context = context
     this.width = width
     this.map
-    this.bubbles = []
-    this.arcs = []
+    this.bubbles = {}
+    this.arcs = {}
   }
   makeMap () {
     this.map = new Datamap({
@@ -28,7 +29,7 @@ export class MAP {
       }
     })
   }
-  addPublisher (location, name) {
+  addPublisher (location, name, id) {
     let newPublisher = {
       name: name,
       radius: 5,
@@ -37,14 +38,32 @@ export class MAP {
       fillKey: 'publisher'
     }
 
-    this.bubbles.push(newPublisher)
-    this.map.bubbles(this.bubbles, {
+    this.bubbles[id] = newPublisher
+    let tempBubbles = []
+    Object.keys(this.bubbles).forEach((bubbleId) => {
+      tempBubbles.push(this.bubbles[bubbleId])
+    })
+    this.map.bubbles(tempBubbles, {
       popupTemplate: function (geography, data) {
         return ['<div class="hoverinfo"><strong>' + data.name + '</strong>' + '</div>'].join('')
       }
     })
   }
-  addSubscriber (origin, destination, name) {
+  removePublisher (id) {
+    delete this.bubbles[id]
+
+    let tempBubbles = []
+    Object.keys(this.bubbles).forEach((bubbleId) => {
+      tempBubbles.push(this.bubbles[bubbleId])
+    })
+
+    this.map.bubbles(tempBubbles, {
+      popupTemplate: function (geography, data) {
+        return ['<div class="hoverinfo"><strong>' + data.name + '</strong>' + '</div>'].join('')
+      }
+    })
+  }
+  addSubscriber (origin, destination, name, id) {
     let newSubscriber = {
       name: name,
       radius: 1,
@@ -62,14 +81,45 @@ export class MAP {
         longitude: destination[1]
       }
     }
-    this.bubbles.push(newSubscriber)
-    this.arcs.push(newArc)
-    this.map.bubbles(this.bubbles, {
+    this.bubbles[id] = newSubscriber
+    this.arcs[id] = newArc
+    let tempBubbles = []
+    Object.keys(this.bubbles).forEach((bubbleId) => {
+      tempBubbles.push(this.bubbles[bubbleId])
+    })
+    let tempArcs = []
+    Object.keys(this.arcs).forEach((arcId) => {
+      tempArcs.push(this.arcs[arcId])
+    })
+    this.map.bubbles(tempBubbles, {
       popupTemplate: function (geography, data) {
         return ['<div class="hoverinfo"><strong>' + data.name + '</strong>' + '</div>'].join('')
       }
     })
-    this.map.arc(this.arcs, {
+    this.map.arc(tempArcs, {
+      strokeWidth: 2,
+      arcSharpness: 1,
+      strokeColor: '#E31900'
+    })
+  }
+  removeSubscriber (id) {
+    delete this.bubbles[id]
+    delete this.arcs[id]
+
+    let tempBubbles = []
+    Object.keys(this.bubbles).forEach((bubbleId) => {
+      tempBubbles.push(this.bubbles[bubbleId])
+    })
+    let tempArcs = []
+    Object.keys(this.arcs).forEach((arcId) => {
+      tempArcs.push(this.arcs[arcId])
+    })
+    this.map.bubbles(tempBubbles, {
+      popupTemplate: function (geography, data) {
+        return ['<div class="hoverinfo"><strong>' + data.name + '</strong>' + '</div>'].join('')
+      }
+    })
+    this.map.arc(tempArcs, {
       strokeWidth: 2,
       arcSharpness: 1,
       strokeColor: '#E31900'

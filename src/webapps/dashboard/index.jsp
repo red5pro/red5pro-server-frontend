@@ -79,6 +79,6 @@
     </div>
   </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js" defer></script>
-  <script src="./src/lib/Chart.bundle.min.js" defer></script>
+<!--   <script src="./src/lib/Chart.bundle.min.js" defer></script> -->
   <script src="./dist/bundle.js" defer></script>
 </html>

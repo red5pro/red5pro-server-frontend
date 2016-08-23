@@ -1,10 +1,12 @@
 /* global WebSocket */
 
-export default class WS {
-  constructor (securityToken = 'xyz123', interval = 1000) {
+export default class Red5WebSocket {
+  constructor (securityToken, interval = 1000, hostname = null, port = null) {
     this.securityToken = securityToken
     this.interval = interval
-    this.url = `ws://${window.location.hostname}:8081/api?accessToken=${this.securityToken}`
+    this.hostname = hostname || window.location.hostname
+    this.port = port || 8081
+    this.url = `ws://${this.hostname}:${this.port}/api?accessToken=${this.securityToken}`
     this.wsCalls = {
       // Server Calls
       getServerInfo: '/server',
@@ -17,6 +19,9 @@ export default class WS {
       // VoD Calls
       getVodFiles: '/media',
       deleteVodFile: '/media/delete',
+      // SharedObject Calls
+      getSharedObjects: '/sharedobjects',
+      getSharedObjectStatistics: '/sharedobjects/sharedobject/statistics',
       // Stream Calls
       getLiveStreams: '/streams',
       getLiveStreamStatistics: '/streams/stream/statistics',
@@ -30,13 +35,22 @@ export default class WS {
     }
     this.currentConnections = []
   }
-  addConnection (apiCall, content) {
+  addConnection (apiCall = null, content = null) {
+    if (!apiCall) {
+      throw 'Must specify connection to add.' // eslint-disable-line no-throw-literal
+    }
     this.currentConnections.push({
       apiCall: apiCall,
       content: content || []
     })
   }
-  removeConnection (apiCall, content) {
+  removeConnection (apiCall = null, content = null) {
+    if (!apiCall) {
+      throw 'Must specify connection to remove' // eslint-disable-line no-throw-literal
+    }
+    if (!content) {
+      throw 'Must specify content of connection to remove. If unknown use "*". Warning this will remove all connections of the specified apiCall type.' // eslint-disable-line no-throw-literal
+    }
     this.currentConnections.forEach((connection, index) => {
       if ((connection.apiCall === apiCall) && ((connection.content === content) || (content === '*'))) {
         this.currentConnections.splice(index, 1)
@@ -66,7 +80,7 @@ export default class WS {
 
     socket.onmessage = function (evt) {
       if (!cb) {
-        return console.log('Error, must specify a Callback function')
+        throw 'Error, must specify a Callback function' // eslint-disable-line no-throw-literal
       }
       cb(JSON.parse(evt.data), currentConnections[0].content, currentConnections[0].apiCall)
 
