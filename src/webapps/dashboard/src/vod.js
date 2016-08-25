@@ -1,7 +1,7 @@
 /* global confirm */
 import Red5RESTAPI from './components/restAPI.js'
 import videojs from 'video.js'
-import * as constant from './components/CONSTANTS.js'
+import * as constant from './components/constants.js'
 
 const SECURITY_TOKEN = constant.SECURITY_TOKEN
 const HOSTNAME = constant.HOSTNAME

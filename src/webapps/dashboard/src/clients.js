@@ -4,15 +4,16 @@ import Red5WebSocket from './components/wsAPI.js'
 import {LineGraph, MAP} from './components/graph.js'
 import videojs from 'video.js'
 import Hls from 'videojs-contrib-hls' // eslint-disable-line no-unused-vars
-import * as constant from './components/CONSTANTS.js'
+import * as constant from './components/constants.js'
 
 const SECURITY_TOKEN = constant.SECURITY_TOKEN
 const HOSTNAME = constant.HOSTNAME
 const PORT = constant.PORT
+const WS_PORT = constant.WS_PORT
 
 // Instantiate Red5RESTAPI and Red5WebSocket
 let restAPI = new Red5RESTAPI(SECURITY_TOKEN, HOSTNAME, PORT)
-let websocket = new Red5WebSocket(SECURITY_TOKEN)
+let websocket = new Red5WebSocket(SECURITY_TOKEN, 1000, HOSTNAME, WS_PORT)
 
 // Instantiate graphs
 let connectionsGraph = new LineGraph(document.getElementById('connectionsGraph'), 'Connections', 'Server Connections')
@@ -286,12 +287,12 @@ function getMoreStreamInfo () {
   }
 
   // Pause player, rotate if needed, edit source based on clicked stream, play
-  player.pause()
   orient(content[0], content[1])
+  player.pause()
   player.src([
     {
       type: 'application/x-mpegURL',
-      src: `http://${window.location.host}/${content[0]}/${content[1]}.m3u8`
+      src: `http://${HOSTNAME}:${PORT}/${content[0]}/${content[1]}.m3u8`
     },
     {
       type: 'rtmp/x-flv',
