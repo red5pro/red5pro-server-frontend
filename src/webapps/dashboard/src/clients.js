@@ -4,10 +4,11 @@ import Red5WebSocket from './components/wsAPI.js'
 import {LineGraph, MAP} from './components/graph.js'
 import videojs from 'video.js'
 import Hls from 'videojs-contrib-hls' // eslint-disable-line no-unused-vars
+import * as constant from './components/CONSTANTS.js'
 
-const SECURITY_TOKEN = 'xyz123'
-const HOSTNAME = window.location.hostname
-const PORT = window.location.port
+const SECURITY_TOKEN = constant.SECURITY_TOKEN
+const HOSTNAME = constant.HOSTNAME
+const PORT = constant.PORT
 
 // Instantiate Red5RESTAPI and Red5WebSocket
 let restAPI = new Red5RESTAPI(SECURITY_TOKEN, HOSTNAME, PORT)
