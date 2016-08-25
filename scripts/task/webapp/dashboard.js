@@ -3,6 +3,7 @@
 var path = require('path');
 var gutil = require('gulp-util');
 var WebAppBuilder = require('./WebAppBuilder');
+var exec = require('child_process').execSync;
 
 module.exports = function(srcDir, distDir, gulp, templateOptions) {
 
@@ -15,12 +16,9 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
                                   gulp, templateOptions);
 
   return function(initChain) {
-
     gulp.task(generateTaskLabel, [initChain], function(cb) {
-      gutil.log('Generating Webapps Page: ' + webappDirName);
-      Builder.generateIndexPage(cb);
-    });
-    gulp.task(generateTaskLabel, [initChain], function(cb) {
+      gutil.log('bundling-es6-files. This could take a few minutes.');
+      exec('cd src/webapps/dashboard && npm install && rm -rf dist && mkdir dist && npm run build'); // Go to the dashboard and execute build commands
       gutil.log('Generating Webapps Page: ' + webappDirName);
       var buildPage = function(page, cb) {
         return function() {

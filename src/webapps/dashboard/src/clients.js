@@ -265,8 +265,14 @@ function getMoreStreamInfo () {
   // Get content from either clicking the stream name or stream tab button.
   if (this.id) {
     content = this.id.split(':')
+    for (let ii = 1; ii < content.length - 1; ii++) {
+      content[1] = content[1].concat(`:${content[ii + 1]}`)
+    }
   } else {
     content = this.name.split(':')
+    for (let ii = 1; ii < content.length - 1; ii++) {
+      content[1] = content[1].concat(`:${content[ii + 1]}`)
+    }
   }
 
   // Ensure correct switch back to correct stream when map is clicked
@@ -348,6 +354,9 @@ function getMoreStreamInfo () {
 // Toggle record
 function toggleRecord () {
   let content = this.name.split(':')
+  for (let ii = 1; ii < content.length - 1; ii++) {
+    content[1] = content[1].concat(`:${content[ii + 1]}`)
+  }
 
   restAPI.GET('getLiveStreamStatistics', {
     appname: content[0],

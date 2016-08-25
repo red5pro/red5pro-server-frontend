@@ -157,6 +157,11 @@ a:hover {
 .container {
   width: 100%;
 }
+.container .img-link {
+  margin: 0;
+  padding: 0;
+  float: none;
+}
 .row {
   overflow: hidden;
   margin: auto;

@@ -19,7 +19,9 @@
     <div class="container">
       <div class="row position-relative">
         <div class = 'one-half-col float-left'>
-          <img class = 'logo' src="./images/red5pro_logo.svg">
+          <a class = 'img-link' href='/'>
+            <img class = 'logo' src="./images/red5pro_logo.svg">
+          </a>   
         </div>
         <div class = 'one-half-col float-right position-absolute bottom right'>
           <header id = 'navBar'>

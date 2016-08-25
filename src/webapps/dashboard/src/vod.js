@@ -30,6 +30,9 @@ function deleteVODFile () {
   }
 
   const content = this.name.split(':')
+  for (let ii = 1; ii < content.length - 1; ii++) {
+    content[1] = content[1].concat(`:${content[ii + 1]}`)
+  }
   const file = content[1].split('.')
 
   if (confirm('Are you sure you want to delete this file?')) {
@@ -104,6 +107,9 @@ function updateVodFiles () {
 // View the clicked file
 function viewVODFile () {
   const content = this.id.split(':')
+  for (let ii = 1; ii < content.length - 1; ii++) {
+    content[1] = content[1].concat(`:${content[ii + 1]}`)
+  }
 
   document.getElementById('vodContainer').style.width = '90%'
   document.getElementById('vodContainer').style.display = 'block'
