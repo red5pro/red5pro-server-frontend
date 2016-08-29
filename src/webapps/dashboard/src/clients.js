@@ -1,5 +1,5 @@
 /* global ip, WebSocket */
-import Red5RESTAPI from './components/restAPI.js'
+import Red5RestApi from './components/restAPI.js'
 import Red5WebSocket from './components/wsAPI.js'
 import {LineGraph, MAP} from './components/graph.js'
 import videojs from 'video.js'
@@ -12,7 +12,7 @@ const PORT = constant.PORT
 const WS_PORT = constant.WS_PORT
 
 // Instantiate Red5RESTAPI and Red5WebSocket
-let restAPI = new Red5RESTAPI(SECURITY_TOKEN, HOSTNAME, PORT)
+let restAPI = new Red5RestApi(SECURITY_TOKEN, HOSTNAME, PORT)
 let websocket = new Red5WebSocket(SECURITY_TOKEN, 1000, HOSTNAME, WS_PORT)
 
 // Instantiate graphs
@@ -87,7 +87,6 @@ websocket.openConnection((data, content, apiCall) => {
 
           // Configure Record Button and stream names to reflect which streams are and are not recording in case user left page
           const recordButton = document.getElementById('recordStream')
-
           restAPI.GET('getLiveStreamStatistics', {
             appname: content[0],
             streamname: streamToAdd
@@ -314,7 +313,6 @@ function getMoreStreamInfo () {
     recordButton.name = this.id
   }
   recordButton.onclick = toggleRecord
-
   restAPI.GET('getLiveStreamStatistics', {
     appname: content[0],
     streamname: content[1]

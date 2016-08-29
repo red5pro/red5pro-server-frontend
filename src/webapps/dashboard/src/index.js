@@ -1,4 +1,4 @@
-import Red5RESTAPI from './components/restAPI.js'
+import Red5RestApi from './components/restAPI.js'
 import Red5WebSocket from './components/wsAPI.js'
 import {LineGraph, DoughnutGraph} from './components/graph.js'
 import * as constant from './components/constants.js'
@@ -9,7 +9,7 @@ const PORT = constant.PORT
 const WS_PORT = constant.WS_PORT
 
 // Instantiate Red5RESTAPI and Red5WebSocket
-let restAPI = new Red5RESTAPI(SECURITY_TOKEN, HOSTNAME, PORT)
+let restAPI = new Red5RestApi(SECURITY_TOKEN, HOSTNAME, PORT)
 let websocket = new Red5WebSocket(SECURITY_TOKEN, 1000, HOSTNAME, WS_PORT)
 
 // Instantiate graphs

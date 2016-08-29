@@ -1,5 +1,5 @@
 /* global confirm */
-import Red5RESTAPI from './components/restAPI.js'
+import Red5RestApi from './components/restAPI.js'
 import videojs from 'video.js'
 import * as constant from './components/constants.js'
 
@@ -7,7 +7,7 @@ const SECURITY_TOKEN = constant.SECURITY_TOKEN
 const HOSTNAME = constant.HOSTNAME
 const PORT = constant.PORT
 
-let restAPI = new Red5RESTAPI(SECURITY_TOKEN, HOSTNAME, PORT)
+let restAPI = new Red5RestApi(SECURITY_TOKEN, HOSTNAME, PORT)
 
 // Initialize
 updateVodFiles()
@@ -37,7 +37,7 @@ function deleteVODFile () {
   const file = content[1].split('.')
 
   if (confirm('Are you sure you want to delete this file?')) {
-    restAPI.DELETE('deleteVodFiles', {appname: content[0], filename: file[0], extension: file[1]}, () => {})
+    restAPI.DELETE('deleteVodFile', {appname: content[0], filename: file[0], extension: file[1]}, () => {})
 
     document.getElementById(content[1]).remove()
     document.getElementById('vodContainer').style.width = '0%'
