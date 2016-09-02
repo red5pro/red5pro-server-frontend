@@ -1,23 +1,15 @@
 /* global confirm */
 import Red5RestApi from './components/restAPI.js'
 import videojs from 'video.js'
-import * as constant from './components/constants.js'
+import {SECURITY_TOKEN, HOSTNAME, PORT} from './components/constants.js'
 
-const SECURITY_TOKEN = constant.SECURITY_TOKEN
-const HOSTNAME = constant.HOSTNAME
-const PORT = constant.PORT
-
+// Instantiate Red5RestApi.
 let restAPI = new Red5RestApi(SECURITY_TOKEN, HOSTNAME, PORT)
 
-// Initialize
+// Check if there are any prestored VoD files.
 updateVodFiles()
-document.getElementById('refreshVOD').onclick = updateVodFiles
-document.getElementById('rotate').onclick = rotate
 
-window.onresize = () => {
-  document.getElementById('vodContainer').style.height = document.getElementById('vodContainer').offsetWidth * 9 / 16 + 'px'
-}
-
+// Instantiate videojs player.
 let player = videojs('streamVid', {
   techorder: [
     'flash'
@@ -25,20 +17,27 @@ let player = videojs('streamVid', {
 })
 
 // Functions
+
+// Delete the selected VoD file.
 function deleteVODFile () {
+  // If it doesn't have a name, return.
   if (!this.name) {
     return
   }
 
+  // If it does, get its contents.
   const content = this.name.split(':')
   for (let ii = 1; ii < content.length - 1; ii++) {
     content[1] = content[1].concat(`:${content[ii + 1]}`)
   }
   const file = content[1].split('.')
 
+  // Confirm delete
   if (confirm('Are you sure you want to delete this file?')) {
+    // Delete
     restAPI.DELETE('deleteVodFile', {appname: content[0], filename: file[0], extension: file[1]}, () => {})
 
+    // Reset everything.
     document.getElementById(content[1]).remove()
     document.getElementById('vodContainer').style.width = '0%'
     document.getElementById('vodContainer').style.height = '0%'
@@ -47,14 +46,18 @@ function deleteVODFile () {
   }
   return
 }
+
 // On refresh click
 function updateVodFiles () {
+  // Make a new table body
   let tbody = document.createElement('tbody')
   tbody.className = 'activeTableBody'
-  // Delete the table body
+
+  // Delete the current table body
   document.querySelector('.activeTableBody').remove()
   document.querySelector('.activeTable').appendChild(tbody)
 
+  // The videojs container.
   document.getElementById('vodContainer').style.width = '0%'
   document.getElementById('vodContainer').style.height = '0%'
   document.getElementById('rotate').style.display = 'none'
@@ -66,10 +69,10 @@ function updateVodFiles () {
       if (application !== 'dashboard') {
         // For each appplication, get the VOD Files
         restAPI.GET('getVodFiles', {appname: application}, (vodFile) => {
-          // If they exist
+          // If they return a good code.
           if (vodFile.code === 200) {
             vodFile.data.forEach((name) => {
-              // Create e table row for them and add relevent DOM attributes
+              // Create a table row for them and add relevent DOM attributes
               if (document.getElementById('NA')) {
                 document.getElementById('NA').remove()
               }
@@ -107,17 +110,19 @@ function updateVodFiles () {
 
 // View the clicked file
 function viewVODFile () {
+  // Get the content
   const content = this.id.split(':')
   for (let ii = 1; ii < content.length - 1; ii++) {
     content[1] = content[1].concat(`:${content[ii + 1]}`)
   }
-
+  // Set up the videojs container.
   document.getElementById('vodContainer').style.width = '90%'
   document.getElementById('vodContainer').style.display = 'block'
   document.getElementById('vodContainer').style.height = document.getElementById('vodContainer').offsetWidth * 9 / 16 + 'px'
 
   document.getElementById('rotate').style.display = 'block'
 
+  // Set the sources and play.
   player.src([
     {
       type: 'video/x-mp4',
@@ -139,14 +144,18 @@ function viewVODFile () {
   player.play()
 
   // DOM Manipulation
+
+  // Set function and name of the delete button.
   document.getElementById('deleteVodFile').name = this.id
   document.getElementById('deleteVodFile').onclick = deleteVODFile
 
+  // Set up the video.
   const video = document.getElementById('streamVid_Flash_api')
   video.style.transform = 'rotate(0deg)'
   video.style.width = '100%'
   video.style.marginLeft = 0
 
+  // Highlight selected file.
   let rows = document.getElementsByTagName('td')
 
   for (let ii = 0; ii < rows.length; ii++) {
@@ -167,4 +176,12 @@ function rotate () {
     video.style.width = '100%'
     video.style.marginLeft = 0
   }
+}
+
+// DOM Housekeeping.
+document.getElementById('refreshVOD').onclick = updateVodFiles
+document.getElementById('rotate').onclick = rotate
+
+window.onresize = () => {
+  document.getElementById('vodContainer').style.height = document.getElementById('vodContainer').offsetWidth * 9 / 16 + 'px'
 }

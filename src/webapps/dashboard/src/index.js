@@ -1,30 +1,25 @@
 import Red5RestApi from './components/restAPI.js'
 import Red5WebSocket from './components/wsAPI.js'
 import {LineGraph, DoughnutGraph} from './components/graph.js'
-import * as constant from './components/constants.js'
+import {SECURITY_TOKEN, HOSTNAME, PORT, WS_PORT} from './components/constants.js'
 
-const SECURITY_TOKEN = constant.SECURITY_TOKEN
-const HOSTNAME = constant.HOSTNAME
-const PORT = constant.PORT
-const WS_PORT = constant.WS_PORT
-
-// Instantiate Red5RESTAPI and Red5WebSocket
+// Instantiate Red5RestApi and Red5WebSocket.
 let restAPI = new Red5RestApi(SECURITY_TOKEN, HOSTNAME, PORT)
 let websocket = new Red5WebSocket(SECURITY_TOKEN, 1000, HOSTNAME, WS_PORT)
 
-// Instantiate graphs
+// Instantiate Graphs.
 let connectionsGraph = new LineGraph(document.getElementById('connectionsGraph'), 'Connections', 'Server Connections')
 let memoryGraph = new DoughnutGraph(document.getElementById('memoryGraph'), ['Free Memory (Mb)', 'Used Memory (Mb)'], 'Memory')
 
-// Create graphs
+// Create Graphs.
 connectionsGraph.makeGraph()
 memoryGraph.makeGraph()
 
-// Get static server statistics
+// Get Static Server Statistics.
 restAPI.GET('getServerStatistics', null, (data) => {
   data = data.data
 
-  // Update browser with response data
+  // Update Browser With Response Data.
   document.getElementById('OSName').innerHTML = data.os_name
   document.getElementById('OSVersion').innerHTML = data.os_version
   document.getElementById('Architecture').innerHTML = data.architecture
@@ -33,24 +28,28 @@ restAPI.GET('getServerStatistics', null, (data) => {
   document.getElementById('Processors').innerHTML = data.processors
 })
 
-// Get dynamic server statistics
+// Get Dynamic Server Statistics.
 websocket.addConnection('getServerStatistics')
 websocket.openConnection((data, content, apiCall) => {
   data = data.content.data
 
-  // Update graph
+  // Update Graphs.
+
+  // Connections.
   connectionsGraph.updateGraph(data.active_connections, [data.max_connections])
+
+  // Memory.
   memoryGraph.updateGraph(convertMemory(data.free_memory, data.total_memory))
 
-  // Server uptime
+  // Server Uptime.
   document.getElementById('Uptime').innerHTML = `${(data.uptime / 1000).toFixed()} seconds`
 
-  // Current server subscopes
+  // Current Server Subscopes.
   document.getElementById('activeSubScopes').innerHTML = data.active_sub_scopes
   document.getElementById('totalSubScopes').innerHTML = data.total_sub_scopes
 })
 
-// Convert memory from bytes to Mb
+// Convert memory from bytes to Mb.
 function convertMemory (free, total) {
   let used = total - free
   used = used / (1024 * 1024)

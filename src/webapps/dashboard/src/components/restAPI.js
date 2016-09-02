@@ -2,12 +2,11 @@
 
 require('es6-promise').polyfill()
 require('isomorphic-fetch')
-import os from 'os'
 
 export default class Red5RestApi {
   constructor (securityToken, hostname = null, port = null) {
     this.securityToken = securityToken || console.error('Must Specify A Security Token')
-    this.hostname = hostname || os.hostname() || this.getBrowserHostname()
+    this.hostname = hostname || window.location.hostname || console.error('Unable to detect a hostname. Please specify one.')
     this.port = port || 5080
     this.contents = {
       appname: '',
@@ -23,7 +22,7 @@ export default class Red5RestApi {
     }
     this.apiCalls = {
       // IP Location Call
-      getIPAddress: {
+      getIPAddressLoc: {
         contents: ['ipaddress'],
         func: (contents) => {
           return `http://freegeoip.net/json/${contents.ipaddress}`
@@ -251,6 +250,10 @@ export default class Red5RestApi {
 
     fetch(this.apiCalls[apiCall].func(contents))
       .then((response) => response.json())
+      .catch((e) => {
+        // throw e
+        return {}
+      })
       .then((json) => {
         if (cb) {
           cb(json)
@@ -268,6 +271,10 @@ export default class Red5RestApi {
 
     fetch(this.apiCalls[apiCall].func(contents), {method: 'DELETE'})
       .then((response) => response.json())
+      .catch((e) => {
+        // throw e
+        return {}
+      })
       .then((json) => {
         if (cb) {
           cb(json)

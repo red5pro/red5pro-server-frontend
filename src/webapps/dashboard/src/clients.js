@@ -4,12 +4,7 @@ import Red5WebSocket from './components/wsAPI.js'
 import {LineGraph, MAP} from './components/graph.js'
 import videojs from 'video.js'
 import Hls from 'videojs-contrib-hls' // eslint-disable-line no-unused-vars
-import * as constant from './components/constants.js'
-
-const SECURITY_TOKEN = constant.SECURITY_TOKEN
-const HOSTNAME = constant.HOSTNAME
-const PORT = constant.PORT
-const WS_PORT = constant.WS_PORT
+import {SECURITY_TOKEN, HOSTNAME, PORT, WS_PORT} from './components/constants.js'
 
 // Instantiate Red5RESTAPI and Red5WebSocket
 let restAPI = new Red5RestApi(SECURITY_TOKEN, HOSTNAME, PORT)
@@ -19,19 +14,21 @@ let websocket = new Red5WebSocket(SECURITY_TOKEN, 1000, HOSTNAME, WS_PORT)
 let connectionsGraph = new LineGraph(document.getElementById('connectionsGraph'), 'Connections', 'Server Connections')
 let map = new MAP(document.getElementById('dataMap'), document.getElementById('mapData').offsetWidth)
 
-// Instantiate video player
+// Instantiate videojs player.
 let player = videojs('streamVid')
 
-// Initialize variables for stream and client tracking
+// Initialize dicts for activeStream and activeClient tracking.
 let activeStreams = {}
 let activeClients = {}
-let socket // For video meta data
 
-// Create graphs
+// For video metadata.
+let socket
+
+// Create Graphs.
 connectionsGraph.makeGraph()
 map.makeMap()
 
-// Get the active applications and clients
+// Get the active applications and clients, split by application.
 restAPI.GET('getApplications', null, (applications) => {
   applications.data.forEach((application) => {
     if (application !== 'dashboard') {
@@ -48,7 +45,7 @@ websocket.addConnection('getServerStatistics')
 websocket.openConnection((data, content, apiCall) => {
   switch (apiCall) {
     case 'getLiveStreams':
-      // Get new streams from WS and old streams from activeStreams
+      // Get new streams from WS return and old streams from activeStreams.
       const newStreams = data.content.data || []
       const oldStreams = activeStreams[content[0]] || []
 
@@ -57,7 +54,7 @@ websocket.openConnection((data, content, apiCall) => {
         break
       }
 
-      // If table empty
+      // If table empty, remove the row indicating it is empty.
       if (document.getElementById('NA')) {
         document.getElementById('NA').remove()
       }
@@ -66,21 +63,21 @@ websocket.openConnection((data, content, apiCall) => {
       const addStreams = filterStreams(newStreams, oldStreams)
       const removeStreams = filterStreams(oldStreams, newStreams)
 
-      // Remove the streams from the table
+      // Remove the streams from the table.
       if (removeStreams) {
         removeStreams.forEach((streamToTerminate) => {
           document.getElementById(streamToTerminate).remove()
         })
       }
 
-      // Add the streams to the table
+      // Add the streams to the table.
       if (addStreams) {
         addStreams.forEach((streamToAdd) => {
           // Create the row and give it an id
           const tr = document.createElement('tr')
           tr.id = streamToAdd
 
-          // create the column and give it a function
+          // Create the column and give it a function and id.
           const td = document.createElement('td')
           td.onclick = getMoreStreamInfo
           td.id = `${content[0]}:${streamToAdd}`
@@ -101,7 +98,7 @@ websocket.openConnection((data, content, apiCall) => {
             }
           })
 
-          // add the elements to the table
+          // Add the elements to the table.
           tr.appendChild(td)
           document.querySelector('.activeTableBody').appendChild(tr)
         })
@@ -109,9 +106,9 @@ websocket.openConnection((data, content, apiCall) => {
       // Changes implemented.  The old streams are now the new streams.  Ready for next cycle.
       activeStreams[content[0]] = newStreams
       break
-    // If a stream is selected, this WS connection will be added to the WS Connections dict
+    // If a stream is selected, this WS connection will be added to the WS activeConnections dict.
     case 'getLiveStreamStatistics':
-      // If we recieve a bad code, remove everything and revert back to the map.  Usually happens when a stream is disconnected by publisher.
+      // If we recieve a bad response code, remove everything and revert back to the map.  Usually happens when a stream is disconnected by publisher.
       if (data.content.code !== 200) {
         websocket.removeConnection('getLiveStreamStatistics', content)
         document.getElementById('streamData').style.display = 'none'
@@ -125,11 +122,11 @@ websocket.openConnection((data, content, apiCall) => {
         break
       }
 
-      // Update some stream statistics
+      // Update some stream statistics.
       document.getElementById('Uptime').innerHTML = `${((data.content.timestamp - data.content.data.creation_time) / 1000).toFixed()} seconds`
       connectionsGraph.updateGraph(data.content.data.active_subscribers, [data.content.data.max_subscribers])
       break
-    // Get Clients returns some statistics on each Client. Plot each Client remote address on map.  In v2 of API we will be able to identify if clients are pubs or subs and thus differentiate on map.
+    // Get Clients, returns statistics on each Client. Plot each Client remote address on map.  In v2 of API we will be able to identify if clients are pubs or subs and thus differentiate on map.
     case 'getClients':
       // Same logic as getLiveStreams
       const newClients = data.content.data || []
@@ -149,7 +146,7 @@ websocket.openConnection((data, content, apiCall) => {
           let ipAddress = addClients[ii].remote_address
           let id = addClients[ii].id
           // Get the location of the ipAddress and plot it
-          restAPI.GET('getIPAddress', {ipaddress: ipAddress}, (coordinates) => {
+          restAPI.GET('getIPAddressLoc', {ipaddress: ipAddress}, (coordinates) => {
             let longitude = coordinates.longitude
             let latitude = coordinates.latitude
             map.addPublisher([latitude, longitude], coordinates.city, id)
@@ -180,8 +177,8 @@ websocket.openConnection((data, content, apiCall) => {
           destination = location(publisherIp)
         }
 
-        map.addPublisher(origin, name, id)
-        map.addSubscriber(origin, destination, name, id)
+        map.addPublisher(origin, name, id) // Will create large bubble.
+        map.addSubscriber(origin, destination, name, id)  // Will create small bubble and arc to the desination.
         *origin && destination in format [latitude, longitude]*
 
       */
@@ -227,14 +224,8 @@ function clientsEqual (a, b) {
   if (a.length !== b.length) {
     return false
   }
-  let aID = []
-  let bID = []
-  for (let ii = 0; ii < a.length; ii++) {
-    aID.push(a[ii].id)
-  }
-  for (let jj = 0; jj < b.length; jj++) {
-    bID.push(b[jj].id)
-  }
+  const aID = (a || []).map(x => x.id)
+  const bID = (b || []).map(x => x.id)
   return arraysEqual(aID, bID)
 }
 // Filter arrays
@@ -264,21 +255,15 @@ function getMoreStreamInfo () {
   let content
 
   // Get content from either clicking the stream name or stream tab button.
-  if (this.id) {
-    content = this.id.split(':')
-    for (let ii = 1; ii < content.length - 1; ii++) {
-      content[1] = content[1].concat(`:${content[ii + 1]}`)
-    }
-  } else {
-    content = this.name.split(':')
-    for (let ii = 1; ii < content.length - 1; ii++) {
-      content[1] = content[1].concat(`:${content[ii + 1]}`)
-    }
+  content = (this.id || this.name).split(':')
+  for (let ii = 1; ii < content.length - 1; ii++) {
+    content[1] = content[1].concat(`:${content[ii + 1]}`)
   }
 
   // Ensure correct switch back to correct stream when map is clicked
-  for (let ii = 0; ii < document.getElementsByClassName('stream').length; ii++) {
-    let streamButton = document.getElementsByClassName('stream')[ii]
+  const streamElements = Array.apply(null, document.querySelectorAll('.stream'))
+  for (let ii = 0; ii < streamElements.length; ii++) {
+    let streamButton = streamElements[ii]
     if (this.id !== '') {
       streamButton.name = this.id
     }
@@ -286,8 +271,8 @@ function getMoreStreamInfo () {
   }
 
   // Pause player, rotate if needed, edit source based on clicked stream, play
-  orient(content[0], content[1])
   player.pause()
+  orient(content[0], content[1])
   player.src([
     {
       type: 'application/x-mpegURL',
@@ -403,7 +388,7 @@ function viewMap () {
 
   websocket.removeConnection('getLiveStreamStatistics', '*')
 }
-
+// Change the orientation of the stream vid so it is upright.
 function orient (context, stream) {
   let video = document.querySelector('.vjs-tech')
 
@@ -444,6 +429,7 @@ function orient (context, stream) {
         if (data.orientation !== 180) {
           // If it's sideways, change the CSS to make it look nice
           video.style.width = '56.25%' // aspect ratio 9 / 16 when sideways
+          // Center the stream:
           // This is math... ((Container - Video / 2) / Container) * 100 gives us the % offset from the left
           video.style.marginLeft = (((document.getElementById('streamVidParent').offsetWidth - video.offsetHeight) / 2) / document.getElementById('streamVidParent').offsetWidth) * 100 + '%'
         }

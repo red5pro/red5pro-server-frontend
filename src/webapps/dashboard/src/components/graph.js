@@ -5,6 +5,7 @@ import Chart from 'chart.js'
 
 Chart.defaults.global.responsive = true
 
+// Class to easily configure maps made from http://datamaps.github.io/
 export class MAP {
   constructor (context, width) {
     this.context = context
@@ -13,6 +14,7 @@ export class MAP {
     this.bubbles = {}
     this.arcs = {}
   }
+  // Make the Datamap using the contructor values.
   makeMap () {
     this.map = new Datamap({
       element: this.context,
@@ -29,7 +31,9 @@ export class MAP {
       }
     })
   }
+  // Add a publisher as a bubble. See Datamap documention on bubbles for format.
   addPublisher (location, name, id) {
+    // create the bubble.
     let newPublisher = {
       name: name,
       radius: 5,
@@ -37,33 +41,42 @@ export class MAP {
       longitude: location[1],
       fillKey: 'publisher'
     }
-
+    // Add the bubble to the class constructor dict.
     this.bubbles[id] = newPublisher
+
+    // Add the bubbles from the class into an array so datamaps can accept them.
     let tempBubbles = []
     Object.keys(this.bubbles).forEach((bubbleId) => {
       tempBubbles.push(this.bubbles[bubbleId])
     })
+    // Add the bubbles to the map, and define a function for hover.
     this.map.bubbles(tempBubbles, {
       popupTemplate: function (geography, data) {
         return ['<div class="hoverinfo"><strong>' + data.name + '</strong>' + '</div>'].join('')
       }
     })
   }
+
   removePublisher (id) {
+    // Remove the bubble from the class dict.
     delete this.bubbles[id]
 
+    // Add the bubbles from the class into an array so datamaps can accept them.
     let tempBubbles = []
     Object.keys(this.bubbles).forEach((bubbleId) => {
       tempBubbles.push(this.bubbles[bubbleId])
     })
 
+    // Add the bubbles to the map, and define a function for hover.
     this.map.bubbles(tempBubbles, {
       popupTemplate: function (geography, data) {
         return ['<div class="hoverinfo"><strong>' + data.name + '</strong>' + '</div>'].join('')
       }
     })
   }
+  // Add a Subscriber as a bubble and arc to a publisher bubble. See Datamap documention on bubble and arc for format.
   addSubscriber (origin, destination, name, id) {
+    // Make the subscriber bubble.
     let newSubscriber = {
       name: name,
       radius: 1,
@@ -71,6 +84,7 @@ export class MAP {
       longitude: origin[1],
       fillKey: 'subscriber'
     }
+    // Make the arc.
     let newArc = {
       origin: {
         latitude: origin[0],
@@ -81,6 +95,7 @@ export class MAP {
         longitude: destination[1]
       }
     }
+    // Same logic as addPublisher.
     this.bubbles[id] = newSubscriber
     this.arcs[id] = newArc
     let tempBubbles = []
@@ -103,8 +118,9 @@ export class MAP {
     })
   }
   removeSubscriber (id) {
-    delete this.bubbles[id]
-    delete this.arcs[id]
+    // Same logic as remove publisher.
+    this.bubbles.splice(id, 1)
+    this.arcs.splice(id, 1)
 
     let tempBubbles = []
     Object.keys(this.bubbles).forEach((bubbleId) => {
@@ -126,7 +142,7 @@ export class MAP {
     })
   }
 }
-
+// Parent class to easily configure graphs from http://www.chartjs.org/docs.
 class Graph {
   constructor () {
     this.titlePreferences = {
@@ -142,6 +158,7 @@ class Graph {
 }
 
 export class LineGraph extends Graph {
+  // Alot of settings to make the graph line graph look a specific way.  See the chartjs documentation for explanation.
   constructor (context, label = 'label', title = 'title') {
     super()
     this.titlePreferences.text = title
@@ -201,36 +218,49 @@ export class LineGraph extends Graph {
     // Initialize Data
   }
   makeGraph () {
+    // Get the current data.
     let currentData = this.data.data.datasets[0].data
 
+    // Get the current time
     let now = moment()
+    // Set the time for previous steps by subtracting from current time. It MUST be done this way because WS interval times
+    // are not exact and thus cause seconds to skip occasionally.
     for (let ii = 0; ii < 11; ii++) {
       currentData.unshift({
         x: now.subtract(1, 'seconds').format(),
         y: 0
       })
     }
+    // Update class data
     for (let jj = 0; jj < this.data.data.datasets.length; jj++) {
       this.data.data.datasets[jj].data = currentData
     }
-
+    // Make the chart and update the data.
     this.currentChart = new Chart(this.context, this.data)
     this.currentChart.update()
   }
 
   updateGraph (newData, moreData = []) {
+    let timeCeiling = 3599 // Stop increasing x-axis length after 1 hour.
     let currentData = this.data.data.datasets[0].data
     let now = moment()
 
-    if (currentData.length < 3599) {
+    // If we haven't reached the ceiling.
+    if (currentData.length < timeCeiling) {
+      // Add a new datapoint.
       currentData.push({
         x: now.format(),
         y: newData
       })
+      // Update previous times based on the new time.It MUST be done this way because WS interval times
+      // are not exact and thus cause seconds to skip occasionally.
       for (let ii = 0; ii < currentData.length - 1; ii++) {
         currentData[currentData.length - 2 - ii].x = now.subtract(1, 'seconds').format()
       }
+      // Update the class data.
       this.data.data.datasets[0].data = currentData
+      // If we want to graph another line on the same chart.
+      // Copy the current data and simply change the y values.
       if (moreData) {
         for (let jj = 0; jj < moreData.length; jj++) {
           let copiedObject = jQuery.extend(true, [], currentData)
@@ -243,9 +273,10 @@ export class LineGraph extends Graph {
           this.data.data.datasets[jj + 1].data = copiedObject
         }
       }
-    } else {
+    } else { // If we are past one hour, stop making x axis longer and simply shift.
       currentData[currentData.length - 1].x = now.format()
 
+      // Shift x and y data.
       for (let ii = 0; ii < currentData.length - 1; ii++) {
         currentData[ii].y = currentData[ii + 1].y
         currentData[currentData.length - 2 - ii].x = now.subtract(1, 'seconds').format()
@@ -253,6 +284,8 @@ export class LineGraph extends Graph {
       currentData[currentData.length - 1].y = newData
       this.data.data.datasets[0].data = currentData
 
+      // If we want to graph another line on the same chart.
+      // Copy the current data and simply change the y values.
       if (moreData) {
         for (let jj = 0; jj < moreData.length; jj++) {
           let copiedObject = jQuery.extend(true, [], currentData)
@@ -267,6 +300,7 @@ export class LineGraph extends Graph {
     }
     this.currentChart.update()
   }
+  // Reset the graphs data to time 0 length 11.
   reset (title) {
     let resetData = []
     let now = moment()
@@ -286,6 +320,7 @@ export class LineGraph extends Graph {
     this.currentChart.update()
   }
 }
+
 export class DoughnutGraph extends Graph {
   constructor (context, label = ['label'], title = 'title') {
     super()
@@ -314,14 +349,18 @@ export class DoughnutGraph extends Graph {
     }
     this.currentChart
   }
+  // Make the graph
   makeGraph () {
     this.currentChart = new Chart(this.context, this.data)
   }
+  // Update the graph base on give data.
   updateGraph (newData) {
     this.data.data.datasets[0].data = newData
     this.currentChart.update()
   }
 }
+
+// Unused graph, but keep just incase.
 export class BarGraph extends Graph {
   constructor (context, label = ['label'], title = 'title') {
     super()
@@ -361,13 +400,17 @@ export class BarGraph extends Graph {
 
     this.currentChart
   }
+  // Make the graph.
   makeGraph () {
     this.currentChart = new Chart(this.context, this.data)
   }
+  // Update the graph base on input data.
   updateGraph (newData) {
     this.data.data.datasets[0].data = [newData]
     this.currentChart.update()
   }
+
+  // Reset to 0.
   reset (title) {
     this.data.data.datasets[0].datasets = [0]
     if (title) {

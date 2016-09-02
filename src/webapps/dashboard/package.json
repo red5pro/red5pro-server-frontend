@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "standard src/**/*.js --verbose && standard src/*.js --verbose",
-    "build": "npm run lint && browserify src/index.js -t babelify -o dist/bundle.js && browserify src/clients.js -t babelify -o dist/bundle-clients.js && browserify src/vod.js -t babelify -o dist/bundle-vod.js"
+    "clean": "rimraf dist && mkdirp dist",
+    "browserify:index": "browserify src/index.js -t babelify -d -o dist/bundle.js",
+    "browserify:clients": "browserify src/clients.js -t babelify -d -o dist/bundle-clients.js",
+    "browserify:vod": "browserify src/vod.js -t babelify -d -o dist/bundle-vod.js",
+    "build": "npm run lint && npm run clean && parallelshell \"npm run browserify:index\" \"npm run browserify:clients\" \"npm run browserify:vod\""
   },
   "author": "",
   "license": "MIT",
@@ -16,6 +20,8 @@
     "browserify": "^13.0.1",
     "es6-promise": "^3.2.1",
     "isomorphic-fetch": "^2.2.1",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.5.4",
     "standard": "^7.1.2"
   },
   "dependencies": {
