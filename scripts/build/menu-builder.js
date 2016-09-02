@@ -15,7 +15,7 @@ var updateMenuListing = function(menuListItems) {
     try {
         fileReplace({
           regex: insertLineRegex,
-          replacement: menuListItems.join('/r/n'),
+          replacement: menuListItems.join(''),
           paths: [[process.cwd(), 'src', 'template', 'partial', 'menu.hbs'].join(path.sep)],
           recursive: false,
           silent: false

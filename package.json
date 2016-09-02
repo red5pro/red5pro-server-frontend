@@ -22,6 +22,7 @@
     "mkdirp": "^0.5.1",
     "nconf": "^0.8.2",
     "open": "0.0.5",
+    "parallelshell": "^2.0.0",
     "replace": "^0.3.0",
     "shipit-cli": "^1.4.1",
     "shipit-deploy": "^2.1.3",

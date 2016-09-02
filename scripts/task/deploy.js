@@ -8,7 +8,7 @@ var flatten = require('gulp-flatten');
 module.exports = function(distDir, deployWebappDir, deployLibDir, gulp) {
 
   gulp.task('clean-deploy', ['build'], function(cb) {
-    rm(deployWebappDir, function(err) {
+    rm(deployWebappDir, {force:true}, function(err) {
       if(err) {
         console.error('Error in removing ' + deployWebappDir + ': ' + err);
       }

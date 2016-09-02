@@ -40,6 +40,9 @@
   <bean id="red5.scopeResolver" class="org.red5.server.scope.ScopeResolver">
     <property name="globalScope" ref="global.scope" />
   </bean>
+  
+  <!-- Spring event listener for adding applications to the cluster -->
+  <bean id="applicationEventListener" class="com.red5pro.cluster.plugin.event.ApplicationEventListener" />
 
 </beans>
 
