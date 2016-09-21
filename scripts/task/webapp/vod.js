@@ -24,13 +24,14 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
         };
       };
       var buildRecorder = buildPage('recorder.jsp', cb);
-      Builder.generateIndexPage(buildRecorder);
+      var buildPlayback = buildPage('playback.jsp', buildRecorder);
+      Builder.generateIndexPage(buildPlayback);
     });
 
     gulp.task(copyContentsTaskLabel, [generateTaskLabel], function(cb) {
       // Add relative file paths to exclude to the array.
       // * File paths are relative to the src/webapps/<your-webapp> directory
-      Builder.copyWebappContents(['index.jsp', 'recorder.jsp'], cb);
+      Builder.copyWebappContents(['index.jsp', 'recorder.jsp', 'playback.jsp'], cb);
     });
 
     gulp.task(copyStaticTaskLabel, [copyContentsTaskLabel], function(cb) {
