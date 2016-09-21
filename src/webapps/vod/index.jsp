@@ -4,8 +4,27 @@
   <head>
     {{> head_meta }}
     {{> resources }}
-    <title>Welcome to the Red5 Pro Server!</title>
+    <title>Video On Demand with the Red5 Pro Server!</title>
     <style>
+      #live-page-subcontent {
+        text-align: center;
+        position: relative;
+        width: 100%;
+        height: 230px;
+        overflow: hidden;
+      }
+
+      #live-container {
+        position: absolute;
+      }
+
+      #live-image-container {
+        width: 540px;
+      }
+
+      #live-page-img {
+        width: 100%;
+      }
     </style>
   </head>
   <body>
@@ -23,16 +42,15 @@
                </a>
             </p>
           </div>
-          <h2 class="tag-line">vod!</h2>
+          <h2 class="tag-line">VIDEO ON DEMAND FOR ANY SCREEN</h2>
+        </div>
+        <div id="live-page-subcontent" class="clear-fix">
+          <div id="live-image-container">
+            <img id="live-page-img" src="images/red5pro_live_streaming.png">
+          </div>
         </div>
         <div class="content-section-story">
-          <p>Content Here</p>
-          <hr class="top-padded-rule">
-          <p>
-            <strong>Also, be sure to add you page to the</strong>
-            <br>
-            <strong>&lt; menu here. You can modify that in </strong><em>/src/template/partial/menu.hbs</em>.
-          </p>
+          <p>You can Record Live streams using Red5 Pro to be played back On Demand at a later time.</p>
           <hr class="top-padded-rule">
           {{> applications }}
           <hr class="top-padded-rule">
