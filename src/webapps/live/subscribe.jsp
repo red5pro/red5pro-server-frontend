@@ -6,6 +6,8 @@
 <%
   //LIVE streams page.
   String host = ip;
+  String protocol = request.getScheme();
+
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
   LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
   List<String> names = service.getLiveStreams();
@@ -22,16 +24,22 @@
     ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
     ret.append("<ul class=\"stream-menu-listing\">\r\n");
     for(String streamName:names) {
+      String hlsLocation = protocol + "://" + ip + ":5080" + "/live/" + streamName + ".m3u8";
       String listEntry = "<li class=\"stream-listing\">\r\n" +
         "<h2 class=\"red-text stream-header\">" + streamName + "</h2>\r\n" +
           "<p class=\"medium-font-size\">\r\n" +
             "<span class=\"black-text\">View <strong>" + streamName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
             "<a class=\"medium-font-size link red-text\" href=\"rtsp://" + ip + ":8554/live/" + streamName + "\">RTSP</a>" +
             "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>\r\n" +
-          "</p>\r\n" +
+            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>" +
+            "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
+            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + hlsLocation + "'); return false;\">HLS</a>\r\n" +
+          "</p>\r\n" + "<hr>\r\n" +
           "<p>\r\n" +
-            "<span class=\"black-text\">Open in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
+            "<span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
+          "</p>\r\n" +
+           "<p>\r\n" +
+            "<span class=\"black-text\">Open HLS in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/hls.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/hls.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
           "</p>\r\n" +
        "</li>\r\n";
       ret.append(listEntry);
@@ -102,7 +110,7 @@
         margin: 10px 0;
       }
 
-      #swf-stream-container {
+      .stream-container {
         margin-top: 20px;
         text-align: center;
         background-color: rgb(239, 239, 239);
@@ -110,7 +118,7 @@
         border-radius: 4px;
       }
 
-      #viewing-header {
+      .stream-header {
         margin-top: 8px;
       }
 
@@ -127,6 +135,11 @@
 
       .download-link {
         padding-top: 20px;
+      }
+
+      #red5pro-hls-player {
+        width: 100%;
+        height: 300px;
       }
     </style>
     <script type="text/javascript" src="swf/swfobject.js"></script>
@@ -161,8 +174,14 @@
         // nada
       }
   </script>
+  <link href="videojs/video-js.min.css" rel="stylesheet">
   </head>
   <body>
+    <template id="video-player">
+      <div id="hls-video-container">
+        <video id="red5pro-hls-player" height="300" class="video-js vjs-default-skin" controls autoplay data-setup="{}"></video>
+      </div>
+    </template>
     {{> header }}
     <div class="container main-container clear-fix">
       <div id="menu-section">
@@ -190,8 +209,8 @@
             <p>If a stream is available to subscribe to, you can select to view over <span class="red-text">RTSP</span> or within a <span class="red-text">Flash Player</span> on this page.</p>
             <%=ret.toString()%>
           </div>
-          <div id="swf-stream-container" class="container-hidden">
-                <h2 id="viewing-header" class="red-text">Viewing</h2>
+          <div id="swf-stream-container" class="stream-container container-hidden">
+                <h2 id="viewing-header" class="stream-header red-text">Viewing</h2>
                 <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough
                      JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
                      when JavaScript is disabled.
@@ -237,6 +256,9 @@
                   </noscript>
             <p class="medium-font-size download-link"><a class="red-text link" href="https://github.com/red5pro/red5pro-server-examples/releases/download/0.1.2/Red5Pro-Subscriber-Client.zip">Download</a> the source for this example.</p>
           </div>
+          <div id="hls-stream-container" class="stream-container container-hidden">
+            <h2 id="hls-viewing-header" class="stream-header red-text">Viewing</h2>
+          </div>
           <hr class="top-padded-rule" />
           <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>
           <p>You can download the Streaming SDKs from your <a class="link" href="http://account.red5pro.com/download" target="_blank">Red5 Pro Accounts</a> page.</p>
@@ -281,6 +303,65 @@
         window.invokeViewStream = viewHandler;
 
        }(this, document));
+    </script>
+        <script src="videojs/video.min.js"></script>
+    <script src="videojs/videojs.hls.min.js"></script>
+    <script>
+      (function () {
+
+        var $videoTemplate = document.getElementById('video-player');
+
+        function addPlayer(tmpl, container) {
+          var $el = document.importNode(tmpl.content, true);
+          container.appendChild($el);
+          return $el;
+        }
+
+        function createSource (src, type) {
+          let sourceEl = document.createElement('source');
+          sourceEl.src = src;
+          sourceEl.type = type;
+          return sourceEl;
+        }
+
+        function insertSourceInto (src, type, $parent) {
+          var sourceEl = createSource(src, type);
+          if ($parent.firstChild) {
+            $parent.insertBefore(sourceEl, $parent.firstChild);
+          }
+          else {
+            $parent.appendChild(sourceEl);
+          }
+          return sourceEl;
+        }
+
+        function viewHLS (src) {
+          var player;
+          if (window.hlsplayer) {
+            window.hlsplayer.dispose();
+            window.hlsplayer = undefined;
+          }
+          var parentContainer = document.getElementById('hls-stream-container');
+          if (parentContainer.childNodes.length > 1) {
+            parentContainer.removeChild(parentContainer.lastChild);
+          }
+          addPlayer($videoTemplate, parentContainer);
+          insertSourceInto(src, 'application/x-mpegURL', document.getElementById('red5pro-hls-player'));
+          parentContainer.classList.remove('container-hidden');
+          parentContainer.classList.add('container-padding');
+          parentContainer.scrollIntoView({block: 'start', behavior: 'smooth'});
+
+          var header = document.getElementById("hls-viewing-header");
+          header.innerText = 'Viewing ' + src.substring(src.lastIndexOf('/') + 1, src.lastIndexOf('.')) + '\'s stream.';
+
+          player = videojs('red5pro-hls-player');
+          player.play();
+          window.hlsplayer = player;
+        }
+
+        window.invokeHLSStream = viewHLS;
+
+       })();
     </script>
     {{> footer }}
   </body>
