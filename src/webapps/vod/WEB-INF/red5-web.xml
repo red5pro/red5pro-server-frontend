@@ -21,9 +21,9 @@
 	</bean>
 	
 	<!-- Replace this class value with your handler. -->
-	<bean id="web.handler" class="com.infrared5.red5pro.vod.Red5ProVod" />
+	<bean id="web.handler" class="com.infrared5.red5pro.live.Red5ProLive" />
 	
-	<bean id="vod" class="com.infrared5.red5pro.examples.service.StreamListService" >
+	<bean id="streams" class="com.infrared5.red5pro.examples.service.LiveStreamListService" >
 		<constructor-arg ref="web.handler"/>
 	</bean>
 </beans>

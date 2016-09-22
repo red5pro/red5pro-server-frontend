@@ -2,7 +2,7 @@
 <%@ page import="org.springframework.context.ApplicationContext,
           com.red5pro.server.secondscreen.net.NetworkUtil,
           org.springframework.web.context.WebApplicationContext,
-          com.infrared5.red5pro.examples.service.StreamListService,
+          com.infrared5.red5pro.examples.service.LiveStreamListService,
           java.util.Map.Entry,
           java.util.Map,
           java.util.Iterator"%>
@@ -10,19 +10,32 @@
   //VOD streams list
   String host = ip;
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
-  StreamListService service = (StreamListService)appCtx.getBean("vod");
+  LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
   Map<String, Map<String, Object>> filesMap = service.getListOfAvailableFLVs();
-  StringBuffer ret =new StringBuffer();
+  StringBuffer ret = new StringBuffer();
 
   Iterator<Entry<String, Map<String, Object>>> iter = filesMap.entrySet().iterator();
-  while(iter.hasNext()){
-    Entry<String, Map<String, Object>> entry = iter.next();
-    String sName = entry.getKey();
-    ret.append("<b>"+sName+"</b><br/><a href=\"rtsp://"+host+":8554/vod/"+sName+"\">rtsp "+sName+"</a><br />\r\n");
-    ret.append( "<a href=\"flash.jsp?app=vod&host="+host+"&stream="+sName+"\">flash "+sName+"</a><br />\r\n");
+  Boolean hasRecordings = iter.hasNext();
+  if (hasRecordings) {
+    ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
+    ret.append("<ul class=\"stream-menu-listing\">\r\n");
+    while (iter.hasNext()){
+      Entry<String, Map<String, Object>> entry = iter.next();
+      String sName = entry.getKey();
+      ret.append("<b>"+sName+"</b><br/><a href=\"rtsp://"+host+":8554/vod/"+sName+"\">rtsp "+sName+"</a><br />\r\n");
+      ret.append( "<a href=\"flash.jsp?app=vod&host="+host+"&stream="+sName+"\">flash "+sName+"</a><br />\r\n");
+    }
+    ret.append("</ul>\r\n");
+    ret.append("</div>\r\n");
+    ret.append("<p>To begin your own Recorded Broadcast session, visit the <a class=\"broadcast-link link\" href=\"recorder.jsp?host=" + ip + "\">Recorder page</a>!</p>\r\n");
+
   }
-  if(ret.length() == 0){
-      ret.append( "No available streams");
+  else {
+    ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
+    ret.append("<h3 class=\"no-streams-entry\">No recordings found</h3>\r\n");
+    ret.append("</div>\r\n");
+    ret.append("<p>You can begin a Broadcast session to Record by visiting the <a class=\"broadcast-link link\" href=\"recorder.jsp?host=" + ip + "\" target=\"_blank\">Recorder page</a>.</p>\r\n");
+    ret.append("<p><em>Once a Broadcast session is started and stopped, the Video On Demand</em> (VOD) <em>Recording will be available. Return to this page to see the stream name listed.</em></p>");
   }
 %>
 <!doctype html>
@@ -172,7 +185,7 @@
           <div>
             <p>Below you will find the list of recorded video to stream.</p>
             <p>If a stream is available to playback, you can select to view over <span class="red-text">RTSP</span> or within a <span class="red-text">Flash Player</span> on this page.</p>
-            <h3>[TBD] HLD VOD</h3>
+            <h3>[TBD] HLs VOD</h3>
             <%=ret.toString()%>
           </div>
           <div id="swf-stream-container" class="container-hidden">

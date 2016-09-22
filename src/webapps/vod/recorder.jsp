@@ -59,7 +59,7 @@
       attributes.align = "middle";
       if(swfobject.hasFlashPlayerVersion("11.1.0")) {
         swfobject.embedSWF(
-            "Broadcaster.swf?streamType=record", "flashContent",
+            "Broadcaster.swf?context=vod&streamType=record", "flashContent",
             "100%", "716",
             swfVersionStr, xiSwfUrlStr,
             flashvars, params, attributes);
@@ -112,13 +112,13 @@
         </div>
         <noscript>
             <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="Broadcaster">
-                <param name="movie" value="Broadcaster.swf?streamType=record" />
+                <param name="movie" value="Broadcaster.swf?context=vod&streamType=record" />
                 <param name="quality" value="high" />
                 <param name="bgcolor" value="#ffffff" />
                 <param name="allowScriptAccess" value="sameDomain" />
                 <param name="allowFullScreen" value="true" />
                 <!--[if !IE]>-->
-                <object type="application/x-shockwave-flash" data="Broadcaster.swf?streamType=record" width="100%" height="100%">
+                <object type="application/x-shockwave-flash" data="Broadcaster.swf?context=vod&streamType=record" width="100%" height="100%">
                     <param name="quality" value="high" />
                     <param name="bgcolor" value="#ffffff" />
                     <param name="allowScriptAccess" value="sameDomain" />
