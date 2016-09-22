@@ -59,7 +59,7 @@
       attributes.align = "middle";
       if(swfobject.hasFlashPlayerVersion("11.1.0")) {
         swfobject.embedSWF(
-            "Broadcaster.swf", "flashContent",
+            "Broadcaster.swf?streamType=record", "flashContent",
             "100%", "716",
             swfVersionStr, xiSwfUrlStr,
             flashvars, params, attributes);
