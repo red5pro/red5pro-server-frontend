@@ -13,6 +13,7 @@
   LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
   Map<String, Map<String, Object>> filesMap = service.getListOfAvailableFLVs();
   StringBuffer ret = new StringBuffer();
+  String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
 
   Iterator<Entry<String, Map<String, Object>>> iter = filesMap.entrySet().iterator();
   Boolean hasRecordings = iter.hasNext();
@@ -21,9 +22,20 @@
     ret.append("<ul class=\"stream-menu-listing\">\r\n");
     while (iter.hasNext()){
       Entry<String, Map<String, Object>> entry = iter.next();
-      String sName = entry.getKey();
-      ret.append("<b>"+sName+"</b><br/><a href=\"rtsp://"+host+":8554/vod/"+sName+"\">rtsp "+sName+"</a><br />\r\n");
-      ret.append( "<a href=\"flash.jsp?app=vod&host="+host+"&stream="+sName+"\">flash "+sName+"</a><br />\r\n");
+      String streamName = entry.getKey();
+      String listEntry = "<li class=\"stream-listing\">\r\n" +
+        "<h2 class=\"red-text stream-header\">" + streamName + "</h2>\r\n" +
+          "<p class=\"medium-font-size\">\r\n" +
+            "<span class=\"black-text\">View <strong>" + streamName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
+            "<a class=\"medium-font-size link red-text\" href=\"rtsp://" + ip + ":8554/live/" + streamName + "\">RTSP</a>" +
+            "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
+            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>\r\n" +
+          "</p>\r\n" +
+          "<p>\r\n" +
+            "<span class=\"black-text\">Open in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
+          "</p>\r\n" +
+       "</li>\r\n";
+      ret.append(listEntry);
     }
     ret.append("</ul>\r\n");
     ret.append("</div>\r\n");
@@ -43,7 +55,7 @@
   <head>
     {{> head_meta }}
     {{> resources }}
-    <title>Stream Subscription with the Red5 Pro Server!</title>
+    <title>Video On Demand Playback with the Red5 Pro Server!</title>
     <style>
       object:focus {
         outline:none;
@@ -185,7 +197,7 @@
           <div>
             <p>Below you will find the list of recorded video to stream.</p>
             <p>If a stream is available to playback, you can select to view over <span class="red-text">RTSP</span> or within a <span class="red-text">Flash Player</span> on this page.</p>
-            <h3>[TBD] HLs VOD</h3>
+            <h3>[TBD] HLS VOD?</h3>
             <%=ret.toString()%>
           </div>
           <div id="swf-stream-container" class="container-hidden">
