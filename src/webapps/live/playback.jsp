@@ -26,22 +26,19 @@
       Entry<String, Map<String, Object>> entry = iter.next();
       String streamName = entry.getKey();
       String hlsLocation = protocol + "://" + ip + ":5080" + "/live/" + streamName.substring(0, streamName.lastIndexOf('.')) + ".m3u8";
-      String listEntry = "<li class=\"stream-listing\">\r\n" +
+      String listEntry = "<li data-stream=\"" + streamName.substring(0, streamName.lastIndexOf('.')) + "\" class=\"stream-listing\">\r\n" +
         "<h2 class=\"red-text stream-header\">" + streamName + "</h2>\r\n" +
-          "<p class=\"medium-font-size\">\r\n" +
+          "<p class=\"internal-players\" class=\"medium-font-size\">\r\n" +
             "<span class=\"black-text\">View <strong>" + streamName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
             "<a class=\"medium-font-size link red-text\" href=\"rtsp://" + ip + ":8554/live/" + streamName + "\">RTSP</a>" +
             "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>" +
-            "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + hlsLocation + "'); return false;\">HLS</a>\r\n" +
+            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>\r\n" +
           "</p>\r\n" + "<hr>\r\n" +
-          "<p>\r\n" +
-            "<span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
-          "</p>\r\n" +
-           "<p>\r\n" +
-            "<span class=\"black-text\">Open HLS in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/hls.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/hls.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
-          "</p>\r\n" +
+          "<div class=\"external-players\">\r\n" +
+            "<p>\r\n" +
+              "<span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
+            "</p>\r\n" +
+          "</div>\r\n" +
        "</li>\r\n";
       ret.append(listEntry);
     }
@@ -279,6 +276,9 @@
         </div>
       </div>
     </div>
+    <script src="lib/jquery-1.12.4.min.js"></script>
+    <script src="videojs/video.min.js"></script>
+    <script src="videojs/videojs.hls.min.js"></script>
     <script>
       (function(window, document) {
 
@@ -314,8 +314,6 @@
        }(this, document));
     </script>
     {{> footer }}
-    <script src="videojs/video.min.js"></script>
-    <script src="videojs/videojs.hls.min.js"></script>
     <script>
       (function () {
 
@@ -372,6 +370,58 @@
         window.invokeHLSStream = viewHLS;
 
        })();
+    </script>
+    <script>
+      // Filtering HLS playback using servlet.
+      (function () {
+
+       var httpRegex = /^http/i;
+       var baseUrl = '<%=protocol%>://<%=ip%>:5080/vod';
+       var playlistServletURL = [baseUrl, 'playlists'].join('/');
+       var req = new XMLHttpRequest();
+       req.onreadystatechange = function () {
+         if (this.readyState === 4) {
+           if (this.status >= 200 && this.status < 400) {
+              var response = JSON.parse(this.response);
+              console.log("Response: " + JSON.stringify(response, null, 2));
+              var playlist = response.hasOwnProperty('playlist') ? response.playlist : [];
+              var items = [];
+              var i, item, itemName, itemUrl, length = playlist.length;
+              var listing, internalPlayers, externalPlayer;
+              for (i = 0; i < length; i++) {
+                item = playlist[i];
+                itemName = item.name.substring(0, item.name.lastIndexOf('.'));
+                itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
+                items.push({
+                  name: itemName,
+                  url: itemUrl
+                });
+                listing = $('li[data-stream=' + itemName + ']');
+                if (listing && listing.length > 0) {
+                  internalPlayers = $('p.internal-players', listing);
+                  externalPlayers = $('div.external-players', listing);
+                  if (internalPlayers && internalPlayers.length > 0) {
+                    internalPlayers.append("<span class=\"black-text\">&nbsp;&nbsp;or&nbsp;&nbsp;" +
+                                    "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + itemUrl + "'); return false;\">HLS</a>" +
+                                    "</span>");
+                  }
+                  if (externalPlayers && externalPlayers.length > 0) {
+                    externalPlayers.append("<p>" +
+                                    "<span class=\"black-text\">Open HLS in another window:&nbsp;" +
+                                    "<a class=\"subscriber-link link red-text\" href=\"<%=baseUrl%>/live/hls-vod.jsp?url=" + encodeURIComponent(itemUrl) + "&streamName=" + itemName + "\">" + itemUrl + "</a>" +
+                                    "</span>" +
+                    "</p>");
+                  }
+                }
+              }
+           }
+         }
+       }
+       req.timeout = 15000;
+       req.open('GET', playlistServletURL, true);
+       req.send();
+
+      })();
     </script>
   </body>
 </html>
