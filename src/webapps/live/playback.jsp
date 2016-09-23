@@ -1,52 +1,58 @@
 {{> jsp_header }}
 <%@ page import="org.springframework.context.ApplicationContext,
+          com.red5pro.server.secondscreen.net.NetworkUtil,
           org.springframework.web.context.WebApplicationContext,
           com.infrared5.red5pro.examples.service.LiveStreamListService,
-          java.util.List"%>
+          java.util.Map.Entry,
+          java.util.Map,
+          java.util.Iterator"%>
 <%
-  //LIVE streams page.
+  //VOD streams list
   String host = ip;
   String protocol = request.getScheme();
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
   LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
-  List<String> names = service.getLiveStreams();
+  Map<String, Map<String, Object>> filesMap = service.getListOfAvailableFLVs();
   StringBuffer ret = new StringBuffer();
   String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-  if(names.size() == 0) {
-    ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
-    ret.append("<h3 class=\"no-streams-entry\">No streams found</h3>\r\n");
-    ret.append("</div>\r\n");
-    ret.append("<p>You can begin a Broadcast session by visiting the <a class=\"broadcast-link link\" href=\"broadcast.jsp?host=" + ip + "\" target=\"_blank\">Broadcast page</a>.</p>\r\n");
-    ret.append("<p><em>Once a Broadcast session is started, return to this page to see the stream name listed.</em></p>");
-  }
-  else {
+
+  Iterator<Entry<String, Map<String, Object>>> iter = filesMap.entrySet().iterator();
+  Boolean hasRecordings = iter.hasNext();
+  if (hasRecordings) {
     ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
     ret.append("<ul class=\"stream-menu-listing\">\r\n");
-    for(String streamName:names) {
-      String hlsLocation = protocol + "://" + ip + ":5080" + "/live/" + streamName + ".m3u8";
-      String listEntry = "<li class=\"stream-listing\">\r\n" +
+    while (iter.hasNext()){
+      Entry<String, Map<String, Object>> entry = iter.next();
+      String streamName = entry.getKey();
+      String hlsLocation = protocol + "://" + ip + ":5080" + "/live/" + streamName.substring(0, streamName.lastIndexOf('.')) + ".m3u8";
+      String listEntry = "<li data-stream=\"" + streamName.substring(0, streamName.lastIndexOf('.')) + "\" class=\"stream-listing\">\r\n" +
         "<h2 class=\"red-text stream-header\">" + streamName + "</h2>\r\n" +
-          "<p class=\"medium-font-size\">\r\n" +
+          "<p class=\"internal-players\" class=\"medium-font-size\">\r\n" +
             "<span class=\"black-text\">View <strong>" + streamName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
             "<a class=\"medium-font-size link red-text\" href=\"rtsp://" + ip + ":8554/live/" + streamName + "\">RTSP</a>" +
             "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>" +
-            "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + hlsLocation + "'); return false;\">HLS</a>\r\n" +
+            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>\r\n" +
           "</p>\r\n" + "<hr>\r\n" +
-          "<p>\r\n" +
-            "<span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
-          "</p>\r\n" +
-           "<p>\r\n" +
-            "<span class=\"black-text\">Open HLS in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/hls.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/hls.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
-          "</p>\r\n" +
+          "<div class=\"external-players\">\r\n" +
+            "<p>\r\n" +
+              "<span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
+            "</p>\r\n" +
+          "</div>\r\n" +
        "</li>\r\n";
       ret.append(listEntry);
     }
     ret.append("</ul>\r\n");
     ret.append("</div>\r\n");
-    ret.append("<p>To begin your own Broadcast session, visit the <a class=\"broadcast-link link\" href=\"broadcast.jsp?host=" + ip + "\">Broadcast page</a>!</p>\r\n");
+    ret.append("<p>To begin your own Recorded Broadcast session, visit the <a class=\"broadcast-link link\" href=\"recorder.jsp?host=" + ip + "\">Recorder page</a>!</p>\r\n");
+
+  }
+  else {
+    ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
+    ret.append("<h3 class=\"no-streams-entry\">No recordings found</h3>\r\n");
+    ret.append("</div>\r\n");
+    ret.append("<p>You can begin a Broadcast session to Record by visiting the <a class=\"broadcast-link link\" href=\"recorder.jsp?host=" + ip + "\" target=\"_blank\">Recorder page</a>.</p>\r\n");
+    ret.append("<p><em>Once a Broadcast session is started and stopped, the Video On Demand</em> (VOD) <em>Recording will be available. Return to this page to see the stream name listed.</em></p>");
   }
 %>
 <!doctype html>
@@ -54,7 +60,7 @@
   <head>
     {{> head_meta }}
     {{> resources }}
-    <title>Stream Subscription with the Red5 Pro Server!</title>
+    <title>Video On Demand Playback with the Red5 Pro Server!</title>
     <style>
       object:focus {
         outline:none;
@@ -196,7 +202,7 @@
                </a>
             </p>
           </div>
-          <h2 class="tag-line">LIVE SUBSCRIBING FOR ANY SCREEN</h2>
+          <h2 class="tag-line">VIDEO ON DEMAND PLAYBACK FOR ANY SCREEN</h2>
         </div>
         <div id="live-page-subcontent" class="clear-fix">
           <div id="live-image-container">
@@ -205,8 +211,8 @@
         </div>
         <div class="content-section-story">
           <div>
-            <p>Below you will find the list of current live streams to subscribe to.</p>
-            <p>If a stream is available to subscribe to, you can select to view over <span class="red-text">RTSP</span> or within a <span class="red-text">Flash Player</span> on this page.</p>
+            <p>Below you will find the list of recorded video to stream.</p>
+            <p>If a stream is available to playback, you can select to view over <span class="red-text">RTSP</span> or within a <span class="red-text">Flash Player</span> on this page.</p>
             <%=ret.toString()%>
           </div>
           <div id="swf-stream-container" class="stream-container container-hidden">
@@ -253,7 +259,7 @@
                         </object>
                         <!--<![endif]-->
                     </object>
-                  </noscript>
+                </noscript>
             <p class="medium-font-size download-link"><a class="red-text link" href="https://github.com/red5pro/red5pro-server-examples/releases/download/0.1.2/Red5Pro-Subscriber-Client.zip">Download</a> the source for this example.</p>
           </div>
           <div id="hls-stream-container" class="stream-container container-hidden">
@@ -270,6 +276,9 @@
         </div>
       </div>
     </div>
+    <script src="lib/jquery-1.12.4.min.js"></script>
+    <script src="videojs/video.min.js"></script>
+    <script src="videojs/videojs.hls.min.js"></script>
     <script>
       (function(window, document) {
 
@@ -304,8 +313,7 @@
 
        }(this, document));
     </script>
-        <script src="videojs/video.min.js"></script>
-    <script src="videojs/videojs.hls.min.js"></script>
+    {{> footer }}
     <script>
       (function () {
 
@@ -363,6 +371,58 @@
 
        })();
     </script>
-    {{> footer }}
+    <script>
+      // Filtering HLS playback using servlet.
+      (function () {
+
+       var httpRegex = /^http/i;
+       var baseUrl = '<%=protocol%>://<%=ip%>:5080/vod';
+       var playlistServletURL = [baseUrl, 'playlists'].join('/');
+       var req = new XMLHttpRequest();
+       req.onreadystatechange = function () {
+         if (this.readyState === 4) {
+           if (this.status >= 200 && this.status < 400) {
+              var response = JSON.parse(this.response);
+              console.log("Response: " + JSON.stringify(response, null, 2));
+              var playlist = response.hasOwnProperty('playlist') ? response.playlist : [];
+              var items = [];
+              var i, item, itemName, itemUrl, length = playlist.length;
+              var listing, internalPlayers, externalPlayer;
+              for (i = 0; i < length; i++) {
+                item = playlist[i];
+                itemName = item.name.substring(0, item.name.lastIndexOf('.'));
+                itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
+                items.push({
+                  name: itemName,
+                  url: itemUrl
+                });
+                listing = $('li[data-stream=' + itemName + ']');
+                if (listing && listing.length > 0) {
+                  internalPlayers = $('p.internal-players', listing);
+                  externalPlayers = $('div.external-players', listing);
+                  if (internalPlayers && internalPlayers.length > 0) {
+                    internalPlayers.append("<span class=\"black-text\">&nbsp;&nbsp;or&nbsp;&nbsp;" +
+                                    "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + itemUrl + "'); return false;\">HLS</a>" +
+                                    "</span>");
+                  }
+                  if (externalPlayers && externalPlayers.length > 0) {
+                    externalPlayers.append("<p>" +
+                                    "<span class=\"black-text\">Open HLS in another window:&nbsp;" +
+                                    "<a class=\"subscriber-link link red-text\" href=\"<%=baseUrl%>/live/hls-vod.jsp?url=" + encodeURIComponent(itemUrl) + "&streamName=" + itemName + "\">" + itemUrl + "</a>" +
+                                    "</span>" +
+                    "</p>");
+                  }
+                }
+              }
+           }
+         }
+       }
+       req.timeout = 15000;
+       req.open('GET', playlistServletURL, true);
+       req.send();
+
+      })();
+    </script>
   </body>
 </html>
+
