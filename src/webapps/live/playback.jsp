@@ -276,6 +276,7 @@
         </div>
       </div>
     </div>
+    {{> footer }}
     <script src="lib/jquery-1.12.4.min.js"></script>
     <script src="videojs/video.min.js"></script>
     <script src="videojs/videojs-media-sources.min.js"></script>
@@ -315,7 +316,6 @@
 
        }(this, document));
     </script>
-    {{> footer }}
     <script>
       (function () {
 
