@@ -24,16 +24,56 @@
         <link href="videojs/video-js.min.css" rel="stylesheet">
     </head>
     <body>
-      <video id=red5pro-video width=600 height=300 class="video-js vjs-default-skin" controls>
-        <source
-           src="<%=url%>"
-           type="application/x-mpegURL">
-      </video>
+      <video id=red5pro-video width=600 height=300 class="video-js vjs-default-skin" controls></video>
       <script src="videojs/video.min.js"></script>
+      <script src="videojs/videojs-media-sources.min.js"></script>
       <script src="videojs/videojs.hls.min.js"></script>
+      <script src="script/hls-metadata.js"></script>
       <script>
-        var player = videojs('red5pro-video');
-        player.play();
+        (function () {
+
+          var currentRotation = 0;
+          var origin = [
+            'webkitTransformOrigin',
+            'mozTransformOrigin',
+            'msTransformOrigin',
+            'oTransformOrigin',
+            'transformOrigin'
+          ];
+          var styles = [
+            'webkitTransform',
+            'mozTransform',
+            'msTransform',
+            'oTransform',
+            'transform'
+          ];
+
+          function applyOrientation (value) {
+            if (currentRotation === value) {
+              return;
+            }
+            var vid = document.getElementById('red5pro-video');
+            if (vid) {
+              var i, length = styles.length;
+              for(i = 0; i < length; i++) {
+                vid.style[origin[i]] = value < 0 ? 'right top' : 'left bottom';
+                vid.style[styles[i]] = 'translateY(-100%) rotate(' + value + 'deg)';
+              }
+            }
+          }
+
+          var player = videojs('red5pro-video');
+          player.src({
+                  src: "<%=url%>",
+                  type: "application/x-mpegURL",
+                  useCueTags: true
+              });
+
+          window.onOrientation(player, applyOrientation);
+
+          player.play();
+
+        })();
       </script>
   </body>
 </html>
