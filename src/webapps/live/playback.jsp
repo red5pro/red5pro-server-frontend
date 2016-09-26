@@ -280,6 +280,7 @@
     <script src="videojs/video.min.js"></script>
     <script src="videojs/videojs-media-sources.min.js"></script>
     <script src="videojs/videojs.hls.min.js"></script>
+    <script src="script/hls-metadata.js"></script>
     <script>
       (function(window, document) {
 
@@ -319,6 +320,39 @@
       (function () {
 
         var $videoTemplate = document.getElementById('video-player');
+        var currentRotation = 0;
+        var origin = [
+          'webkitTransformOrigin',
+          'mozTransformOrigin',
+          'msTransformOrigin',
+          'oTransformOrigin',
+          'transformOrigin'
+        ];
+        var styles = [
+          'webkitTransform',
+          'mozTransform',
+          'msTransform',
+          'oTransform',
+          'transform'
+        ];
+
+        function applyOrientation (value) {
+          if (currentRotation === value) {
+            return;
+          }
+          var vid = document.getElementById('red5pro-hls-player');
+          var container = document.getElementById('hls-video-container');
+          if (vid) {
+            var i, length = styles.length;
+            for(i = 0; i < length; i++) {
+              vid.style[origin[i]] = value < 0 ? 'right top' : 'left bottom';
+              vid.style[styles[i]] = 'translateY(-100%) rotate(' + value + 'deg)';
+            }
+            if (container) {
+              container.style.height = value % 90 == 0 ? '540px' : '300px';
+            }
+          }
+        }
 
         function addPlayer(tmpl, container) {
           var $el = document.importNode(tmpl.content, true);
@@ -365,6 +399,7 @@
 
           player = videojs('red5pro-hls-player');
           player.play();
+          window.onOrientation(player, applyOrientation);
           window.hlsplayer = player;
         }
 
