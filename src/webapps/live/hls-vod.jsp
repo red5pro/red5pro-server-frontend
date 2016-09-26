@@ -28,48 +28,38 @@
       <script src="videojs/video.min.js"></script>
       <script src="videojs/videojs-media-sources.min.js"></script>
       <script src="videojs/videojs.hls.min.js"></script>
+      <script src="script/hls-metadata.js"></script>
       <script>
         (function () {
 
-          var jsonAttr = /['"](.*?)['"]:/gi;
-          var jsonVal = /:['"](.*?)['"]/gi;
           var currentRotation = 0;
-
-          function readUTF (data,start,len) {
-            var result = '',offset = start, end = start + len;
-            do {
-              result += String.fromCharCode(data[offset++]);
-            } while(offset < end);
-            return result;
-          }
-
-          function parseJSONForOrientation (text) {
-            try {
-              var value = JSON.parse(text);
-              if (value.hasOwnProperty('orientation')) {
-                return parseInt(value.orientation);
-              }
-              return undefined;
-            }
-            catch (e) {
-              var match = jsonAttr.exec(text);
-              var match2;
-              if (match && match.length > 1) {
-                match2 = jsonVal.exec(text);
-                if (match[1] === 'orientation' && match2 && match2.length > 1) {
-                  return parseInt(match2[1]);
-                }
-              }
-              return undefined;
-            }
-            return undefined;
-          }
+          var origin = [
+            'webkitTransformOrigin',
+            'mozTransformOrigin',
+            'msTransformOrigin',
+            'oTransformOrigin',
+            'transformOrigin'
+          ];
+          var styles = [
+            'webkitTransform',
+            'mozTransform',
+            'msTransform',
+            'oTransform',
+            'transform'
+          ];
 
           function applyOrientation (value) {
             if (currentRotation === value) {
               return;
             }
-            console.log('NEED TO APPLY ROTATION: ' + value);
+            var vid = document.getElementById('red5pro-video');
+            if (vid) {
+              var i, length = styles.length;
+              for(i = 0; i < length; i++) {
+                vid.style[origin[i]] = value < 0 ? 'right top' : 'left bottom';
+                vid.style[styles[i]] = 'translateY(-100%) rotate(' + value + 'deg)';
+              }
+            }
           }
 
           var player = videojs('red5pro-video');
@@ -79,37 +69,10 @@
                   useCueTags: true
               });
 
-          var textTracks = player.textTracks();
-          if (textTracks) {
+          window.onOrientation(player, applyOrientation);
 
-            player.addTextTrack('metadata');
+          player.play();
 
-            textTracks.addEventListener('addtrack', function (addTrackEvent) {
-
-              var track = addTrackEvent.track;
-              var cue = new VTTCue(1.0, 0, 'Testing');
-              cue.id = 1;
-              cue.pauseOnExit = false;
-              track.addCue(cue);
-
-              track.addEventListener('cuechange', function (cueChangeEvent) {
-                for(var i = 0; i < cueChangeEvent.currentTarget.cues.length; i++) {
-                  var data = cueChangeEvent.currentTarget.cues[i];
-                  if (data.value) {
-                    var text = readUTF( data.value.data , 0 , data.size);
-                    var orientation = parseJSONForOrientation(text);
-                    if (orientation !== undefined) {
-                      applyOrientation(orientation);
-                      break;
-                    }
-                  }
-                }
-              });
-
-            });
-
-            player.play();
-          }
         })();
       </script>
   </body>
