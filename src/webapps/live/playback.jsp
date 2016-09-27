@@ -12,11 +12,11 @@
   String protocol = request.getScheme();
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
-  LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
-  Map<String, Map<String, Object>> filesMap = service.getListOfAvailableFLVs();
-  StringBuffer ret = new StringBuffer();
+//  LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
+//  Map<String, Map<String, Object>> filesMap = service.getListOfAvailableFLVs();
+//  StringBuffer ret = new StringBuffer();
   String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-
+/*
   Iterator<Entry<String, Map<String, Object>>> iter = filesMap.entrySet().iterator();
   Boolean hasRecordings = iter.hasNext();
   if (hasRecordings) {
@@ -54,6 +54,7 @@
     ret.append("<p>You can begin a Broadcast session to Record by visiting the <a class=\"broadcast-link link\" href=\"recorder.jsp?host=" + ip + "\" target=\"_blank\">Recorder page</a>.</p>\r\n");
     ret.append("<p><em>Once a Broadcast session is started and stopped, the Video On Demand</em> (VOD) <em>Recording will be available. Return to this page to see the stream name listed.</em></p>");
   }
+*/
 %>
 <!doctype html>
 <html lang="eng">
@@ -213,7 +214,11 @@
           <div>
             <p>Below you will find the list of recorded video to stream.</p>
             <p>If a stream is available to playback, you can select to view over <span class="red-text">RTSP</span> or within a <span class="red-text">Flash Player</span> on this page.</p>
-            <%=ret.toString()%>
+            <div id="available-streams-listing" class="menu-content streaming-menu-content">
+              <h3 class="no-streams-entry">No recordings found</h3>
+            </div>
+            <p>You can begin a Broadcast session to Record by visiting the <a class="broadcast-link link" href="recorder.jsp?host=<%=ip%>" target="_blank">Recorder page</a>.</p>
+            <p><em>Once a Broadcast session is started and stopped, the Video On Demand</em> (VOD) <em>Recording will be available. Return to this page to see the stream name listed.</em></p>
           </div>
           <div id="swf-stream-container" class="stream-container container-hidden">
                 <h2 id="viewing-header" class="stream-header red-text">Viewing</h2>
@@ -434,9 +439,9 @@
        var baseUrl = '<%=protocol%>://<%=ip%>:5080/live';
        var mediafilesServletURL = [baseUrl, 'mediafiles'].join('/');
        var playlistServletURL = [baseUrl, 'playlists'].join('/');
-       var store = {flv: [], hls: []};
+       var store = {}; // name: {name:string, url:string, formats:[hls|flv]}
 
-       var parseItem = function(item) {
+       var parseItem = function (item) {
           var itemName = item.name.substring(0, item.name.lastIndexOf('.'));
           var itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
           return {
@@ -445,7 +450,7 @@
           };
        }
 
-       var getItemList = function(data, url, listProperty, targetProperty, cb) {
+       var getItemList = function (data, url, listProperty, formatType, cb) {
          var req = new XMLHttpRequest();
          req.onreadystatechange = function () {
            if (this.readyState === 4) {
@@ -454,11 +459,17 @@
                 console.log("Response: " + JSON.stringify(response, null, 2));
                 var list = response.hasOwnProperty(listProperty) ? response[listProperty] : [];
                 var items = [];
-                var i, length = list.length;
+                var i, item, length = list.length;
                 for (i = 0; i < length; i++) {
-                  items.push(parseItem(list[i]));
+                  item = parseItem(list[i]);
+                  if (!data.hasOwnProperty(item.name)) {
+                    data[item.name] = {
+                      name: item.name,
+                      urls: {}
+                    };
+                  }
+                  data[item.name].urls[formatType] = item.url;
                 }
-                data[targetProperty].push(items);
                 cb(data);
             }
             else if (this.status === 0) {
@@ -474,16 +485,49 @@
         req.send();
       };
 
-      var getMediafiles = function(data, cb) {
+      var getMediafiles = function (data, cb) {
         getItemList(data, mediafilesServletURL, 'mediafiles', 'flv', cb);
       }
 
-      var getPlaylists = function(data, cb) {
+      var getPlaylists = function (data, cb) {
         getItemList(data, playlistServletURL, 'playlists', 'hls', cb);
       };
 
-      var populateListing = function(data) {
+      var populateListing = function (data) {
         console.log("Store:\r\n" + JSON.stringify(data, null, 2));
+
+        var $container = $('#available-streams-listing');
+        var innerContent = '';
+        var getStreamListItem = function (item) {
+          var streamName = item.name;
+          var urls = item.urls;
+          var html = "<li data-stream=\"" + streamName.substring(0, streamName.lastIndexOf('.')) + "\" class=\"stream-listing\">\r\n" +
+                  "<h2 class=\"red-text stream-header\">" + streamName + "</h2>\r\n" +
+                  "<p class=\"internal-players\" class=\"medium-font-size\">\r\n" +
+                    "<span class=\"black-text\">View <strong>" + streamName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
+                    (urls.hasOwnProperty('flv')
+                     ? "<a class=\"medium-font-size link red-text\" href=\"rtsp://<%=ip%>:8554/live/" + streamName + "\">RTSP</a>" +
+                       "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
+                       "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>\r\n"
+                     : "") +
+                  "</p>\r\n" + "<hr>\r\n" +
+                  "<div class=\"external-players\">\r\n" +
+                    "<p>\r\n" +
+                    "<span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "\">" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "</a></span>\r\n" +
+                    "</p>\r\n" +
+                  "</div>\r\n" +
+                "</li>";
+          return html;
+        };
+
+        for (var key in data) {
+          innerContent += getStreamListItem(data[key]);
+        }
+
+        if (innerContent.length > 0) {
+          innerContent = '<ul class="stream-menu-listing">' + innerContent + '</ul>';
+          $container.html(innerContent);
+        }
       };
 
       getMediafiles(store, function(data) {
