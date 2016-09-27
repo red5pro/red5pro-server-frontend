@@ -412,7 +412,7 @@
       (function () {
 
        var httpRegex = /^http/i;
-       var baseUrl = '<%=protocol%>://<%=ip%>:5080/vod';
+       var baseUrl = '<%=protocol%>://<%=ip%>:5080/live';
        var playlistServletURL = [baseUrl, 'playlists'].join('/');
        var req = new XMLHttpRequest();
        req.onreadystatechange = function () {
