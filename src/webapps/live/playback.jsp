@@ -12,48 +12,7 @@
   String protocol = request.getScheme();
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
-  LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
-  Map<String, Map<String, Object>> filesMap = service.getListOfAvailableFLVs();
-  StringBuffer ret = new StringBuffer();
   String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-
-  Iterator<Entry<String, Map<String, Object>>> iter = filesMap.entrySet().iterator();
-  Boolean hasRecordings = iter.hasNext();
-  if (hasRecordings) {
-    ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
-    ret.append("<ul class=\"stream-menu-listing\">\r\n");
-    while (iter.hasNext()){
-      Entry<String, Map<String, Object>> entry = iter.next();
-      String streamName = entry.getKey();
-      String hlsLocation = protocol + "://" + ip + ":5080" + "/live/" + streamName.substring(0, streamName.lastIndexOf('.')) + ".m3u8";
-      String listEntry = "<li data-stream=\"" + streamName.substring(0, streamName.lastIndexOf('.')) + "\" class=\"stream-listing\">\r\n" +
-        "<h2 class=\"red-text stream-header\">" + streamName + "</h2>\r\n" +
-          "<p class=\"internal-players\" class=\"medium-font-size\">\r\n" +
-            "<span class=\"black-text\">View <strong>" + streamName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"rtsp://" + ip + ":8554/live/" + streamName + "\">RTSP</a>" +
-            "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>\r\n" +
-          "</p>\r\n" + "<hr>\r\n" +
-          "<div class=\"external-players\">\r\n" +
-            "<p>\r\n" +
-              "<span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
-            "</p>\r\n" +
-          "</div>\r\n" +
-       "</li>\r\n";
-      ret.append(listEntry);
-    }
-    ret.append("</ul>\r\n");
-    ret.append("</div>\r\n");
-    ret.append("<p>To begin your own Recorded Broadcast session, visit the <a class=\"broadcast-link link\" href=\"recorder.jsp?host=" + ip + "\">Recorder page</a>!</p>\r\n");
-
-  }
-  else {
-    ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
-    ret.append("<h3 class=\"no-streams-entry\">No recordings found</h3>\r\n");
-    ret.append("</div>\r\n");
-    ret.append("<p>You can begin a Broadcast session to Record by visiting the <a class=\"broadcast-link link\" href=\"recorder.jsp?host=" + ip + "\" target=\"_blank\">Recorder page</a>.</p>\r\n");
-    ret.append("<p><em>Once a Broadcast session is started and stopped, the Video On Demand</em> (VOD) <em>Recording will be available. Return to this page to see the stream name listed.</em></p>");
-  }
 %>
 <!doctype html>
 <html lang="eng">
@@ -212,8 +171,12 @@
         <div class="content-section-story">
           <div>
             <p>Below you will find the list of recorded video to stream.</p>
-            <p>If a stream is available to playback, you can select to view over <span class="red-text">RTSP</span> or within a <span class="red-text">Flash Player</span> on this page.</p>
-            <%=ret.toString()%>
+            <p>If a stream is available to playback, you can select to view over <span class="red-text">RTSP</span>, within a <span class="red-text">Flash Player</span> or in an <span class="red-text">HLS Player</span> (where supported) on this page.</p>
+            <div id="available-streams-listing" class="menu-content streaming-menu-content">
+              <h3 class="no-streams-entry">No recordings found</h3>
+            </div>
+            <p>You can begin a Broadcast session to Record by visiting the <a class="broadcast-link link" href="recorder.jsp?host=<%=ip%>" target="_blank">Recorder page</a>.</p>
+            <p><em>Once a Broadcast session is started and stopped, the Video On Demand</em> (VOD) <em>Recording will be available. Return to this page to see the stream name listed.</em></p>
           </div>
           <div id="swf-stream-container" class="stream-container container-hidden">
                 <h2 id="viewing-header" class="stream-header red-text">Viewing</h2>
@@ -409,53 +372,137 @@
     </script>
     <script>
       // Filtering HLS playback using servlet.
+      /*
+                  listing = $('li[data-stream=' + itemName + ']');
+                  if (listing && listing.length > 0) {
+                    internalPlayers = $('p.internal-players', listing);
+                    externalPlayers = $('div.external-players', listing);
+                    if (internalPlayers && internalPlayers.length > 0) {
+                      internalPlayers.append("<span class=\"black-text\">&nbsp;&nbsp;or&nbsp;&nbsp;" +
+                                      "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + itemUrl + "'); return false;\">HLS</a>" +
+                                      "</span>");
+                    }
+                    if (externalPlayers && externalPlayers.length > 0) {
+                      externalPlayers.append("<p>" +
+                                      "<span class=\"black-text\">Open HLS in another window:&nbsp;" +
+                                      "<a class=\"subscriber-link link red-text\" href=\"<%=baseUrl%>/live/hls-vod.jsp?url=" + encodeURIComponent(itemUrl) + "&streamName=" + itemName + "\">" + itemUrl + "</a>" +
+                                      "</span>" +
+                      "</p>");
+                    }
+                  }
+      */
       (function () {
 
        var httpRegex = /^http/i;
-       var baseUrl = '<%=protocol%>://<%=ip%>:5080/vod';
+       var baseUrl = '<%=protocol%>://<%=ip%>:5080/live';
+       var mediafilesServletURL = [baseUrl, 'mediafiles'].join('/');
        var playlistServletURL = [baseUrl, 'playlists'].join('/');
-       var req = new XMLHttpRequest();
-       req.onreadystatechange = function () {
-         if (this.readyState === 4) {
-           if (this.status >= 200 && this.status < 400) {
-              var response = JSON.parse(this.response);
-              console.log("Response: " + JSON.stringify(response, null, 2));
-              var playlist = response.hasOwnProperty('playlist') ? response.playlist : [];
-              var items = [];
-              var i, item, itemName, itemUrl, length = playlist.length;
-              var listing, internalPlayers, externalPlayer;
-              for (i = 0; i < length; i++) {
-                item = playlist[i];
-                itemName = item.name.substring(0, item.name.lastIndexOf('.'));
-                itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
-                items.push({
-                  name: itemName,
-                  url: itemUrl
-                });
-                listing = $('li[data-stream=' + itemName + ']');
-                if (listing && listing.length > 0) {
-                  internalPlayers = $('p.internal-players', listing);
-                  externalPlayers = $('div.external-players', listing);
-                  if (internalPlayers && internalPlayers.length > 0) {
-                    internalPlayers.append("<span class=\"black-text\">&nbsp;&nbsp;or&nbsp;&nbsp;" +
-                                    "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + itemUrl + "'); return false;\">HLS</a>" +
-                                    "</span>");
-                  }
-                  if (externalPlayers && externalPlayers.length > 0) {
-                    externalPlayers.append("<p>" +
-                                    "<span class=\"black-text\">Open HLS in another window:&nbsp;" +
-                                    "<a class=\"subscriber-link link red-text\" href=\"<%=baseUrl%>/live/hls-vod.jsp?url=" + encodeURIComponent(itemUrl) + "&streamName=" + itemName + "\">" + itemUrl + "</a>" +
-                                    "</span>" +
-                    "</p>");
-                  }
-                }
-              }
-           }
-         }
+       var store = {}; // name: {name:string, url:string, formats:[hls|flv]}
+
+       var parseItem = function (item) {
+          var itemName = item.name.substring(0, item.name.lastIndexOf('.'));
+          var itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
+          return {
+            name: itemName,
+            url: itemUrl
+          };
        }
-       req.timeout = 15000;
-       req.open('GET', playlistServletURL, true);
-       req.send();
+
+       var getItemList = function (data, url, listProperty, formatType, cb) {
+         var req = new XMLHttpRequest();
+         req.onreadystatechange = function () {
+           if (this.readyState === 4) {
+             if (this.status >= 200 && this.status < 400) {
+                var response = JSON.parse(this.response);
+                console.log("Response: " + JSON.stringify(response, null, 2));
+                var list = response.hasOwnProperty(listProperty) ? response[listProperty] : [];
+                var items = [];
+                var i, item, length = list.length;
+                for (i = 0; i < length; i++) {
+                  item = parseItem(list[i]);
+                  if (!data.hasOwnProperty(item.name)) {
+                    data[item.name] = {
+                      name: item.name,
+                      urls: {}
+                    };
+                  }
+                  data[item.name].urls[formatType] = item.url;
+                }
+                cb(data);
+            }
+            else if (this.status === 0) {
+              cb(data);
+            }
+          }
+        }
+        req.onerror = function () {
+          cb(data);
+        }
+        req.timeout = 15000;
+        req.open('GET', url, true);
+        req.send();
+      };
+
+      var getMediafiles = function (data, cb) {
+        getItemList(data, mediafilesServletURL, 'mediafiles', 'flv', cb);
+      }
+
+      var getPlaylists = function (data, cb) {
+        getItemList(data, playlistServletURL, 'playlists', 'hls', cb);
+      };
+
+      var populateListing = function (data) {
+        console.log("Store:\r\n" + JSON.stringify(data, null, 2));
+
+        var $container = $('#available-streams-listing');
+        var innerContent = '';
+        var getStreamListItem = function (item) {
+          var streamName = item.name;
+          var urls = item.urls;
+          var html = "<li data-stream=\"" + streamName.substring(0, streamName.lastIndexOf('.')) + "\" class=\"stream-listing\">\r\n" +
+                  "<h2 class=\"red-text stream-header\">" + streamName + "</h2>\r\n" +
+                  "<p class=\"internal-players\" class=\"medium-font-size\">\r\n" +
+                    "<span class=\"black-text\">View <strong>" + streamName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
+                    (urls.hasOwnProperty('flv')
+                     ? "<a class=\"medium-font-size link red-text\" href=\"rtsp://<%=ip%>:8554/live/" + streamName + "\">RTSP</a>" +
+                       "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
+                       "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>\r\n"
+                     : "") +
+                    (urls.hasOwnProperty('hls')
+                     ? "<span class=\"black-text\">&nbsp;&nbsp;or&nbsp;&nbsp;" +
+                       "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + item.urls['hls'] + "'); return false;\">HLS</a>" +
+                       "</span>"
+                     : "") +
+                  "</p>\r\n" + "<hr>\r\n" +
+                  "<div class=\"external-players\">\r\n" +
+                    "<p>\r\n" +
+                    (urls.hasOwnProperty('flv')
+                      ? "<p><span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "\">" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "</a></span></p>\r\n"
+                      : "") +
+                    (urls.hasOwnProperty('hls')
+                      ? "<p><span class=\"black-text\">Open HLS in another window:&nbsp;i <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/hls-vod.jsp?url=" + encodeURIComponent(item.urls['hls']) + "&streamName=" + streamName + "\">" + item.urls['hls'] + "</a></span></p>\r\n"
+                      : "") +
+                    "</p>\r\n" +
+                  "</div>\r\n" +
+                "</li>";
+          return html;
+        };
+
+        for (var key in data) {
+          innerContent += getStreamListItem(data[key]);
+        }
+
+        if (innerContent.length > 0) {
+          innerContent = '<ul class="stream-menu-listing">' + innerContent + '</ul>';
+          $container.html(innerContent);
+        }
+      };
+
+      getMediafiles(store, function(data) {
+        getPlaylists(data, function(data) {
+          populateListing(data);
+        });
+       });
 
       })();
     </script>
