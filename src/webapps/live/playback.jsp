@@ -420,7 +420,7 @@
            if (this.status >= 200 && this.status < 400) {
               var response = JSON.parse(this.response);
               console.log("Response: " + JSON.stringify(response, null, 2));
-              var playlist = response.hasOwnProperty('playlist') ? response.playlist : [];
+              var playlist = response.hasOwnProperty('playlists') ? response.playlists : [];
               var items = [];
               var i, item, itemName, itemUrl, length = playlist.length;
               var listing, internalPlayers, externalPlayer;

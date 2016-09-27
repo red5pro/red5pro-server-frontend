@@ -57,10 +57,19 @@
     <servlet>
         <servlet-name>playlists</servlet-name>
         <servlet-class>com.red5pro.stream.transform.mpegts.server.M3U8ListingServlet</servlet-class>
-    </servlet>    
+    </servlet>
     <servlet-mapping>
         <servlet-name>playlists</servlet-name>
         <url-pattern>/playlists/*</url-pattern>
+    </servlet-mapping>
+    <!-- FLV/MP4 S3 Listing -->
+    <servlet>
+      <servlet-name>mediafiles</servlet-name>
+      <servlet-class>com.red5pro.media.storage.servlet.MediaFileListingServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>mediafiles</servlet-name>
+      <url-pattern>/mediafiles/*</url-pattern>
     </servlet-mapping>
     <!-- CORS filter with wideopen origin by default -->
     <filter>
