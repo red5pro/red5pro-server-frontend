@@ -409,53 +409,88 @@
     </script>
     <script>
       // Filtering HLS playback using servlet.
+      /*
+                  listing = $('li[data-stream=' + itemName + ']');
+                  if (listing && listing.length > 0) {
+                    internalPlayers = $('p.internal-players', listing);
+                    externalPlayers = $('div.external-players', listing);
+                    if (internalPlayers && internalPlayers.length > 0) {
+                      internalPlayers.append("<span class=\"black-text\">&nbsp;&nbsp;or&nbsp;&nbsp;" +
+                                      "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + itemUrl + "'); return false;\">HLS</a>" +
+                                      "</span>");
+                    }
+                    if (externalPlayers && externalPlayers.length > 0) {
+                      externalPlayers.append("<p>" +
+                                      "<span class=\"black-text\">Open HLS in another window:&nbsp;" +
+                                      "<a class=\"subscriber-link link red-text\" href=\"<%=baseUrl%>/live/hls-vod.jsp?url=" + encodeURIComponent(itemUrl) + "&streamName=" + itemName + "\">" + itemUrl + "</a>" +
+                                      "</span>" +
+                      "</p>");
+                    }
+                  }
+      */
       (function () {
 
        var httpRegex = /^http/i;
        var baseUrl = '<%=protocol%>://<%=ip%>:5080/live';
+       var mediafilesServletURL = [baseUrl, 'mediafiles'].join('/');
        var playlistServletURL = [baseUrl, 'playlists'].join('/');
-       var req = new XMLHttpRequest();
-       req.onreadystatechange = function () {
-         if (this.readyState === 4) {
-           if (this.status >= 200 && this.status < 400) {
-              var response = JSON.parse(this.response);
-              console.log("Response: " + JSON.stringify(response, null, 2));
-              var playlist = response.hasOwnProperty('playlists') ? response.playlists : [];
-              var items = [];
-              var i, item, itemName, itemUrl, length = playlist.length;
-              var listing, internalPlayers, externalPlayer;
-              for (i = 0; i < length; i++) {
-                item = playlist[i];
-                itemName = item.name.substring(0, item.name.lastIndexOf('.'));
-                itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
-                items.push({
-                  name: itemName,
-                  url: itemUrl
-                });
-                listing = $('li[data-stream=' + itemName + ']');
-                if (listing && listing.length > 0) {
-                  internalPlayers = $('p.internal-players', listing);
-                  externalPlayers = $('div.external-players', listing);
-                  if (internalPlayers && internalPlayers.length > 0) {
-                    internalPlayers.append("<span class=\"black-text\">&nbsp;&nbsp;or&nbsp;&nbsp;" +
-                                    "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + itemUrl + "'); return false;\">HLS</a>" +
-                                    "</span>");
-                  }
-                  if (externalPlayers && externalPlayers.length > 0) {
-                    externalPlayers.append("<p>" +
-                                    "<span class=\"black-text\">Open HLS in another window:&nbsp;" +
-                                    "<a class=\"subscriber-link link red-text\" href=\"<%=baseUrl%>/live/hls-vod.jsp?url=" + encodeURIComponent(itemUrl) + "&streamName=" + itemName + "\">" + itemUrl + "</a>" +
-                                    "</span>" +
-                    "</p>");
-                  }
-                }
-              }
-           }
-         }
+       var store = {flv: [], hls: []};
+
+       var parseItem = function(item) {
+          var itemName = item.name.substring(0, item.name.lastIndexOf('.'));
+          var itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
+          return {
+            name: itemName,
+            url: itemUrl
+          };
        }
-       req.timeout = 15000;
-       req.open('GET', playlistServletURL, true);
-       req.send();
+
+       var getItemList = function(data, url, listProperty, targetProperty, cb) {
+         var req = new XMLHttpRequest();
+         req.onreadystatechange = function () {
+           if (this.readyState === 4) {
+             if (this.status >= 200 && this.status < 400) {
+                var response = JSON.parse(this.response);
+                console.log("Response: " + JSON.stringify(response, null, 2));
+                var list = response.hasOwnProperty(listProperty) ? response[listProperty] : [];
+                var items = [];
+                var i, length = list.length;
+                for (i = 0; i < length; i++) {
+                  items.push(parseItem(list[i]));
+                }
+                data[targetProperty].push(items);
+                cb(data);
+            }
+            else if (this.status === 0) {
+              cb(data);
+            }
+          }
+        }
+        req.onerror = function () {
+          cb(data);
+        }
+        req.timeout = 15000;
+        req.open('GET', url, true);
+        req.send();
+      };
+
+      var getMediafiles = function(data, cb) {
+        getItemList(data, mediafilesServletURL, 'mediafiles', 'flv', cb);
+      }
+
+      var getPlaylists = function(data, cb) {
+        getItemList(data, playlistServletURL, 'playlists', 'hls', cb);
+      };
+
+      var populateListing = function(data) {
+        console.log("Store:\r\n" + JSON.stringify(data, null, 2));
+      };
+
+      getMediafiles(store, function(data) {
+        getPlaylists(data, function(data) {
+          populateListing(data);
+        });
+       });
 
       })();
     </script>
