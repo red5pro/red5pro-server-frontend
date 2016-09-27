@@ -12,49 +12,7 @@
   String protocol = request.getScheme();
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
-//  LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
-//  Map<String, Map<String, Object>> filesMap = service.getListOfAvailableFLVs();
-//  StringBuffer ret = new StringBuffer();
   String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-/*
-  Iterator<Entry<String, Map<String, Object>>> iter = filesMap.entrySet().iterator();
-  Boolean hasRecordings = iter.hasNext();
-  if (hasRecordings) {
-    ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
-    ret.append("<ul class=\"stream-menu-listing\">\r\n");
-    while (iter.hasNext()){
-      Entry<String, Map<String, Object>> entry = iter.next();
-      String streamName = entry.getKey();
-      String hlsLocation = protocol + "://" + ip + ":5080" + "/live/" + streamName.substring(0, streamName.lastIndexOf('.')) + ".m3u8";
-      String listEntry = "<li data-stream=\"" + streamName.substring(0, streamName.lastIndexOf('.')) + "\" class=\"stream-listing\">\r\n" +
-        "<h2 class=\"red-text stream-header\">" + streamName + "</h2>\r\n" +
-          "<p class=\"internal-players\" class=\"medium-font-size\">\r\n" +
-            "<span class=\"black-text\">View <strong>" + streamName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"rtsp://" + ip + ":8554/live/" + streamName + "\">RTSP</a>" +
-            "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>\r\n" +
-          "</p>\r\n" + "<hr>\r\n" +
-          "<div class=\"external-players\">\r\n" +
-            "<p>\r\n" +
-              "<span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
-            "</p>\r\n" +
-          "</div>\r\n" +
-       "</li>\r\n";
-      ret.append(listEntry);
-    }
-    ret.append("</ul>\r\n");
-    ret.append("</div>\r\n");
-    ret.append("<p>To begin your own Recorded Broadcast session, visit the <a class=\"broadcast-link link\" href=\"recorder.jsp?host=" + ip + "\">Recorder page</a>!</p>\r\n");
-
-  }
-  else {
-    ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
-    ret.append("<h3 class=\"no-streams-entry\">No recordings found</h3>\r\n");
-    ret.append("</div>\r\n");
-    ret.append("<p>You can begin a Broadcast session to Record by visiting the <a class=\"broadcast-link link\" href=\"recorder.jsp?host=" + ip + "\" target=\"_blank\">Recorder page</a>.</p>\r\n");
-    ret.append("<p><em>Once a Broadcast session is started and stopped, the Video On Demand</em> (VOD) <em>Recording will be available. Return to this page to see the stream name listed.</em></p>");
-  }
-*/
 %>
 <!doctype html>
 <html lang="eng">
@@ -213,7 +171,7 @@
         <div class="content-section-story">
           <div>
             <p>Below you will find the list of recorded video to stream.</p>
-            <p>If a stream is available to playback, you can select to view over <span class="red-text">RTSP</span> or within a <span class="red-text">Flash Player</span> on this page.</p>
+            <p>If a stream is available to playback, you can select to view over <span class="red-text">RTSP</span>, within a <span class="red-text">Flash Player</span> or in an <span class="red-text">HLS Player</span> (where supported) on this page.</p>
             <div id="available-streams-listing" class="menu-content streaming-menu-content">
               <h3 class="no-streams-entry">No recordings found</h3>
             </div>
@@ -510,10 +468,20 @@
                        "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
                        "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>\r\n"
                      : "") +
+                    (urls.hasOwnProperty('hls')
+                     ? "<span class=\"black-text\">&nbsp;&nbsp;or&nbsp;&nbsp;" +
+                       "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + item.urls['hls'] + "'); return false;\">HLS</a>" +
+                       "</span>"
+                     : "") +
                   "</p>\r\n" + "<hr>\r\n" +
                   "<div class=\"external-players\">\r\n" +
                     "<p>\r\n" +
-                    "<span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "\">" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "</a></span>\r\n" +
+                    (urls.hasOwnProperty('flv')
+                      ? "<p><span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "\">" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "</a></span></p>\r\n"
+                      : "") +
+                    (urls.hasOwnProperty('hls')
+                      ? "<p><span class=\"black-text\">Open HLS in another window:&nbsp;i <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/hls-vod.jsp?url=" + encodeURIComponent(item.urls['hls']) + "&streamName=" + streamName + "\">" + item.urls['hls'] + "</a></span></p>\r\n"
+                      : "") +
                     "</p>\r\n" +
                   "</div>\r\n" +
                 "</li>";
