@@ -173,7 +173,7 @@
             <p>Below you will find the list of recorded video to stream.</p>
             <p>If a stream is available to playback, you can select to view over <span class="red-text">RTSP</span>, within a <span class="red-text">Flash Player</span> or in an <span class="red-text">HLS Player</span> (where supported) on this page.</p>
             <div id="available-streams-listing" class="menu-content streaming-menu-content">
-              <h3 class="no-streams-entry">No recordings found</h3>
+              <h3 class="no-streams-entry">Requesting files...</h3>
             </div>
             <p>You can begin a Broadcast session to Record by visiting the <a class="broadcast-link link" href="recorder.jsp?host=<%=ip%>" target="_blank">Recorder page</a>.</p>
             <p><em>Once a Broadcast session is started and stopped, the Video On Demand</em> (VOD) <em>Recording will be available. Return to this page to see the stream name listed.</em></p>
@@ -467,20 +467,20 @@
                      ? "<a class=\"medium-font-size link red-text\" href=\"rtsp://<%=ip%>:8554/live/" + streamName + "\">RTSP</a>" +
                        "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
                        "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>\r\n"
-                     : "") +
-                    (urls.hasOwnProperty('hls')
-                     ? "<span class=\"black-text\">&nbsp;&nbsp;or&nbsp;&nbsp;" +
+                     : "");
+          html += (urls.hasOwnProperty('hls')
+                     ? (urls.hasOwnProperty('flv') ? "<span class=\"black-text\">&nbsp;&nbsp;or&nbsp;&nbsp;" : "") +
                        "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + item.urls['hls'] + "'); return false;\">HLS</a>" +
                        "</span>"
-                     : "") +
-                  "</p>\r\n" + "<hr>\r\n" +
+                     : "");
+          html += "</p>\r\n" + "<hr>\r\n" +
                   "<div class=\"external-players\">\r\n" +
                     "<p>\r\n" +
                     (urls.hasOwnProperty('flv')
                       ? "<p><span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "\">" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "</a></span></p>\r\n"
                       : "") +
                     (urls.hasOwnProperty('hls')
-                      ? "<p><span class=\"black-text\">Open HLS in another window:&nbsp;i <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/hls-vod.jsp?url=" + encodeURIComponent(item.urls['hls']) + "&streamName=" + streamName + "\">" + item.urls['hls'] + "</a></span></p>\r\n"
+                      ? "<p><span class=\"black-text\">Open HLS in another window:&nbsp;<a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/hls-vod.jsp?url=" + encodeURIComponent(item.urls['hls']) + "&streamName=" + streamName + "\">" + item.urls['hls'] + "</a></span></p>\r\n"
                       : "") +
                     "</p>\r\n" +
                   "</div>\r\n" +
@@ -495,6 +495,9 @@
         if (innerContent.length > 0) {
           innerContent = '<ul class="stream-menu-listing">' + innerContent + '</ul>';
           $container.html(innerContent);
+        }
+        else {
+          $container.html('<h3 class="no-streams-entry">No recordings found</h3>');
         }
       };
 
