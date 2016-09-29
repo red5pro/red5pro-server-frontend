@@ -480,7 +480,7 @@
                       ? "<p><span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "\">" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "</a></span></p>\r\n"
                       : "") +
                     (urls.hasOwnProperty('hls')
-                      ? "<p><span class=\"black-text\">Open HLS in another window:&nbsp;i <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/hls-vod.jsp?url=" + encodeURIComponent(item.urls['hls']) + "&streamName=" + streamName + "\">" + item.urls['hls'] + "</a></span></p>\r\n"
+                      ? "<p><span class=\"black-text\">Open HLS in another window:&nbsp;<a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/hls-vod.jsp?url=" + encodeURIComponent(item.urls['hls']) + "&streamName=" + streamName + "\">" + item.urls['hls'] + "</a></span></p>\r\n"
                       : "") +
                     "</p>\r\n" +
                   "</div>\r\n" +
