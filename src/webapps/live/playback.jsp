@@ -241,6 +241,7 @@
     </div>
     {{> footer }}
     <script src="lib/jquery-1.12.4.min.js"></script>
+    <script src="http://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="videojs/video.min.js"></script>
     <script src="videojs/videojs-media-sources.min.js"></script>
     <script src="videojs/videojs.hls.min.js"></script>
@@ -324,7 +325,7 @@
         }
 
         function createSource (src, type) {
-          let sourceEl = document.createElement('source');
+          var sourceEl = document.createElement('source');
           sourceEl.src = src;
           sourceEl.type = type;
           return sourceEl;
@@ -438,7 +439,7 @@
         req.onerror = function () {
           cb(data);
         }
-        req.timeout = 15000;
+        req.timeout = 60000;
         req.open('GET', url, true);
         req.send();
       };
