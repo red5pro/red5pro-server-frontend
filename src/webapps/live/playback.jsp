@@ -325,7 +325,7 @@
         }
 
         function createSource (src, type) {
-          let sourceEl = document.createElement('source');
+          var sourceEl = document.createElement('source');
           sourceEl.src = src;
           sourceEl.type = type;
           return sourceEl;
