@@ -45,6 +45,7 @@
       textTracks.addEventListener('addtrack', function (addTrackEvent) {
 
         var track = addTrackEvent.track;
+        track.mode = 'hidden';
         /**
         var cue = new VTTCue(1.0, 0, 'Testing');
         cue.id = 1;
@@ -56,7 +57,7 @@
           for(var i = 0; i < cueChangeEvent.currentTarget.cues.length; i++) {
             var data = cueChangeEvent.currentTarget.cues[i];
             if (data.value) {
-              var text = readUTF( data.value.data , 0 , data.size);
+              var text = typeof data.value.data === 'string' ? data.value.data : readUTF( data.value.data , 0 , data.size);
               var orientation = parseJSONForOrientation(text);
               if (orientation !== undefined) {
                 cb(orientation);
