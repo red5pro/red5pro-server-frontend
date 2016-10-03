@@ -1,4 +1,4 @@
-/*global window, VTTCue */
+/*global window*/
 (function () {
   'use strict';
 
@@ -37,7 +37,7 @@
   }
 
   window.onOrientation = function(player, cb) {
-    var textTracks = player.textTracks();
+    var textTracks = typeof player.textTracks === 'function' ? player.textTracks() : player.textTracks;
     if (textTracks) {
 
       player.addTextTrack('metadata');
@@ -45,10 +45,12 @@
       textTracks.addEventListener('addtrack', function (addTrackEvent) {
 
         var track = addTrackEvent.track;
+        /**
         var cue = new VTTCue(1.0, 0, 'Testing');
         cue.id = 1;
         cue.pauseOnExit = false;
         track.addCue(cue);
+        */
 
         track.addEventListener('cuechange', function (cueChangeEvent) {
           for(var i = 0; i < cueChangeEvent.currentTarget.cues.length; i++) {
