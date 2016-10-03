@@ -43,6 +43,7 @@
            src="<%=protocol%>://<%=host%>:5080/<%=app%>/<%=stream%>.m3u8"
            type="application/x-mpegURL">
       </video>
+      <script src="http://webrtc.github.io/adapter/adapter-latest.js"></script>
       <script src="videojs/video.min.js"></script>
       <script src="videojs/videojs-media-sources.min.js"></script>
       <script src="videojs/videojs.hls.min.js"></script>

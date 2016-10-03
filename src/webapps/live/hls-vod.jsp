@@ -25,6 +25,7 @@
     </head>
     <body>
       <video id=red5pro-video width=600 height=300 class="video-js vjs-default-skin" controls></video>
+      <script src="http://webrtc.github.io/adapter/adapter-latest.js"></script>
       <script src="videojs/video.min.js"></script>
       <script src="videojs/videojs-media-sources.min.js"></script>
       <script src="videojs/videojs.hls.min.js"></script>
