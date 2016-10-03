@@ -439,7 +439,7 @@
         req.onerror = function () {
           cb(data);
         }
-        req.timeout = 15000;
+        req.timeout = 60000;
         req.open('GET', url, true);
         req.send();
       };
