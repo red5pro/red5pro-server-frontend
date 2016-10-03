@@ -54,8 +54,17 @@
         */
 
         track.addEventListener('cuechange', function (cueChangeEvent) {
-          for(var i = 0; i < cueChangeEvent.currentTarget.cues.length; i++) {
-            var data = cueChangeEvent.currentTarget.cues[i];
+          var cues;
+          // Mostly Chrome.
+          if (cueChangeEvent && cueChangeEvent.currentTarget) {
+            cues = cueChangeEvent.currentTarget.cues;
+          }
+          // Mostly Firefox & Safari.
+          cues = cues && cues.length > 0 ? cues : this.activeCues;
+          // Mostly failure.
+          cues = cues || [];
+          for(var i = 0; i < cues.length; i++) {
+            var data = cues[i];
             if (data.value) {
               var text = typeof data.value.data === 'string' ? data.value.data : readUTF( data.value.data , 0 , data.size);
               var orientation = parseJSONForOrientation(text);
