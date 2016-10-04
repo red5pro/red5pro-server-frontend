@@ -38,6 +38,12 @@
       #live-page-img {
         width: 100%;
       }
+
+      .notify-callout {
+        margin: 0px;
+        padding: 26px 26px;
+        background-color: #eeeeee
+      }
     </style>
     <script type="text/javascript" src="swf/swfobject.js"></script>
     <script type="text/javascript">
@@ -60,7 +66,7 @@
       if(swfobject.hasFlashPlayerVersion("11.1.0")) {
         swfobject.embedSWF(
             "Broadcaster.swf", "flashContent",
-            "100%", "716",
+            "100%", "786",
             swfVersionStr, xiSwfUrlStr,
             flashvars, params, attributes);
         // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
@@ -100,6 +106,9 @@
              JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
              when JavaScript is disabled.
         -->
+          <hr />
+          <p class="notify-callout">You can also select to <strong>Enable Recording</strong> the live stream for Video On Demand playback after the Broadcast session! To view the current Video On Demand (VOD) files on your server, visit the <a class="link" href="playback.jsp" target="_blank">Playback</a> page.</p>
+          <hr />
         <div id="flashContent">
             <p>
                 To view this page ensure that Adobe Flash Player version 11.1.0 or greater is installed.
@@ -139,7 +148,7 @@
             </object>
           </noscript>
           <br><br>
-          <p class="medium-font-size"><a class="red-text link" href="https://github.com/red5pro/red5pro-server-examples/releases/download/0.1.1/Red5Pro-Broadcaster-Client.zip">Download</a> the source for this example.</p>
+          <p class="medium-font-size"><a class="red-text link" href="https://github.com/red5pro/red5pro-server-examples/releases/download/0.1.2/Red5Pro-Broadcaster-Client.zip">Download</a> the source for this example.</p>
           <hr class="top-padded-rule" />
           <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>
           <p>You can download the Streaming SDKs from your <a class="link" href="http://account.red5pro.com/download" target="_blank">Red5 Pro Accounts</a> page.</p>

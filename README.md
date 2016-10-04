@@ -181,7 +181,7 @@ Deploying to Red5 Pro Server
 To deploy a build of the pages to the local Red5 Pro Server:
 
 ```
-$ npm run deploy
+$ npm run deploy:local
 ```
 
 This command will run a new build and place the generated files in __webapps__.
@@ -232,7 +232,7 @@ _You will need to restart the target Red5 Pro Server in order to see your webapp
 Do as you normally would when starting development:
 ```
 $ npm run build
-$ npm run deploy
+$ npm run deploy:local
 $ npm run watch
 ```
 
