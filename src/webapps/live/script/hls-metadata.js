@@ -1,9 +1,86 @@
-/*global window*/
+/*global window, document*/
 (function () {
   'use strict';
 
   var jsonAttr = /['"](.*?)['"]:/gi;
   var jsonVal = /:['"](.*?)['"]/gi;
+
+  var handleOrientation = function (elementId, cb) {
+    var currentRotation = 0;
+    var origin = [
+      'webkitTransformOrigin',
+      'mozTransformOrigin',
+      'msTransformOrigin',
+      'oTransformOrigin',
+      'transformOrigin'
+    ];
+    var styles = [
+      'webkitTransform',
+      'mozTransform',
+      'msTransform',
+      'oTransform',
+      'transform'
+    ];
+    var transition = [
+      'webkitTransition',
+      'mozTransition',
+      'msTransition',
+      'oTransition',
+      'transition'
+    ];
+    var rotationTranslations = {
+      '0': {
+        origin: 'center center',
+        transform: 'rotate(0deg)'
+      },
+      '90': {
+        origin: 'left top',
+        transform: 'rotate(90deg) translateY(-100%)'
+      },
+      '180': {
+        origin: 'center center',
+        transform: 'rotate(180deg)'
+      },
+      '270': {
+        origin: 'bottom left',
+        transform: 'rotate(270deg) translateX(-50%) translateY(100%)'
+      },
+      '-90': {
+        origin: 'left top',
+        transform: 'rotate(-90deg) translateX(-100%)'
+      },
+      '-180': {
+        origin: 'center center',
+        transform: 'rotate(-180deg)'
+      },
+      '-270': {
+        origin: 'top left',
+        transform: 'rotate(-270deg) translateY(-100%)'
+      }
+    };
+
+    function applyOrientation (value) {
+      if (currentRotation === value) {
+        return;
+      }
+      var vid = document.getElementById(elementId);
+      if (vid) {
+        var i, length = styles.length;
+        var translations = rotationTranslations[value.toString()];
+        for(i = 0; i < length; i++) {
+          vid.style[origin[i]] = translations.origin;
+          vid.style[styles[i]] = translations.transform;
+          vid.style[transition[i]] = 'transform 0.3s linear';
+        }
+      }
+
+      if (cb) {
+        cb();
+      }
+    }
+
+    return applyOrientation;
+  };
 
   function readUTF (data,start,len) {
     var result = '',offset = start, end = start + len;
@@ -36,7 +113,8 @@
     return undefined;
   }
 
-  window.onOrientation = function(player, cb) {
+  window.onOrientation = function(player, elementId, callback) {
+    var cb = handleOrientation(elementId, callback);
     var textTracks = typeof player.textTracks === 'function' ? player.textTracks() : player.textTracks;
     if (textTracks) {
 

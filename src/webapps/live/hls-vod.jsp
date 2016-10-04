@@ -33,36 +33,6 @@
       <script>
         (function () {
 
-          var currentRotation = 0;
-          var origin = [
-            'webkitTransformOrigin',
-            'mozTransformOrigin',
-            'msTransformOrigin',
-            'oTransformOrigin',
-            'transformOrigin'
-          ];
-          var styles = [
-            'webkitTransform',
-            'mozTransform',
-            'msTransform',
-            'oTransform',
-            'transform'
-          ];
-
-          function applyOrientation (value) {
-            if (currentRotation === value) {
-              return;
-            }
-            var vid = document.getElementById('red5pro-video');
-            if (vid) {
-              var i, length = styles.length;
-              for(i = 0; i < length; i++) {
-                vid.style[origin[i]] = value < 0 ? 'right top' : 'left bottom';
-                vid.style[styles[i]] = 'translateY(-100%) rotate(' + value + 'deg)';
-              }
-            }
-          }
-
           var player = videojs('red5pro-video');
           player.src({
                   src: "<%=url%>",
@@ -70,7 +40,7 @@
                   useCueTags: true
               });
 
-          window.onOrientation(player, applyOrientation);
+          window.onOrientation(player, 'red5pro-video');
 
           player.play();
 
