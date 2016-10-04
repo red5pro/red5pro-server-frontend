@@ -332,8 +332,9 @@
           player.play();
           window.onOrientation(player, 'red5pro-hls-player', function (value) {
             var container = document.getElementById('hls-video-container');
+            var element = document.getElementById('red5pro-hls-player');
             if (container) {
-              container.style.height = value % 180 != 0 ? '550px' : '300px';
+              container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
             }
           });
           window.hlsplayer = player;

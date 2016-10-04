@@ -21,34 +21,41 @@
       'oTransform',
       'transform'
     ];
+    var transition = [
+      'webkitTransition',
+      'mozTransition',
+      'msTransition',
+      'oTransition',
+      'transition'
+    ];
     var rotationTranslations = {
       '0': {
         origin: 'center center',
-        transform: 'rotate(270deg)'
+        transform: 'rotate(0deg)'
       },
       '90': {
-        origin: 'left bottom',
-        transform: 'translateY(-100%) rotate(90deg)'
+        origin: 'left top',
+        transform: 'rotate(90deg) translateY(-100%)'
       },
       '180': {
         origin: 'center center',
         transform: 'rotate(180deg)'
       },
       '270': {
-        origin: 'right bottom',
-        transform: 'translateY(-100%) translateX(-50%) rotate(270deg)'
+        origin: 'bottom left',
+        transform: 'rotate(270deg) translateX(-50%) translateY(100%)'
       },
       '-90': {
-        origin: 'right top',
-        transform: 'translateY(100%) rotate(-90deg)'
+        origin: 'left top',
+        transform: 'rotate(-90deg) translateX(-100%)'
       },
       '-180': {
         origin: 'center center',
         transform: 'rotate(-180deg)'
       },
       '-270': {
-        origin: 'left top',
-        transform: 'translateY(100%) translateX(50%) rotate(-270deg)'
+        origin: 'top left',
+        transform: 'rotate(-270deg) translateY(-100%)'
       }
     };
 
@@ -63,11 +70,12 @@
         for(i = 0; i < length; i++) {
           vid.style[origin[i]] = translations.origin;
           vid.style[styles[i]] = translations.transform;
+          vid.style[transition[i]] = 'transform 0.3s linear';
         }
       }
 
       if (cb) {
-        cb(value);
+        cb();
       }
     }
 
