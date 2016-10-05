@@ -346,25 +346,6 @@
     </script>
     <script>
       // Filtering HLS playback using servlet.
-      /*
-                  listing = $('li[data-stream=' + itemName + ']');
-                  if (listing && listing.length > 0) {
-                    internalPlayers = $('p.internal-players', listing);
-                    externalPlayers = $('div.external-players', listing);
-                    if (internalPlayers && internalPlayers.length > 0) {
-                      internalPlayers.append("<span class=\"black-text\">&nbsp;&nbsp;or&nbsp;&nbsp;" +
-                                      "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + itemUrl + "'); return false;\">HLS</a>" +
-                                      "</span>");
-                    }
-                    if (externalPlayers && externalPlayers.length > 0) {
-                      externalPlayers.append("<p>" +
-                                      "<span class=\"black-text\">Open HLS in another window:&nbsp;" +
-                                      "<a class=\"subscriber-link link red-text\" href=\"<%=baseUrl%>/live/hls-vod.jsp?url=" + encodeURIComponent(itemUrl) + "&streamName=" + itemName + "\">" + itemUrl + "</a>" +
-                                      "</span>" +
-                      "</p>");
-                    }
-                  }
-      */
       (function () {
 
        var httpRegex = /^http/i;
@@ -422,7 +403,10 @@
       }
 
       var getPlaylists = function (data, cb) {
-        getItemList(data, playlistServletURL, 'playlists', 'hls', cb);
+        // Note: Just return without playlist request.
+        // :: Will need to update with HLS playback feature in future.
+        cb(data)
+//        getItemList(data, playlistServletURL, 'playlists', 'hls', cb);
       };
 
       var populateListing = function (data) {
