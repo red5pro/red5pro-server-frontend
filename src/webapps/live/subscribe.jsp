@@ -32,15 +32,15 @@
             "<a class=\"medium-font-size link red-text\" href=\"rtsp://" + ip + ":8554/live/" + streamName + "\">RTSP</a>" +
             "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
             "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>" +
-            "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + hlsLocation + "'); return false;\">HLS</a>\r\n" +
+//            "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
+//            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + hlsLocation + "'); return false;\">HLS</a>\r\n" +
           "</p>\r\n" + "<hr>\r\n" +
           "<p>\r\n" +
             "<span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
           "</p>\r\n" +
-           "<p>\r\n" +
-            "<span class=\"black-text\">Open HLS in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/hls.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/hls.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
-          "</p>\r\n" +
+//           "<p>\r\n" +
+//            "<span class=\"black-text\">Open HLS in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/hls.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/hls.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
+//          "</p>\r\n" +
        "</li>\r\n";
       ret.append(listEntry);
     }
