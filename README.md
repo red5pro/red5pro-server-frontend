@@ -14,7 +14,6 @@ Table of Contents
     * [root](#root)
     * [live](#live)
     * [secondscreen](#secondscreen)
-    * [dashboard](#dashboard)
     * [Creating A New WebApp?](#creating-a-new-webapp)
 * [Developer Documentation](#developer-documentation)
   * [Quickstart](#quickstart)
@@ -129,12 +128,6 @@ The SWF files for broadcaster and subscriber are generated from the __flash-clie
 The __src/webapps/secondscreen__ directory contains the webapp that demonstrates the Second Screen capabilities of the Red5 Pro Server.
 
 Additionally, there are subdirectories of different examples that show how to use the Second Screen HTML SDK and different control scheme flavors.
-
-### dashboard
-
-The __src/webapps/dashboard__ directory contains the webapp that utilizes the Red5 Pro Server API to display useful server information like connections, memory, active streams, VOD content and more to the user.
-
-If the dashboard application is not working make sure you have changed the security token constant in the CONSTANTS.js file located in the src/webapps/dashboard/src/components directory to reflect that of the token inputed in the red5pro-server/webapps/api/WEB-INF/red5-webproperties file.  Additionally, if you are exposing your server or websocket connections through non-standard ports (5080 and 8081 respectively), or believe the application is calling the incorrect hostname, you can change the appropriate constants in the same CONSTANTS.js file.
 
 ### Creating A New WebApp?
 If you would like to create a new webapp, please refer to the [How To Create a New WebApp](#how-to-create-a-new-webapp) documentation.

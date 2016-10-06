@@ -4,4 +4,3 @@ auto-deploy-config.custom.js
 dist/
 node_modules/
 red5pro-server/
-dist/webapps/api
