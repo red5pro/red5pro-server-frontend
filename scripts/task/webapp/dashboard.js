@@ -19,34 +19,13 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
   return function(initChain) {
     gulp.task(generateTaskLabel, [initChain], function(cb) {
       var curDir = exec('pwd', {cwd: __dirname}).toString('utf-8');
-      gutil.log('Current directory: ' + curDir);
-      
       var taskDir = curDir.substring(0, curDir.lastIndexOf('/'));
-      gutil.log('Task directory: ' + taskDir);
-      gutil.log( exec('cd ' + taskDir + '; pwd', {cwd: __dirname}).toString('utf-8') );
-
       var scriptsDir = taskDir.substring(0, taskDir.lastIndexOf('/'));
-      gutil.log('Scripts directory: ' + scriptsDir);
-      gutil.log( exec('cd ' + scriptsDir + '; pwd', {cwd: __dirname}).toString('utf-8') );
-
       var parentDir = scriptsDir.substring(0, scriptsDir.lastIndexOf('/'));
-      gutil.log('Parent directory: ' + parentDir);
-      gutil.log( exec('cd ' + parentDir + '; pwd', {cwd: __dirname}).toString('utf-8') );
-
-      var srcDir = parentDir + '/src';
-      gutil.log('Src directory: ' + srcDir);
-      gutil.log( exec('cd ' + srcDir + '; pwd', {cwd: __dirname}).toString('utf-8') );
-
-      var webAppsDir = srcDir + '/webapps';
-      gutil.log('WebApps directory: ' + webAppsDir);
-      gutil.log( exec('cd ' + webAppsDir + '; pwd', {cwd: __dirname}).toString('utf-8') );
-
-      var dashboardDir = webAppsDir + '/dashboard';
-      gutil.log('Dashboard directory: ' + dashboardDir);
-      gutil.log( exec('cd ' + dashboardDir + '; pwd', {cwd: __dirname}).toString('utf-8') );
+      var dashboardDir = parentDir + '/src/webapps/dashboard';
 
       gutil.log('bundling-es6-files. This could take a few minutes.');
-      gutil.log( exec('pwd; cd ' + dashboardDir + '; pwd; npm install; npm run build', {cwd: __dirname}).toString('utf-8') ); // Go to the dashboard and execute build commands
+      gutil.log( exec('cd ' + dashboardDir + ' && npm install && npm run build', {cwd: __dirname}).toString('utf-8') ); // Go to the dashboard and execute build commands
       gutil.log('Generating Webapps Page: ' + webappDirName);
       var buildPage = function(page, cb) {
         return function() {
