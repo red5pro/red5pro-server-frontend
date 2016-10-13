@@ -19,11 +19,11 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
   return function(initChain) {
     gulp.task(generateTaskLabel, [initChain], function(cb) {
       gutil.log('pwd');
-      gutil.log( exec('pwd', {cwd: __dirname}) );
+      gutil.log( exec('pwd', {cwd: __dirname}).toString('utf-8') );
       gutil.log('ls -lAh');
-      gutil.log( exec('ls -lAh', {cwd: __dirname}) );
+      gutil.log( exec('ls -lAh', {cwd: __dirname}).toString('utf-8') );
       gutil.log('bundling-es6-files. This could take a few minutes.');
-      gutil.log( exec('cd ./../../../src/webapps/dashboard && npm install && npm run build', {cwd: __dirname}) ); // Go to the dashboard and execute build commands
+      gutil.log( exec('cd ./../../../src/webapps/dashboard && npm install && npm run build', {cwd: __dirname}).toString('utf-8') ); // Go to the dashboard and execute build commands
       gutil.log('Generating Webapps Page: ' + webappDirName);
       var buildPage = function(page, cb) {
         return function() {
