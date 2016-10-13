@@ -23,7 +23,7 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
       gutil.log('ls -lAh');
       gutil.log( exec('ls -lAh', {cwd: __dirname}).toString('utf-8') );
       gutil.log('bundling-es6-files. This could take a few minutes.');
-      gutil.log( exec('cd ./../../../src/webapps/dashboard && npm install && npm run build', {cwd: __dirname}).toString('utf-8') ); // Go to the dashboard and execute build commands
+      gutil.log( exec('pwd && cd ' + path.resolve('./../../../src/webapps/dashboard') + ' && pwd && npm install && npm run build', {cwd: __dirname}).toString('utf-8') ); // Go to the dashboard and execute build commands
       gutil.log('Generating Webapps Page: ' + webappDirName);
       var buildPage = function(page, cb) {
         return function() {
