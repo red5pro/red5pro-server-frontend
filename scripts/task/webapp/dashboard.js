@@ -18,12 +18,23 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
 
   return function(initChain) {
     gulp.task(generateTaskLabel, [initChain], function(cb) {
-      gutil.log('pwd');
-      gutil.log( exec('pwd', {cwd: __dirname}).toString('utf-8') );
-      gutil.log('ls -lAh');
-      gutil.log( exec('ls -lAh', {cwd: __dirname}).toString('utf-8') );
+      var curDir = exec('pwd', {cwd: __dirname}).toString('utf-8');
+      gutil.log('Current directory: ' + curDir);
+      var taskDir = curDir.substring(0, curDir.lastIndexOf('/'));
+      gutil.log('Task directory: ' + taskDir);
+      var scriptsDir = taskDir.substring(0, taskDir.lastIndexOf('/'));
+      gutil.log('Scripts directory: ' + scriptsDir);
+      var parentDir = scriptsDir.substring(0, scriptsDir.lastIndexOf('/'));
+      gutil.log('Parent directory: ' + parentDir);
+      var srcDir = parentDir + '/src';
+      gutil.log('Src directory: ' + srcDir);
+      var webAppsDir = srcDir + '/webapps';
+      gutil.log('WebApps directory: ' + webAppsDir);
+      var dashboardDir = webAppsDir + '/dashboard';
+      gutil.log('Dashboard directory: ' + dashboardDir);
+      
       gutil.log('bundling-es6-files. This could take a few minutes.');
-      gutil.log( exec('pwd && cd ' + path.resolve('./../../../src/webapps/dashboard') + ' && pwd && npm install && npm run build', {cwd: __dirname}).toString('utf-8') ); // Go to the dashboard and execute build commands
+      gutil.log( exec('pwd; cd ' + dashboardDir + '; pwd; npm install; npm run build', {cwd: __dirname}).toString('utf-8') ); // Go to the dashboard and execute build commands
       gutil.log('Generating Webapps Page: ' + webappDirName);
       var buildPage = function(page, cb) {
         return function() {
