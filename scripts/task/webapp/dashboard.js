@@ -18,7 +18,7 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
   return function(initChain) {
     gulp.task(generateTaskLabel, [initChain], function(cb) {
       gutil.log('dir name: ' + __dirname);
-      var dashboardPath = path.resolve(__dirname + '../../../src/webapps/dashboard');
+      var dashboardPath = path.resolve(__dirname + '/../../../src/webapps/dashboard');
       gutil.log('dashboard path: ' + dashboardPath);
       gutil.log('bundling-es6-files. This could take a few minutes.');
       exec('cd ' + dashboardPath + ' && npm install && npm run build'); // Go to the dashboard and execute build commands
