@@ -45,12 +45,12 @@
         background-color: #eeeeee
       }
     </style>
-    <script type="text/javascript" src="swf/swfobject.js"></script>
+    <script type="text/javascript" src="lib/swfobject/swfobject.js"></script>
     <script type="text/javascript">
       // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.
       var swfVersionStr = "11.1.0";
       // To use express install, set to playerProductInstall.swf, otherwise the empty string.
-      var xiSwfUrlStr = "swf/playerProductInstall.swf";
+      var xiSwfUrlStr = "lib/swfobject/playerProductInstall.swf";
       var flashvars = {
         host: "<%= host %>"
       };

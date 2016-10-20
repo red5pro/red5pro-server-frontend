@@ -142,12 +142,12 @@
         height: 300px;
       }
     </style>
-    <script type="text/javascript" src="swf/swfobject.js"></script>
+    <script type="text/javascript" src="lib/swfobject/swfobject.js"></script>
     <script type="text/javascript">
       // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.
       var swfVersionStr = "11.1.0";
       // To use express install, set to playerProductInstall.swf, otherwise the empty string.
-      var xiSwfUrlStr = "swf/playerProductInstall.swf";
+      var xiSwfUrlStr = "lib/swfobject/playerProductInstall.swf";
       var flashvars = {
         streamName: "streamName",
         host: "<%= host %>"
@@ -174,7 +174,7 @@
         // nada
       }
   </script>
-  <link href="videojs/video-js.min.css" rel="stylesheet">
+  <link href="lib/videojs/video-js.min.css" rel="stylesheet">
   </head>
   <body>
     <template id="video-player">
@@ -272,10 +272,10 @@
     </div>
     {{> footer }}
     <script src="lib/jquery-1.12.4.min.js"></script>
-    <script src="http://webrtc.github.io/adapter/adapter-latest.js"></script>
-    <script src="videojs/video.min.js"></script>
-    <script src="videojs/videojs-media-sources.min.js"></script>
-    <script src="videojs/videojs.hls.min.js"></script>
+    <script src="lib/webrtc/adapter.js"></script>
+    <script src="lib/videojs/video.min.js"></script>
+    <script src="lib/videojs/videojs-media-sources.min.js"></script>
+    <script src="lib/videojs/videojs.hls.min.js"></script>
     <script src="script/hls-metadata.js"></script>    <script>
       (function(window, document) {
 
