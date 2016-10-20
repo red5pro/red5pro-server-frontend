@@ -18,10 +18,23 @@
         outline:none;
       }
 
-      #flashContent {
+      #video-container {
         border-radius: 5px;
         background-color: #e3e3e3;
         padding: 10px;
+      }
+
+      #video-form {
+        background-color: #eee;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      .video-form-item > label {
+        text-align: right;
+        margin-right: 10px;
+        min-width: 120px;
+        display: inline-block;
       }
 
       #live-page-subcontent {
@@ -83,7 +96,17 @@
           <hr />
           <p class="notify-callout">You can also select to <strong>Enable Recording</strong> the live stream for Video On Demand playback after the Broadcast session! To view the current Video On Demand (VOD) files on your server, visit the <a class="link" href="playback.jsp" target="_blank">Playback</a> page.</p>
           <hr />
-          <div id="flashContent">
+          <div id="video-container">
+            <div id="video-form">
+                    <p class="video-form-item">
+                      <label for="stream-name-field">Stream Name:</label>
+                      <input name="stream-name-field" id="stream-name-field"></input>
+                    </p>
+                    <p class="video-form-item">
+                      <label for="enable-record-field">Enable Recording:</label>
+                      <input type="checkbox" name="enable-record-field" id="enable-record-field"></input>
+                    </p>
+            </div>
             <video id="red5pro-publisher-video" controls class="video-element"></video>
           </div>
           <br><br>
