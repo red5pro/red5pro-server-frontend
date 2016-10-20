@@ -8,6 +8,11 @@
     {{> head_meta }}
     {{> resources }}
     <title>Stream Broadcasting with the Red5 Pro Server!</title>
+    <script src="lib/webrtc/adapter.js"></script>
+    <script src="lib/videojs/video.min.js"></script>
+    <script src="lib/videojs/videojs-media-sources.min.js"></script>
+    <script src="lib/videojs/videojs.hls.min.js"></script>
+    <link rel="stylesheet" href="lib/videojs/video-js.min.css">
     <style>
       object:focus {
         outline:none;
@@ -44,39 +49,11 @@
         padding: 26px 26px;
         background-color: #eeeeee
       }
-    </style>
-    <script type="text/javascript" src="lib/swfobject/swfobject.js"></script>
-    <script type="text/javascript">
-      // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.
-      var swfVersionStr = "11.1.0";
-      // To use express install, set to playerProductInstall.swf, otherwise the empty string.
-      var xiSwfUrlStr = "lib/swfobject/playerProductInstall.swf";
-      var flashvars = {
-        host: "<%= host %>"
-      };
-      var params = {};
-      params.quality = "high";
-      params.bgcolor = "#ffffff";
-      params.allowscriptaccess = "always";
-      params.allowfullscreen = "true";
-      var attributes = {};
-      attributes.id = "Broadcaster";
-      attributes.name = "Broadcaster";
-      attributes.align = "middle";
-      if(swfobject.hasFlashPlayerVersion("11.1.0")) {
-        swfobject.embedSWF(
-            "Broadcaster.swf", "flashContent",
-            "100%", "786",
-            swfVersionStr, xiSwfUrlStr,
-            flashvars, params, attributes);
-        // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
-        swfobject.createCSS("#flashContent", "display:block; text-align:left; padding: 0; background-color: #ffffff");
-      }
-      else {
-        // nada.
 
+      .video-element {
+        width: 100%;
       }
-  </script>
+    </style>
   </head>
   <body>
     {{> header }}
@@ -101,54 +78,15 @@
           </div>
         </div>
         <div class="content-section-story">
-          <p>To start a Broadcast session, allow device access, provide a <strong>stream name</strong>, select any additional broadcast options, then click <strong>Start Broadcast.</strong></p>
-        <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough
-             JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
-             when JavaScript is disabled.
-        -->
+          <p>To start a Broadcast session, allow device access, provide a <strong>stream name</strong>, select any additional broadcast options, then click <strong>Start Broadcast.</strong>
+          </p>
           <hr />
           <p class="notify-callout">You can also select to <strong>Enable Recording</strong> the live stream for Video On Demand playback after the Broadcast session! To view the current Video On Demand (VOD) files on your server, visit the <a class="link" href="playback.jsp" target="_blank">Playback</a> page.</p>
           <hr />
-        <div id="flashContent">
-            <p>
-                To view this page ensure that Adobe Flash Player version 11.1.0 or greater is installed.
-            </p>
-            <script type="text/javascript">
-                var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");
-                document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='"
-                                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" );
-            </script>
-        </div>
-        <noscript>
-            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="Broadcaster">
-                <param name="movie" value="Broadcaster.swf" />
-                <param name="quality" value="high" />
-                <param name="bgcolor" value="#ffffff" />
-                <param name="allowScriptAccess" value="sameDomain" />
-                <param name="allowFullScreen" value="true" />
-                <!--[if !IE]>-->
-                <object type="application/x-shockwave-flash" data="Broadcaster.swf" width="100%" height="100%">
-                    <param name="quality" value="high" />
-                    <param name="bgcolor" value="#ffffff" />
-                    <param name="allowScriptAccess" value="sameDomain" />
-                    <param name="allowFullScreen" value="true" />
-                <!--<![endif]-->
-                <!--[if gte IE 6]>-->
-                    <p>
-                        Either scripts and active content are not permitted to run or Adobe Flash Player version
-                        11.1.0 or greater is not installed.
-                    </p>
-                <!--<![endif]-->
-                    <a href="http://www.adobe.com/go/getflashplayer">
-                        <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash Player" />
-                    </a>
-                <!--[if !IE]>-->
-                </object>
-                <!--<![endif]-->
-            </object>
-          </noscript>
+          <div id="flashContent">
+            <video id="red5pro-publisher-video" controls class="video-element"></video>
+          </div>
           <br><br>
-          <p class="medium-font-size"><a class="red-text link" href="https://github.com/red5pro/red5pro-server-examples/releases/download/0.1.2/Red5Pro-Broadcaster-Client.zip">Download</a> the source for this example.</p>
           <hr class="top-padded-rule" />
           <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>
           <p>You can download the Streaming SDKs from your <a class="link" href="http://account.red5pro.com/download" target="_blank">Red5 Pro Accounts</a> page.</p>
@@ -160,20 +98,12 @@
         </div>
       </div>
     </div>
+    {{> es6-script-includes }}
     <script>
-      (function(window, document) {
-
-       function accessSWF() {
-          return document.getElementById("Broadcaster");
-        }
-
-        function handleBroadcastIpChange(value) {
-          accessSWF().resetHost(value);
-        }
-        window.r5pro_registerIpChangeListener(handleBroadcastIpChange);
-
-       }(this, document));
+      window.targetHost = '<%=ip%>';
     </script>
+    <script src="lib/red5pro/red5pro-sdk.js"></script>
+    <script src="script/r5pro-publisher-failover.js"></script>
     {{> footer }}
    </body>
 </html>
