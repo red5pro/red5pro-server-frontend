@@ -37,6 +37,38 @@
         display: inline-block;
       }
 
+      #status-field {
+        text-align: center;
+        padding: 10px;
+        color: #fff;
+        margin: 10px 0;
+      }
+
+      .status-alert {
+        background-color: rgb(227, 25, 0);
+      }
+
+      .status-message {
+        background-color: #aaa;
+      }
+
+      #start-stop-button {
+        font-size: 16px;
+        background-color: #efefef;
+        text-align: center;
+        border-radius: 5px;
+        padding: 10px;
+      }
+
+      .button-enabled {
+        cursor: pointer;
+      }
+
+      .button-disabled {
+        color: gray;
+        pointer-events: none;
+      }
+
       #live-page-subcontent {
         text-align: center;
         position: relative;
@@ -107,7 +139,9 @@
                       <input type="checkbox" name="enable-record-field" id="enable-record-field"></input>
                     </p>
             </div>
-            <video id="red5pro-publisher-video" controls class="video-element"></video>
+            <video id="red5pro-publisher-video" controls muted class="video-element"></video>
+            <div id="status-field" class="status-message"></div>
+            <div id="start-stop-button" class="button-disabled">Start Broadcast</div>
           </div>
           <br><br>
           <hr class="top-padded-rule" />
