@@ -139,7 +139,9 @@
                       <input type="checkbox" name="enable-record-field" id="enable-record-field"></input>
                     </p>
             </div>
-            <video id="red5pro-publisher-video" controls muted class="video-element"></video>
+            <div id="video-holder">
+              <video id="red5pro-publisher-video" controls muted class="video-element"></video>
+            </div>
             <div id="status-field" class="status-message"></div>
             <div id="start-stop-button" class="button-disabled">Start Broadcast</div>
           </div>

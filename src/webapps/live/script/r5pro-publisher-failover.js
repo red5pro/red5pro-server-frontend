@@ -279,5 +279,8 @@
   window.r5pro_registerIpChangeListener(handleBroadcastIpChange);
   window.addEventListener('beforeunload', tearDownPublisher);
 
+  window.publisherLog = function (message) {
+    console.log('[RTMP PUBLISHER]:: ' + message);
+  };
 
 })(this, document, window.red5prosdk);
