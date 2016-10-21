@@ -8,11 +8,43 @@
   var enableRecordField = document.getElementById('enable-record-field');
   var statusField = document.getElementById('status-field');
   var startStopButton = document.getElementById('start-stop-button');
-  var qualityGroup = document.getElementById('quality-radio-group');
+  var qualityHighSelect = document.getElementById('quality-high-select');
+  var qualityMidSelect = document.getElementById('quality-mid-select');
+  var qualityLowSelect = document.getElementById('quality-low-select');
+  var qualityGroup = [qualityHighSelect, qualityMidSelect, qualityLowSelect];
+  qualityGroup.forEach(function (el) {
+    if (el) {
+      el.addEventListener('change', onQualitySelectChange);
+    }
+  });
 
   var publisher;
   var view;
   var isPublishing = false;
+  var selectedQuality = 'mid';
+  var qualityUM = {
+    high: {
+      audio: true,
+      video: {
+        width: 1280,
+        height: 720
+      }
+    },
+    mid: {
+      audio: true,
+      video: {
+        width: 640,
+        height: 480
+      }
+    },
+    low: {
+      audio: true,
+      video: {
+        width: 320,
+        height: 240
+      }
+    }
+  };
 
   var baseConfiguration = {
     host: window.targetHost,
@@ -44,7 +76,7 @@
   }
 
   function getQuality () {
-    return qualityGroup.value;
+    return selectedQuality;
   }
 
   streamNameField.addEventListener('input', function () {
@@ -103,6 +135,15 @@
     }
   });
 
+  function onQualitySelectChange (event) {
+    selectedQuality = event.target.value;
+    console.log('[live]:: quality change to `' + selectedQuality + '`.');
+    if (hasEstablishedPublisher) {
+      view.view.src = '';
+      preview(publisher);
+    }
+  }
+
   function hasEstablishedPublisher () {
     return typeof publisher !== 'undefined'
   }
@@ -151,7 +192,7 @@
         rtc: Object.assign({}, baseConfiguration, rtcConfig),
         rtmp: Object.assign({}, baseConfiguration, rtmpConfig)
       };
-      console.log('Configuration:\r\n' + JSON.stringify(config, null, 2));
+      console.log('[live]:: Configuration:\r\n' + JSON.stringify(config, null, 2));
 
       publisher.setPublishOrder(['rtc', 'rtmp'])
         .init(config)
@@ -181,10 +222,7 @@
 
       if (requiresGUM) {
         var nav = navigator.mediaDevice || navigator;
-        nav.getUserMedia({
-            audio: true,
-            video: true
-        }, function (media) {
+        nav.getUserMedia(qualityUM[getQuality()], function (media) {
           publisher.attachStream(media);
           view.preview(media, true);
           resolve({
@@ -214,9 +252,10 @@
       publisher.overlayOptions({
         host: window.targetHost,
         streamMode: mode,
-        streamName: streamName
+        streamName: streamName,
+        userMedia: qualityUM[getQuality()]
       });
-      console.log('Publish options:\r\n' + JSON.stringify(publisher._options, null, 2))
+      console.log('[live]:: Publish options:\r\n' + JSON.stringify(publisher._options, null, 2))
 
       publisher.publish(streamName)
         .then(function () {
@@ -225,7 +264,7 @@
         })
         .catch(function (error) {
           isPublishing = false;
-          console.error('Error in publish request: ' + error);
+          console.error('[live]:: Error in publish request: ' + error);
           reject(error);
         });
 
@@ -245,7 +284,7 @@
           .catch(function (error) {
             isPublishing = false;
             // tearDownPublisher();
-            console.error('Error in unpublish request: ' + error);
+            console.error('[live]:: Error in unpublish request: ' + error);
             reject(error);
           });
       }
@@ -274,7 +313,7 @@
     .then(preview)
     .catch(function (error) {
       var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
-      console.error('Could not determine and preview publisher: ' + errorStr);
+      console.error('[live]:: Could not determine and preview publisher: ' + errorStr);
     });
 
   function handleBroadcastIpChange (value) {

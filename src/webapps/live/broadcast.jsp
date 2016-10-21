@@ -149,15 +149,15 @@
                       <label for="quality-radio-group">Quality:</label>
                       <p id="quality-radio-group">
                         <span>
-                          <input type="radio" name="quality-radio-group" id="quality-high-select"></input>
+                          <input type="radio" name="quality-radio-group" id="quality-high-select" value="high"></input>
                           <label for="quality-high-select">High</label>
                         </span>
                         <span>
-                           <input type="radio" name="quality-radio-group" id="quality-id-select" checked></input>
+                           <input type="radio" name="quality-radio-group" id="quality-mid-select" checked value="mid"></input>
                            <label for="quality-mid-select">Mid</label>
                        </span>
                         <span>
-                          <input type="radio" name="quality-radio-group" id="quality-low-select"></input>
+                          <input type="radio" name="quality-radio-group" id="quality-low-select" value="low"></input>
                           <label for="quality-low-select">Low</label>
                         </span>
                       </p>
