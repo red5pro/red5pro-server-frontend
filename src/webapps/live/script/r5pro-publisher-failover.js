@@ -8,6 +8,7 @@
   var enableRecordField = document.getElementById('enable-record-field');
   var statusField = document.getElementById('status-field');
   var startStopButton = document.getElementById('start-stop-button');
+  var qualityGroup = document.getElementById('quality-radio-group');
 
   var publisher;
   var view;
@@ -36,10 +37,14 @@
 
   function getPublishMode () {
     return enableRecordField.checked ? 'record' : 'live';
-  };
+  }
 
   function getStreamName () {
     return streamNameField.value;
+  }
+
+  function getQuality () {
+    return qualityGroup.value;
   }
 
   streamNameField.addEventListener('input', function () {

@@ -69,6 +69,13 @@
         pointer-events: none;
       }
 
+      #quality-radio-group {
+        display: inline-block;
+      }
+      #quality-radio-group > span {
+        margin-right: 10px;
+      }
+
       #live-page-subcontent {
         text-align: center;
         position: relative;
@@ -138,6 +145,23 @@
                       <label for="enable-record-field">Enable Recording:</label>
                       <input type="checkbox" name="enable-record-field" id="enable-record-field"></input>
                     </p>
+                    <div class="video-form-item">
+                      <label for="quality-radio-group">Quality:</label>
+                      <p id="quality-radio-group">
+                        <span>
+                          <input type="radio" name="quality-radio-group" id="quality-high-select"></input>
+                          <label for="quality-high-select">High</label>
+                        </span>
+                        <span>
+                           <input type="radio" name="quality-radio-group" id="quality-id-select" checked></input>
+                           <label for="quality-mid-select">Mid</label>
+                       </span>
+                        <span>
+                          <input type="radio" name="quality-radio-group" id="quality-low-select"></input>
+                          <label for="quality-low-select">Low</label>
+                        </span>
+                      </p>
+                    </div>
             </div>
             <div id="video-holder">
               <video id="red5pro-publisher-video" controls muted class="video-element"></video>
