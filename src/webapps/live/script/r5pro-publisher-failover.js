@@ -64,6 +64,8 @@
     port: 1935,
     width: 540,
     height: 405,
+    embedWidth: 540,
+    embedHeight: 405,
     swf: 'lib/red5pro/red5pro-publisher.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'

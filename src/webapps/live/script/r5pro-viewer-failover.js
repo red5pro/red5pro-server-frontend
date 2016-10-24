@@ -18,6 +18,8 @@
     buffer: window.r5proBuffer,
     width: window.r5proVideoWidth,
     height: window.r5proVideoHeight,
+    embedWidth: window.r5proVideoWidth,
+    embedHeight: window.r5proVideoHeight,
     iceServers: isMoz
       ? [{urls: 'stun:stun.services.mozilla.com:3478'}]
       : [{urls: 'stun:stun2.l.google.com:19302'}]

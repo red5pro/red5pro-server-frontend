@@ -13,8 +13,8 @@
     host: host,
     app: 'live',
     buffer: 2,
-    width: '100%',
-    height: '100%',
+    embedWidth: '100%',
+    embedHeight: '100%',
     iceServers: isMoz
       ? [{urls: 'stun:stun.services.mozilla.com:3478'}]
       : [{urls: 'stun:stun2.l.google.com:19302'}]
