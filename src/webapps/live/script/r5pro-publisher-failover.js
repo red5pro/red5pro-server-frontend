@@ -196,7 +196,7 @@
     statusField.innerText = message;
   }
 
-  function addEventLog(eventLog) {
+  function addEventLog (eventLog) {
     var p = document.createElement('p');
     var text = document.createTextNode(eventLog);
     p.appendChild(text);
@@ -210,7 +210,7 @@
         updateStatus('Using WebRTC-based Publisher!');
         break;
       case 'rtmp':
-        updateStatus('Failover to use Flash-based Publisher');
+        updateStatus('Failover to use Flash-based Publisher.');
         break;
       default:
         updateStatus('No suitable Publisher found. WebRTC & Flash not supported.');
@@ -321,13 +321,11 @@
           .then(function () {
             isPublishing = false;
             publisher.off('*', onPublisherEvent);
-            // tearDownPublisher();
             resolve();
           })
           .catch(function (error) {
             isPublishing = false;
             publisher.off('*', onPublisherEvent);
-            // tearDownPublisher();
             console.error('[live]:: Error in unpublish request: ' + error);
             reject(error);
           });
@@ -348,7 +346,6 @@
     }
     if (publisher) {
       publisher.setView(undefined);
-      publisher.off('*', onPublisherEvent);
       publisher = undefined;
     }
   }
@@ -365,7 +362,12 @@
     baseConfiguration.host = window.targetHost;
   }
   window.r5pro_registerIpChangeListener(handleBroadcastIpChange);
-  window.addEventListener('beforeunload', tearDownPublisher);
+  window.addEventListener('beforeunload', function () {
+    unpublish()
+      .then(function() {
+        tearDownPublisher();
+      });
+  });
 
   window.publisherLog = function (message) {
     console.log('[RTMP PUBLISHER]:: ' + message);

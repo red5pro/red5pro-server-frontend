@@ -385,7 +385,7 @@
                 }
                 cb(data);
             }
-            else if (this.status === 0) {
+            else if (this.status === 0 || this.status > 400) {
               cb(data);
             }
           }

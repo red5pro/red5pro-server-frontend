@@ -11,6 +11,7 @@
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
   LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
   List<String> names = service.getLiveStreams();
+
   StringBuffer ret = new StringBuffer();
   String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
   if(names.size() == 0) {
@@ -24,19 +25,22 @@
     ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
     ret.append("<ul class=\"stream-menu-listing\">\r\n");
     for(String streamName:names) {
+      String rtspLocation = "rtsp://" + ip + ":8554/live/" + streamName;
       String hlsLocation = protocol + "://" + ip + ":5080" + "/live/" + streamName + ".m3u8";
-      String listEntry = "<li class=\"stream-listing\">\r\n" +
-        "<h2 class=\"red-text stream-header\">" + streamName + "</h2>\r\n" +
-          "<p class=\"medium-font-size\">\r\n" +
-            "<span class=\"black-text\">View <strong>" + streamName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"rtsp://" + ip + ":8554/live/" + streamName + "\">RTSP</a>" +
-            "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
-            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>" +
-//            "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
-//            "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + hlsLocation + "'); return false;\">HLS</a>\r\n" +
-          "</p>\r\n" + "<hr>\r\n" +
+      String pageLocation = protocol + "://" + ip + ":5080" + "/live/viewer.jsp?host=" + ip + "&stream=" + streamName;
+      String listEntry = "<li data-stream=\"" + streamName + "\" class=\"stream-listing\">\r\n" +
+        "<h2 class=\"stream-header\">" + streamName + "</h2>\r\n" +
           "<p>\r\n" +
-            "<span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/flash.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
+            "<a class=\"medium-font-size subscriber-link link red-text\" style=\"cursor: pointer;\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">\r\n" +
+              "View <strong>" + streamName + "</strong>'s stream on this page." +
+            "</a>\r\n" +
+          "</p>\r\n" +
+          "<hr>\r\n" +
+          "<p>\r\n" +
+            "<span class=\"black-text\">Open in another window: <a class=\"subscriber-link link red-text\" href=\"" + pageLocation + "\">" + pageLocation + "</a></span>\r\n" +
+          "</p>\r\n" +
+          "<p>\r\n" +
+            "<span class=\"black-text\">Open RTSP link (<em>or right-click and Copy Address</em>): <a class=\"subscriber-link link red-text\" href=\"" + rtspLocation + "\">" + rtspLocation + "</a></span>\r\n" +
           "</p>\r\n" +
 //           "<p>\r\n" +
 //            "<span class=\"black-text\">Open HLS in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/live/hls.jsp?host=" + ip + "&stream=" + streamName + "\">" + baseUrl + "/live/hls.jsp?host=" + ip + "&stream=" + streamName + "</a></span>\r\n" +
@@ -58,12 +62,6 @@
     <style>
       object:focus {
         outline:none;
-      }
-
-      #flashContent {
-        border-radius: 5px;
-        background-color: #e3e3e3;
-        padding: 10px;
       }
 
       #live-page-subcontent {
@@ -102,7 +100,7 @@
       }
 
       .stream-listing {
-        padding-left: 20px;
+        padding: 0 20px 20px 20px;
         border-bottom: 1px solid #e3e3e3;
       }
 
@@ -141,45 +139,58 @@
         width: 100%;
         height: 300px;
       }
+
+      #video-container {
+        border-radius: 5px;
+        background-color: #e3e3e3;
+        padding: 10px;
+      }
+
+      #status-field {
+        text-align: center;
+        padding: 10px;
+        color: #fff;
+        margin: 10px 0;
+      }
+
+      .status-alert {
+        background-color: rgb(227, 25, 0);
+      }
+
+      .status-message {
+        background-color: #aaa;
+      }
+
+      #event-log-field {
+        background-color: #c0c0c0;
+        border-radius: 6px;
+        padding: 10px;
+        margin: 14px;
+      }
+
+      #video-holder, #red5pro-subscriber-video {
+        width: 100%;
+      }
     </style>
-    <script type="text/javascript" src="lib/swfobject/swfobject.js"></script>
-    <script type="text/javascript">
-      // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.
-      var swfVersionStr = "11.1.0";
-      // To use express install, set to playerProductInstall.swf, otherwise the empty string.
-      var xiSwfUrlStr = "lib/swfobject/playerProductInstall.swf";
-      var flashvars = {
-        streamName: "streamName",
-        host: "<%= host %>"
-      };
-      var params = {};
-      params.quality = "high";
-      params.bgcolor = "#000";
-      params.allowscriptaccess = "always";
-      params.allowfullscreen = "true";
-      var attributes = {};
-      attributes.id = "Subscriber";
-      attributes.name = "Subscriber";
-      attributes.align = "middle";
-      if(swfobject.hasFlashPlayerVersion("11.1.0")) {
-        swfobject.embedSWF(
-            "Subscriber.swf", "flashContent",
-            "340", "280",
-            swfVersionStr, xiSwfUrlStr,
-            flashvars, params, attributes);
-        // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
-        swfobject.createCSS("#flashContent", "display:block; text-align:left; padding-top: 10px;");
-      }
-      else {
-        // nada
-      }
-  </script>
-  <link href="lib/videojs/video-js.min.css" rel="stylesheet">
+    <link href="lib/videojs/video-js.min.css" rel="stylesheet">
+    <script src="lib/webrtc/adapter.js"></script>
+    <script src="lib/videojs/video.min.js"></script>
+    <script src="lib/videojs/videojs-media-sources.min.js"></script>
+    <script src="lib/videojs/videojs.hls.min.js"></script>
   </head>
   <body>
-    <template id="video-player">
-      <div id="hls-video-container">
-        <video id="red5pro-hls-player" height="300" class="video-js vjs-default-skin" controls autoplay data-setup="{}"></video>
+    <template id="video-playback">
+      <div id="video-container">
+            <div id="video-holder">
+              <video id="red5pro-subscriber-video" controls autoplay class="video-element"></video>
+            </div>
+            <div id="status-field" class="status-message"></div>
+            <div id="event-log-field" class="event-log-field">
+              <div style="padding: 10px 0">
+                <p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>
+                <div style="clear: both;"></div>
+              </div>
+            </div>
       </div>
     </template>
     {{> header }}
@@ -206,58 +217,8 @@
         <div class="content-section-story">
           <div>
             <p>Below you will find the list of current live streams to subscribe to.</p>
-            <p>If a stream is available to subscribe to, you can select to view over <span class="red-text">RTSP</span> or within a <span class="red-text">Flash Player</span> on this page.</p>
+            <p>If a stream is available to subscribe to, you can select to view in browser on this page or a seperate window using the <strong>Red5 Pro HTML SDK</strong> or you can view by opening the <strong>RTSP</strong> link.</p>
             <%=ret.toString()%>
-          </div>
-          <div id="swf-stream-container" class="stream-container container-hidden">
-                <h2 id="viewing-header" class="stream-header red-text">Viewing</h2>
-                <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough
-                     JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
-                     when JavaScript is disabled.
-                -->
-                <div id="flashContent">
-                    <hr>
-                    <p>
-                        To view this page ensure that Adobe Flash Player version 11.1.0 or greater is installed.
-                    </p>
-                    <script type="text/javascript">
-                        var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");
-                        document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='"
-                                        + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" );
-                    </script>
-                </div>
-                <noscript>
-                    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="Subscriber">
-                        <param name="movie" value="Subscriber.swf" />
-                        <param name="quality" value="high" />
-                        <param name="bgcolor" value="#000000" />
-                        <param name="allowScriptAccess" value="always" />
-                        <param name="allowFullScreen" value="true" />
-                        <!--[if !IE]>-->
-                        <object type="application/x-shockwave-flash" data="Subscriber.swf" width="100%" height="100%">
-                            <param name="quality" value="high" />
-                            <param name="bgcolor" value="#000000" />
-                            <param name="allowScriptAccess" value="always" />
-                            <param name="allowFullScreen" value="true" />
-                        <!--<![endif]-->
-                        <!--[if gte IE 6]>-->
-                            <p>
-                                Either scripts and active content are not permitted to run or Adobe Flash Player version
-                                11.1.0 or greater is not installed.
-                            </p>
-                        <!--<![endif]-->
-                            <a href="http://www.adobe.com/go/getflashplayer">
-                                <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash Player" />
-                            </a>
-                        <!--[if !IE]>-->
-                        </object>
-                        <!--<![endif]-->
-                    </object>
-                  </noscript>
-            <p class="medium-font-size download-link"><a class="red-text link" href="https://github.com/red5pro/red5pro-server-examples/releases/download/0.1.2/Red5Pro-Subscriber-Client.zip">Download</a> the source for this example.</p>
-          </div>
-          <div id="hls-stream-container" class="stream-container container-hidden">
-            <h2 id="hls-viewing-header" class="stream-header red-text">Viewing</h2>
           </div>
           <hr class="top-padded-rule" />
           <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>
@@ -271,44 +232,17 @@
       </div>
     </div>
     {{> footer }}
+    {{> es6-script-includes }}
     <script src="lib/jquery-1.12.4.min.js"></script>
-    <script src="lib/webrtc/adapter.js"></script>
-    <script src="lib/videojs/video.min.js"></script>
-    <script src="lib/videojs/videojs-media-sources.min.js"></script>
-    <script src="lib/videojs/videojs.hls.min.js"></script>
-    <script src="script/hls-metadata.js"></script>    <script>
-      (function(window, document) {
+    <script src="lib/red5pro/red5pro-sdk.js"></script>
+    <script src="script/hls-metadata.js"></script>
+    <script>
+      // Put server vars globally.
+      window.targetHost = "<%=ip%>";
+    </script>
+    <script src="script/r5pro-subscriber-failover.js"></script>
+    <script>
 
-        var viewHandler;
-        function accessSWF() {
-          return document.getElementById("Subscriber");
-        }
-
-        viewHandler = function viewStream(value) {
-          var swf = accessSWF();
-          var container = document.getElementById("swf-stream-container");
-          var header = document.getElementById("viewing-header");
-          header.innerText = 'Viewing ' + value + '\'s stream.';
-          container.classList.remove('container-hidden');
-          container.classList.add('container-padding');
-          swf.viewStream(value);
-          container.scrollIntoView({block: 'start', behavior: 'smooth'});
-        };
-
-        function handleHostIpChange(value) {
-          var className = 'broadcast-link';
-          var elements = document.getElementsByClassName(className);
-          var length = elements ? elements.length : 0;
-          var index = 0;
-          for(index = 0; index < length; index++) {
-            elements[index].href = ['broadcast.jsp?host', value].join('=');
-          }
-          accessSWF().resetHost(value);
-        }
-        window.r5pro_registerIpChangeListener(handleHostIpChange);
-        window.invokeViewStream = viewHandler;
-
-       }(this, document));
     </script>
     <script>
       (function () {
