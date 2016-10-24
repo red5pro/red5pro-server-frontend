@@ -96,6 +96,13 @@
         width: 100%;
       }
 
+      #event-log-field {
+        background-color: #c0c0c0;
+        border-radius: 6px;
+        padding: 10px;
+        margin: 14px;
+      }
+
       .notify-callout {
         margin: 0px;
         padding: 26px 26px;
@@ -168,8 +175,13 @@
             </div>
             <div id="status-field" class="status-message"></div>
             <div id="start-stop-button" class="button-disabled">Start Broadcast</div>
+            <div id="event-log-field" class="event-log-field">
+              <div style="padding: 10px 0">
+                <p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>
+                <div style="clear: both;"></div>
+              </div>
+            </div>
           </div>
-          <br><br>
           <hr class="top-padded-rule" />
           <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>
           <p>You can download the Streaming SDKs from your <a class="link" href="http://account.red5pro.com/download" target="_blank">Red5 Pro Accounts</a> page.</p>

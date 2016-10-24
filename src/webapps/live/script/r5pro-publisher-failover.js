@@ -7,6 +7,8 @@
   var streamNameField = document.getElementById('stream-name-field');
   var enableRecordField = document.getElementById('enable-record-field');
   var statusField = document.getElementById('status-field');
+  var eventLogField = document.getElementById('event-log-field');
+  var clearLogButton = document.getElementById('clear-log-button');
   var startStopButton = document.getElementById('start-stop-button');
   var qualityHighSelect = document.getElementById('quality-high-select');
   var qualityMidSelect = document.getElementById('quality-mid-select');
@@ -98,6 +100,9 @@
 
   startStopButton.addEventListener('click', function () {
     var isIdle = !isPublishing;
+    updateStreamFormState({
+      enabled: false
+    });
     updateStartStopButtonState({
       enabled: false,
       label: 'pending...'
@@ -116,6 +121,9 @@
             enabled: true,
             label: 'Start Broadcast'
           });
+          updateStreamFormState({
+            enabled: true
+          });
         });
     }
     else if (hasEstablishedPublisher()) {
@@ -125,13 +133,25 @@
             enabled: true,
             label: 'Start Broadcast'
           });
+          updateStreamFormState({
+            enabled: true
+          });
         })
         .catch(function () {
           updateStartStopButtonState({
             enabled: true,
             label: 'Start Broadcast'
           });
+          updateStreamFormState({
+            enabled: true
+          });
         });
+    }
+  });
+
+  clearLogButton.addEventListener('click', function () {
+    while (eventLogField.children.length > 1) {
+      eventLogField.removeChild(eventLogField.lastChild);
     }
   });
 
@@ -146,6 +166,18 @@
 
   function hasEstablishedPublisher () {
     return typeof publisher !== 'undefined'
+  }
+
+  function updateStreamFormState (state) {
+    var elements = qualityGroup.concat([streamNameField, enableRecordField]);
+    var element;
+    var add = state.enabled ? 'button-enabled' : 'button-disabled';
+    var remove = state.enabled ? 'button-disabled' : 'button.enabled';
+    while (elements.length > 0) {
+      element = elements.pop();
+      element.classList.remove(remove);
+      element.classList.add(add);
+    }
   }
 
   function updateStartStopButtonState (state) {
@@ -164,6 +196,13 @@
     statusField.innerText = message;
   }
 
+  function addEventLog(eventLog) {
+    var p = document.createElement('p');
+    var text = document.createTextNode(eventLog);
+    p.appendChild(text);
+    eventLogField.appendChild(p);
+  }
+
   function showPublisherImplStatus (publisher) {
     var type = publisher ? publisher.getType().toLowerCase() : undefined;
     switch (type) {
@@ -180,7 +219,9 @@
   }
 
   function onPublisherEvent (event) {
-    console.log('[Red5ProPublisher] ' + event.type + '.');
+    var eventLog = '[Red5ProPublisher] ' + event.type + '.';
+    console.log(eventLog);
+    addEventLog(eventLog);
   }
 
   function determinePublisher () {
@@ -257,6 +298,7 @@
       });
       console.log('[live]:: Publish options:\r\n' + JSON.stringify(publisher._options, null, 2))
 
+      publisher.on('*', onPublisherEvent);
       publisher.publish(streamName)
         .then(function () {
           isPublishing = true;
@@ -278,11 +320,13 @@
         publisher.unpublish()
           .then(function () {
             isPublishing = false;
+            publisher.off('*', onPublisherEvent);
             // tearDownPublisher();
             resolve();
           })
           .catch(function (error) {
             isPublishing = false;
+            publisher.off('*', onPublisherEvent);
             // tearDownPublisher();
             console.error('[live]:: Error in unpublish request: ' + error);
             reject(error);
