@@ -34,6 +34,8 @@
     port: 1935,
     mimeType: 'rtmp/flv',
     useVideoJS: false,
+    width: 540,
+    height: 405,
     swf: 'lib/red5pro/red5pro-subscriber.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
@@ -188,6 +190,8 @@
         case 'rtmp':
         case 'livertmp':
         case 'rtmp - videojs':
+          var holder = document.getElementById('video-holder');
+          holder.style.height = '405px';
           resolve({
             subscriber: subscriber,
             view: view

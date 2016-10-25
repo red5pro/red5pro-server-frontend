@@ -16,10 +16,6 @@
     app: window.r5proApp,
     streamName: window.r5proStreamName,
     buffer: window.r5proBuffer,
-    width: window.r5proVideoWidth,
-    height: window.r5proVideoHeight,
-    embedWidth: window.r5proVideoWidth,
-    embedHeight: window.r5proVideoHeight,
     iceServers: isMoz
       ? [{urls: 'stun:stun.services.mozilla.com:3478'}]
       : [{urls: 'stun:stun2.l.google.com:19302'}]
@@ -37,6 +33,10 @@
   var rtmpConfig = {
     protocol: 'rtmp',
     port: 1935,
+    width: 540,
+    height: 405,
+    embedWidth: window.r5proVideoWidth,
+    embedHeight: window.r5proVideoHeight,
     mimeType: 'rtmp/flv',
     useVideoJS: false,
     swf: 'lib/red5pro/red5pro-subscriber.swf',
@@ -145,6 +145,9 @@
         case 'rtmp':
         case 'livertmp':
         case 'rtmp - videojs':
+          var holder = document.getElementById('video-holder');
+          holder.style.width = '540px';
+          holder.style.height = '405px';
           resolve({
             subscriber: subscriber,
             view: view
