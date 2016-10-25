@@ -34,8 +34,8 @@
     port: 1935,
     mimeType: 'rtmp/flv',
     useVideoJS: false,
-    width: 540,
-    height: 405,
+    width: '100%',
+    height: '100%',
     swf: 'lib/red5pro/red5pro-subscriber.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'

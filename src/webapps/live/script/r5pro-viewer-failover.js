@@ -33,8 +33,8 @@
   var rtmpConfig = {
     protocol: 'rtmp',
     port: 1935,
-    width: 540,
-    height: 405,
+    width: '100%',
+    height: '100%',
     embedWidth: window.r5proVideoWidth,
     embedHeight: window.r5proVideoHeight,
     mimeType: 'rtmp/flv',
@@ -146,7 +146,6 @@
         case 'livertmp':
         case 'rtmp - videojs':
           var holder = document.getElementById('video-holder');
-          holder.style.width = '540px';
           holder.style.height = '405px';
           resolve({
             subscriber: subscriber,
