@@ -154,6 +154,13 @@
           break;
         case 'hls':
           view.view.classList.add('video-js', 'vjs-default-skin')
+          window.onOrientation(selectedSubscriber.getPlayer(), 'red5pro-subscriber-video', function (value) {
+            var container = document.getElementById('video-holder');
+            var element = document.getElementById('red5pro-subscriber-video');
+            if (container) {
+              container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
+            }
+          });
           resolve({
             subscriber: subscriber,
             view: view
