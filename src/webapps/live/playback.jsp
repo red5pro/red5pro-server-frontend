@@ -10,6 +10,11 @@
   //VOD streams list
   String host = ip;
   String protocol = request.getScheme();
+  String tech=null;
+
+  if (request.getParameter("view") != null) {
+    tech = request.getParameter("view");
+  }
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
   String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
@@ -198,6 +203,10 @@
     <script src="script/hls-metadata.js"></script>
     <script>
       // Put server vars globally.
+      var viewTech = "<%=tech%>";
+      if (viewTech && viewTech !== 'null') {
+        window.r5proViewTech = viewTech;
+      }
       window.targetHost = "<%=ip%>";
     </script>
     <script src="script/r5pro-playback-failover.js"></script>

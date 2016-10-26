@@ -52,11 +52,26 @@
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
   };
 
+  var targetViewTech = window.r5proViewTech;
+  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
+
   clearLogButton.addEventListener('click', function () {
     while (eventLogField.children.length > 1) {
       eventLogField.removeChild(eventLogField.lastChild);
     }
   });
+
+  function onSubscribeStart (subscriber) {
+    if (subscriber.getType().toLowerCase() === 'hls') {
+      window.onOrientation(subscriber.getPlayer(), 'red5pro-subscriber-video', function (value) {
+        var container = document.getElementById('video-holder');
+        var element = document.getElementById('red5pro-subscriber-video');
+        if (container) {
+          container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
+        }
+      });
+    }
+  }
 
   function hasEstablishedSubscriber () {
     return typeof subscriber !== 'undefined';
@@ -111,7 +126,7 @@
       };
       console.log('[viewer]:: Configuration\r\n' + JSON.stringify(config, null, 2));
 
-      subscriber.setPlaybackOrder(['rtc', 'rtmp', 'hls'])
+      subscriber.setPlaybackOrder(playbackOrder)
         .init(config)
         .then(function (selectedSubscriber) {
           subscriber.off('*', onSubscriberEvent);
@@ -154,13 +169,8 @@
           break;
         case 'hls':
           view.view.classList.add('video-js', 'vjs-default-skin')
-          window.onOrientation(selectedSubscriber.getPlayer(), 'red5pro-subscriber-video', function (value) {
-            var container = document.getElementById('video-holder');
-            var element = document.getElementById('red5pro-subscriber-video');
-            if (container) {
-              container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
-            }
-          });
+          view.view.width = 600;
+          view.view.height = 300;
           resolve({
             subscriber: subscriber,
             view: view
@@ -177,7 +187,8 @@
     return new Promise(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
       subscriber.play()
-        .then(function () {
+      .then(function () {
+          onSubscribeStart(subscriber);
           resolve();
         })
         .catch(function (error) {

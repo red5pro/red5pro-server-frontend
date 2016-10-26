@@ -7,21 +7,26 @@
     String buffer="2";
     String width="100%";
     String height="100%";
+    String tech=null;
 
-    if(request.getParameter("app") != null) {
+    if (request.getParameter("app") != null) {
       app = request.getParameter("app");
     }
 
-    if(request.getParameter("host") != null) {
+    if (request.getParameter("host") != null) {
       host = request.getParameter("host");
     }
 
-    if(request.getParameter("stream") != null) {
+    if (request.getParameter("stream") != null) {
       stream = request.getParameter("stream");
     }
 
-    if(request.getParameter("buffer") != null) {
+    if (request.getParameter("buffer") != null) {
       buffer = request.getParameter("buffer");
+    }
+
+    if (request.getParameter("view") != null) {
+      tech = request.getParameter("view");
     }
 %>
 
@@ -40,6 +45,11 @@
           window.r5proVideoWidth = "<%=width%>";
           window.r5proVideoHeight = "<%=height%>";
           window.r5proAutosubscribe = true;
+
+          var viewTech = "<%=tech%>";
+          if (viewTech && viewTech !== 'null') {
+            window.r5proViewTech = viewTech;
+          }
         </script>
         <link rel="stylesheet" href="lib/videojs/video-js.min.css">
         <script src="lib/webrtc/adapter.js"></script>

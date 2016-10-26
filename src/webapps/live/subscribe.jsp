@@ -7,6 +7,11 @@
   //LIVE streams page.
   String host = ip;
   String protocol = request.getScheme();
+  String tech=null;
+
+  if (request.getParameter("view") != null) {
+    tech = request.getParameter("view");
+  }
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
   LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
@@ -28,6 +33,9 @@
       String rtspLocation = "rtsp://" + ip + ":8554/live/" + streamName;
       String hlsLocation = protocol + "://" + ip + ":5080" + "/live/" + streamName + ".m3u8";
       String pageLocation = protocol + "://" + ip + ":5080" + "/live/viewer.jsp?host=" + ip + "&stream=" + streamName;
+      if (tech != null) {
+        pageLocation += "&view=" + tech;
+      }
       String listEntry = "<li data-stream=\"" + streamName + "\" class=\"stream-listing\">\r\n" +
         "<h2 class=\"stream-header\">" + streamName + "</h2>\r\n" +
           "<p>\r\n" +
@@ -230,6 +238,10 @@
     <script src="script/hls-metadata.js"></script>
     <script>
       // Put server vars globally.
+      var viewTech = "<%=tech%>";
+      if (viewTech && viewTech !== 'null') {
+        window.r5proViewTech = viewTech;
+      }
       window.targetHost = "<%=ip%>";
     </script>
     <script src="script/r5pro-subscriber-failover.js"></script>

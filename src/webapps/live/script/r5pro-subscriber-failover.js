@@ -49,6 +49,9 @@
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
   };
 
+  var targetViewTech = window.r5proViewTech;
+  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
+
   function hasEstablishedSubscriber () {
     return typeof subscriber !== 'undefined';
   }
@@ -82,6 +85,18 @@
       default:
         updateStatusField(statusField, 'No suitable Publisher found. WebRTC, Flash and HLS are not supported.');
         break;
+    }
+  }
+
+  function onSubscribeStart (subscriber) {
+    if (subscriber.getType().toLowerCase() === 'hls') {
+      window.onOrientation(subscriber.getPlayer(), 'red5pro-subscriber-video', function (value) {
+        var container = document.getElementById('video-holder');
+        var element = document.getElementById('red5pro-subscriber-video');
+        if (container) {
+          container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
+        }
+      });
     }
   }
 
@@ -129,7 +144,7 @@
       .then(subscribe)
       .catch(function (error) {
         var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
-        console.error('[viewer]:: Error in subscribing to stream - ' + errorStr);
+        console.error('[subscriber]:: Error in subscribing to stream - ' + errorStr);
        });
   }
 
@@ -154,9 +169,9 @@
         rtmp: Object.assign({}, baseConfiguration, rtmpConfig),
         hls: Object.assign({}, baseConfiguration, hlsConfig)
       };
-      console.log('[viewer]:: Configuration\r\n' + JSON.stringify(config, null, 2));
+      console.log('[subscriber]:: Configuration\r\n' + JSON.stringify(config, null, 2));
 
-      subscriber.setPlaybackOrder(['rtc', 'rtmp', 'hls'])
+      subscriber.setPlaybackOrder(playbackOrder)
         .init(config)
         .then(function (selectedSubscriber) {
           subscriber.off('*', onSubscriberEvent);
@@ -199,13 +214,7 @@
           break;
         case 'hls':
           view.view.classList.add('video-js', 'vjs-default-skin')
-          window.onOrientation(selectedSubscriber.getPlayer(), 'red5pro-subscriber-video', function (value) {
-            var container = document.getElementById('video-holder');
-            var element = document.getElementById('red5pro-subscriber-video');
-            if (container) {
-              container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
-            }
-          });
+          view.view.height = 300;
           resolve({
             subscriber: subscriber,
             view: view
@@ -223,6 +232,7 @@
       subscriber.on('*', onSubscriberEvent);
       subscriber.play()
         .then(function () {
+          onSubscribeStart(subscriber);
           resolve();
         })
         .catch(function (error) {
