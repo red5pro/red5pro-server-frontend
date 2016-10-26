@@ -66,6 +66,11 @@
             height: <%=height%>;
           }
 
+          #video-holder {
+            max-width: 600px;
+            margin: 0 auto;
+          }
+
           #video-container {
             border-radius: 5px;
             background-color: #e3e3e3;
