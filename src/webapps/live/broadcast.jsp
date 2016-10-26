@@ -1,6 +1,11 @@
 {{> jsp_header }}
 <%
   String host = ip;
+  String tech=null;
+
+  if (request.getParameter("view") != null) {
+    tech = request.getParameter("view");
+  }
 %>
 <!doctype html>
 <html lang="eng">
@@ -195,6 +200,10 @@
     </div>
     {{> es6-script-includes }}
     <script>
+      var viewTech = "<%=tech%>";
+      if (viewTech && viewTech !== 'null') {
+        window.r5proViewTech = viewTech;
+      }
       window.targetHost = '<%=ip%>';
     </script>
     <script src="lib/red5pro/red5pro-sdk.js"></script>

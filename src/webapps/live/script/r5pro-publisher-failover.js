@@ -71,6 +71,9 @@
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
   };
 
+  var targetViewTech = window.r5proViewTech;
+  var publishOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp'];
+
   function getPublishMode () {
     return enableRecordField.checked ? 'record' : 'live';
   }
@@ -237,7 +240,7 @@
       };
       console.log('[live]:: Configuration:\r\n' + JSON.stringify(config, null, 2));
 
-      publisher.setPublishOrder(['rtc', 'rtmp'])
+      publisher.setPublishOrder(publishOrder)
         .init(config)
         .then(function (selectedPublisher) {
           publisher.off('*', onPublisherEvent);
