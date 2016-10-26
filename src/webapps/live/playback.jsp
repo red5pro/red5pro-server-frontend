@@ -297,7 +297,7 @@
                   "</p>\r\n" +
                   "<hr>\r\n" +
                   "<p>\r\n" +
-                    "<span class=\"black-text\">Or, <a class=\"subscriber-link link red-text\" style=\"cursor: pointer;\" onclick=\"invokeViewPageStream('" + streamName + "'); return false;\">Open in another window</a></span>\r\n" +
+                    "<span class=\"black-text\">or,&nbsp;&nbsp;<a class=\"subscriber-link link red-text\" style=\"cursor: pointer;\" onclick=\"invokeViewPageStream('" + streamName + "'); return false;\">Open in another window</a></span>\r\n" +
                   "</p>\r\n" +
                 "</li>";
           return html;

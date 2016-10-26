@@ -1,5 +1,5 @@
-/* global document, navigator, Promise, jQuery */
-(function(window, document, $, red5pro) {
+/* global document, navigator, Promise */
+(function(window, document, red5pro) {
   'use strict';
 
   var isMoz =!!navigator.mozGetUserMedia;
@@ -8,7 +8,6 @@
   var view;
 
   var host = window.targetHost;
-  var $videoTemplate = document.getElementById('video-playback');
   var baseConfiguration = {
     host: host,
     app: 'live',
@@ -94,36 +93,6 @@
     addEventLogToField(document.getElementById('event-log-field'), eventLog);
   }
 
-  function addPlayer(tmpl, container) {
-    var $el = document.importNode(tmpl.content, true);
-    container.appendChild($el);
-    return $el;
-  }
-
-  function teardown () {
-    var videoContainer = document.getElementById('video-container');
-    unsubscribe()
-      .then(function () {
-        if (videoContainer) {
-          videoContainer.remove();
-        }
-      })
-  }
-
-  function setup (dataStreamName) {
-    var parentContainer = $('li[data-stream=' + dataStreamName + ']').get(0);
-    if (parentContainer) {
-      addPlayer($videoTemplate, parentContainer);
-    }
-    var clearLogButton = document.getElementById('clear-log-button');
-    var eventLogField = document.getElementById('event-log-field');
-    clearLogButton.addEventListener('click', function () {
-      while (eventLogField.children.length > 1) {
-        eventLogField.removeChild(eventLogField.lastChild);
-      }
-    });
-  }
-
   function startSubscription (streamData) {
     /**
      * streamData format:
@@ -136,7 +105,6 @@
      */
     var streamName = streamData.name;
     baseConfiguration.streamName = streamName;
-    setup(streamName);
     determineSubscriber(Object.keys(streamData.urls))
       .then(preview)
       .then(subscribe)
@@ -145,35 +113,6 @@
         console.error('[viewer]:: Error in subscribing to stream - ' + errorStr);
        });
   }
-
-  function handleHostIpChange (value) {
-    host = baseConfiguration.host = value;
-    teardown();
-    startSubscription();
-  }
-
-  var viewHandler = function viewStream (value) {
-    var dataString = decodeURIComponent($('li[data-stream="' + value + '"]').data('streamitem'));
-    var streamData = JSON.parse(dataString);
-    console.log('[playback]:: Selected stream data -\r\n' + JSON.stringify(streamData), null, 2);
-
-    teardown();
-    startSubscription(streamData);
-  };
-
-  var viewPageHandler = function viewPageStream (value) {
-    var json = $('li[data-stream="' + value + '"]').data('streamitem');
-    var streamDataStr = decodeURIComponent(json);
-    var streamData = JSON.parse(streamDataStr);
-    console.log('Stream data:\r\n' + JSON.stringify(streamData, null, 2));
-
-    window.streamdata = json;
-    var pageUrl = 'viewer-vod.jsp?host=' + window.targetHost + '&stream=' + streamData.name;
-    if (targetViewTech) {
-      pageUrl += '&view=' + targetViewTech;
-    }
-    window.open(pageUrl);
-  };
 
   function determineSubscriber (types) {
     console.log('[playback]:: Available types - ' + types + '.');
@@ -303,9 +242,6 @@
     });
   }
 
-  window.r5pro_registerIpChangeListener(handleHostIpChange);
-  window.invokeViewStream = viewHandler;
-  window.invokeViewPageStream = viewPageHandler;
   window.addEventListener('beforeunload', function () {
     unsubscribe();
   });
@@ -314,4 +250,8 @@
     console.log('[RTMP SUBSCRIBER]:: ' + message);
   };
 
- }(this, document, jQuery.noConflict(), this.red5prosdk));
+  if (window.streamData) {
+    startSubscription(window.streamData);
+  }
+
+ }(this, document, this.red5prosdk));
