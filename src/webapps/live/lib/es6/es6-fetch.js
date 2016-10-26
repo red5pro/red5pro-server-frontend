@@ -1,3 +1,4 @@
+// https://github.github.io/fetch/
 (function(self) {
   'use strict';
 

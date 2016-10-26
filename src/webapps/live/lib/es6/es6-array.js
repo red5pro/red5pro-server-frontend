@@ -1,3 +1,4 @@
+// From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
 (function () {
 if (!Array.prototype.filter) {
   Array.prototype.filter = function(fun/*, thisArg*/) {
