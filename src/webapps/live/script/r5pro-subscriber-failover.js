@@ -13,8 +13,6 @@
     host: host,
     app: 'live',
     buffer: 2,
-    embedWidth: '100%',
-    embedHeight: '100%',
     iceServers: isMoz
       ? [{urls: 'stun:stun.services.mozilla.com:3478'}]
       : [{urls: 'stun:stun2.l.google.com:19302'}]
@@ -34,8 +32,10 @@
     port: 1935,
     mimeType: 'rtmp/flv',
     useVideoJS: false,
-    width: '100%',
-    height: '100%',
+    width: 640,
+    height: 480,
+    embedWidth: '100%',
+    embedHeight: '100%',
     swf: 'lib/red5pro/red5pro-subscriber.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'

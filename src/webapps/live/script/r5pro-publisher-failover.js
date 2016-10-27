@@ -62,9 +62,9 @@
   var rtmpConfig = {
     protocol: 'rtmp',
     port: 1935,
-    width: 540,
-    height: 405,
-    embedWidth: 540,
+    width: 640,
+    height: 480,
+    embedWidth: '100%',
     embedHeight: 405,
     swf: 'lib/red5pro/red5pro-publisher.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
@@ -165,7 +165,7 @@
     console.log('[live]:: quality change to `' + selectedQuality + '`.');
     if (hasEstablishedPublisher) {
       view.view.src = '';
-      preview(publisher);
+      preview(publisher, true);
     }
   }
 
@@ -257,18 +257,22 @@
 
   }
 
-  function preview (selectedPublisher) {
+  function preview (selectedPublisher, reset) {
 
     return new Promise(function (resolve, reject) {
 
       var requiresGUM = selectedPublisher.getType().toLowerCase() === 'rtc';
+      var quality = qualityUM[getQuality()];
       publisher = selectedPublisher;
-      view = new red5pro.PublisherView('red5pro-publisher-video');
-      view.attachPublisher(publisher);
+
+      if (!reset) {
+        view = new red5pro.PublisherView('red5pro-publisher-video');
+        view.attachPublisher(publisher);
+      }
 
       if (requiresGUM) {
         var nav = navigator.mediaDevice || navigator;
-        nav.getUserMedia(qualityUM[getQuality()], function (media) {
+        nav.getUserMedia(quality, function (media) {
           publisher.attachStream(media);
           view.preview(media, true);
           resolve({
@@ -280,10 +284,11 @@
         });
       }
       else {
+        publisher.setMediaQuality(quality);
         resolve({
           publisher: publisher,
           view: view
-        })
+        });
       }
 
     });
@@ -295,11 +300,13 @@
 
       var mode = getPublishMode();
       var streamName = getStreamName();
+      var quality = qualityUM[getQuality()];
       publisher.overlayOptions({
         host: window.targetHost,
         streamMode: mode,
         streamName: streamName,
-        userMedia: qualityUM[getQuality()]
+        width: quality.width,
+        height: quality.height
       });
       console.log('[live]:: Publish options:\r\n' + JSON.stringify(publisher._options, null, 2))
 
