@@ -7,7 +7,13 @@
   //LIVE streams page.
   String host = ip;
   String protocol = request.getScheme();
+
   String tech=null;
+  String buffer = "2";
+
+  if (request.getParameter("buffer") != null) {
+    buffer = request.getParameter("buffer");
+  }
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
@@ -243,6 +249,7 @@
         window.r5proViewTech = viewTech;
       }
       window.targetHost = "<%=ip%>";
+      window.r5proBuffer = Number("<%=buffer%>");
     </script>
     <script src="script/r5pro-subscriber-failover.js"></script>
   </body>

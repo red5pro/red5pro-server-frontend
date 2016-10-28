@@ -8,17 +8,21 @@
   var view;
 
   var host = window.targetHost;
+  var buffer = window.r5proBuffer;
+  var protocol = window.location.protocol;
+  protocol = protocol.substring(0, protocol.lastIndexOf(':'));
+
   var $videoTemplate = document.getElementById('video-playback');
   var baseConfiguration = {
     host: host,
     app: 'live',
-    buffer: 2,
+    buffer: isNaN(buffer) ? 2 : buffer,
     iceServers: isMoz
       ? [{urls: 'stun:stun.services.mozilla.com:3478'}]
       : [{urls: 'stun:stun2.l.google.com:19302'}]
   };
   var rtcConfig = {
-    protocol: 'ws',
+    protocol: protocol === 'http' ? 'ws' : 'wss',
     port: 8081,
     subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16),
     bandwidth: {
@@ -41,7 +45,7 @@
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
   };
   var hlsConfig = {
-    protocol: window.location.protocol,
+    protocol: protocol,
     port: 5080,
     mimeType: 'application/x-mpegURL',
     swf: 'lib/red5pro/red5pro-video-js.swf',

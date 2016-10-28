@@ -52,7 +52,7 @@
           window.targetHost = "<%=host%>";
           window.r5proApp = "<%=app%>";
           window.r5proStreamName = "<%=stream%>";
-          window.r5proBuffer = "<%=buffer%>";
+          window.r5proBuffer = Number("<%=buffer%>");
           window.r5proVideoWidth = "<%=width%>";
           window.r5proVideoHeight = "<%=height%>";
           window.r5proAutosubscribe = true;

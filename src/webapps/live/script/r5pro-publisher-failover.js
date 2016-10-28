@@ -3,6 +3,8 @@
   'use strict';
 
   var isMoz =!!navigator.mozGetUserMedia;
+  var protocol = window.location.protocol;
+  protocol = protocol.substring(0, protocol.lastIndexOf(':'));
 
   var streamNameField = document.getElementById('stream-name-field');
   var enableRecordField = document.getElementById('enable-record-field');
@@ -57,7 +59,7 @@
       : [{urls: 'stun:stun2.l.google.com:19302'}]
   };
   var rtcConfig = {
-    protocol: 'ws',
+    protocol: protocol === 'http' ? 'ws' : 'wss',
     port: 8081
   };
   var rtmpConfig = {
