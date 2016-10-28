@@ -20,6 +20,7 @@
     }
   });
 
+  var mediaStream;
   var publisher;
   var view;
   var isPublishing = false;
@@ -271,8 +272,24 @@
       }
 
       if (requiresGUM) {
-        var nav = navigator.mediaDevice || navigator;
-        nav.getUserMedia(quality, function (media) {
+        var nav = navigator;
+        if (mediaStream) {
+          mediaStream.getTracks().forEach(function(track) {
+            track.stop();
+          });
+        }
+        nav.getUserMedia({
+          audio: quality.audio,
+          video: {
+            width: {
+              exact: quality.video.width
+            },
+            height: {
+              exact: quality.video.height
+            }
+          }
+        }, function (media) {
+          mediaStream = media;
           publisher.attachStream(media);
           view.preview(media, true);
           resolve({
