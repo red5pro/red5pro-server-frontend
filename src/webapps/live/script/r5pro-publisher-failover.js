@@ -5,6 +5,9 @@
   var isMoz =!!navigator.mozGetUserMedia;
   var protocol = window.location.protocol;
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
+  function getSocketLocationFromProtocol (protocol) {
+    return protocol === 'http' ? {protocol: 'ws', port: 8081} : {protocol: 'wss', port: 8083};
+  }
 
   var streamNameField = document.getElementById('stream-name-field');
   var enableRecordField = document.getElementById('enable-record-field');
@@ -59,8 +62,8 @@
       : [{urls: 'stun:stun2.l.google.com:19302'}]
   };
   var rtcConfig = {
-    protocol: protocol === 'http' ? 'ws' : 'wss',
-    port: 8081
+    protocol: getSocketLocationFromProtocol(protocol).protocol,
+    port: getSocketLocationFromProtocol(protocol).port,
   };
   var rtmpConfig = {
     protocol: 'rtmp',

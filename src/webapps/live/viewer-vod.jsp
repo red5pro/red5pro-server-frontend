@@ -75,6 +75,7 @@
           #video-holder, .video-element {
             width: <%=width%>;
             height: <%=height%>;
+            min-height: 480px;
           }
 
           #video-holder {
@@ -114,7 +115,7 @@
     <body>
       <div id="video-container">
             <div id="video-holder">
-              <video id="red5pro-subscriber-video" controls class="video-element"></video>
+              <video id="red5pro-subscriber-video" controls autoplay class="video-element"></video>
             </div>
             <div id="status-field" class="status-message"></div>
             <div id="event-log-field" class="event-log-field">
@@ -130,6 +131,7 @@
       <script src="lib/es6/es6-object-assign.js"></script>
       <script src="lib/es6/es6-promise.min.js"></script>
       <script src="lib/red5pro/red5pro-sdk.js"></script>
+      <script src="script/hls-metadata.js"></script>
       <script src="script/r5pro-viewer-vod-failover.js"></script>
       </script>
     </body>

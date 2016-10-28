@@ -4,7 +4,11 @@
 
   var isMoz =!!navigator.mozGetUserMedia;
   var protocol = window.location.protocol;
+  var port = window.location.port ? window.location.port : 5080;
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
+  function getSocketLocationFromProtocol (protocol) {
+    return protocol === 'http' ? {protocol: 'ws', port: 8081} : {protocol: 'wss', port: 8083};
+  }
 
   var statusField = document.getElementById('status-field');
   var eventLogField = document.getElementById('event-log-field');
@@ -23,8 +27,8 @@
       : [{urls: 'stun:stun2.l.google.com:19302'}]
   };
   var rtcConfig = {
-    protocol: protocol === 'http' ? 'ws' : 'wss',
-    port: 8081,
+    protocol: getSocketLocationFromProtocol(protocol).protocol,
+    port: getSocketLocationFromProtocol(protocol).port,
     subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16),
     bandwidth: {
       audio: 50,
@@ -47,7 +51,7 @@
   };
   var hlsConfig = {
     protocol: protocol,
-    port: 5080,
+    port: port,
     mimeType: 'application/x-mpegURL',
     swf: 'lib/red5pro/red5pro-video-js.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
@@ -170,7 +174,7 @@
           });
           break;
         case 'hls':
-          view.view.classList.add('video-js', 'vjs-default-skin')
+          view.view.classList.add('video-js', 'vjs-default-skin');
           view.view.width = 600;
           view.view.height = 300;
           resolve({
