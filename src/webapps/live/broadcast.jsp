@@ -23,6 +23,11 @@
         outline:none;
       }
 
+      .hidden {
+        display: none;
+        visibility: hidden;
+      }
+
       #video-container {
         border-radius: 5px;
         background-color: #e3e3e3;
@@ -157,7 +162,7 @@
                       <label for="enable-record-field">Enable Recording:</label>
                       <input type="checkbox" name="enable-record-field" id="enable-record-field"></input>
                     </p>
-                    <div class="video-form-item">
+                    <div class="video-form-item hidden">
                       <label for="quality-radio-group">Quality:</label>
                       <p id="quality-radio-group">
                         <span>
