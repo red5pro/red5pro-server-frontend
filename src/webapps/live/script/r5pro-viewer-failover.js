@@ -8,7 +8,7 @@
     : undefined;
 
   var protocol = window.location.protocol;
-  var port = window.location.port ? window.location.port : 80;
+  var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
   function getSocketLocationFromProtocol (protocol) {
     return protocol === 'http' ? {protocol: 'ws', port: 8081} : {protocol: 'wss', port: 8083};

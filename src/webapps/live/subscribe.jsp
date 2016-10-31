@@ -8,7 +8,7 @@
   String host = ip;
   String protocol = request.getScheme();
   Integer port = request.getServerPort();
-  port = port == -1 ? 80 : port;
+  port = port == -1 ? (protocol == "https" ? 443 : 80) : port;
 
   String tech=null;
   String ice=null;

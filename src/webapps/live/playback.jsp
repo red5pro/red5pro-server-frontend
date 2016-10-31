@@ -222,7 +222,7 @@
 
        var protocol = "<%=protocol%>";
        var ip = "<%=ip%>";
-       var port = window.location.port ? window.location.port : 80;
+       var port = window.location.port ? window.location.port : (protocol === 'https' ? 443 : 80);
 
        var httpRegex = /^http/i;
        var baseUrl = protocol + '://' + ip + ':' + port + '/live';
