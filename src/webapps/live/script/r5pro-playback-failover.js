@@ -2,6 +2,8 @@
 (function(window, document, $, red5pro) {
   'use strict';
 
+  red5pro.setLogLevel('debug');
+
   var isMoz = !!navigator.mozGetUserMedia;
   var iceServers = window.r5proIce && window.r5proIce === 'red5pro'
     ? [{urls: 'stun:50.56.81.179:3478'}]
