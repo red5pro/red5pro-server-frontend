@@ -7,6 +7,7 @@
     String buffer="2";
     String width="100%";
     String height="100%";
+    String ice=null;
     String tech=null;
 
     if (request.getParameter("app") != null) {
@@ -27,6 +28,10 @@
 
     if (request.getParameter("view") != null) {
       tech = request.getParameter("view");
+    }
+
+    if (request.getParameter("ice") != null) {
+      ice = request.getParameter("ice");
     }
 %>
 
@@ -56,6 +61,7 @@
           window.r5proVideoWidth = "<%=width%>";
           window.r5proVideoHeight = "<%=height%>";
           window.r5proAutosubscribe = true;
+          window.r5proIce = '<%=ice%>';
 
           var viewTech = "<%=tech%>";
           if (viewTech && viewTech !== 'null') {

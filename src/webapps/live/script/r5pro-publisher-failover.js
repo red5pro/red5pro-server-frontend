@@ -2,7 +2,11 @@
 (function (window, document, red5pro) {
   'use strict';
 
-  var isMoz =!!navigator.mozGetUserMedia;
+  var isMoz = !!navigator.mozGetUserMedia;
+  var iceServers = window.r5proIce && window.r5proIce === 'red5pro'
+    ? [{url: 'stun:50.56.81.179:3478'}]
+    : undefined;
+
   var protocol = window.location.protocol;
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
   function getSocketLocationFromProtocol (protocol) {
@@ -57,9 +61,9 @@
   var baseConfiguration = {
     host: window.targetHost,
     app: 'live',
-    iceServers: isMoz
+    iceServers: iceServers || (isMoz
       ? [{urls: 'stun:stun.services.mozilla.com:3478'}]
-      : [{urls: 'stun:stun2.l.google.com:19302'}]
+      : [{urls: 'stun:stun2.l.google.com:19302'}])
   };
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,

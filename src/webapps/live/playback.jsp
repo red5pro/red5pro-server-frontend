@@ -10,10 +10,14 @@
   //VOD streams list
   String host = ip;
   String protocol = request.getScheme();
+  String ice=null;
   String tech=null;
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
+  }
+  if (request.getParameter("ice") != null) {
+    ice = request.getParameter("ice");
   }
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
@@ -208,7 +212,8 @@
         window.r5proViewTech = viewTech;
       }
       window.targetHost = "<%=ip%>";
-    </script>
+      window.r5proIce = '<%=ice%>';
+   </script>
     <script src="script/r5pro-playback-failover.js"></script>
     <script>
       // Filtering HLS playback using servlet.

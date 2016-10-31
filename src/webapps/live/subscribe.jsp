@@ -9,10 +9,14 @@
   String protocol = request.getScheme();
 
   String tech=null;
+  String ice=null;
   String buffer = "2";
 
   if (request.getParameter("buffer") != null) {
     buffer = request.getParameter("buffer");
+  }
+  if (request.getParameter("ice") != null) {
+    ice = request.getParameter("ice");
   }
 
   if (request.getParameter("view") != null) {
@@ -249,6 +253,7 @@
         window.r5proViewTech = viewTech;
       }
       window.targetHost = "<%=ip%>";
+      window.r5proIce = '<%=ice%>';
       window.r5proBuffer = Number("<%=buffer%>");
     </script>
     <script src="script/r5pro-subscriber-failover.js"></script>

@@ -1,10 +1,15 @@
 {{> jsp_header }}
 <%
   String host = ip;
+  String ice=null;
   String tech=null;
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
+  }
+
+  if (request.getParameter("ice") != null) {
+    ice = request.getParameter("ice");
   }
 %>
 <!doctype html>
@@ -210,6 +215,7 @@
         window.r5proViewTech = viewTech;
       }
       window.targetHost = '<%=ip%>';
+      window.r5proIce = '<%=ice%>';
     </script>
     <script src="lib/red5pro/red5pro-sdk.js"></script>
     <script src="script/r5pro-publisher-failover.js"></script>
