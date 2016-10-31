@@ -73,15 +73,7 @@
   });
 
   function onSubscribeStart (subscriber) {
-    if (subscriber.getType().toLowerCase() === 'hls') {
-      window.onOrientation(subscriber.getPlayer(), 'red5pro-subscriber-video', function (value) {
-        var container = document.getElementById('video-holder');
-        var element = document.getElementById('red5pro-subscriber-video');
-        if (container) {
-          container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
-        }
-      });
-    }
+    console.log('[subscriber]:: Subscriber started - ' + subscriber.getType());
   }
 
   function hasEstablishedSubscriber () {
@@ -123,6 +115,17 @@
     var eventLog = '[Red5ProSubscriber] ' + event.type + '.';
     console.log(eventLog);
     addEventLog(eventLog);
+
+    if (event.type === 'Subscribe.Metadata') {
+      var value = event.data.orientation;
+      if (subscriber.getType().toLowerCase() === 'hls') {
+        var container = document.getElementById('video-holder');
+        var element = document.getElementById('red5pro-subscriber-video');
+        if (container) {
+          container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
+        }
+      }
+    }
   }
 
   function determineSubscriber () {
