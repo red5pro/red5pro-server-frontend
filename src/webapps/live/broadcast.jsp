@@ -217,7 +217,7 @@
       window.targetHost = '<%=ip%>';
       window.r5proIce = '<%=ice%>';
     </script>
-    <script src="lib/red5pro/red5pro-sdk.js"></script>
+    <script src="lib/red5pro/red5pro-sdk.min.js"></script>
     <script src="script/r5pro-publisher-failover.js"></script>
     {{> footer }}
    </body>

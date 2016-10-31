@@ -203,7 +203,7 @@
     </div>
     {{> footer }}
     <script src="lib/jquery-1.12.4.min.js"></script>
-    <script src="lib/red5pro/red5pro-sdk.js"></script>
+    <script src="lib/red5pro/red5pro-sdk.min.js"></script>
     <script src="script/hls-metadata.js"></script>
     <script>
       // Put server vars globally.
