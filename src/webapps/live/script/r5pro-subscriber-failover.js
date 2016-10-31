@@ -4,7 +4,7 @@
 
   var isMoz = !!navigator.mozGetUserMedia;
   var iceServers = window.r5proIce && window.r5proIce === 'red5pro'
-    ? [{url: 'stun:50.56.81.179:3478'}]
+    ? [{urls: 'stun:50.56.81.179:3478'}]
     : undefined;
 
   var subscriber;
