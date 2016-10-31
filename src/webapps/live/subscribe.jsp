@@ -7,6 +7,8 @@
   //LIVE streams page.
   String host = ip;
   String protocol = request.getScheme();
+  Integer port = request.getServerPort();
+  port = port == -1 ? 80 : port;
 
   String tech=null;
   String ice=null;
@@ -28,7 +30,7 @@
   List<String> names = service.getLiveStreams();
 
   StringBuffer ret = new StringBuffer();
-  String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+  String baseUrl = protocol + "://" + ip + ":" + port;
   if(names.size() == 0) {
     ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
     ret.append("<h3 class=\"no-streams-entry\">No streams found</h3>\r\n");
@@ -41,8 +43,8 @@
     ret.append("<ul class=\"stream-menu-listing\">\r\n");
     for(String streamName:names) {
       String rtspLocation = "rtsp://" + ip + ":8554/live/" + streamName;
-      String hlsLocation = protocol + "://" + ip + ":5080" + "/live/" + streamName + ".m3u8";
-      String pageLocation = protocol + "://" + ip + ":5080" + "/live/viewer.jsp?host=" + ip + "&stream=" + streamName;
+      String hlsLocation =  baseUrl + "/live/" + streamName + ".m3u8";
+      String pageLocation = baseUrl + "/live/viewer.jsp?host=" + ip + "&stream=" + streamName;
       if (tech != null) {
         pageLocation += "&view=" + tech;
       }

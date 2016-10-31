@@ -222,9 +222,10 @@
 
        var protocol = "<%=protocol%>";
        var ip = "<%=ip%>";
+       var port = window.location.port ? window.location.port : 80;
 
        var httpRegex = /^http/i;
-       var baseUrl = '<%=protocol%>://<%=ip%>:5080/live';
+       var baseUrl = protocol + '://' + ip + ':' + port + '/live';
        var mediafilesServletURL = [baseUrl, 'mediafiles'].join('/');
        var playlistServletURL = [baseUrl, 'playlists'].join('/');
        var store = {}; // name: {name:string, url:string, formats:[hls|flv]}
