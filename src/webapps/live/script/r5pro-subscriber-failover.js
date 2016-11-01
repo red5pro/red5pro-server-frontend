@@ -111,7 +111,8 @@
 
     if (event.type === 'Subscribe.Metadata') {
       var value = event.data.orientation;
-      if (subscriber.getType().toLowerCase() === 'hls') {
+      if (subscriber.getType().toLowerCase() === 'hls' ||
+          subscriber.getType().toLowerCase() === 'rtc') {
         var container = document.getElementById('video-holder');
         var element = document.getElementById('red5pro-subscriber-video');
         if (container) {

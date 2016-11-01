@@ -105,6 +105,17 @@
     var eventLog = '[Red5ProSubscriber] ' + event.type + '.';
     console.log(eventLog);
     addEventLogToField(document.getElementById('event-log-field'), eventLog);
+    if (event.type === 'Subscribe.Metadata') {
+      var value = event.data.orientation;
+      if (subscriber.getType().toLowerCase() === 'hls' ||
+          subscriber.getType().toLowerCase() === 'rtc') {
+        var container = document.getElementById('video-holder');
+        var element = document.getElementById('red5pro-subscriber-video');
+        if (container) {
+          container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
+        }
+      }
+    }
   }
 
   function addPlayer(tmpl, container) {
@@ -266,13 +277,6 @@
           break;
         case 'hls':
           view.view.classList.add('video-js', 'vjs-default-skin')
-          window.onOrientation(selectedSubscriber.getPlayer(), 'red5pro-subscriber-video', function (value) {
-            var container = document.getElementById('video-holder');
-            var element = document.getElementById('red5pro-subscriber-video');
-            if (container) {
-              container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
-            }
-          });
           resolve({
             subscriber: subscriber,
             view: view
