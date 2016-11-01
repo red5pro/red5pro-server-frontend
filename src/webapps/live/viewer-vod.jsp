@@ -137,7 +137,6 @@
       <script src="lib/es6/es6-object-assign.js"></script>
       <script src="lib/es6/es6-promise.min.js"></script>
       <script src="lib/red5pro/red5pro-sdk.min.js"></script>
-      <script src="script/hls-metadata.js"></script>
       <script src="script/r5pro-viewer-vod-failover.js"></script>
       </script>
     </body>
