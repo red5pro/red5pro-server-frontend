@@ -58,6 +58,22 @@
       }
     }
   };
+  var forceQuality = {
+    audio: true,
+    video: isMoz ? true : {
+      mandatory: {
+        minWidth: 320,
+        minHeight: 240,
+        maxWidth: 352,
+        maxHeight: 288,
+      },
+      optional: [
+        {
+          bandwidth: 256
+        }
+      ]
+    }
+  };
 
   var baseConfiguration = {
     host: window.targetHost,
@@ -288,10 +304,7 @@
             track.stop();
           });
         }
-        nav.getUserMedia({
-          audio: true,
-          video: true
-        }, function (media) {
+        nav.getUserMedia(forceQuality, function (media) {
           mediaStream = media;
           publisher.attachStream(media);
           view.preview(media, true);
