@@ -289,15 +289,8 @@
           });
         }
         nav.getUserMedia({
-          audio: quality.audio,
-          video: {
-            width: {
-              exact: quality.video.width
-            },
-            height: {
-              exact: quality.video.height
-            }
-          }
+          audio: true,
+          video: true
         }, function (media) {
           mediaStream = media;
           publisher.attachStream(media);
