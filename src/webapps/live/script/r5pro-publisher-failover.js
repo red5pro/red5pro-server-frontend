@@ -347,6 +347,7 @@
       publisher.publish(streamName)
         .then(function () {
           isPublishing = true;
+          console.log('[live]:: Publish dimensions (' + view.view.videoWidth + ', ' + view.view.videoHeight + ').');
           resolve();
         })
         .catch(function (error) {
