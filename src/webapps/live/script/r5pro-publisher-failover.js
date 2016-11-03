@@ -4,9 +4,28 @@
 
   red5pro.setLogLevel('debug');
   var isMoz = !!navigator.mozGetUserMedia;
-  var qFramerate = window.r5proFramerate || 4;
+  var qFramerateMin = window.r5proFramerateMin || 8;
+  var qFramerateMax = window.r5proFramerateMax || 24;
+  var qVideoWidthMin = window.r5proVideoWidthMin || 320;
+  var qVideoWidthMax = window.r5proVideoWidthMax || 352;
+  var qVideoHeightMin = window.r5proVideoHeightMin || 240;
+  var qVideoHeightMax = window.r5proVideoHeightMax || 288;
   var qAudioBW = window.r5proAudioBandwidth || 50;
   var qVideoBW = window.r5proVideoBandwidth || 256;
+  var forceVideo = {
+    width: {
+      min: qVideoWidthMin,
+      max: qVideoWidthMax
+    },
+    height: {
+      min: qVideoHeightMin,
+      max: qVideoHeightMax
+    },
+    frameRate: {
+      min: qFramerateMin,
+      max: qFramerateMax
+    }
+  };
   var iceServers = window.r5proIce && window.r5proIce === 'red5pro'
     ? [{urls: 'stun:50.56.81.179:3478'}]
     : undefined;
@@ -64,20 +83,7 @@
   };
   var forceQuality = {
     audio: true,
-    video: isMoz ? true : {
-      width: {
-        min: 320,
-        max: 352
-      },
-      height: {
-        min: 240,
-        max: 288
-      },
-      frameRate: {
-        min: qFramerate,
-        max: qFramerate
-      }
-    }
+    video: isMoz ? true : forceVideo
   };
 
   var baseConfiguration = {

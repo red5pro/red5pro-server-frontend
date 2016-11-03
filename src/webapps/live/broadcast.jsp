@@ -3,9 +3,14 @@
   String host = ip;
   String ice = null;
   String tech = null;
-  Integer framerate = 8;
+  Integer framerateMin = 8;
+  Integer framerateMax = 24;
   Integer audioBandwidth = 50;
   Integer videoBandwidth = 256;
+  Integer videoWidthMin = 320;
+  Integer videoWidthMax = 352;
+  Integer videoHeightMin = 240;
+  Integer videoHeightMax = 288;
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
@@ -15,8 +20,12 @@
     ice = request.getParameter("ice");
   }
 
-  if (request.getParameter("framerate") != null) {
-    framerate = Integer.parseInt(request.getParameter("framerate"));
+  if (request.getParameter("framerateMin") != null) {
+    framerateMin = Integer.parseInt(request.getParameter("framerateMin"));
+  }
+
+  if (request.getParameter("framerateMax") != null) {
+    framerateMax = Integer.parseInt(request.getParameter("framerateMax"));
   }
 
   if (request.getParameter("audioBW") != null) {
@@ -25,6 +34,19 @@
 
   if (request.getParameter("videoBW") != null) {
     videoBandwidth = Integer.parseInt(request.getParameter("videoBW"));
+  }
+
+  if (request.getParameter("videoWidthMin") != null) {
+    videoWidthMin = Integer.parseInt(request.getParameter("videoWidthMin"));
+  }
+  if (request.getParameter("videoWidthMax") != null) {
+    videoWidthMax = Integer.parseInt(request.getParameter("videoWidthMax"));
+  }
+  if (request.getParameter("videoHeightMin") != null) {
+    videoHeightMin = Integer.parseInt(request.getParameter("videoHeightMin"));
+  }
+  if (request.getParameter("videoHeightMax") != null) {
+    videoHeightMax = Integer.parseInt(request.getParameter("videoHeightMax"));
   }
 
 %>
@@ -240,9 +262,14 @@
         }
       }
       assignIfDefined("<%=tech%>", 'r5proViewTech');
-      assignIfDefined(<%=framerate%>, 'r5proFramerate');
+      assignIfDefined(<%=framerateMin%>, 'r5proFramerateMin');
+      assignIfDefined(<%=framerateMax%>, 'r5proFramerateMax');
       assignIfDefined(<%=audioBandwidth%>, 'r5proAudioBandwidth');
       assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
+      assignIfDefined(<%=videoWidthMin%>, 'r5proVideoWidthMin');
+      assignIfDefined(<%=videoWidthMax%>, 'r5proVideoWidthMax');
+      assignIfDefined(<%=videoHeightMin%>, 'r5proVideoHeightMin');
+      assignIfDefined(<%=videoHeightMax%>, 'r5proVideoHeightMax');
 
       window.targetHost = '<%=ip%>';
       window.r5proIce = '<%=ice%>';
