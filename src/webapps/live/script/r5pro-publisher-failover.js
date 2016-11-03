@@ -20,6 +20,7 @@
   var streamNameField = document.getElementById('stream-name-field');
   var enableRecordField = document.getElementById('enable-record-field');
   var statusField = document.getElementById('status-field');
+  var statisticsField = document.getElementById('statistics-field');
   var eventLogField = document.getElementById('event-log-field');
   var clearLogButton = document.getElementById('clear-log-button');
   var startStopButton = document.getElementById('start-stop-button');
@@ -194,6 +195,10 @@
       eventLogField.removeChild(eventLogField.lastChild);
     }
   });
+
+  function onBitrateUpdate (bitrate, packets) {
+    statisticsField.innerText = 'Birate: ' + Math.floor(bitrate) + '. Packets Sent: ' + packets + '.';
+  }
 
   function onQualitySelectChange (event) {
     selectedQuality = event.target.value;
@@ -381,7 +386,10 @@
       publisher.publish(streamName)
         .then(function () {
           isPublishing = true;
-          console.log('[live]:: Publish dimensions (' + view.view.videoWidth + ', ' + view.view.videoHeight + ').');
+          if (isRTC) {
+             window.trackBitrate(publisher.getPeerConnection(), onBitrateUpdate);
+             console.log('[live]:: Publish dimensions (' + view.view.videoWidth + ', ' + view.view.videoHeight + ').');
+          }
           resolve();
         })
         .catch(function (error) {
@@ -416,6 +424,8 @@
         resolve();
       }
 
+      window.untrackBitrate(onBitrateUpdate);
+
     });
   }
 
@@ -447,6 +457,7 @@
       .then(function() {
         tearDownPublisher();
       });
+    window.untrackBitrate(onBitrateUpdate);
   });
 
   window.publisherLog = function (message) {

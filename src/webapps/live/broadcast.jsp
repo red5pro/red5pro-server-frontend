@@ -3,7 +3,7 @@
   String host = ip;
   String ice = null;
   String tech = null;
-  Integer framerate = 4;
+  Integer framerate = 8;
   Integer audioBandwidth = 50;
   Integer videoBandwidth = 256;
 
@@ -72,6 +72,13 @@
         text-align: center;
         padding: 10px;
         color: #fff;
+        margin: 10px 0;
+      }
+
+      #statistics-field {
+        text-align: center;
+        padding: 5px;
+        color: #000
         margin: 10px 0;
       }
 
@@ -201,6 +208,7 @@
                       </p>
                     </div>
             </div>
+            <div id="statistics-field" class="statistics-field"></div>
             <div id="video-holder">
               <video id="red5pro-publisher-video" controls muted class="video-element"></video>
             </div>
@@ -240,7 +248,8 @@
       window.r5proIce = '<%=ice%>';
     </script>
     <script src="lib/red5pro/red5pro-sdk.min.js"></script>
-    <script src="script/r5pro-publisher-failover.js"></script>
+    <script src="script/r5pro-utils.js"></script>
+   <script src="script/r5pro-publisher-failover.js"></script>
     {{> footer }}
    </body>
 </html>
