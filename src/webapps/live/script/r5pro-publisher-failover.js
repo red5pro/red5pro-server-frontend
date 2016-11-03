@@ -4,6 +4,9 @@
 
   red5pro.setLogLevel('debug');
   var isMoz = !!navigator.mozGetUserMedia;
+  var qFramerate = window.r5proFramerate || 4;
+  var qAudioBW = window.r5proAudioBandwidth || 50;
+  var qVideoBW = window.r5proVideoBandwidth || 256;
   var iceServers = window.r5proIce && window.r5proIce === 'red5pro'
     ? [{urls: 'stun:50.56.81.179:3478'}]
     : undefined;
@@ -61,17 +64,18 @@
   var forceQuality = {
     audio: true,
     video: isMoz ? true : {
-      mandatory: {
-        minWidth: 320,
-        minHeight: 240,
-        maxWidth: 352,
-        maxHeight: 288,
+      width: {
+        min: 320,
+        max: 352
       },
-      optional: [
-        {
-          bandwidth: 256
-        }
-      ]
+      height: {
+        min: 240,
+        max: 288
+      },
+      frameRate: {
+        min: qFramerate,
+        max: qFramerate
+      }
     }
   };
 
@@ -80,11 +84,15 @@
     app: 'live',
     iceServers: iceServers || (isMoz
       ? [{urls: 'stun:stun.services.mozilla.com:3478'}]
-      : [{urls: 'stun:stun2.l.google.com:19302'}])
+      : [{urls: 'stun:stun2.l.google.com:19302'}]),
+    bandwidth: {
+      audio: qAudioBW,
+      video: qVideoBW
+    }
   };
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,
-    port: getSocketLocationFromProtocol(protocol).port,
+    port: getSocketLocationFromProtocol(protocol).port
   };
   var rtmpConfig = {
     protocol: 'rtmp',
@@ -233,6 +241,27 @@
     var text = document.createTextNode(eventLog);
     p.appendChild(text);
     eventLogField.appendChild(p);
+    return p;
+  }
+
+  function addObjectLog (object, offset) {
+    offset = offset || 10;
+    var p;
+    var c = addEventLog('{');
+    c.style.paddingLeft = offset + 'px';
+    Object.keys(object).forEach(function(key) {
+      if (object[key].toString() === '[object Object]') {
+        p = addEventLog(key + ': ');
+        p.style.paddingLeft = (offset+10) + 'px';
+        addObjectLog(object[key], offset + 10);
+      }
+      else {
+        p = addEventLog(key + ': ' + object[key]);
+        p.style.paddingLeft = (offset+10) + 'px';
+      }
+    });
+    c = addEventLog('}');
+    c.style.paddingLeft = offset + 'px';
   }
 
   function showPublisherImplStatus (publisher) {
@@ -308,6 +337,8 @@
           mediaStream = media;
           publisher.attachStream(media);
           view.preview(media, true);
+          addEventLog('[Red5ProPublisher] gUM ->');
+          addObjectLog(forceQuality);
           resolve({
             publisher: publisher,
             view: view
@@ -334,15 +365,18 @@
       var mode = getPublishMode();
       var streamName = getStreamName();
       var quality = qualityUM[getQuality()];
+      var isRTC = publisher.getType().toLowerCase() === 'rtc';
       publisher.overlayOptions({
         host: window.targetHost,
         streamMode: mode,
         streamName: streamName,
-        width: quality.width,
-        height: quality.height
+        width: isRTC ? view.view.videoWidth : quality.video.width,
+        height: isRTC ? view.view.videoHeight : quality.video.height
       });
-      console.log('[live]:: Publish options:\r\n' + JSON.stringify(publisher._options, null, 2))
+      console.log('[live]:: Publish options:\r\n' + JSON.stringify(publisher._options, null, 2));
 
+      addEventLog('[Red5ProPublisher] configuration ->');
+      addObjectLog(publisher.getOptions());
       publisher.on('*', onPublisherEvent);
       publisher.publish(streamName)
         .then(function () {

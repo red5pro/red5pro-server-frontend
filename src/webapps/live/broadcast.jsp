@@ -1,8 +1,11 @@
 {{> jsp_header }}
 <%
   String host = ip;
-  String ice=null;
-  String tech=null;
+  String ice = null;
+  String tech = null;
+  Integer framerate = 4;
+  Integer audioBandwidth = 50;
+  Integer videoBandwidth = 256;
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
@@ -11,6 +14,19 @@
   if (request.getParameter("ice") != null) {
     ice = request.getParameter("ice");
   }
+
+  if (request.getParameter("framerate") != null) {
+    framerate = Integer.parseInt(request.getParameter("framerate"));
+  }
+
+  if (request.getParameter("audioBW") != null) {
+    audioBandwidth = Integer.parseInt(request.getParameter("audioBW"));
+  }
+
+  if (request.getParameter("videoBW") != null) {
+    videoBandwidth = Integer.parseInt(request.getParameter("videoBW"));
+  }
+
 %>
 <!doctype html>
 <html lang="eng">
@@ -210,10 +226,16 @@
     </div>
     {{> es6-script-includes }}
     <script>
-      var viewTech = "<%=tech%>";
-      if (viewTech && viewTech !== 'null') {
-        window.r5proViewTech = viewTech;
+      function assignIfDefined (value, prop) {
+        if (value && value !== 'null') {
+          window[prop] = value;
+        }
       }
+      assignIfDefined("<%=tech%>", 'r5proViewTech');
+      assignIfDefined(<%=framerate%>, 'r5proFramerate');
+      assignIfDefined(<%=audioBandwidth%>, 'r5proAudioBandwidth');
+      assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
+
       window.targetHost = '<%=ip%>';
       window.r5proIce = '<%=ice%>';
     </script>
