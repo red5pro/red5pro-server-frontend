@@ -26,9 +26,7 @@
       max: qFramerateMax
     }
   };
-  var iceServers = window.r5proIce && window.r5proIce === 'red5pro'
-    ? [{urls: 'stun:50.56.81.179:3478'}]
-    : undefined;
+  var iceServers = window.r5proIce;
 
   var protocol = window.location.protocol;
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
@@ -89,9 +87,7 @@
   var baseConfiguration = {
     host: window.targetHost,
     app: 'live',
-    iceServers: iceServers || (isMoz
-      ? [{urls: 'stun:stun.services.mozilla.com:3478'}]
-      : [{urls: 'stun:stun2.l.google.com:19302'}]),
+    iceServers: iceServers,
     bandwidth: {
       audio: qAudioBW,
       video: qVideoBW

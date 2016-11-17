@@ -41,6 +41,8 @@
         <title>Subscribing to <%= stream %></title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="google" value="notranslate" />
+        <script src="lib/jquery-1.12.4.min.js"></script>
+        <script src="script/r5pro-ice-utils.js"></script>
         <script>
           // writing params to global.
           window.targetHost = "<%=host%>";
@@ -49,7 +51,7 @@
           window.r5proBuffer = Number("<%=buffer%>");
           window.r5proVideoWidth = "<%=width%>";
           window.r5proVideoHeight = "<%=height%>";
-          window.r5proIce = '<%=ice%>';
+          window.r5proIce = window.determineIceServers('<%=ice%>');
           window.r5proAutosubscribe = true;
 
           var viewTech = "<%=tech%>";

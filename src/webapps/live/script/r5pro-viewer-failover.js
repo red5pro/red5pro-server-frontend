@@ -1,12 +1,9 @@
-/* global navigator, document, Promise */
+/* global document, Promise */
 (function (window, document, red5pro) {
   'use strict';
 
   red5pro.setLogLevel('debug');
- var isMoz = !!navigator.mozGetUserMedia;
-  var iceServers = window.r5proIce && window.r5proIce === 'red5pro'
-    ? [{urls: 'stun:50.56.81.179:3478'}]
-    : undefined;
+  var iceServers = window.r5proIce;
 
   var protocol = window.location.protocol;
   var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
@@ -27,9 +24,7 @@
     app: window.r5proApp,
     streamName: window.r5proStreamName,
     buffer: isNaN(window.r5proBuffer) ? 2 : window.r5proBuffer,
-    iceServers: iceServers || (isMoz
-      ? [{urls: 'stun:stun.services.mozilla.com:3478'}]
-      : [{urls: 'stun:stun2.l.google.com:19302'}])
+    iceServers: iceServers
   };
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,

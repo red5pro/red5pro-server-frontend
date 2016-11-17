@@ -1,13 +1,10 @@
-/* global document, navigator, Promise, jQuery */
+/* global document, Promise, jQuery */
 (function(window, document, $, red5pro) {
   'use strict';
 
   red5pro.setLogLevel('debug');
 
-  var isMoz = !!navigator.mozGetUserMedia;
-  var iceServers = window.r5proIce && window.r5proIce === 'red5pro'
-    ? [{urls: 'stun:50.56.81.179:3478'}]
-    : undefined;
+  var iceServers = window.r5proIce;
 
   var subscriber;
   var view;
@@ -28,9 +25,7 @@
     buffer: isNaN(buffer) ? 2 : buffer,
     embedWidth: '100%',
     embedHeight: '100%',
-    iceServers: iceServers || (isMoz
-      ? [{urls: 'stun:stun.services.mozilla.com:3478'}]
-      : [{urls: 'stun:stun2.l.google.com:19302'}])
+    iceServers: iceServers
   };
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,

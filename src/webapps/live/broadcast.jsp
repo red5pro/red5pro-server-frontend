@@ -255,6 +255,7 @@
       </div>
     </div>
     {{> es6-script-includes }}
+    <script src="script/r5pro-ice-utils.js"></script>
     <script>
       function assignIfDefined (value, prop) {
         if (value && value !== 'null') {
@@ -272,7 +273,7 @@
       assignIfDefined(<%=videoHeightMax%>, 'r5proVideoHeightMax');
 
       window.targetHost = '<%=ip%>';
-      window.r5proIce = '<%=ice%>';
+      window.r5proIce = window.determineIceServers('<%=ice%>');
     </script>
     <script src="lib/red5pro/red5pro-sdk.min.js"></script>
     <script src="script/r5pro-utils.js"></script>

@@ -247,6 +247,7 @@
     {{> es6-script-includes }}
     <script src="lib/jquery-1.12.4.min.js"></script>
     <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+    <script src="script/r5pro-ice-utils.js"></script>
     <script>
       // Put server vars globally.
       var viewTech = "<%=tech%>";
@@ -254,7 +255,7 @@
         window.r5proViewTech = viewTech;
       }
       window.targetHost = "<%=ip%>";
-      window.r5proIce = '<%=ice%>';
+      window.r5proIce = window.determineIceServers('<%=ice%>');
       window.r5proBuffer = Number("<%=buffer%>");
     </script>
     <script src="script/r5pro-subscriber-failover.js"></script>
