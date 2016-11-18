@@ -6,5 +6,9 @@
   "r5pro-api": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-api.git",
     "branch": "develop"
+  },
+  "r5pro-testbed": {
+    "repositoryUrl": "git@github.com:red5pro/red5pro-html5-sdk-testbed.git",
+    "branch": "master"
   }
 }
