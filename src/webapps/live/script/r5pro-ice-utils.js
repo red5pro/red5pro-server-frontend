@@ -1,7 +1,9 @@
+/* global navigator */
 (function (window) {
 
   'use strict';
 
+  var isMoz = !!navigator.mozGetUserMedia;
   var OPTION_R5P = 'red5pro';
   var OPTION_GOOG = 'google';
   var OPTION_MOZ = 'moz';
@@ -42,7 +44,8 @@
     {url:'stun:stun.voxgratia.org'},
     {url:'stun:stun.xten.com'}
   ];
-  var defaultServers = googleServers.concat(miscServers, mozServers, numbServers, r5proServers);
+  //  var defaultServers = googleServers.concat(miscServers, mozServers, numbServers, r5proServers);
+  var defaultServers = isMoz ? [mozServers[0]] : [googleServers[2]];
 
   function determineIceServers (option) {
     switch (option) {
