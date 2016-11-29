@@ -4,7 +4,6 @@
   'use strict';
 
   var isMoz = !!navigator.mozGetUserMedia;
-  var OPTION_R5P = 'red5pro';
   var OPTION_GOOG = 'google';
   var OPTION_MOZ = 'moz';
   var OPTION_NUMB = 'numb';
@@ -14,9 +13,6 @@
       credential: 'Red5Pro',
       username: 'jessica@infrared5.com'
     }
-  ];
-  var r5proServers = [
-    {urls: 'stun:50.56.81.179:3478'}
   ];
   var mozServers = [
     {urls: 'stun:stun.services.mozilla.com:3478'}
@@ -44,13 +40,11 @@
     {url:'stun:stun.voxgratia.org'},
     {url:'stun:stun.xten.com'}
   ];
-  //  var defaultServers = googleServers.concat(miscServers, mozServers, numbServers, r5proServers);
+  //  var defaultServers = googleServers.concat(miscServers, mozServers, numbServers);
   var defaultServers = isMoz ? [mozServers[0]] : [googleServers[2]];
 
   function determineIceServers (option) {
     switch (option) {
-      case OPTION_R5P:
-        return r5proServers;
       case OPTION_GOOG:
         return googleServers;
       case OPTION_MOZ:
