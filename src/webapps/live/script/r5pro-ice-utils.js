@@ -6,14 +6,7 @@
   var isMoz = !!navigator.mozGetUserMedia;
   var OPTION_GOOG = 'google';
   var OPTION_MOZ = 'moz';
-  var OPTION_NUMB = 'numb';
-  var numbServers = [
-    {
-      url: 'turn:numb.viagenie.ca',
-      credential: 'Red5Pro',
-      username: 'jessica@infrared5.com'
-    }
-  ];
+  var OPTION_ALL = 'all';
   var mozServers = [
     {urls: 'stun:stun.services.mozilla.com:3478'}
   ];
@@ -40,7 +33,7 @@
     {url:'stun:stun.voxgratia.org'},
     {url:'stun:stun.xten.com'}
   ];
-  //  var defaultServers = googleServers.concat(miscServers, mozServers, numbServers);
+  //  var defaultServers = googleServers.concat(miscServers, mozServers);
   var defaultServers = isMoz ? [mozServers[0]] : [googleServers[2]];
 
   function determineIceServers (option) {
@@ -49,8 +42,8 @@
         return googleServers;
       case OPTION_MOZ:
         return mozServers;
-      case OPTION_NUMB:
-        return numbServers;
+      case OPTION_ALL:
+        return googleServers.concat(miscServers, mozServers);
       default:
         return defaultServers;
     }
