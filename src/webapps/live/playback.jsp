@@ -10,14 +10,18 @@
   //VOD streams list
   String host = ip;
   String protocol = request.getScheme();
-  String ice=null;
-  String tech=null;
+  String ice = null;
+  String tech = null;
+  String playlistFlag = "0";
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
   }
   if (request.getParameter("ice") != null) {
     ice = request.getParameter("ice");
+  }
+  if (request.getParameter("playlists") != null) {
+    playlistFlag = request.getParameter("playlists");
   }
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
@@ -279,10 +283,13 @@
       }
 
       var getPlaylists = function (data, cb) {
-        // Note: Just return without playlist request.
-        // :: Will need to update with HLS playback feature in future.
-        cb(data)
-//        getItemList(data, playlistServletURL, 'playlists', 'hls', cb);
+        var doInclude = "<%=playlistFlag%>" == "1";
+        if (doInclude) {
+          getItemList(data, playlistServletURL, 'playlists', 'hls', cb);
+        }
+        else {
+          cb(data);
+        }
       };
 
       var populateListing = function (data) {
