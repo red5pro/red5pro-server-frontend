@@ -273,7 +273,7 @@
         req.onerror = function () {
           cb(data);
         }
-        req.timeout = 60000;
+        req.timeout = 60000 * 5; // 5 minutes
         req.open('GET', url, true);
         req.send();
       };
