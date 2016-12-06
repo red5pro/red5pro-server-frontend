@@ -29,12 +29,12 @@
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,
     port: getSocketLocationFromProtocol(protocol).port,
-    subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16),
-    bandwidth: {
-      audio: 50,
-      video: 256,
-      data: 30 * 1000 * 1000
-    }
+    subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16)
+    //    , bandwidth: {
+    //      audio: 50,
+    //      video: 256,
+    //      data: 30 * 1000 * 1000
+    //    }
   };
   var rtmpConfig = {
     protocol: 'rtmp',
