@@ -9,6 +9,8 @@
     String height="100%";
     String ice=null;
     String tech=null;
+    Integer audioBandwidth = -1;
+    Integer videoBandwidth = -1;
 
     if (request.getParameter("app") != null) {
       app = request.getParameter("app");
@@ -33,6 +35,14 @@
     if (request.getParameter("ice") != null) {
       ice = request.getParameter("ice");
     }
+
+    if (request.getParameter("audioBW") != null) {
+      audioBandwidth = Integer.parseInt(request.getParameter("audioBW"));
+    }
+
+    if (request.getParameter("videoBW") != null) {
+      videoBandwidth = Integer.parseInt(request.getParameter("videoBW"));
+    }
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -54,10 +64,14 @@
           window.r5proIce = window.determineIceServers('<%=ice%>');
           window.r5proAutosubscribe = true;
 
-          var viewTech = "<%=tech%>";
-          if (viewTech && viewTech !== 'null') {
-            window.r5proViewTech = viewTech;
+          function assignIfDefined (value, prop) {
+            if (value && value !== 'null') {
+              window[prop] = value;
+            }
           }
+          assignIfDefined("<%=tech%>", 'r5proViewTech');
+          assignIfDefined(<%=audioBandwidth%>, 'r5proAudioBandwidth');
+          assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
         </script>
         <link rel="stylesheet" href="lib/videojs/video-js.min.css">
         <script src="lib/webrtc/adapter.js"></script>

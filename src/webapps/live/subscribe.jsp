@@ -13,6 +13,8 @@
   String tech=null;
   String ice=null;
   String buffer = "2";
+  Integer audioBandwidth = -1;
+  Integer videoBandwidth = -1;
 
   if (request.getParameter("buffer") != null) {
     buffer = request.getParameter("buffer");
@@ -23,6 +25,14 @@
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
+  }
+
+  if (request.getParameter("audioBW") != null) {
+    audioBandwidth = Integer.parseInt(request.getParameter("audioBW"));
+  }
+
+  if (request.getParameter("videoBW") != null) {
+    videoBandwidth = Integer.parseInt(request.getParameter("videoBW"));
   }
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
@@ -249,11 +259,15 @@
     <script src="lib/red5pro/red5pro-sdk.min.js"></script>
     <script src="script/r5pro-ice-utils.js"></script>
     <script>
-      // Put server vars globally.
-      var viewTech = "<%=tech%>";
-      if (viewTech && viewTech !== 'null') {
-        window.r5proViewTech = viewTech;
+      function assignIfDefined (value, prop) {
+        if (value && value !== 'null') {
+          window[prop] = value;
+        }
       }
+      assignIfDefined("<%=tech%>", 'r5proViewTech');
+      assignIfDefined(<%=audioBandwidth%>, 'r5proAudioBandwidth');
+      assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
+
       window.targetHost = "<%=ip%>";
       window.r5proIce = window.determineIceServers('<%=ice%>');
       window.r5proBuffer = Number("<%=buffer%>");

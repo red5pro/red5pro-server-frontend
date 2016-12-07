@@ -10,8 +10,8 @@
   var qVideoWidthMax = window.r5proVideoWidthMax || 352;
   var qVideoHeightMin = window.r5proVideoHeightMin || 240;
   var qVideoHeightMax = window.r5proVideoHeightMax || 288;
-  var qAudioBW = window.r5proAudioBandwidth || 50;
-  var qVideoBW = window.r5proVideoBandwidth || 256;
+  var qAudioBW = window.r5proAudioBandwidth || -1;//50;
+  var qVideoBW = window.r5proVideoBandwidth || -1;//256;
   var forceVideo = {
     width: {
       min: qVideoWidthMin,
@@ -84,14 +84,24 @@
     video: isMoz ? true : forceVideo
   };
 
+  var desiredBandwidth = (function() {
+    var bw;
+    if (qAudioBW != -1 || qVideoBW != -1) {
+      bw = {};
+      if (qAudioBW != -1) {
+        bw.audio = qAudioBW;
+      }
+      if (qVideoBW != -1) {
+        bw.video = qVideoBW;
+      }
+    }
+    return bw;
+  })();
   var baseConfiguration = {
     host: window.targetHost,
     app: 'live',
     iceServers: iceServers,
-    bandwidth: {
-      audio: qAudioBW,
-      video: qVideoBW
-    }
+    bandwidth: desiredBandwidth
   };
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,
@@ -257,6 +267,9 @@
     var c = addEventLog('{');
     c.style.paddingLeft = offset + 'px';
     Object.keys(object).forEach(function(key) {
+      if (typeof object[key] === 'undefined') {
+        return;
+      }
       if (object[key].toString() === '[object Object]') {
         p = addEventLog(key + ': ');
         p.style.paddingLeft = (offset+10) + 'px';
