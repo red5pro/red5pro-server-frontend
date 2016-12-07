@@ -253,8 +253,8 @@ There are several Query Parameters you can add to the URL to modify settings whe
 | --- | --- | --- | --- |
 | `view` | String | Target tech view to display. `rtc`, `rtmp` or `hls` (Subscriber only). | Allows SDK to failover. |
 | `ice` | String | Target ICE servers to use in WebRTC transactions. `google` or `moz` | Allows browser to choose. |
-| `audioBW` | Integer | Requested Audio Bandwidth | `undefined` (will not attempt to set bandwidth limit) |
-| `videoBW` | Integer | Request Video Bandwidth | `undefined` (will not attempt to set bandwidth limit) |
+| `audioBW` | Integer | Requested Audio Bandwidth | `undefined` _(will not attempt to set bandwidth limit)_ |
+| `videoBW` | Integer | Request Video Bandwidth | `undefined` _(will not attempt to set bandwidth limit)_ |
 | `videoWidthMin` | Integer | Request Minimum Video Width  (Publisher only) | `320` |
 | `videoHeightMin` | Integer | Request Minimum Video Height (Publisher only) | `240` |
 | `videoWidthMax` | Integer | Request Maximum Video Width (Publisher only) | `352` |
