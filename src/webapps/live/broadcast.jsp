@@ -5,8 +5,8 @@
   String tech = null;
   Integer framerateMin = 8;
   Integer framerateMax = 24;
-  Integer audioBandwidth = -1;
-  Integer videoBandwidth = -1;
+  Integer audioBandwidth = 56;
+  Integer videoBandwidth = 512;
   Integer videoWidthMin = 320;
   Integer videoWidthMax = 352;
   Integer videoHeightMin = 240;
