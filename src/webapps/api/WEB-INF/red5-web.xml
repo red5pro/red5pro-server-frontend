@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/context
+						http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+	<context:annotation-config />
+
+	
+	<!--
+	Defines a properties file for dereferencing variables
+	-->
+	<bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="location" value="/WEB-INF/red5-web.properties" />
+	</bean>
+	
+	
+	
+	
+	
+	<!--
+	Defines the web context
+	-->
+	<bean id="web.context" class="org.red5.server.Context" 
+		autowire="byType" />
+	
+	
+	
+	
+	<!--
+	Defines the web scopes
+	-->
+	<bean id="web.scope" class="org.red5.server.scope.WebScope"
+		 init-method="register">
+		<property name="server" ref="red5.server" />
+		<property name="parent" ref="global.scope" />
+		<property name="context" ref="web.context" />
+		<property name="handler" ref="web.handler" />
+		<property name="contextPath" value="${webapp.contextPath}" />
+		<property name="virtualHosts" value="${webapp.virtualHosts}" />
+	</bean>
+	
+	
+	<!--  custom security implementation  -->
+	<import resource="security-config.xml" />
+	
+	
+
+	
+	<!--  core api services provider -->
+	<bean id="apiServices" class=" com.red5pro.services.api.impl.ApiServices" scope="singleton">
+		<property name="webScope" ref="web.scope" />
+	</bean>
+	
+
+	
+	<!--
+	Defines the web handler which acts as an applications endpoint
+	-->
+	<bean id="web.handler" class="com.red5pro.services.api.Red5Application" >
+		<property name="apiServices" ref="apiServices" />
+	</bean>	
+	
+	
+	<bean id="playbackSecurity" class="com.red5pro.services.api.security.PlaybackSecurity" init-method="init">
+		<property name="application" ref="web.handler"/>
+	</bean>
+	
+	
+	<bean id="publishSecurity" class="com.red5pro.services.api.security.PublishSecurity" init-method="init">
+		<property name="application" ref="web.handler"/>
+	</bean>
+	
+	
+	<bean id="soSecurity" class="com.red5pro.services.api.security.SharedObjectSecurity" init-method="init">
+		<property name="application" ref="web.handler"/>
+	</bean>
+	
+
+
+	<bean id="securityLoader" class="com.red5pro.services.api.security.SecurityLoader" init-method="init">
+		<property name="application" ref="web.handler"/>
+		<property name="playbackSecurity" ref="playbackSecurity"/>
+		<property name="publishSecurity" ref="publishSecurity"/>
+		<property name="sharedObjectSecurity" ref="soSecurity"/>
+	</bean>
+	
+
+	
+	<bean id="mappableMethodScanner" class="com.red5pro.services.api.ws.MessageBrokerScanner" init-method="scan">
+		<property name="scanPath" value="com.red5pro.services.api.ws.broker" /> <!--  no recursive scan supported on sub-packages -->
+		<property name="apiServices" ref="apiServices" />
+	</bean>
+				
+				
+				
+	<bean id="resolver" class="com.red5pro.services.api.ws.MessageResolver" init-method="init">
+			<property name="scanner" ref="mappableMethodScanner" />
+	</bean>
+	
+	
+	
+	<!-- WebSocket scope with our listeners -->
+    <bean id="webSocketScopeDefault" class="org.red5.net.websocket.WebSocketScope">
+        <property name="scope" ref="web.scope" />
+        <property name="path" value="default" />
+        <property name="listeners">
+            <list>
+                <bean id="channelListener" class="com.red5pro.services.api.ws.WebSocketApiChannelListener">
+			         <property name="protocol" value="api" />			         
+			         <property name="resolver" ref="resolver" /> 
+			     </bean>
+            </list>
+        </property>
+    </bean>
+	
+ 
+</beans>
