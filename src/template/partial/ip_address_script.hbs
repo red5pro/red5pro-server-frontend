@@ -4,7 +4,8 @@
   // Host IP state
   var currentIp = "<%= ip %>";
   var hasValidIp = <%= ipExists %>;
-  var suggestHostIp = window.location.hostname;
+  var isSecureProtocol = <%= isSecure %>;
+  var hostname = "<%= hostname %>";
   var ipAddressField = document.getElementById('ip-address-field');
   var validIpRegex = /^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$/gi;
 
@@ -72,7 +73,9 @@
       }
     };
     addIpToList(localIp);
-    addIpToList(suggestHostIp);
+    if (localIp !== hostname) {
+      addIpToList(hostname);
+    }
     if(items.length > 0) {
       ipSuggestionsTable.innerHTML = items.join('');
     }
