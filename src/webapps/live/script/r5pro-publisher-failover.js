@@ -6,12 +6,12 @@
   var isMoz = !!navigator.mozGetUserMedia;
   var qFramerateMin = window.r5proFramerateMin || 8;
   var qFramerateMax = window.r5proFramerateMax || 24;
-  var qVideoWidthMin = window.r5proVideoWidthMin || 320;
-  var qVideoWidthMax = window.r5proVideoWidthMax || 352;
-  var qVideoHeightMin = window.r5proVideoHeightMin || 240;
-  var qVideoHeightMax = window.r5proVideoHeightMax || 288;
+  var qVideoWidthMin = window.r5proVideoWidthMin || 640;
+  var qVideoWidthMax = window.r5proVideoWidthMax || 640;
+  var qVideoHeightMin = window.r5proVideoHeightMin || 480;
+  var qVideoHeightMax = window.r5proVideoHeightMax || 480;
   var qAudioBW = window.r5proAudioBandwidth || 56;
-  var qVideoBW = window.r5proVideoBandwidth || 512;
+  var qVideoBW = window.r5proVideoBandwidth || 1000;
   var forceVideo = {
     width: {
       min: qVideoWidthMin,
