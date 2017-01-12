@@ -6,11 +6,11 @@
   Integer framerateMin = 8;
   Integer framerateMax = 24;
   Integer audioBandwidth = 56;
-  Integer videoBandwidth = 512;
-  Integer videoWidthMin = 320;
-  Integer videoWidthMax = 352;
-  Integer videoHeightMin = 240;
-  Integer videoHeightMax = 288;
+  Integer videoBandwidth = 1000;
+  Integer videoWidthMin = 640;
+  Integer videoWidthMax = 640;
+  Integer videoHeightMin = 480;
+  Integer videoHeightMax = 480;
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
