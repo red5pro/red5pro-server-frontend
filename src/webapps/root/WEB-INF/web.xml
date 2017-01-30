@@ -16,7 +16,31 @@
         <servlet-name>cluster</servlet-name>
         <url-pattern>/cluster</url-pattern>
     </servlet-mapping>
+	
+	
+	 <!-- Clustering api servlet - start - [ Requires clustering to be enabled ] -->
     
+    <servlet>
+		<servlet-name>clusterapi</servlet-name>
+		<servlet-class>com.red5pro.cluster.plugin.api.ClusteringApiServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+		<servlet-name>clusterapi</servlet-name>
+		<url-pattern>/cluster/api</url-pattern>
+    </servlet-mapping>
+	
+	<servlet>
+		<servlet-name>gateway</servlet-name>
+		<servlet-class>
+			org.red5.server.net.servlet.AMFGatewayServlet
+		</servlet-class>
+		<load-on-startup>-1</load-on-startup>
+	</servlet>	
+	
+	<!-- Clustering api servlet - end -  -->
+    
+	
 	<servlet>
 		<servlet-name>gateway</servlet-name>
 		<servlet-class>
