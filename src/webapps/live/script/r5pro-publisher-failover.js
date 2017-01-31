@@ -209,7 +209,7 @@
   });
 
   function onBitrateUpdate (bitrate, packets) {
-    statisticsField.innerText = 'Birate: ' + Math.floor(bitrate) + '. Packets Sent: ' + packets + '.';
+    statisticsField.innerText = 'Bitrate: ' + Math.floor(bitrate) + '. Packets Sent: ' + packets + '.';
   }
 
   function onQualitySelectChange (event) {
