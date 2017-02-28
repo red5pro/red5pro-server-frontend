@@ -133,7 +133,7 @@
   }
 
   function setup (dataStreamName) {
-    var parentContainer = $('li[data-stream=' + dataStreamName + ']').get(0);
+    var parentContainer = $('li[data-stream="' + dataStreamName + '"]').get(0);
     if (parentContainer) {
       addPlayer($videoTemplate, parentContainer);
     }
@@ -177,7 +177,7 @@
   var viewHandler = function viewStream (value) {
     var dataString = decodeURIComponent($('li[data-stream="' + value + '"]').data('streamitem'));
     var streamData = JSON.parse(dataString);
-    console.log('[playback]:: Selected stream data -\r\n' + JSON.stringify(streamData), null, 2);
+    console.log('[playback]:: Selected stream data -\r\n' + JSON.stringify(streamData, null, 2));
 
     teardown();
     startSubscription(streamData);
