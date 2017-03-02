@@ -264,6 +264,12 @@ There are several Query Parameters you can add to the URL to modify settings whe
 
 > The publisher-only min/max values are desired settings mostly for WebRTC. See [https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia).
 
+Device Constraints
+
+The getSupportedConstraints() method of the MediaDevices interface returns an object based on the MediaTrackSupportedConstraints dictionary, whose member fields each specify one of the constrainable properties the user agent understands. 
+
+[Information and Test page](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getSupportedConstraints)
+
 ## Usage
 To use a query param, append it to the URL with the first parameter prepended with `?` and following parameters prepended with `&`.
 
