@@ -11,31 +11,31 @@
   Integer videoWidthMax = 640;
   Integer videoHeightMin = 480;
   Integer videoHeightMax = 480;
+  // Echo cancellation - chrome and firefox = echoCancellation
+  Boolean echoCancellation = true;
+  // Auto gain - chrome = googAutoGainControl; ff = mozAutoGainControl
+  Boolean autoGainControl = false;
+  // Noise suppresion - chrome = googNoiseSuppression; ff = mozNoiseSuppression
+  Boolean noiseSuppression = true;
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
   }
-
   if (request.getParameter("ice") != null) {
     ice = request.getParameter("ice");
   }
-
   if (request.getParameter("framerateMin") != null) {
     framerateMin = Integer.parseInt(request.getParameter("framerateMin"));
   }
-
   if (request.getParameter("framerateMax") != null) {
     framerateMax = Integer.parseInt(request.getParameter("framerateMax"));
   }
-
   if (request.getParameter("audioBW") != null) {
     audioBandwidth = Integer.parseInt(request.getParameter("audioBW"));
   }
-
   if (request.getParameter("videoBW") != null) {
     videoBandwidth = Integer.parseInt(request.getParameter("videoBW"));
   }
-
   if (request.getParameter("videoWidthMin") != null) {
     videoWidthMin = Integer.parseInt(request.getParameter("videoWidthMin"));
   }
@@ -47,6 +47,16 @@
   }
   if (request.getParameter("videoHeightMax") != null) {
     videoHeightMax = Integer.parseInt(request.getParameter("videoHeightMax"));
+  }
+  // Audio constraints
+  if (request.getParameter("echoCancellation") != null) {
+    echoCancellation = Boolean.valueOf(request.getParameter("echoCancellation"));
+  }
+  if (request.getParameter("autoGainControl") != null) {
+    autoGainControl = Boolean.valueOf(request.getParameter("autoGainControl"));
+  }
+  if (request.getParameter("noiseSuppression") != null) {
+    noiseSuppression = Boolean.valueOf(request.getParameter("noiseSuppression"));
   }
 
 %>
@@ -271,6 +281,9 @@
       assignIfDefined(<%=videoWidthMax%>, 'r5proVideoWidthMax');
       assignIfDefined(<%=videoHeightMin%>, 'r5proVideoHeightMin');
       assignIfDefined(<%=videoHeightMax%>, 'r5proVideoHeightMax');
+      assignIfDefined(<%=echoCancellation%>, 'r5proEchoCancellation');
+      assignIfDefined(<%=autoGainControl%>, 'r5proAutoGainControl');
+      assignIfDefined(<%=noiseSuppression%>, 'r5proNoiseSuppression');
 
       window.targetHost = '<%=ip%>';
       window.r5proIce = window.determineIceServers('<%=ice%>');

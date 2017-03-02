@@ -12,6 +12,22 @@
   var qVideoHeightMax = window.r5proVideoHeightMax || 480;
   var qAudioBW = window.r5proAudioBandwidth || 56;
   var qVideoBW = window.r5proVideoBandwidth || 1000;
+  var qEchoCancellation = window.r5proEchoCancellation || true;
+  var qAutoGainControl = window.r5proAutoGainControl || false;
+  var qNoiseSuppression = window.r5proNoiseSuppression || true;
+  var audioConstraints = isMoz ? {
+    optional: [{
+      echoCancellation: qEchoCancellation,
+      mozAutoGainControl: qAutoGainControl,
+      mozNoiseSuppression: qNoiseSuppression
+    }]
+  } : {
+    optional: [
+      {echoCancellation: qEchoCancellation},
+      {googAutoGainControl: qAutoGainControl},
+      {googNoiseSuppression: qNoiseSuppression}
+    ]  
+  };
   var forceVideo = {
     width: {
       min: qVideoWidthMin,
@@ -58,21 +74,21 @@
   var selectedQuality = 'mid';
   var qualityUM = {
     high: {
-      audio: true,
+      audio: audioConstraints,
       video: {
         width: 1280,
         height: 720
       }
     },
     mid: {
-      audio: true,
+      audio: audioConstraints,
       video: {
         width: 640,
         height: 480
       }
     },
     low: {
-      audio: true,
+      audio: audioConstraints,
       video: {
         width: 320,
         height: 240
@@ -80,7 +96,7 @@
     }
   };
   var forceQuality = {
-    audio: true,
+    audio: audioConstraints,
     video: isMoz ? true : forceVideo
   };
 
