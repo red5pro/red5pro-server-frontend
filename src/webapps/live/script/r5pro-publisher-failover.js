@@ -11,7 +11,7 @@
   var qVideoHeightMin = window.r5proVideoHeightMin || 480;
   var qVideoHeightMax = window.r5proVideoHeightMax || 480;
   var qAudioBW = window.r5proAudioBandwidth || 56;
-  var qVideoBW = window.r5proVideoBandwidth || 1000;
+  var qVideoBW = window.r5proVideoBandwidth || 750;
   var forceVideo = {
     width: {
       min: qVideoWidthMin,

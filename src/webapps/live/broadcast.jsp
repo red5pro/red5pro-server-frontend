@@ -6,7 +6,7 @@
   Integer framerateMin = 8;
   Integer framerateMax = 24;
   Integer audioBandwidth = 56;
-  Integer videoBandwidth = 1000;
+  Integer videoBandwidth = 750;
   Integer videoWidthMin = 640;
   Integer videoWidthMax = 640;
   Integer videoHeightMin = 480;
