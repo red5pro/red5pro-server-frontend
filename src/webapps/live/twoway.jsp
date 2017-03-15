@@ -1,139 +1,95 @@
-{{> jsp_header }}
-<%
-  String host = ip;
-%>
-<!doctype html>
-<html lang="eng">
-  <head>
-    {{> head_meta }}
-    {{> resources }}
-    <title>Two-Way Live Streaming with the Red5 Pro Server!</title>
-    <style>
-      object:focus {
-        outline:none;
-      }
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0014)about:internet -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"> 
+    <!-- 
+    Smart developers always View Source. 
+    
+    This application was built using Adobe Flex, an open source framework
+    for building rich Internet applications that get delivered via the
+    Flash Player or to desktops via Adobe AIR. 
+    
+    Learn more about Flex at http://flex.org 
+    // -->
+    <head>
+        <title>Two-Way</title>
+        <meta name="google" value="notranslate" />         
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <!-- Include CSS to eliminate any default margins/padding and set the height of the html element and 
+             the body element to 100%, because Firefox, or any Gecko based browser, interprets percentage as 
+             the percentage of the height of its parent container, which has to be set explicitly.  Fix for
+             Firefox 3.6 focus border issues.  Initially, don't display flashContent div so it won't show 
+             if JavaScript disabled.
+        -->
+        <style type="text/css" media="screen"> 
+            html, body  { height:100%; }
+            body { margin:0; padding:0; overflow:auto; text-align:center; 
+                   background-color: #989696; }   
+            object:focus { outline:none; }
+            #flashContent { display:none; }
+        </style>
+        
+        <!-- Enable Browser History by replacing useBrowserHistory tokens with two hyphens -->
 
-      #flashContent {
-        border-radius: 5px;
-        background-color: #e3e3e3;
-        padding: 10px;
-      }
-
-      #live-page-subcontent {
-        text-align: center;
-        position: relative;
-        width: 100%;
-        height: 230px;
-        overflow: hidden;
-      }
-
-      #live-container {
-        position: absolute;
-      }
-
-      #live-image-container {
-        width: 540px;
-      }
-
-      #live-page-img {
-        width: 100%;
-      }
-    </style>
-    <script type="text/javascript" src="lib/swfobject/swfobject.js"></script>
-    <script type="text/javascript">
-      // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.
-      var swfVersionStr = "11.1.0";
-      // To use express install, set to playerProductInstall.swf, otherwise the empty string.
-      var xiSwfUrlStr = "lib/swfobject/playerProductInstall.swf";
-      var flashvars = {
-        host: "<%= host %>"
-      };
-      var params = {};
-      params.quality = "high";
-      params.bgcolor = "#989696";
-      params.allowscriptaccess = "always";
-      params.allowfullscreen = "true";
-      var attributes = {};
-      attributes.id = "Main";
-      attributes.name = "Broadcaster";
-      attributes.align = "middle";
-      if(swfobject.hasFlashPlayerVersion("11.1.0")) {
-        swfobject.embedSWF(
-            "Main.swf", "flashContent",
-            "100%", "600",
-            swfVersionStr, xiSwfUrlStr,
-            flashvars, params, attributes);
-        // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
-        swfobject.createCSS("#flashContent", "display:block; text-align:left; padding: 0; background-color: #ffffff");
-      }
-      else {
-        // nada.
-
-      }
-  </script>
-  </head>
-  <body>
-    {{> header }}
-    <div class="container main-container clear-fix">
-      <div id="menu-section">
-        {{> menu }}
-      </div>
-      <div id="content-section">
-        <div>
-          <div class="clear-fix">
-            <p class="left">
-                <a class="red5pro-header-link" href="/">
-                  <img class="red5pro-logo-page" src="images/red5pro_logo.svg">
-               </a>
-            </p>
-          </div>
-          <h2 class="tag-line">TWO-WAY LIVE STREAMING EXAMPLE</h2>
-        </div>
-        <div id="live-page-subcontent" class="clear-fix">
-          <div id="live-image-container">
-            <img id="live-page-img" src="images/red5pro_live_broadcast.png">
-          </div>
-        </div>
-        <div class="content-section-story">
-          <p>To start a Broadcast session:
-            <ol>
-                    <li>Allow device access.</li>
-                    <li>Provide a <strong>stream name</strong>.</li>
-                    <li>Click <strong>Ready</strong>.</li>
-                    <li>Wait for the <strong>stream name</strong> to show up in the drop-down element.</li>
-                    <li>Click <strong>Subscribe</strong>.</li>
-            </ol>
-          </p>
-        <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough
+            
+        <script type="text/javascript" src="swf/swfobject.js"></script>
+        <script type="text/javascript">
+            // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. 
+            var swfVersionStr = "11.1.0";
+            // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
+            var xiSwfUrlStr = "swf/playerProductInstall.swf";
+            var flashvars = {};
+            var params = {};
+            params.quality = "high";
+            params.bgcolor = "#989696";
+            params.allowscriptaccess = "sameDomain";
+            params.allowfullscreen = "true";
+            flashvars.host = location.host;
+            var attributes = {};
+            attributes.id = "Main";
+            attributes.name = "Main";
+            attributes.align = "middle";
+            swfobject.embedSWF(
+                "Main.swf", "flashContent", 
+                "800", "600", 
+                swfVersionStr, xiSwfUrlStr, 
+                flashvars, params, attributes);
+            // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
+            swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+        </script>
+    </head>
+    <body>
+        <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough 
              JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
              when JavaScript is disabled.
         -->
         <div id="flashContent">
             <p>
-                To view this page ensure that Adobe Flash Player version 11.1.0 or greater is installed.
+                To view this page ensure that Adobe Flash Player version 
+                11.1.0 or greater is installed. 
             </p>
-            <script type="text/javascript">
-                var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");
-                document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='"
-                                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" );
-            </script>
+            <script type="text/javascript"> 
+                var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
+                document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
+                                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
+            </script> 
         </div>
+        
         <noscript>
-            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="Broadcaster">
+            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="800" height="600" id="Main">
                 <param name="movie" value="Main.swf" />
                 <param name="quality" value="high" />
                 <param name="bgcolor" value="#989696" />
                 <param name="allowScriptAccess" value="sameDomain" />
                 <param name="allowFullScreen" value="true" />
                 <!--[if !IE]>-->
-                <object type="application/x-shockwave-flash" data="Main.swf" width="100%" height="100%">
+                <object type="application/x-shockwave-flash" data="Main.swf" width="800" height="600">
                     <param name="quality" value="high" />
                     <param name="bgcolor" value="#989696" />
                     <param name="allowScriptAccess" value="sameDomain" />
                     <param name="allowFullScreen" value="true" />
                 <!--<![endif]-->
                 <!--[if gte IE 6]>-->
-                    <p>
+                    <p> 
                         Either scripts and active content are not permitted to run or Adobe Flash Player version
                         11.1.0 or greater is not installed.
                     </p>
@@ -145,33 +101,6 @@
                 </object>
                 <!--<![endif]-->
             </object>
-          </noscript>
-          <br><br>
-          <hr class="top-padded-rule" />
-          <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>
-          <p>You can download the Streaming SDKs from your <a class="link" href="http://account.red5pro.com/download" target="_blank">Red5 Pro Accounts</a> page.</p>
-          <p>Please visit the online <a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Red5 Pro Documentation</a> for further information about integrating the streaming SDKs into your own native application!</p>
-          <hr class="top-padded-rule" />
-          {{> applications }}
-          <hr class="top-padded-rule" />
-          {{> additional_info }}
-        </div>
-      </div>
-    </div>
-    <script>
-      (function(window, document) {
-
-       function accessSWF() {
-          return document.getElementById("Broadcaster");
-        }
-
-        function handleBroadcastIpChange(value) {
-          accessSWF().resetHost(value);
-        }
-        window.r5pro_registerIpChangeListener(handleBroadcastIpChange);
-
-       }(this, document));
-    </script>
-    {{> footer }}
+        </noscript>     
    </body>
 </html>
