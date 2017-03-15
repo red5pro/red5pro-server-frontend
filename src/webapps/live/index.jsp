@@ -50,7 +50,7 @@
           </div>
         </div>
         <div class="content-section-story">
-          <p>Build Facetime-like experiences that connect seamlessly across platforms including Android, iOS, Flash and HTML5 (<span class="red-text"><em>coming soon</em></span>).</p>
+          <p>Build Facetime-like experiences that connect seamlessly across platforms including Android, iOS, HTML5 and Flash.</p>
           <div>
             <h3><a class="broadcast-link link" href="broadcast.jsp?host=<%= ip %>">Start Broadcasting</a></h3>
             <p>We have provided an easy way for you to start a Red5 Pro Broadcast session.</p>

@@ -8,8 +8,11 @@
   Pattern addressPattern = Pattern.compile("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$");
 
   String ip = null;
+  String hostname = request.getServerName();
+  String scheme = request.getScheme();
   String localIp = NetworkUtil.getLocalIpAddress();
   boolean ipExists = false;
+  boolean isSecure = scheme == "https";
 
   // Flip localIp to null if unknown.
   localIp = addressPattern.matcher(localIp).find() ? localIp : null;
@@ -70,6 +73,12 @@
       // If failure in AWS service and/or IP still null => flag to show alert.
     }
 
+  }
+
+  if (isSecure) {
+    String tmpIP = ip;
+    ip = hostname;
+    hostname = tmpIP;
   }
 
   ipExists = ip != null && !ip.isEmpty();

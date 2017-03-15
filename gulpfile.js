@@ -16,15 +16,18 @@ var srcDir = [process.cwd(), 'src'].join(path.sep);
 var distDir = [process.cwd(), 'dist'].join(path.sep);
 var scriptsDir = [process.cwd(), 'scripts'].join(path.sep);
 var webappBuildScriptDir = [scriptsDir, 'task', 'webapp'].join(path.sep);
-var deployDir = nconf.get('red5pro-server-local')
+var deployWebappDir = nconf.get('red5pro-server-local')
   ? [nconf.get('red5pro-server-local'), 'webapps'].join(path.sep)
   : [process.cwd(), 'red5pro-server', 'webapps'].join(path.sep);
+var deployLibDir = nconf.get('red5pro-server-local')
+  ? [nconf.get('red5pro-server-local'), 'lib'].join(path.sep)
+  : [process.cwd(), 'red5pro-server', 'lib'].join(path.sep);
 
 // Import build task
 var buildSetup = require([taskDirectory, 'build.js'].join(path.sep))(srcDir, distDir, webappBuildScriptDir, gulp);
 
 // Import deploy task
-var deploySetup = require([taskDirectory, 'deploy.js'].join(path.sep))(distDir, deployDir, gulp);
+var deploySetup = require([taskDirectory, 'deploy.js'].join(path.sep))(distDir, deployWebappDir, deployLibDir, gulp);
 
 // Import watch task
 var watchSetup = require([taskDirectory, 'watch.js'].join(path.sep))(srcDir, distDir, gulp, 'deploy');
