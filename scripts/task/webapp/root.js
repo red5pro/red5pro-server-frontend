@@ -1,6 +1,5 @@
 'use strict';
 
-var path = require('path');
 var gutil = require('gulp-util');
 var WebAppBuilder = require('./WebAppBuilder');
 
@@ -21,7 +20,7 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
       Builder.generateIndexPage(cb);
     });
     gulp.task(copyContentsTaskLabel, [generateTaskLabel], function(cb) {
-      Builder.copyWebappContents(['index.jsp', 'license.jsp'], cb);
+      Builder.copyWebappContents(['index.jsp'], cb);
     });
     gulp.task(copyStaticTaskLabel, [copyContentsTaskLabel], function(cb) {
       Builder.copyStatic([], cb);

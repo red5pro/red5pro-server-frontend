@@ -24,13 +24,7 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
       // Add relative file paths to exclude to the array.
       // * File paths are relative to the src/webapps/<your-webapp> directory
       Builder.copyWebappContents([
-        'flash.jsp',
-        'index.jps',
-        'playerProductInstall.swf',
-        'Red5ProServerTests.swf',
-        'SimplePlayer.swf',
-        'streams.jsp',
-        'swfobject.js'
+        'index.jsp'
       ], cb);
     });
 
