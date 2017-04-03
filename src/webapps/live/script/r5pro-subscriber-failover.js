@@ -117,15 +117,17 @@
     addEventLogToField(document.getElementById('event-log-field'), eventLog);
 
     if (event.type === 'Subscribe.Metadata') {
-      var value = event.data.orientation;
-      if (subscriber.getType().toLowerCase() === 'hls' ||
-          subscriber.getType().toLowerCase() === 'rtc') {
-        var container = document.getElementById('video-holder');
-        var element = document.getElementById('red5pro-subscriber-video');
-        if (container) {
-          container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
-          if (subscriber.getType().toLowerCase() === 'hls') {
-            element.style.height = '100%'
+      if (event.data.hasOwnProperty('orientation')) {
+        var value = event.data.orientation;
+        if (subscriber.getType().toLowerCase() === 'hls' ||
+            subscriber.getType().toLowerCase() === 'rtc') {
+          var container = document.getElementById('video-holder');
+          var element = document.getElementById('red5pro-subscriber-video');
+          if (container) {
+            container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
+            if (subscriber.getType().toLowerCase() === 'hls') {
+              element.style.height = '100%'
+            }
           }
         }
       }
