@@ -130,6 +130,9 @@
         }
       }
     }
+    else if (event.type === 'Subscriber.Connection.Closed') {
+      updateStatusField(document.getElementById('status-field'), 'Connection has been Closed!');
+    }
   }
 
   function addPlayer(tmpl, container) {
