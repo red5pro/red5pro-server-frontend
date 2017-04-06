@@ -303,6 +303,30 @@
     var eventLog = '[Red5ProPublisher] ' + event.type + '.';
     console.log(eventLog);
     addEventLog(eventLog);
+    if (event.type === 'Publisher.Connection.Closed') {
+      window.untrackBitrate();
+      updateStatus('Connection has been Closed!');
+      isPublishing = false;
+      unpublish()
+        .then(function () {
+          updateStartStopButtonState({
+            enabled: true,
+            label: 'Start Broadcast'
+          });
+          updateStreamFormState({
+            enabled: true
+          });
+        })
+        .catch(function () {
+          updateStartStopButtonState({
+            enabled: true,
+            label: 'Start Broadcast'
+          });
+          updateStreamFormState({
+            enabled: true
+          });
+        });
+    }
   }
 
   function determinePublisher () {
@@ -395,6 +419,7 @@
       });
       console.log('[live]:: Publish options:\r\n' + JSON.stringify(publisher._options, null, 2));
 
+      showPublisherImplStatus(publisher);
       addEventLog('[Red5ProPublisher] configuration ->');
       addObjectLog(publisher.getOptions());
       publisher.on('*', onPublisherEvent);
