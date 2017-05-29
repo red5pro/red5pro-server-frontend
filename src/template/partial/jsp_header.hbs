@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.net.Inet4Address"%>
 <%@ page import="com.red5pro.server.secondscreen.net.NetworkUtil"%>
-<%@ page import="java.io.*,java.util.regex.*,java.net.URL,java.nio.charset.Charset"%>
+<%@ page import="java.io.*,java.util.Map,java.util.regex.*,java.net.URL,java.nio.charset.Charset"%>
 <%
   String cookieStr = "";
   String cookieName = "storedIpAddress";
@@ -13,6 +13,14 @@
   String localIp = NetworkUtil.getLocalIpAddress();
   boolean ipExists = false;
   boolean isSecure = scheme == "https";
+  String kvUrlParams = "";
+  String delimiter = ";";
+  Map<String, String[]> parameters = request.getParameterMap();
+  for(String parameter : parameters.keySet()) {
+    if (!parameter.equals("")) {
+      kvUrlParams += parameter + "=" + request.getParameter(parameter) + delimiter;
+    }
+  }
 
   // Flip localIp to null if unknown.
   // localIp = addressPattern.matcher(localIp).find() ? localIp : null;

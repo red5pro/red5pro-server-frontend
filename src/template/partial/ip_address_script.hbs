@@ -91,6 +91,20 @@
     document.cookie = '<%= cookieName %>=' + value + '; path=/; max-age=' + expiry;
     currentIp = value;
     notifyIpChangeListeners(value);
+    // update URL + query params
+    var params = '<%= kvUrlParams %>'.split(';');
+    var i = params.length;
+    while (--i > -1) {
+      var kv = params[i].split('=');
+      if (kv[0] === 'host') {
+        params[i] = 'host=' + value;
+      }
+      else if (kv[0] === '') {
+        params.splice(i, 1);
+      }
+    }
+    var query = params.length > 1 ? params.join('&') : params[0]
+    window.location = [(window.location.origin + window.location.pathname), query].join('?');
   };
 
   var toggleOverlay = function(event) {
