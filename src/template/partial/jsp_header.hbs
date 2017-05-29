@@ -15,12 +15,12 @@
   boolean isSecure = scheme == "https";
 
   // Flip localIp to null if unknown.
-  localIp = addressPattern.matcher(localIp).find() ? localIp : null;
+  // localIp = addressPattern.matcher(localIp).find() ? localIp : null;
 
   // First check if provided as a query parameter...
   if(request.getParameter("host") != null) {
     ip = request.getParameter("host");
-    ip = addressPattern.matcher(ip).find() ? ip : null;
+    // ip = addressPattern.matcher(ip).find() ? ip : null;
   }
 
   Cookie cookie;
@@ -33,7 +33,7 @@
       cookieStr += cookie.getName() + "=" + cookie.getValue() + "; ";
       if(cookie.getName().equals(cookieName)) {
         ip = cookie.getValue();
-        ip = addressPattern.matcher(ip).find() ? ip : null;
+        // ip = addressPattern.matcher(ip).find() ? ip : null;
         break;
       }
     }
@@ -44,7 +44,7 @@
 
     ip = localIp;
 
-    if(ip != null && addressPattern.matcher(ip).find()) {
+    if(ip != null) {// && addressPattern.matcher(ip).find()) {
       // The IP returned from NetworkUtils is valid...
     }
     else {
