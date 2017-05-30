@@ -235,7 +235,7 @@
        var store = {}; // name: {name:string, url:string, formats:[hls|flv]}
 
        var parseItem = function (item) {
-          var itemName = item.name.substring(0, item.name.lastIndexOf('.'));
+          var itemName = item.name; // item.name.substring(0, item.name.lastIndexOf('.'));
           var itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
           return {
             name: itemName,
