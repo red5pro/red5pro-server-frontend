@@ -139,11 +139,13 @@
     }
     var clearLogButton = document.getElementById('clear-log-button');
     var eventLogField = document.getElementById('event-log-field');
-    clearLogButton.addEventListener('click', function () {
-      while (eventLogField.children.length > 1) {
-        eventLogField.removeChild(eventLogField.lastChild);
-      }
-    });
+    if (clearLogButton) {
+      clearLogButton.addEventListener('click', function () {
+        while (eventLogField.children.length > 1) {
+          eventLogField.removeChild(eventLogField.lastChild);
+        }
+      });
+    }
   }
 
   function startSubscription (streamData) {
@@ -170,8 +172,10 @@
 
   function handleHostIpChange (value) {
     host = baseConfiguration.host = value;
-    teardown();
-    startSubscription();
+    if (hasEstablishedSubscriber()) {
+      teardown();
+      startSubscription();
+    }
   }
 
   var viewHandler = function viewStream (value) {
