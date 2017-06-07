@@ -8,6 +8,7 @@
 
   var subscriber;
   var view;
+  var streamDataModel;
 
   var host = window.targetHost;
   var buffer = window.r5proBuffer;
@@ -172,9 +173,9 @@
 
   function handleHostIpChange (value) {
     host = baseConfiguration.host = value;
-    if (hasEstablishedSubscriber()) {
+    if (streamDataModel && hasEstablishedSubscriber()) {
       teardown();
-      startSubscription();
+      startSubscription(streamDataModel);
     }
   }
 
@@ -182,6 +183,8 @@
     var dataString = decodeURIComponent($('li[data-stream="' + value + '"]').data('streamitem'));
     var streamData = JSON.parse(dataString);
     console.log('[playback]:: Selected stream data -\r\n' + JSON.stringify(streamData, null, 2));
+
+    streamDataModel = streamData;
 
     teardown();
     startSubscription(streamData);
@@ -217,6 +220,9 @@
       for (key in typeConfig) {
         if (types.indexOf(key) > -1) {
           config[key] = Object.assign({}, baseConfiguration, typeConfig[key]);
+        }
+        if (key === 'hls') {
+          config[key].streamName = config[key].streamName.substring(0, config[key].streamName.indexOf('.'));
         }
       }
       var order = playbackOrder;
