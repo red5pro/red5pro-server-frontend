@@ -148,7 +148,7 @@
         if (types.indexOf(key) > -1) {
           config[key] = Object.assign({}, baseConfiguration, typeConfig[key]);
         }
-        if (key === 'hls') {
+        if (key === 'hls' && config.hasOwnProperty('hls') && config[key].streamName) {
           config[key].streamName = config[key].streamName.substring(0, config[key].streamName.indexOf('.'));
         }
       }
