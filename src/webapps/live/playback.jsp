@@ -142,7 +142,7 @@
       }
     </style>
     <link href="lib/videojs/video-js.min.css" rel="stylesheet">
-    <script src="lib/webrtc/adapter.js"></script>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/videojs/video.min.js"></script>
     <script src="lib/videojs/videojs-media-sources.min.js"></script>
     <script src="lib/videojs/videojs.hls.min.js"></script>

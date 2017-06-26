@@ -56,7 +56,7 @@
     {{> head_meta }}
     {{> resources }}
     <title>Stream Broadcasting with the Red5 Pro Server!</title>
-    <script src="lib/webrtc/adapter.js"></script>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/videojs/video.min.js"></script>
     <script src="lib/videojs/videojs-media-sources.min.js"></script>
     <script src="lib/videojs/videojs.hls.min.js"></script>
@@ -232,7 +232,7 @@
             </div>
             <div id="statistics-field" class="statistics-field"></div>
             <div id="video-holder">
-              <video id="red5pro-publisher-video" controls muted class="video-element"></video>
+              <video id="red5pro-publisher-video" controls muted class="video-element" autoplay></video>
             </div>
             <div id="status-field" class="status-message"></div>
             <div id="start-stop-button" class="button-disabled">Start Broadcast</div>

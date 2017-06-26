@@ -51,7 +51,6 @@
     }
   });
 
-  var mediaStream;
   var publisher;
   var view;
   var isPublishing = false;
@@ -335,7 +334,17 @@
       publisher.on('*', onPublisherEvent);
 
       var config = {
-        rtc: Object.assign({}, baseConfiguration, rtcConfig),
+        rtc: Object.assign({}, baseConfiguration, rtcConfig, {
+          onGetUserMedia: function() {
+            /**
+            return navigator.mediaDevices.getUserMedia({
+              width: view.view.videoWidth,
+              height: view.view.videoHeight
+              })
+              */
+            return navigator.mediaDevices.getUserMedia(forceQuality)
+          }
+        }),
         rtmp: Object.assign({}, baseConfiguration, rtmpConfig)
       };
       console.log('[live]:: Configuration:\r\n' + JSON.stringify(config, null, 2));
@@ -359,9 +368,9 @@
 
   function preview (selectedPublisher, reset) {
 
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) { // eslint-disable-line no-unused-vars
 
-      var requiresGUM = selectedPublisher.getType().toLowerCase() === 'rtc';
+      var isRTCPublisher = selectedPublisher.getType().toLowerCase() === 'rtc';
       var quality = qualityUM[getQuality()];
       publisher = selectedPublisher;
 
@@ -370,25 +379,10 @@
         view.attachPublisher(publisher);
       }
 
-      if (requiresGUM) {
-        var nav = navigator;
-        if (mediaStream) {
-          mediaStream.getTracks().forEach(function(track) {
-            track.stop();
-          });
-        }
-        nav.getUserMedia(forceQuality, function (media) {
-          mediaStream = media;
-          publisher.attachStream(media);
-          view.preview(media, true);
-          addEventLog('[Red5ProPublisher] gUM ->');
-          addObjectLog(forceQuality);
-          resolve({
-            publisher: publisher,
-            view: view
-          });
-        }, function (error) {
-          reject(error);
+      if (isRTCPublisher) {
+        resolve({
+          publisher: publisher,
+          view: view
         });
       }
       else {
@@ -408,14 +402,11 @@
 
       var mode = getPublishMode();
       var streamName = getStreamName();
-      var quality = qualityUM[getQuality()];
       var isRTC = publisher.getType().toLowerCase() === 'rtc';
       publisher.overlayOptions({
         host: window.targetHost,
         streamMode: mode,
-        streamName: streamName,
-        width: isRTC ? view.view.videoWidth : quality.video.width,
-        height: isRTC ? view.view.videoHeight : quality.video.height
+        streamName: streamName
       });
       console.log('[live]:: Publish options:\r\n' + JSON.stringify(publisher._options, null, 2));
 
