@@ -109,13 +109,15 @@
   var rtmpConfig = {
     protocol: 'rtmp',
     port: 1935,
-    width: 640,
-    height: 480,
     embedWidth: '100%',
     embedHeight: 405,
     swf: 'lib/red5pro/red5pro-publisher.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
-    productInstallURL: 'lib/swfobject/playerProductInstall.swf'
+    productInstallURL: 'lib/swfobject/playerProductInstall.swf',
+    mediaConstraints: {
+      width: 640,
+      height: 480
+    }
   };
 
   var targetViewTech = window.r5proViewTech;
