@@ -115,8 +115,11 @@
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf',
     mediaConstraints: {
-      width: 640,
-      height: 480
+      audio: true,
+      video: {
+        width: 640,
+        height: 480
+      }
     }
   };
 
