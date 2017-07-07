@@ -6,7 +6,6 @@
   var iceServers = window.r5proIce;
 
   var subscriber;
-  var view;
 
   var qAudioBW = window.r5proAudioBandwidth || -1;//50;
   var qVideoBW = window.r5proVideoBandwidth || -1;//256;
@@ -122,7 +121,7 @@
         if (subscriber.getType().toLowerCase() === 'hls' ||
             subscriber.getType().toLowerCase() === 'rtc') {
           var container = document.getElementById('video-holder');
-          var element = document.getElementById('red5pro-subscriber-video');
+          var element = document.getElementById('red5pro-subscriber');
           if (container) {
             container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
             if (subscriber.getType().toLowerCase() === 'hls') {
@@ -225,16 +224,13 @@
   function preview (selectedSubscriber) {
     return new Promise(function (resolve, reject) {
 
-      subscriber = selectedSubscriber;
-      view = new red5pro.PlaybackView('red5pro-subscriber-video');
-      view.attachSubscriber(subscriber);
-
+      subscriber = selectedSubscriber
       var type = selectedSubscriber.getType().toLowerCase();
       switch (type) {
         case 'rtc':
+        case 'hls':
           resolve({
-            subscriber: subscriber,
-            view: view
+            subscriber: subscriber
           });
           break;
         case 'rtmp':
@@ -243,16 +239,7 @@
           var holder = document.getElementById('video-holder');
           holder.style.height = '405px';
           resolve({
-            subscriber: subscriber,
-            view: view
-          });
-          break;
-        case 'hls':
-          view.view.classList.add('video-js', 'vjs-default-skin')
-          view.view.height = 300;
-          resolve({
-            subscriber: subscriber,
-            view: view
+            subscriber: subscriber
           });
           break;
         default:
@@ -265,7 +252,7 @@
   function subscribe () {
     return new Promise(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
-      subscriber.play()
+      subscriber.subscribe()
         .then(function () {
           onSubscribeStart(subscriber);
           resolve();
@@ -279,7 +266,7 @@
   function unsubscribe () {
     return new Promise(function (resolve, reject) {
       if (hasEstablishedSubscriber()) {
-        subscriber.stop()
+        subscriber.unsubscribe()
           .then(function() {
             subscriber.off('*', onSubscriberEvent);
             resolve();

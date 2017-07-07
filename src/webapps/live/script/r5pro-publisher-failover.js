@@ -42,7 +42,6 @@
   var clearLogButton = document.getElementById('clear-log-button');
   var startStopButton = document.getElementById('start-stop-button');
   var publisher;
-  var view;
   var isPublishing = false;
 
   var forceQuality = {
@@ -302,7 +301,7 @@
           isPublishing = true;
           if (isRTC) {
              window.trackBitrate(publisher.getPeerConnection(), onBitrateUpdate);
-             console.log('[live]:: Publish dimensions (' + view.view.videoWidth + ', ' + view.view.videoHeight + ').');
+             //             console.log('[live]:: Publish dimensions (' + view.view.videoWidth + ', ' + view.view.videoHeight + ').');
           }
           resolve();
         })
@@ -344,10 +343,6 @@
   }
 
   function tearDownPublisher () {
-    if (view) {
-      view.view.src = '';
-      view = undefined;
-    }
     if (publisher) {
       publisher.setView(undefined);
       publisher = undefined;
