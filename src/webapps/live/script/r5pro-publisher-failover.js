@@ -1,8 +1,8 @@
 /* global window, document, navigator, Promise */
-(function (window, document, red5pro) {
+(function (window, document, red5prosdk) {
   'use strict';
 
-  red5pro.setLogLevel('debug');
+  red5prosdk.setLogLevel('debug');
   var isMoz = !!navigator.mozGetUserMedia;
   var qFramerateMin = window.r5proFramerateMin || 8;
   var qFramerateMax = window.r5proFramerateMax || 24;
@@ -41,44 +41,10 @@
   var eventLogField = document.getElementById('event-log-field');
   var clearLogButton = document.getElementById('clear-log-button');
   var startStopButton = document.getElementById('start-stop-button');
-  var qualityHighSelect = document.getElementById('quality-high-select');
-  var qualityMidSelect = document.getElementById('quality-mid-select');
-  var qualityLowSelect = document.getElementById('quality-low-select');
-  var qualityGroup = [qualityHighSelect, qualityMidSelect, qualityLowSelect];
-  qualityGroup.forEach(function (el) {
-    if (el) {
-      el.addEventListener('change', onQualitySelectChange);
-    }
-  });
-
-  var mediaStream;
   var publisher;
   var view;
   var isPublishing = false;
-  var selectedQuality = 'mid';
-  var qualityUM = {
-    high: {
-      audio: true,
-      video: {
-        width: 1280,
-        height: 720
-      }
-    },
-    mid: {
-      audio: true,
-      video: {
-        width: 640,
-        height: 480
-      }
-    },
-    low: {
-      audio: true,
-      video: {
-        width: 320,
-        height: 240
-      }
-    }
-  };
+
   var forceQuality = {
     audio: true,
     video: isMoz ? true : forceVideo
@@ -101,7 +67,8 @@
     host: window.targetHost,
     app: 'live',
     iceServers: iceServers,
-    bandwidth: desiredBandwidth
+    bandwidth: desiredBandwidth,
+    mediaConstraints: forceQuality
   };
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,
@@ -110,10 +77,9 @@
   var rtmpConfig = {
     protocol: 'rtmp',
     port: 1935,
-    width: 640,
-    height: 480,
     embedWidth: '100%',
     embedHeight: 405,
+    backgroundColor: '#000000',
     swf: 'lib/red5pro/red5pro-publisher.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
@@ -128,10 +94,6 @@
 
   function getStreamName () {
     return streamNameField.value;
-  }
-
-  function getQuality () {
-    return selectedQuality;
   }
 
   streamNameField.addEventListener('input', function () {
@@ -153,9 +115,6 @@
 
   startStopButton.addEventListener('click', function () {
     var isIdle = !isPublishing;
-    updateStreamFormState({
-      enabled: false
-    });
     updateStartStopButtonState({
       enabled: false,
       label: 'pending...'
@@ -174,9 +133,6 @@
             enabled: true,
             label: 'Start Broadcast'
           });
-          updateStreamFormState({
-            enabled: true
-          });
         });
     }
     else if (hasEstablishedPublisher()) {
@@ -186,17 +142,11 @@
             enabled: true,
             label: 'Start Broadcast'
           });
-          updateStreamFormState({
-            enabled: true
-          });
         })
         .catch(function () {
           updateStartStopButtonState({
             enabled: true,
             label: 'Start Broadcast'
-          });
-          updateStreamFormState({
-            enabled: true
           });
         });
     }
@@ -212,29 +162,8 @@
     statisticsField.innerText = 'Bitrate: ' + Math.floor(bitrate) + '. Packets Sent: ' + packets + '.';
   }
 
-  function onQualitySelectChange (event) {
-    selectedQuality = event.target.value;
-    console.log('[live]:: quality change to `' + selectedQuality + '`.');
-    if (hasEstablishedPublisher) {
-      view.view.src = '';
-      preview(publisher, true);
-    }
-  }
-
   function hasEstablishedPublisher () {
     return typeof publisher !== 'undefined'
-  }
-
-  function updateStreamFormState (state) {
-    var elements = qualityGroup.concat([streamNameField, enableRecordField]);
-    var element;
-    var add = state.enabled ? 'button-enabled' : 'button-disabled';
-    var remove = state.enabled ? 'button-disabled' : 'button.enabled';
-    while (elements.length > 0) {
-      element = elements.pop();
-      element.classList.remove(remove);
-      element.classList.add(add);
-    }
   }
 
   function updateStartStopButtonState (state) {
@@ -313,17 +242,11 @@
             enabled: true,
             label: 'Start Broadcast'
           });
-          updateStreamFormState({
-            enabled: true
-          });
         })
         .catch(function () {
           updateStartStopButtonState({
             enabled: true,
             label: 'Start Broadcast'
-          });
-          updateStreamFormState({
-            enabled: true
           });
         });
     }
@@ -331,7 +254,7 @@
 
   function determinePublisher () {
     return new Promise(function (resolve, reject) {
-      var publisher = new red5pro.Red5ProPublisher();
+      var publisher = new red5prosdk.Red5ProPublisher();
       publisher.on('*', onPublisherEvent);
 
       var config = {
@@ -357,65 +280,16 @@
 
   }
 
-  function preview (selectedPublisher, reset) {
-
-    return new Promise(function (resolve, reject) {
-
-      var requiresGUM = selectedPublisher.getType().toLowerCase() === 'rtc';
-      var quality = qualityUM[getQuality()];
-      publisher = selectedPublisher;
-
-      if (!reset) {
-        view = new red5pro.PublisherView('red5pro-publisher-video');
-        view.attachPublisher(publisher);
-      }
-
-      if (requiresGUM) {
-        var nav = navigator;
-        if (mediaStream) {
-          mediaStream.getTracks().forEach(function(track) {
-            track.stop();
-          });
-        }
-        nav.getUserMedia(forceQuality, function (media) {
-          mediaStream = media;
-          publisher.attachStream(media);
-          view.preview(media, true);
-          addEventLog('[Red5ProPublisher] gUM ->');
-          addObjectLog(forceQuality);
-          resolve({
-            publisher: publisher,
-            view: view
-          });
-        }, function (error) {
-          reject(error);
-        });
-      }
-      else {
-        publisher.setMediaQuality(quality);
-        resolve({
-          publisher: publisher,
-          view: view
-        });
-      }
-
-    });
-
-  }
-
   function publish () {
     return new Promise(function (resolve, reject) {
 
       var mode = getPublishMode();
       var streamName = getStreamName();
-      var quality = qualityUM[getQuality()];
       var isRTC = publisher.getType().toLowerCase() === 'rtc';
       publisher.overlayOptions({
         host: window.targetHost,
         streamMode: mode,
-        streamName: streamName,
-        width: isRTC ? view.view.videoWidth : quality.video.width,
-        height: isRTC ? view.view.videoHeight : quality.video.height
+        streamName: streamName
       });
       console.log('[live]:: Publish options:\r\n' + JSON.stringify(publisher._options, null, 2));
 
@@ -423,7 +297,7 @@
       addEventLog('[Red5ProPublisher] configuration ->');
       addObjectLog(publisher.getOptions());
       publisher.on('*', onPublisherEvent);
-      publisher.publish(streamName)
+      publisher.publish()
         .then(function () {
           isPublishing = true;
           if (isRTC) {
@@ -481,7 +355,10 @@
   }
 
   determinePublisher()
-    .then(preview)
+    .then(function (selectedPublisher) {
+      publisher = selectedPublisher
+      publisher.preview();
+    })
     .catch(function (error) {
       var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
       console.error('[live]:: Could not determine and preview publisher: ' + errorStr);

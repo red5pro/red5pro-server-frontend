@@ -1,8 +1,8 @@
 /* global document, Promise, jQuery */
-(function(window, document, $, red5pro) {
+(function(window, document, $, red5prosdk) {
   'use strict';
 
-  red5pro.setLogLevel('debug');
+  red5prosdk.setLogLevel('debug');
 
   var iceServers = window.r5proIce;
 
@@ -207,7 +207,7 @@
   function determineSubscriber (types) {
     console.log('[playback]:: Available types - ' + types + '.');
     return new Promise(function (resolve, reject) {
-      var subscriber = new red5pro.Red5ProSubscriber();
+      var subscriber = new red5prosdk.Red5ProSubscriber();
       subscriber.on('*', onSubscriberEvent);
 
       var typeConfig = {

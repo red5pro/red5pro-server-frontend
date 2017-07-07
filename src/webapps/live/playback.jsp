@@ -137,22 +137,23 @@
         margin: 14px;
       }
 
-      #video-holder, #red5pro-subscriber-video {
+      #video-holder, #red5pro-subscriber {
         width: 100%;
       }
     </style>
-    <link href="lib/videojs/video-js.min.css" rel="stylesheet">
-    <script src="lib/webrtc/adapter.js"></script>
-    <script src="lib/videojs/video.min.js"></script>
-    <script src="lib/videojs/videojs-media-sources.min.js"></script>
-    <script src="lib/videojs/videojs.hls.min.js"></script>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="lib/screenfull/screenfull.min.js"></script>
+    <link href="lib/red5pro/red5pro-video.css"></script>
     <script type="text/javascript" src="lib/swfobject/swfobject.js"></script>
   </head>
   <body>
     <template id="video-playback">
       <div id="video-container">
             <div id="video-holder">
-              <video id="red5pro-subscriber-video" controls autoplay class="video-element"></video>
+              <video id="red5pro-subscriber"
+                      controls autoplay
+                      class="red5pro-video red5pro-video-background">
+              </video>
             </div>
             <div id="status-field" class="status-message"></div>
             <div id="event-log-field" class="event-log-field">
