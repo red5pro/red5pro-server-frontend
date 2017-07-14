@@ -266,28 +266,16 @@
 
       var type = selectedSubscriber.getType().toLowerCase();
       switch (type) {
+        case 'hls':
         case 'rtc':
-          resolve({
-            subscriber: subscriber,
-            view: view
-          });
+          resolve(subscriber);
           break;
         case 'rtmp':
         case 'livertmp':
         case 'rtmp - videojs':
           var holder = document.getElementById('video-holder');
           holder.style.height = '405px';
-          resolve({
-            subscriber: subscriber,
-            view: view
-          });
-          break;
-        case 'hls':
-          view.view.classList.add('video-js', 'vjs-default-skin')
-          resolve({
-            subscriber: subscriber,
-            view: view
-          });
+          resolve(subscriber);
           break;
         default:
           reject('View not available for ' + type + '.');
@@ -296,7 +284,7 @@
     });
   }
 
-  function subscribe () {
+  function subscribe (subscriber) {
     return new Promise(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
       subscriber.play()
