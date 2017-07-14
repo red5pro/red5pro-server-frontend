@@ -117,12 +117,19 @@
             padding: 10px;
             margin: 14px;
           }
+
+      .red5pro-video-control-bar {
+        min-height: 40px;
+      }
         </style>
     </head>
     <body>
       <div id="video-container">
             <div id="video-holder">
-              <video id="red5pro-subscriber-video" controls autoplay class="video-element"></video>
+              <video id="red5pro-subscriber"
+                      controls autoplay
+                      class="red5pro-video red5pro-video-background">
+              </video>
             </div>
             <div id="status-field" class="status-message"></div>
             <div id="event-log-field" class="event-log-field">

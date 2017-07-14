@@ -34,17 +34,16 @@
     subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16),
     bandwidth: {
       audio: 50,
-      video: 256,
-      data: 30 * 1000 * 1000
+      video: 256
     }
   };
   var rtmpConfig = {
     protocol: 'rtmp',
     port: 1935,
     mimeType: 'rtmp/flv',
-    useVideoJS: false,
     width: '100%',
     height: '100%',
+    backgroundColor: '#000000',
     swf: 'lib/red5pro/red5pro-subscriber.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
@@ -262,7 +261,7 @@
     return new Promise(function (resolve, reject) {
 
       subscriber = selectedSubscriber;
-      view = new red5pro.PlaybackView('red5pro-subscriber-video');
+      view = new red5prosdk.PlaybackView('red5pro-subscriber');
       view.attachSubscriber(subscriber);
 
       var type = selectedSubscriber.getType().toLowerCase();

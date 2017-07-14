@@ -49,11 +49,11 @@
     protocol: 'rtmp',
     port: 1935,
     mimeType: 'rtmp/flv',
-    useVideoJS: false,
     width: 640,
     height: 480,
     embedWidth: '100%',
     embedHeight: '100%',
+    backgroundColor: '#000000',
     swf: 'lib/red5pro/red5pro-subscriber.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
@@ -229,18 +229,14 @@
       switch (type) {
         case 'rtc':
         case 'hls':
-          resolve({
-            subscriber: subscriber
-          });
+          resolve(subscriber);
           break;
         case 'rtmp':
         case 'livertmp':
         case 'rtmp - videojs':
           var holder = document.getElementById('video-holder');
           holder.style.height = '405px';
-          resolve({
-            subscriber: subscriber
-          });
+          resolve(subscriber);
           break;
         default:
           reject('View not available for ' + type + '.');
@@ -249,7 +245,7 @@
     });
   }
 
-  function subscribe () {
+  function subscribe (subscriber) {
     return new Promise(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
       subscriber.subscribe()

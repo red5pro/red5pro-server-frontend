@@ -52,10 +52,10 @@
     port: 1935,
     width: '100%',
     height: '100%',
+    backgroundColor: '#000000',
     embedWidth: window.r5proVideoWidth,
     embedHeight: window.r5proVideoHeight,
     mimeType: 'rtmp/flv',
-    useVideoJS: false,
     swf: 'lib/red5pro/red5pro-subscriber.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
@@ -127,7 +127,7 @@
       if (subscriber.getType().toLowerCase() === 'hls' ||
           subscriber.getType().toLowerCase() === 'rtc') {
         var container = document.getElementById('video-holder');
-        var element = document.getElementById('red5pro-subscriber-video');
+        var element = document.getElementById('red5pro-subscriber');
         if (container) {
           container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
         }
@@ -172,30 +172,16 @@
 
       var type = selectedSubscriber.getType().toLowerCase();
       switch (type) {
+        case 'hls':
         case 'rtc':
-          resolve({
-            subscriber: subscriber,
-            view: view
-          });
+          resolve(subscriber);
           break;
         case 'rtmp':
         case 'livertmp':
         case 'rtmp - videojs':
           var holder = document.getElementById('video-holder');
           holder.style.height = '405px';
-          resolve({
-            subscriber: subscriber,
-            view: view
-          });
-          break;
-        case 'hls':
-          view.view.classList.add('video-js', 'vjs-default-skin');
-          view.view.width = 600;
-          view.view.height = 300;
-          resolve({
-            subscriber: subscriber,
-            view: view
-          });
+          resolve(subscriber);
           break;
         default:
           reject('View not available for ' + type + '.');
@@ -204,10 +190,10 @@
     });
   }
 
-  function subscribe () {
+  function subscribe (subscriber) {
     return new Promise(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
-      subscriber.play()
+      subscriber.subscribe()
       .then(function () {
           onSubscribeStart(subscriber);
           resolve();

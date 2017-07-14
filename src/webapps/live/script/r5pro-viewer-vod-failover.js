@@ -38,9 +38,9 @@
     protocol: 'rtmp',
     port: 1935,
     mimeType: 'rtmp/flv',
-    useVideoJS: false,
     width: '100%',
     height: '100%',
+    backgroundColor: '#000000',
     swf: 'lib/red5pro/red5pro-subscriber.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'

@@ -193,6 +193,10 @@
       #video-holder, #red5pro-subscriber {
         width: 100%;
       }
+
+      .red5pro-video-control-bar {
+        min-height: 40px;
+      }
     </style>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
