@@ -69,11 +69,9 @@
             window.r5proViewTech = viewTech;
           }
         </script>
-        <link rel="stylesheet" href="lib/videojs/video-js.min.css">
-        <script src="lib/webrtc/adapter.js"></script>
-        <script src="lib/videojs/video.min.js"></script>
-        <script src="lib/videojs/videojs-media-sources.min.js"></script>
-        <script src="lib/videojs/videojs.hls.min.js"></script>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="lib/screenfull/screenfull.min.js"></script>
+    <link href="lib/red5pro/red5pro-video.css" rel="stylesheet">
         <style>
           object:focus {
             outline:none;

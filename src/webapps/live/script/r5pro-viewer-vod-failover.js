@@ -28,11 +28,6 @@
     protocol: getSocketLocationFromProtocol(protocol).protocol,
     port: getSocketLocationFromProtocol(protocol).port,
     subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16)
-    //    , bandwidth: {
-    //      audio: 50,
-    //      video: 256,
-    //      data: 30 * 1000 * 1000
-    //    }
   };
   var rtmpConfig = {
     protocol: 'rtmp',
@@ -194,28 +189,16 @@
 
       var type = selectedSubscriber.getType().toLowerCase();
       switch (type) {
+        case 'hls':
         case 'rtc':
-          resolve({
-            subscriber: subscriber,
-            view: view
-          });
+          resolve(subscriber);
           break;
         case 'rtmp':
         case 'livertmp':
         case 'rtmp - videojs':
           var holder = document.getElementById('video-holder');
           holder.style.height = '405px';
-          resolve({
-            subscriber: subscriber,
-            view: view
-          });
-          break;
-        case 'hls':
-          view.view.classList.add('video-js', 'vjs-default-skin')
-          resolve({
-            subscriber: subscriber,
-            view: view
-          });
+          resolve(subscriber);
           break;
         default:
           reject('View not available for ' + type + '.');
@@ -224,7 +207,7 @@
     });
   }
 
-  function subscribe () {
+  function subscribe (subscriber) {
     return new Promise(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
       subscriber.play()
