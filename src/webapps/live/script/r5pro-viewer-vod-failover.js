@@ -5,7 +5,6 @@
  red5pro.setLogLevel('debug');
   var iceServers = window.r5proIce;
   var subscriber;
-  var view;
 
   var host = window.targetHost;
   var buffer = window.r5proBuffer;
@@ -184,9 +183,6 @@
     return new Promise(function (resolve, reject) {
 
       subscriber = selectedSubscriber;
-      view = new red5pro.PlaybackView('red5pro-subscriber-video');
-      view.attachSubscriber(subscriber);
-
       var type = selectedSubscriber.getType().toLowerCase();
       switch (type) {
         case 'hls':

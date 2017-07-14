@@ -7,7 +7,6 @@
   var iceServers = window.r5proIce;
 
   var subscriber;
-  var view;
   var streamDataModel;
 
   var host = window.targetHost;
@@ -105,7 +104,7 @@
       if (subscriber.getType().toLowerCase() === 'hls' ||
           subscriber.getType().toLowerCase() === 'rtc') {
         var container = document.getElementById('video-holder');
-        var element = document.getElementById('red5pro-subscriber-video');
+        var element = document.getElementById('red5pro-subscriber');
         if (container) {
           container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
           if (subscriber.getType().toLowerCase() === 'hls') {
@@ -261,9 +260,6 @@
     return new Promise(function (resolve, reject) {
 
       subscriber = selectedSubscriber;
-      view = new red5prosdk.PlaybackView('red5pro-subscriber');
-      view.attachSubscriber(subscriber);
-
       var type = selectedSubscriber.getType().toLowerCase();
       switch (type) {
         case 'hls':

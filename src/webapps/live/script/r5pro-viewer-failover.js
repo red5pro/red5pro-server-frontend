@@ -167,9 +167,6 @@
     return new Promise(function (resolve, reject) {
 
       subscriber = selectedSubscriber;
-      view = new red5pro.PlaybackView('red5pro-subscriber-video');
-      view.attachSubscriber(subscriber);
-
       var type = selectedSubscriber.getType().toLowerCase();
       switch (type) {
         case 'hls':
