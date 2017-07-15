@@ -352,7 +352,6 @@
   determinePublisher()
     .then(function (selectedPublisher) {
       publisher = selectedPublisher
-      publisher.preview();
     })
     .catch(function (error) {
       var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
