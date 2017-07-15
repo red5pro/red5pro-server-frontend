@@ -229,6 +229,8 @@
       switch (type) {
         case 'rtc':
         case 'hls':
+          var holder = document.getElementById('video-holder');
+          holder.style['min-height'] = '405px';
           resolve(subscriber);
           break;
         case 'rtmp':

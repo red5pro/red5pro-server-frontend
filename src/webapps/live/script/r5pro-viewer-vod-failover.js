@@ -187,6 +187,8 @@
       switch (type) {
         case 'hls':
         case 'rtc':
+          var holder = document.getElementById('video-holder');
+          holder.style['min-height'] = '405px';
           resolve(subscriber);
           break;
         case 'rtmp':
@@ -219,7 +221,7 @@
   function unsubscribe () {
     return new Promise(function (resolve, reject) {
       if (hasEstablishedSubscriber()) {
-        subscriber.stop()
+        subscriber.unsubscribe()
           .then(function() {
             subscriber.off('*', onSubscriberEvent);
             resolve();

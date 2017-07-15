@@ -148,7 +148,6 @@
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-video.css"></script>
-    <script type="text/javascript" src="lib/swfobject/swfobject.js"></script>
   </head>
   <body>
     <template id="video-playback">
