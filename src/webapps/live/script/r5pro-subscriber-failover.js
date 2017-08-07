@@ -62,7 +62,6 @@
     protocol: protocol,
     port: port,
     mimeType: 'application/x-mpegURL',
-    swf: 'lib/red5pro/red5pro-video-js.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
   };
@@ -113,7 +112,9 @@
   function onSubscriberEvent (event) {
     var eventLog = '[Red5ProSubscriber] ' + event.type + '.';
     console.log(eventLog);
-    addEventLogToField(document.getElementById('event-log-field'), eventLog);
+    if (event.type !== 'Subscribe.Time.Update') {
+      addEventLogToField(document.getElementById('event-log-field'), eventLog);
+    }
 
     if (event.type === 'Subscribe.Metadata') {
       if (event.data.hasOwnProperty('orientation')) {
@@ -229,8 +230,6 @@
       switch (type) {
         case 'rtc':
         case 'hls':
-          var holder = document.getElementById('video-holder');
-          holder.style['min-height'] = '405px';
           resolve(subscriber);
           break;
         case 'rtmp':

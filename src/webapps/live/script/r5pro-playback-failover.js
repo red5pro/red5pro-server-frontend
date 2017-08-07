@@ -51,7 +51,6 @@
     protocol: protocol,
     port: port,
     mimeType: 'application/x-mpegURL',
-    swf: 'lib/red5pro/red5pro-video-js.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
   };
@@ -264,8 +263,6 @@
       switch (type) {
         case 'hls':
         case 'rtc':
-          var holder = document.getElementById('video-holder');
-          holder.style['min-height'] = '405px';
           resolve(subscriber);
           break;
         case 'rtmp':

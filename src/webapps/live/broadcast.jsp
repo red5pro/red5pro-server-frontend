@@ -58,7 +58,7 @@
     <title>Stream Broadcasting with the Red5 Pro Server!</title>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
-    <link href="lib/red5pro/red5pro-video.css"></script>
+    <link href="lib/red5pro/red5pro-media.css"></script>
     <style>
       object:focus {
         outline:none;

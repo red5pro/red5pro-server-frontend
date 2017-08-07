@@ -55,18 +55,12 @@
     backgroundColor: '#000000',
     embedWidth: window.r5proVideoWidth,
     embedHeight: window.r5proVideoHeight,
-    mimeType: 'rtmp/flv',
-    swf: 'lib/red5pro/red5pro-subscriber.swf',
-    swfobjectURL: 'lib/swfobject/swfobject.js',
-    productInstallURL: 'lib/swfobject/playerProductInstall.swf'
+    mimeType: 'rtmp/flv'
   };
   var hlsConfig = {
     protocol: protocol,
     port: port,
-    mimeType: 'application/x-mpegURL',
-    swf: 'lib/red5pro/red5pro-video-js.swf',
-    swfobjectURL: 'lib/swfobject/swfobject.js',
-    productInstallURL: 'lib/swfobject/playerProductInstall.swf'
+    mimeType: 'application/x-mpegURL'
   };
 
   var targetViewTech = window.r5proViewTech;
@@ -119,8 +113,10 @@
 
   function onSubscriberEvent (event) {
     var eventLog = '[Red5ProSubscriber] ' + event.type + '.';
-    console.log(eventLog);
-    addEventLog(eventLog);
+    if (event.type !== 'Subscribe.Time.Update') {
+      console.log(eventLog);
+      addEventLog(eventLog);
+    }
 
     if (event.type === 'Subscribe.Metadata') {
       var value = event.data.orientation;
@@ -129,7 +125,7 @@
         var container = document.getElementById('video-holder');
         var element = document.getElementById('red5pro-subscriber');
         if (container) {
-          container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
+          // container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
         }
       }
     }
@@ -171,8 +167,6 @@
       switch (type) {
         case 'hls':
         case 'rtc':
-          var holder = document.getElementById('video-holder');
-          holder.style['min-height'] = '405px';
           resolve(subscriber);
           break;
         case 'rtmp':

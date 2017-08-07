@@ -71,7 +71,7 @@
         </script>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
-    <link href="lib/red5pro/red5pro-video.css" rel="stylesheet">
+    <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
         <style>
           object:focus {
             outline:none;
@@ -80,7 +80,6 @@
           #video-holder, .video-element {
             width: <%=width%>;
             height: <%=height%>;
-            min-height: 480px;
           }
 
           #video-holder {
@@ -116,7 +115,7 @@
             margin: 14px;
           }
 
-      .red5pro-video-control-bar {
+      .red5pro-media-control-bar {
         min-height: 40px;
       }
         </style>
@@ -126,7 +125,7 @@
             <div id="video-holder">
               <video id="red5pro-subscriber"
                       controls autoplay
-                      class="red5pro-video red5pro-video-background">
+                      class="red5pro-media red5pro-media-background">
               </video>
             </div>
             <div id="status-field" class="status-message"></div>

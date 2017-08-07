@@ -97,12 +97,14 @@ input[type=range][orient=vertical] {
   height: 0.2em;
   position: absolute;
   display: block;
-  top: 1.2em;
+  top: 1.3em;
 }
 
 .red5pro-media-slider-button {
   width: 1em;
   height: 1em;
+  max-width: 24px;
+  max-height: 24px;
   top: -0.5em;
   position: relative;
   display: block;
@@ -132,6 +134,11 @@ input[type=range][orient=vertical] {
   background-repeat: no-repeat;
   border: none;
   cursor: pointer;
+}
+
+.red5pro-media-element-button-disabled {
+  cursor: arrow;
+  opacity: 0.5;
 }
 
 .red5pro-media-play-button {
