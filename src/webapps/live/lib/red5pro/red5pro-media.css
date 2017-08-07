@@ -95,9 +95,9 @@ input[type=range][orient=vertical] {
 .red5pro-media-slider-progress {
   background-color: #4286F4;
   height: 0.2em;
-  position: absolute;
+  position: relative;
   display: block;
-  top: 1.3em;
+  top: -0.1em;
 }
 
 .red5pro-media-slider-button {
@@ -105,7 +105,7 @@ input[type=range][orient=vertical] {
   height: 1em;
   max-width: 24px;
   max-height: 24px;
-  top: -0.5em;
+  top: -0.7em;
   position: relative;
   display: block;
   border-radius: 20px;

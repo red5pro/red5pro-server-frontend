@@ -105,10 +105,10 @@
         var container = document.getElementById('video-holder');
         var element = document.getElementById('red5pro-subscriber');
         if (container) {
-          container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
-          if (subscriber.getType().toLowerCase() === 'hls') {
-            element.style.height = '100%'
-          }
+          //          container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
+          //          if (subscriber.getType().toLowerCase() === 'hls') {
+          //            element.style.height = '100%'
+          //          }
         }
       }
     }
