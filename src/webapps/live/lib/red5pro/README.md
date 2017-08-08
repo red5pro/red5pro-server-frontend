@@ -3,7 +3,8 @@
 </h3>
 <p align="center">
   <a href="#publisher">publisher</a> &bull;
-  <a href="#subscriber">subscriber</a>
+  <a href="#subscriber">subscriber</a> &bull;
+  <a href="#shared-object">shared object</a>
 </p>
 -------
 
@@ -25,6 +26,9 @@
     * [HLS](#hls-subscriber)
     * [Auto Failover](#failover-subscriber)
     * [Lifecycle Events](#lifecycle-events-subscriber)
+  * [Shared Object](#shared-object)
+    * [Usage](#shared-object-usage)
+    * [Lifecycle Events](#lifecycle-events-shared-object)
 * [Contributing](#contributing)
 
 ## Quickstart
@@ -256,6 +260,11 @@ The **Red5 Pro HTML SDK** supports the following SWF integration:
 | minFlashVersion | Minimum semversion of the target Flash Player. | _Optional. Default: `10.0.0`_ |
 | swfobjectURL | Location of the [swfobject](https://github.com/swfobject/swfobject) dependency library that will be dynamically injected. | _Optional. Default: `lib/swfobject/swfobject.js`_ |
 | productInstallURL | Location of the **playerProductInstall** SWF used by [swfobject](https://github.com/swfobject/swfobject). | _Optional. Default: `lib/swfobject/playerProductInstall.swf`_ |
+| framerate | The FPS of data capture of the Camera. [More Info](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/media/Camera.html#setMode()) | _Optional. Default: `15`_ |
+| bandwidth | The _maximum_ amount of bandwidth in bytes. [More Info](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/media/Camera.html#bandwidth) | _Optional. Default: `50*1000`_ |
+| quality | The picture quality determined by compression applied to each video frame. Values: 1 - 100. [More Info](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/media/Camera.html#quality) | _Optional. Default: `80`_ |
+| profile | The H264 Profile. [More Info](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/media/H264Profile.html) | _Optional. Default: `baseline`_ |
+| level | The H264 Level. [More Info](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/media/H264Level.html) | _Optional. Default: `3.1`_ |
 
 #### Example
 ```html
@@ -266,14 +275,10 @@ The **Red5 Pro HTML SDK** supports the following SWF integration:
   </div>
 </body>
 ...
-<!-- WebRTC Shim -->
-<script src="http://webrtc.github.io/adapter/adapter-latest.js"></script>
 <!-- Exposes `red5prosdk` on the window global. -->
 <script src="lib/red5pro/red5pro-sdk.min.js"></script>
 ...
 <script>
-  var iceServers = [{urls: 'stun:stun2.l.google.com:19302'}];
-
   // Create a new instance of the WebRTC publisher.
   var publisher = new red5prosdk.RTMPPublisher();
 
@@ -298,6 +303,7 @@ The **Red5 Pro HTML SDK** supports the following SWF integration:
       // A fault occurred while trying to initialize and publish the stream.
       console.error(error);
     });
+</script>
 ```
 
 <h3 id="failover-publisher">Auto Failover and Order</h3>
@@ -709,6 +715,131 @@ Important things to note:
 
 <h3 id="lifecycle-events-subscriber">Lifecycle Events</h3>
 Please refer to the [Subscriber Events](SUBSCRIBER_EVENTS.md) documentation regarding the events API.
+
+# Shared Object
+Use of Shared objects requires an active stream - either publishing or subscribing. The content of the stream isn't important to the shared object itself, even a muted audio-only stream will be enough. Also, which stream you are connected to isn't important to which shared object you access, meaning that clients across multiple streams can use the same object, or there could be multiple overlapping objects in the same stream.
+
+<h2 id="shared-object-usage">Shared Object Usage</h2>
+
+### Creating a Shared Object with Publisher stream
+```js
+(function (nav, red5pro) {
+  var so;
+  var gUM = {video: true, audio: true};
+  var publisher = new red5pro.Red5ProPublisher();
+  publisher.init(configuration)
+    // Resolve to proper publisher implementation as you normally would.
+    .then( function(publisherImpl) {
+      return new Promise( function(resolve, reject) {
+        var implType = publisherImpl.getType().toUpperCase();
+        if (implType === publisher.publishTypes.RTC.toUpperCase()) {
+          nav.getUserMedia(gUM, function (media) {
+            publisherImpl.attachStream(media);
+            resolve(publisherImpl);
+          }, function (error) {
+            reject(error);
+          });
+        }
+        else {
+          resolve(publisherImpl);
+        }
+      });
+    })
+    // Request to publish.
+    .then( function(publisherImpl) {
+      return publisherImpl.publish()
+    })
+    // Instantiate Shared Object with publisher instance.
+    .then( function(publisherImpl) {
+      so = new red5pro.Red5ProSharedObject('sharedObjectTest', publisherImpl);
+      so.on('*', handleSharedObjectEvents);
+    })
+    .catch( function(error) {
+      // handle possible error in instantiation od publisher implementation.
+    });
+})(navigator.mediaDevice || navigator, window.red5prosdk);
+```
+
+### Creating a Shared Object with Subscriber Stream
+```js
+(function (red5pro) {
+  var so;
+  var subscriber = new red5pro.Red5ProSubscriber();
+  subscriber.init(configuration)
+    .then( function(subscriberImpl) {
+      return subscriberImpl.play();
+    })
+    .then( function(subscriberImpl) {
+      so = new red5pro.Red5ProSharedObject('sharedObjectTest', subscriberImpl);
+      so.on('*', handleSharedObjectEvents);
+    })
+    .catch( function(error) {
+      // handle possible error in instantiation od subscriber implementation.
+    });
+})(window.red5prosdk);
+```
+
+### Closing a Shared Object
+Closing a remote Shared Object instance is as easy as invoking `close`.
+```js
+so.off('*', handleSharedObjectEvents);
+so.close();
+```
+
+> The event delegate is also removed using the `off` method, since `SharedObject` is an instance of `EventEmitter`.
+
+## Shared Object Property Updates
+Remote Shared Objects use JSON for transmission, meaning that its structure is primarily up to your discretion. The base object will always be a dictionary with string keys, while values can be strings, numbers, booleans, arrays, or other dictionaries - with the same restriction on sub-objects.
+
+This example simply uses a number to keep a count of how many people are connected to the object. As seen in the `PROPERTY_UPDATE` handler, value can be accessed from the object by name, and set using `setProperty`:
+
+```js
+so.on(red5pro.SharedObjectEventTypes.PROPERTY_UPDATE, function (event) {
+  if (event.data.hasOwnProperty('count')) {
+    appendMessage('User count is: ' + event.data.count + '.');
+    if (!hasRegistered) {
+      hasRegistered = true;
+      so.setProperty('count', parseInt(event.data.count) + 1);
+    }
+  }
+  else if (!hasRegistered) {
+    hasRegistered = true;
+    so.setProperty('count', 1);
+  }
+});
+```
+
+## Shared Object Method Updates
+The Shared Object interface also allows sending messages to other people watching the object. By sending a Object through the `send` method, that object will be passed to all the listening clients that implement the specified call.
+
+```js
+function sendMessageOnSharedObject (message) {
+  so.send('messageTransmit', {
+    user: configuration.stream1,
+    message: message
+  });
+}
+```
+
+Like with the parameters of the object, as long as the Object sent parses into JSON, the structure of the object is up to you, and it will reach the other clients in whole as it was sent.
+
+In this example, we are marking the message object as type `messageTransmit` with data related ot the user sending the message and a message String.
+
+In the event handler for messages, this example then invokes that method name of `messageTransmit` on the callback client:
+
+```js
+// Invoked from METHOD_UPDATE event on Shared Object instance.
+function messageTransmit (message) { // eslint-disable-line no-unused-vars
+  soField.value = ['User "' + message.user + '": ' + message.message, soField.value].join('\n');
+}
+...
+so.on(red5pro.SharedObjectEventTypes.METHOD_UPDATE, function (event) {
+  soCallback[event.data.methodName].call(null, event.data.message);
+});
+```
+
+<h3 id="lifecycle-events-subscriber">Shared Object Events</h3>
+Please refer to the [Shared Object Events](SHARED_OBJECT_EVENTS.md) documentation regarding the events API.
 
 # Contributing
 > Please refer to the [Contributing Documentation](CONTRIBUTING.md) to learn more about contributing to the development of the Red5 Pro HTML SDK.
