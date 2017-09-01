@@ -56,7 +56,7 @@
     {{> head_meta }}
     {{> resources }}
     <title>Stream Broadcasting with the Red5 Pro Server!</title>
-    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="//webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css"></script>
     <style>

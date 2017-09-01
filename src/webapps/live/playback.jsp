@@ -145,7 +145,7 @@
         min-height: 40px;
       }
     </style>
-    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="//webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet"></script>
   </head>

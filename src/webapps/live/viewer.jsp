@@ -73,7 +73,7 @@
           assignIfDefined(<%=audioBandwidth%>, 'r5proAudioBandwidth');
           assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
         </script>
-      <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+      <script src="//webrtc.github.io/adapter/adapter-latest.js"></script>
       <script src="lib/screenfull/screenfull.min.js"></script>
       <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
       <script type="text/javascript" src="lib/swfobject/swfobject.js"></script>
