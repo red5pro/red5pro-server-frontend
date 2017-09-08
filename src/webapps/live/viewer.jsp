@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%
     String app = "live";
     String host="127.0.0.1";
@@ -44,15 +43,12 @@
       videoBandwidth = Integer.parseInt(request.getParameter("videoBW"));
     }
 %>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!doctype html>
+<html lang="eng">
     <head>
+        {{> head_meta }}
+        {{> resources }}
         <title>Subscribing to <%= stream %></title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="google" value="notranslate" />
-        <script src="lib/jquery-1.12.4.min.js"></script>
-        <script src="script/r5pro-ice-utils.js"></script>
         <script>
           // writing params to global.
           window.targetHost = "<%=host%>";
@@ -76,7 +72,6 @@
       <script src="//webrtc.github.io/adapter/adapter-latest.js"></script>
       <script src="lib/screenfull/screenfull.min.js"></script>
       <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
-      <script type="text/javascript" src="lib/swfobject/swfobject.js"></script>
         <style>
           object:focus {
             outline:none;
@@ -146,7 +141,9 @@
       <script src="lib/es6/es6-fetch.js"></script>
       <script src="lib/es6/es6-object-assign.js"></script>
       <script src="lib/es6/es6-promise.min.js"></script>
+      <script src="lib/jquery-1.12.4.min.js"></script>
       <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+      <script src="script/r5pro-ice-utils.js"></script>
       <script src="script/r5pro-viewer-failover.js"></script>
       </script>
     </body>
