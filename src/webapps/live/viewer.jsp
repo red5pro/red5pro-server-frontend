@@ -1,17 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%
     String app = "live";
+    String ice = null;
     String host="127.0.0.1";
     String stream="myStream";
     String buffer="2";
     String width="100%";
     String height="100%";
-    String ice=null;
     String tech=null;
     Integer audioBandwidth = -1;
     Integer videoBandwidth = -1;
 
-    if (request.getParameter("app") != null) {
+   if (request.getParameter("view") != null) {
+    tech = request.getParameter("view");
+  }
+
+  if (request.getParameter("ice") != null) {
+    ice = request.getParameter("ice");
+  }
+
+   if (request.getParameter("app") != null) {
       app = request.getParameter("app");
     }
 
@@ -27,14 +35,6 @@
       buffer = request.getParameter("buffer");
     }
 
-    if (request.getParameter("view") != null) {
-      tech = request.getParameter("view");
-    }
-
-    if (request.getParameter("ice") != null) {
-      ice = request.getParameter("ice");
-    }
-
     if (request.getParameter("audioBW") != null) {
       audioBandwidth = Integer.parseInt(request.getParameter("audioBW"));
     }
@@ -46,29 +46,13 @@
 <!doctype html>
 <html lang="eng">
     <head>
-        {{> head_meta }}
-        {{> resources }}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Welcome to the Red5 Pro Server Pages!">
+        <link rel="stylesheet" href="css/main.css">
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
         <title>Subscribing to <%= stream %></title>
-        <script>
-          // writing params to global.
-          window.targetHost = "<%=host%>";
-          window.r5proApp = "<%=app%>";
-          window.r5proStreamName = "<%=stream%>";
-          window.r5proBuffer = Number("<%=buffer%>");
-          window.r5proVideoWidth = "<%=width%>";
-          window.r5proVideoHeight = "<%=height%>";
-          window.r5proIce = window.determineIceServers('<%=ice%>');
-          window.r5proAutosubscribe = true;
-
-          function assignIfDefined (value, prop) {
-            if (value && value !== 'null') {
-              window[prop] = value;
-            }
-          }
-          assignIfDefined("<%=tech%>", 'r5proViewTech');
-          assignIfDefined(<%=audioBandwidth%>, 'r5proAudioBandwidth');
-          assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
-        </script>
       <script src="//webrtc.github.io/adapter/adapter-latest.js"></script>
       <script src="lib/screenfull/screenfull.min.js"></script>
       <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
@@ -144,6 +128,26 @@
       <script src="lib/jquery-1.12.4.min.js"></script>
       <script src="lib/red5pro/red5pro-sdk.min.js"></script>
       <script src="script/r5pro-ice-utils.js"></script>
+              <script>
+          // writing params to global.
+          window.targetHost = "<%=host%>";
+          window.r5proApp = "<%=app%>";
+          window.r5proStreamName = "<%=stream%>";
+          window.r5proBuffer = Number("<%=buffer%>");
+          window.r5proVideoWidth = "<%=width%>";
+          window.r5proVideoHeight = "<%=height%>";
+          window.r5proIce = window.determineIceServers('<%=ice%>');
+          window.r5proAutosubscribe = true;
+
+          function assignIfDefined (value, prop) {
+            if (value && value !== 'null') {
+              window[prop] = value;
+            }
+          }
+          assignIfDefined("<%=tech%>", 'r5proViewTech');
+          assignIfDefined(<%=audioBandwidth%>, 'r5proAudioBandwidth');
+          assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
+        </script>
       <script src="script/r5pro-viewer-failover.js"></script>
       </script>
     </body>

@@ -36,35 +36,13 @@
 <!doctype html>
 <html lang="eng">
     <head>
-        {{> head_meta }}
-        {{> resources }}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Welcome to the Red5 Pro Server Pages!">
+        <link rel="stylesheet" href="css/main.css">
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
         <title>VOD Playback of <%= stream %></title>
-        <script>
-          // Access selected data from the `opener` window.
-          var opener = window.opener;
-          if (opener) {
-            var json = opener.streamdata;
-            var streamDataStr = decodeURIComponent(json);
-            var streamData = JSON.parse(streamDataStr);
-            console.log('Stream data:\r\n' + JSON.stringify(streamData, null, 2));
-            window.streamData = streamData;
-          }
-
-          // writing params to global.
-          window.targetHost = "<%=host%>";
-          window.r5proApp = "<%=app%>";
-          window.r5proStreamName = "<%=stream%>";
-          window.r5proBuffer = Number("<%=buffer%>");
-          window.r5proVideoWidth = "<%=width%>";
-          window.r5proVideoHeight = "<%=height%>";
-          window.r5proAutosubscribe = true;
-          window.r5proIce = window.determineIceServers('<%=ice%>');
-
-          var viewTech = "<%=tech%>";
-          if (viewTech && viewTech !== 'null') {
-            window.r5proViewTech = viewTech;
-          }
-        </script>
     <script src="//webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
@@ -140,6 +118,32 @@
       <script src="lib/jquery-1.12.4.min.js"></script>
       <script src="lib/red5pro/red5pro-sdk.min.js"></script>
       <script src="script/r5pro-ice-utils.js"></script>
+        <script>
+          // Access selected data from the `opener` window.
+          var opener = window.opener;
+          if (opener) {
+            var json = opener.streamdata;
+            var streamDataStr = decodeURIComponent(json);
+            var streamData = JSON.parse(streamDataStr);
+            console.log('Stream data:\r\n' + JSON.stringify(streamData, null, 2));
+            window.streamData = streamData;
+          }
+
+          // writing params to global.
+          window.targetHost = "<%=host%>";
+          window.r5proApp = "<%=app%>";
+          window.r5proStreamName = "<%=stream%>";
+          window.r5proBuffer = Number("<%=buffer%>");
+          window.r5proVideoWidth = "<%=width%>";
+          window.r5proVideoHeight = "<%=height%>";
+          window.r5proAutosubscribe = true;
+          window.r5proIce = window.determineIceServers('<%=ice%>');
+
+          var viewTech = "<%=tech%>";
+          if (viewTech && viewTech !== 'null') {
+            window.r5proViewTech = viewTech;
+          }
+        </script>
       <script src="script/r5pro-viewer-vod-failover.js"></script>
       </script>
     </body>
