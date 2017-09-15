@@ -76,7 +76,7 @@
         updateStatusField(statusField, 'Failover to use HLS-based Playback.');
         break;
       default:
-        updateStatusField(statusField, 'No suitable Publisher found. WebRTC, Flash and HLS are not supported.');
+        updateStatusField(statusField, 'No suitable Subscriber found. WebRTC, Flash and HLS are not supported.');
         break;
     }
   }
