@@ -7,7 +7,7 @@
     "repositoryUrl": "git@github.com:infrared5/red5pro-api.git",
     "branch": "develop"
   },
-  "r5pro-bandwidthdetection": {
+  "r5pro-bandwidth-detection": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-plugin-bandwidth-detection.git",
     "branch": "develop"
   },
