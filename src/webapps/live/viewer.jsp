@@ -149,6 +149,5 @@
           assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
         </script>
       <script src="script/r5pro-viewer-failover.js"></script>
-      </script>
     </body>
 </html>

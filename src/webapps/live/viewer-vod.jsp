@@ -95,6 +95,16 @@
         </style>
     </head>
     <body>
+    <template id="flash-playback">
+      <object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">
+        <param name="quality" value="high">
+        <param name="wmode" value="opaque">
+        <param name="bgcolor" value="#000000">
+        <param name="allowscriptaccess" value="always">
+        <param name="allowfullscreen" value="true">
+        <param name="allownetworking" value="all">
+      </object>
+    </template>
       <div id="video-container">
             <div id="video-holder">
               <video id="red5pro-subscriber"
@@ -145,6 +155,5 @@
           }
         </script>
       <script src="script/r5pro-viewer-vod-failover.js"></script>
-      </script>
     </body>
 </html>
