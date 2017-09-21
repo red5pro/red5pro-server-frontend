@@ -34,9 +34,9 @@
     {{> resources }}
     <title>Video On Demand Playback with the Red5 Pro Server!</title>
     <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
-    <script src="https://unpkg.com/video.js/dist/video.js"></script>
-    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
-    <script src="https://unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
+    <script src="//unpkg.com/video.js/dist/video.js"></script>
+    <script src="//unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+    <script src="//unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
     <style>
       object:focus {
         outline:none;
