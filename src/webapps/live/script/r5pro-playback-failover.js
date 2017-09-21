@@ -95,6 +95,9 @@
        case 'flv':
         updateStatusField(statusField, 'Attempting force of Flash embed for FLV playback.');
         break;
+      case 'videojs':
+        updateStatusField(statusField, 'Attempting force of HLS playback using VideoJS.');
+        break;
      default:
         updateStatusField(statusField, 'No suitable Subscriber found. WebRTC, Flash and HLS are not supported.');
         break;
@@ -190,6 +193,30 @@
                         'buffer=0.5&'+
                         'autosize=true';
     flashObject.appendChild(flashvars);
+    showSubscriberImplStatus({
+      getType: function() {
+        return 'flv';
+      }
+    });
+  }
+
+  function useVideoJSFallback (url) {
+    var videoElement = document.getElementById('red5pro-subscriber');
+    videoElement.classList.add('video-js');
+    var source = document.createElement('source');
+    source.type = 'application/x-mpegURL';
+    source.src = url;
+    videoElement.appendChild(source);
+    new window.videojs(videoElement, {
+      techOrder: ['html5', 'flash']
+    }, function () {
+      // success.
+    });
+    showSubscriberImplStatus({
+      getType: function() {
+        return 'videojs';
+      }
+    });
   }
 
   function startSubscription (streamData) {
@@ -218,6 +245,9 @@
           else {
             useFLVFallback(streamData.name)
           }
+        }
+        else if (streamData.urls && streamData.urls.hls) {
+          useVideoJSFallback(streamData.urls.hls);
         }
        });
   }
