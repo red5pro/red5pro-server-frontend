@@ -207,7 +207,7 @@
             <div id="statistics-field" class="statistics-field"></div>
             <div id="video-holder">
               <video id="red5pro-publisher"
-                      muted autoplay
+                      controls muted autoplay
                       class="video-element">
               </video>
             </div>
