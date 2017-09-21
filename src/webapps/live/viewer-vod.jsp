@@ -43,6 +43,10 @@
         <link rel="stylesheet" href="css/main.css">
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
         <title>VOD Playback of <%= stream %></title>
+    <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
+    <script src="//unpkg.com/video.js/dist/video.js"></script>
+    <script src="//unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+    <script src="//unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
     <script src="//webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
@@ -95,6 +99,16 @@
         </style>
     </head>
     <body>
+    <template id="flash-playback">
+      <object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">
+        <param name="quality" value="high">
+        <param name="wmode" value="opaque">
+        <param name="bgcolor" value="#000000">
+        <param name="allowscriptaccess" value="always">
+        <param name="allowfullscreen" value="true">
+        <param name="allownetworking" value="all">
+      </object>
+    </template>
       <div id="video-container">
             <div id="video-holder">
               <video id="red5pro-subscriber"
@@ -145,6 +159,5 @@
           }
         </script>
       <script src="script/r5pro-viewer-vod-failover.js"></script>
-      </script>
     </body>
 </html>

@@ -15,6 +15,8 @@
     return protocol === 'http' ? {protocol: 'ws', port: 8081} : {protocol: 'wss', port: 8083};
   }
 
+  var $flashTemplate = document.getElementById('flash-playback');
+
   var baseConfiguration = {
     host: host,
     app: 'live',
@@ -75,6 +77,15 @@
       case 'hls':
         updateStatusField(statusField, 'Failover to use HLS-based Playback.');
         break;
+      case 'mp4':
+        updateStatusField(statusField, 'Failover to MP4 playback in video element.');
+        break;
+      case 'flv':
+        updateStatusField(statusField, 'Attempting force of Flash embed for FLV playback.');
+        break;
+      case 'videojs':
+        updateStatusField(statusField, 'Attempting force of HLS playback using VideoJS.');
+        break;
       default:
         updateStatusField(statusField, 'No suitable Subscriber found. WebRTC, Flash and HLS are not supported.');
         break;
@@ -88,17 +99,85 @@
       addEventLogToField(document.getElementById('event-log-field'), eventLog);
     }
     if (event.type === 'Subscribe.Metadata') {
-      var value = event.data.orientation;
+      var value = event.data.orientation; // eslint-disable-line no-unused-vars
       if (subscriber.getType().toLowerCase() === 'hls' ||
            subscriber.getType().toLowerCase() === 'rtc') {
         var container = document.getElementById('video-holder');
-        var element = document.getElementById('red5pro-subscriber-video');
+        var element = document.getElementById('red5pro-subscriber-video'); // eslint-disable-line no-unused-vars
         if (container) {
           // container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
         }
       }
     }
- }
+  }
+
+  function useMP4Fallback (src) {
+    var vid = src.split('/');
+    var len = vid.length;
+    vid.splice(len - 1, 0, 'streams');
+    var loc = vid.join('/');
+
+    var element = document.getElementById('red5pro-subscriber');
+    var source = document.createElement('source');
+    source.type = 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"';
+    source.src = loc;
+    element.appendChild(source);
+    showSubscriberImplStatus({
+      getType: function() {
+        return 'mp4';
+      }
+    });
+  }
+
+  function addPlayer(tmpl, container) {
+    var $el = document.importNode(tmpl.content, true);
+    container.appendChild($el);
+    return $el;
+  }
+
+  function useFLVFallback (streamName) {
+    var container = document.getElementById('red5pro-subscriber')
+    if (container) {
+      container.remove();
+    }
+    addPlayer($flashTemplate, document.getElementById('video-holder'));
+    var flashObject = document.getElementById('red5pro-subscriber');
+      var flashvars = document.createElement('param');
+      flashvars.name = 'flashvars';
+      flashvars.value = 'stream='+streamName+'&'+
+                        'app='+baseConfiguration.app+'&'+
+                        'host='+baseConfiguration.host+'&'+
+                        'muted=false&'+
+                        'autoplay=true&'+
+                        'backgroundColor=#000000&'+
+                        'buffer=0.5&'+
+                        'autosize=true';
+    flashObject.appendChild(flashvars);
+    showSubscriberImplStatus({
+      getType: function() {
+        return 'flv';
+      }
+    });
+  }
+
+  function useVideoJSFallback (url) {
+    var videoElement = document.getElementById('red5pro-subscriber');
+    videoElement.classList.add('video-js');
+    var source = document.createElement('source');
+    source.type = 'application/x-mpegURL';
+    source.src = url;
+    videoElement.appendChild(source);
+    new window.videojs(videoElement, {
+      techOrder: ['html5', 'flash']
+    }, function () {
+      // success.
+    });
+    showSubscriberImplStatus({
+      getType: function() {
+        return 'videojs';
+      }
+    });
+  }
 
   function startSubscription (streamData) {
     /**
@@ -118,6 +197,17 @@
       .catch(function (error) {
         var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
         console.error('[viewer]:: Error in subscribing to stream - ' + errorStr);
+        if (streamData.urls && streamData.urls.rtmp) {
+          if (streamData.urls.rtmp.indexOf('mp4') !== -1) {
+            useMP4Fallback(streamData.urls.rtmp)
+          }
+          else {
+            useFLVFallback(streamData.name)
+          }
+        }
+        else if (streamData.urls && streamData.urls.hls) {
+          useVideoJSFallback(streamData.urls.hls);
+        }
        });
   }
 
@@ -202,7 +292,7 @@
   function subscribe (subscriber) {
     return new Promise(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
-      subscriber.play()
+      subscriber.subscribe()
         .then(function () {
           resolve();
         })
