@@ -52,7 +52,9 @@
   }
 
   function updateStatusField (element, message) {
-    element.innerText = message;
+    if (element) {
+      element.innerText = message;
+    }
   }
 
   function addEventLogToField (element, eventLog) {
