@@ -4,6 +4,13 @@
 
 - regex on level for rtmp pub setting. (bustardcelly)
 - exposing media settings of the rtmp publisher. (bustardcelly)
+- check for empty candidate on RTC subscription. (bustardcelly)
+- fix for subscriber.stop event dispatch. (bustardcelly)
+
+## 3.4.3
+
+
+- fix for test of `srcObject` in video element. (bustardcelly)
 
 ## 3.4.1
 
