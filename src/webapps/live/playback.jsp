@@ -33,6 +33,10 @@
     {{> head_meta }}
     {{> resources }}
     <title>Video On Demand Playback with the Red5 Pro Server!</title>
+    <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
+    <script src="//unpkg.com/video.js/dist/video.js"></script>
+    <script src="//unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+    <script src="//unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
     <style>
       object:focus {
         outline:none;
@@ -137,22 +141,26 @@
         margin: 14px;
       }
 
-      #video-holder, #red5pro-subscriber-video {
+      #video-holder, #red5pro-subscriber {
         width: 100%;
       }
+
+      .red5pro-media-control-bar {
+        min-height: 40px;
+      }
     </style>
-    <link href="lib/videojs/video-js.min.css" rel="stylesheet">
-    <script src="lib/webrtc/adapter.js"></script>
-    <script src="lib/videojs/video.min.js"></script>
-    <script src="lib/videojs/videojs-media-sources.min.js"></script>
-    <script src="lib/videojs/videojs.hls.min.js"></script>
-    <script type="text/javascript" src="lib/swfobject/swfobject.js"></script>
+    <script src="//webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="lib/screenfull/screenfull.min.js"></script>
+    <link href="lib/red5pro/red5pro-media.css" rel="stylesheet"></script>
   </head>
   <body>
     <template id="video-playback">
       <div id="video-container">
             <div id="video-holder">
-              <video id="red5pro-subscriber-video" controls autoplay class="video-element"></video>
+              <video id="red5pro-subscriber"
+                      controls autoplay
+                      class="red5pro-media red5pro-media-background">
+              </video>
             </div>
             <div id="status-field" class="status-message"></div>
             <div id="event-log-field" class="event-log-field">
@@ -161,6 +169,20 @@
                 <div style="clear: both;"></div>
               </div>
             </div>
+      </div>
+    </template>
+    <template id="flash-playback">
+      <div id="video-container">
+            <div id="video-holder" style="height:405px;">
+              <object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">
+                <param name="quality" value="high">
+                <param name="wmode" value="opaque">
+                <param name="bgcolor" value="#000000">
+                <param name="allowscriptaccess" value="always">
+                <param name="allowfullscreen" value="true">
+                <param name="allownetworking" value="all">
+            </object>
+          </div>
       </div>
     </template>
     {{> header }}
