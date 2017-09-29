@@ -56,11 +56,9 @@
     {{> head_meta }}
     {{> resources }}
     <title>Stream Broadcasting with the Red5 Pro Server!</title>
-    <script src="lib/webrtc/adapter.js"></script>
-    <script src="lib/videojs/video.min.js"></script>
-    <script src="lib/videojs/videojs-media-sources.min.js"></script>
-    <script src="lib/videojs/videojs.hls.min.js"></script>
-    <link rel="stylesheet" href="lib/videojs/video-js.min.css">
+    <script src="//webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="lib/screenfull/screenfull.min.js"></script>
+    <link href="lib/red5pro/red5pro-media.css"></script>
     <style>
       object:focus {
         outline:none;
@@ -127,13 +125,6 @@
       .button-disabled {
         color: gray;
         pointer-events: none;
-      }
-
-      #quality-radio-group {
-        display: inline-block;
-      }
-      #quality-radio-group > span {
-        margin-right: 10px;
       }
 
       #live-page-subcontent {
@@ -212,27 +203,13 @@
                       <label for="enable-record-field">Enable Recording:</label>
                       <input type="checkbox" name="enable-record-field" id="enable-record-field"></input>
                     </p>
-                    <div class="video-form-item hidden">
-                      <label for="quality-radio-group">Quality:</label>
-                      <p id="quality-radio-group">
-                        <span>
-                          <input type="radio" name="quality-radio-group" id="quality-high-select" value="high"></input>
-                          <label for="quality-high-select">High</label>
-                        </span>
-                        <span>
-                           <input type="radio" name="quality-radio-group" id="quality-mid-select" checked value="mid"></input>
-                           <label for="quality-mid-select">Mid</label>
-                       </span>
-                        <span>
-                          <input type="radio" name="quality-radio-group" id="quality-low-select" value="low"></input>
-                          <label for="quality-low-select">Low</label>
-                        </span>
-                      </p>
-                    </div>
             </div>
             <div id="statistics-field" class="statistics-field"></div>
             <div id="video-holder">
-              <video id="red5pro-publisher-video" controls muted class="video-element"></video>
+              <video id="red5pro-publisher"
+                      controls muted autoplay
+                      class="video-element">
+              </video>
             </div>
             <div id="status-field" class="status-message"></div>
             <div id="start-stop-button" class="button-disabled">Start Broadcast</div>
