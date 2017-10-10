@@ -9,10 +9,7 @@
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-<<<<<<< HEAD
     "branch": "bug/sub_close_event_RPRO-4653"
-=======
-    "branch": "feature/eoc_publisher"
->>>>>>> sdk/4.1.0-RC
+    "branch": "sdk/4.1.0-RC"
   }
 }
