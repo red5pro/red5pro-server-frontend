@@ -3,7 +3,7 @@
 
   'use strict';
 
-  var isMoz = !!navigator.mozGetUserMedia;
+  var isMoz = !!navigator.mozGetUserMedia; //eslint-disable-line no-unused-vars
   var OPTION_GOOG = 'google';
   var OPTION_MOZ = 'moz';
   var OPTION_ALL = 'all';
@@ -36,7 +36,8 @@
     }
   ];
   //  var defaultServers = googleServers.concat(miscServers, mozServers);
-  var defaultServers = isMoz ? [mozServers[0]] : [{urls:googleServers[0].urls[2]}];
+  // var defaultServers = isMoz ? [mozServers[0]] : [{urls:googleServers[0].urls[2]}];
+  var defaultServers = [{urls:googleServers[0].urls[2]}];
 
   function determineIceServers (option) {
     switch (option) {
