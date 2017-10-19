@@ -108,7 +108,7 @@
       <div id="video-container">
             <div id="video-holder">
               <video id="red5pro-subscriber"
-                      controls autoplay
+                      controls autoplay playsinline
                       class="red5pro-media red5pro-media-background">
               </video>
             </div>
