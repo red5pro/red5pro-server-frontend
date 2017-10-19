@@ -1,4 +1,4 @@
-/* global document, Promise */
+/* global document, Promise, $ */
 (function (window, document, red5pro) {
   'use strict';
 
@@ -131,8 +131,19 @@
     }
   }
 
+  function promisify (fn) {
+    if (window.Promise) {
+      return new Promise(fn);
+    }
+    var d = new $.Deferred();
+    fn(d.resolve, d.reject);
+    var promise = d.promise();
+    promise.catch = promise.fail;
+    return promise;
+  }
+
   function determineSubscriber () {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
       var subscriber = new red5pro.Red5ProSubscriber();
       subscriber.on('*', onSubscriberEvent);
 
@@ -160,7 +171,7 @@
   }
 
   function preview (selectedSubscriber) {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
 
       subscriber = selectedSubscriber;
       var type = selectedSubscriber.getType().toLowerCase();
@@ -184,7 +195,7 @@
   }
 
   function subscribe (subscriber) {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
       subscriber.subscribe()
       .then(function () {
@@ -198,7 +209,7 @@
   }
 
   function unsubscribe () {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
       if (hasEstablishedSubscriber()) {
         subscriber.unsubscribe()
           .then(function() {
