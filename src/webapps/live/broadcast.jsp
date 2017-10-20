@@ -232,6 +232,7 @@
       </div>
     </div>
     {{> es6-script-includes }}
+    <script src="lib/jquery-1.12.4.min.js"></script>
     <script src="script/r5pro-ice-utils.js"></script>
     <script>
       function assignIfDefined (value, prop) {
