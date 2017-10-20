@@ -4,6 +4,18 @@
 
   red5pro.setLogLevel('debug');
   var iceServers = window.r5proIce;
+  // For IE support.
+  var templateHTML = '<div id="video-holder">' +
+            '<video id="red5pro-subscriber" controls autoplay playsinline class="red5pro-media red5pro-media-background">' +
+            '</video>' +
+          '</div>' +
+          '<div id="status-field" class="status-message"></div>' +
+          '<div id="event-log-field" class="event-log-field">' +
+            '<div style="padding: 10px 0">' +
+              '<p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>' +
+              '<div style="clear: both;"></div>' +
+            '</div>' +
+          '</div>';
 
   var subscriber;
 
@@ -118,11 +130,11 @@
 
     if (event.type === 'Subscribe.Metadata') {
       if (event.data.hasOwnProperty('orientation')) {
-        var value = event.data.orientation;
+        var value = event.data.orientation; // eslint-disable-line no-unused-vars
         if (subscriber.getType().toLowerCase() === 'hls' ||
             subscriber.getType().toLowerCase() === 'rtc') {
           var container = document.getElementById('video-holder');
-          var element = document.getElementById('red5pro-subscriber');
+          var element = document.getElementById('red5pro-subscriber');  // eslint-disable-line no-unused-vars
           if (container) {
             //            container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
             //            if (subscriber.getType().toLowerCase() === 'hls') {
@@ -138,7 +150,7 @@
   }
 
   function addPlayer(tmpl, container) {
-    var $el = document.importNode(tmpl.content, true);
+    var $el = templateContent(tmpl);
     container.appendChild($el);
     return $el;
   }
@@ -147,8 +159,8 @@
     var videoContainer = document.getElementById('video-container');
     unsubscribe()
       .then(function () {
-        if (videoContainer) {
-          videoContainer.remove();
+        if (videoContainer && videoContainer.parentNode) {
+          videoContainer.parentNode.removeChild(videoContainer);
         }
       })
   }
@@ -195,7 +207,7 @@
   };
 
   function determineSubscriber () {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
       var subscriber = new red5pro.Red5ProSubscriber();
       subscriber.on('*', onSubscriberEvent);
 
@@ -218,12 +230,11 @@
           showSubscriberImplStatus(null);
           reject(error);
         });
-
     });
   }
 
   function preview (selectedSubscriber) {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
 
       subscriber = selectedSubscriber
       var type = selectedSubscriber.getType().toLowerCase();
@@ -246,8 +257,30 @@
     });
   }
 
+  function templateContent(template) {
+    if("content" in document.createElement("template")) {
+      return document.importNode(template.content, true);
+    }
+    else {
+      var div = document.createElement('div');
+      div.innerHTML = templateHTML;
+      return div;
+    }
+  }
+
+  function promisify (fn) {
+    if (window.Promise) {
+      return new Promise(fn);
+    }
+    var d = new $.Deferred();
+    fn(d.resolve, d.reject);
+    var promise = d.promise();
+    promise.catch = promise.fail;
+    return promise;
+  }
+
   function subscribe (subscriber) {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
       subscriber.subscribe()
         .then(function () {
@@ -261,7 +294,7 @@
   }
 
   function unsubscribe () {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
       if (hasEstablishedSubscriber()) {
         subscriber.unsubscribe()
           .then(function() {

@@ -1,4 +1,4 @@
-/* global window, document, navigator, Promise */
+/* global window, document, navigator, Promise, $ */
 (function (window, document, red5prosdk) {
   'use strict';
 
@@ -251,8 +251,19 @@
     }
   }
 
+  function promisify (fn) {
+    if (window.Promise) {
+      return new Promise(fn);
+    }
+    var d = new $.Deferred();
+    fn(d.resolve, d.reject);
+    var promise = d.promise();
+    promise.catch = promise.fail;
+    return promise;
+  }
+
   function determinePublisher () {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
       var publisher = new red5prosdk.Red5ProPublisher();
       publisher.on('*', onPublisherEvent);
 
@@ -280,7 +291,7 @@
   }
 
   function publish () {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
 
       var mode = getPublishMode();
       var streamName = getStreamName();
@@ -315,7 +326,7 @@
   }
 
   function unpublish () {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
 
       if (hasEstablishedPublisher()) {
         publisher.unpublish()

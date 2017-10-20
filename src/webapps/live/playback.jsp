@@ -148,17 +148,23 @@
       .red5pro-media-control-bar {
         min-height: 40px;
       }
+
+      template { display: none }
     </style>
     <script src="//webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet"></script>
+    <script>
+      // Shim so we can style in IE6/7/8
+      document.createElement('template');
+    </script>
   </head>
   <body>
     <template id="video-playback">
       <div id="video-container">
             <div id="video-holder">
               <video id="red5pro-subscriber"
-                      controls autoplay
+                      controls autoplay playsinline
                       class="red5pro-media red5pro-media-background">
               </video>
             </div>
