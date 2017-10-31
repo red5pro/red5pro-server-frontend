@@ -6,7 +6,6 @@
   var iceServers = window.r5proIce;
 
   var subscriber;
-  var view;
 
   var qAudioBW = window.r5proAudioBandwidth || -1;//50;
   var qVideoBW = window.r5proVideoBandwidth || -1;//256;
@@ -50,11 +49,11 @@
     protocol: 'rtmp',
     port: 1935,
     mimeType: 'rtmp/flv',
-    useVideoJS: false,
     width: 640,
     height: 480,
     embedWidth: '100%',
     embedHeight: '100%',
+    backgroundColor: '#000000',
     swf: 'lib/red5pro/red5pro-subscriber.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
@@ -63,7 +62,6 @@
     protocol: protocol,
     port: port,
     mimeType: 'application/x-mpegURL',
-    swf: 'lib/red5pro/red5pro-video-js.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
   };
@@ -114,7 +112,9 @@
   function onSubscriberEvent (event) {
     var eventLog = '[Red5ProSubscriber] ' + event.type + '.';
     console.log(eventLog);
-    addEventLogToField(document.getElementById('event-log-field'), eventLog);
+    if (event.type !== 'Subscribe.Time.Update') {
+      addEventLogToField(document.getElementById('event-log-field'), eventLog);
+    }
 
     if (event.type === 'Subscribe.Metadata') {
       if (event.data.hasOwnProperty('orientation')) {
@@ -122,12 +122,12 @@
         if (subscriber.getType().toLowerCase() === 'hls' ||
             subscriber.getType().toLowerCase() === 'rtc') {
           var container = document.getElementById('video-holder');
-          var element = document.getElementById('red5pro-subscriber-video');
+          var element = document.getElementById('red5pro-subscriber');
           if (container) {
-            container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
-            if (subscriber.getType().toLowerCase() === 'hls') {
-              element.style.height = '100%'
-            }
+            //            container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
+            //            if (subscriber.getType().toLowerCase() === 'hls') {
+            //              element.style.height = '100%'
+            //            }
           }
         }
       }
@@ -225,35 +225,19 @@
   function preview (selectedSubscriber) {
     return new Promise(function (resolve, reject) {
 
-      subscriber = selectedSubscriber;
-      view = new red5pro.PlaybackView('red5pro-subscriber-video');
-      view.attachSubscriber(subscriber);
-
+      subscriber = selectedSubscriber
       var type = selectedSubscriber.getType().toLowerCase();
       switch (type) {
         case 'rtc':
-          resolve({
-            subscriber: subscriber,
-            view: view
-          });
+        case 'hls':
+          resolve(subscriber);
           break;
         case 'rtmp':
         case 'livertmp':
         case 'rtmp - videojs':
           var holder = document.getElementById('video-holder');
           holder.style.height = '405px';
-          resolve({
-            subscriber: subscriber,
-            view: view
-          });
-          break;
-        case 'hls':
-          view.view.classList.add('video-js', 'vjs-default-skin')
-          view.view.height = 300;
-          resolve({
-            subscriber: subscriber,
-            view: view
-          });
+          resolve(subscriber);
           break;
         default:
           reject('View not available for ' + type + '.');
@@ -262,10 +246,10 @@
     });
   }
 
-  function subscribe () {
+  function subscribe (subscriber) {
     return new Promise(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
-      subscriber.play()
+      subscriber.subscribe()
         .then(function () {
           onSubscribeStart(subscriber);
           resolve();
@@ -279,7 +263,7 @@
   function unsubscribe () {
     return new Promise(function (resolve, reject) {
       if (hasEstablishedSubscriber()) {
-        subscriber.stop()
+        subscriber.unsubscribe()
           .then(function() {
             subscriber.off('*', onSubscriberEvent);
             resolve();
