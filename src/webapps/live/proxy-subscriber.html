@@ -151,6 +151,7 @@
 
         var subscriber;
         var failover;
+        var inFailedState = false;
 
         // Handler subscriber events.
         function onSubscriberEvent (event) {
@@ -166,6 +167,9 @@
 
         // Update UI prompt with message.
         function displayPrompt (message) {
+          if (inFailedState) {
+            return;
+          }
           var prompt = document.getElementById('prompt');
           prompt.innerText = message;
           if (message === 'Subscribe.Start') {
@@ -175,6 +179,7 @@
           else if (message === 'Subscribe.Fail' || message === 'Connect.Failure') {
             prompt.classList.remove('in-progress');
             prompt.classList.add('failure');
+            inFailedState = true;
           }
         }
 

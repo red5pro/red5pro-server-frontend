@@ -144,6 +144,7 @@
 
         var publisher;
         var failover;
+        var inFailedState = false;
 
         // Handle events from publisher.
         function onPublisherEvent (event) {
@@ -153,6 +154,9 @@
 
         // Update UI prompt display based on message.
         function displayPrompt (message) {
+          if (inFailedState) {
+            return;
+          }
           var prompt = document.getElementById('prompt');
           prompt.innerText = message;
           if (message === 'Publish.Start') {
@@ -162,6 +166,7 @@
           else if (message === 'Publish.Fail' || message === 'Connect.Failure') {
             prompt.classList.remove('in-progress');
             prompt.classList.add('failure');
+            inFailedState = true;
           }
         }
 
