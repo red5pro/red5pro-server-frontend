@@ -115,7 +115,7 @@
         var port = getParameterByName('port') || window.location.port;
         var host = getParameterByName('host') || window.location.hostname;
         var app = getParameterByName('app') || 'live';
-        var order = getParameterByName('view') || ['rtc', 'rtmp'];
+        var order = getParameterByName('view') || ['rtc', 'rtmp', 'hls'];
         var streamName = getParameterByName('streamName');
         var isSecure = protocol === 'https';
         var smProtocol = protocol;
