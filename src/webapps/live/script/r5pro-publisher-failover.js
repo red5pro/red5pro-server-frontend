@@ -96,15 +96,19 @@
     return streamNameField.value;
   }
 
-  function onCameraSelect (deviceId) {
+  function onCameraSelect (deviceId, andRestart) {
     baseConfiguration.mediaConstraints.video = Object.assign({}, baseConfiguration.mediaConstraints.video, {
       deviceId: { exact: deviceId }
     });
+    if (andRestart) {
+      unpublish().then(restart).catch(restart);
+    }
   }
 
   function showOrHideCameraSelect (thePublisher) {
     if (thePublisher && thePublisher.getType() === 'RTC') {
       enableCameraSelect();
+      showCameraSelect();
     }
     else {
       hideCameraSelect();
@@ -120,27 +124,28 @@
   }
 
   function enableCameraSelect () {
-    navigator.mediaDevices.enumerateDevices()
-      .then(function (devices) {
-        showCameraSelect();
-        var videoCameras = devices.filter(function (item) {
-          return item.kind === 'videoinput';
+    if (cameraSelect.childNodes.length <= 0) {
+      navigator.mediaDevices.enumerateDevices()
+        .then(function (devices) {
+          var videoCameras = devices.filter(function (item) {
+            return item.kind === 'videoinput';
+          })
+          var cameras = [].concat(videoCameras);
+          var options = cameras.map(function (camera, index) {
+            return '<option value="' + camera.deviceId + '">' + (camera.label || 'camera ' + index) + '</option>';
+          });
+          cameraSelect.innerHTML = options.join(' ');
+          cameraSelect.addEventListener('change', function () {
+            onCameraSelect(cameraSelect.value, true);
+          });
+          if (cameras && cameras.length > 0) {
+            onCameraSelect(cameras[0].deviceId, false);
+          }
         })
-        var cameras = [].concat(videoCameras);
-        var options = cameras.map(function (camera, index) {
-          return '<option value="' + camera.deviceId + '">' + (camera.label || 'camera ' + index) + '</option>';
+        .catch(function (error) {
+          console.log('Could not enumeration devices: ' + error);
         });
-        cameraSelect.innerHTML = options.join(' ');
-        cameraSelect.addEventListener('change', function () {
-          onCameraSelect(cameraSelect.value);
-        });
-        if (cameras && cameras.length > 0) {
-          onCameraSelect(cameras[0].deviceId);
-        }
-      })
-      .catch(function (error) {
-        console.log('Could not enumeration devices: ' + error);
-      });
+    }
   }
 
   streamNameField.addEventListener('input', function () {
@@ -424,6 +429,7 @@
         var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
         console.error('[live]:: Could not determine and preview publisher: ' + errorStr);
       });
+
   }
   restart();
 
