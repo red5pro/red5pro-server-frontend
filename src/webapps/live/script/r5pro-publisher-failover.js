@@ -41,6 +41,11 @@
   var eventLogField = document.getElementById('event-log-field');
   var clearLogButton = document.getElementById('clear-log-button');
   var startStopButton = document.getElementById('start-stop-button');
+  var cameraSelect = document.getElementById('camera-select-field');
+  cameraSelect.addEventListener('change', function () {
+    onCameraSelect(cameraSelect.value, true);
+  });
+
   var publisher;
   var isPublishing = false;
 
@@ -71,7 +76,24 @@
   };
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,
-    port: getSocketLocationFromProtocol(protocol).port
+    port: getSocketLocationFromProtocol(protocol).port,
+    onGetUserMedia: function () {
+      return new Promise(function (resolve, reject) {
+        if (publisher && publisher.getMediaStream()) {
+          var stream = publisher.getMediaStream();
+          stream.getTracks().forEach(function(track) {
+            track.stop();
+          });
+        }
+        navigator.mediaDevices.getUserMedia(baseConfiguration.mediaConstraints)
+          .then(function (stream) {
+            resolve(stream);
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      });
+    }
   };
   var rtmpConfig = {
     protocol: 'rtmp',
@@ -93,6 +115,59 @@
 
   function getStreamName () {
     return streamNameField.value;
+  }
+
+  function onCameraSelect (deviceId, andRestart) {
+    baseConfiguration.mediaConstraints.video = { deviceId: { exact: deviceId } };
+    if (andRestart) {
+      unpublish().then(restart).catch(restart);
+    }
+  }
+
+  function showOrHideCameraSelect (thePublisher) {
+    if (thePublisher && thePublisher.getType() === 'RTC') {
+      enableCameraSelect();
+      showCameraSelect();
+    }
+    else {
+      hideCameraSelect();
+    }
+  }
+
+  function showCameraSelect () {
+    cameraSelect.parentNode.classList.remove('hidden');
+  }
+
+  function hideCameraSelect () {
+    cameraSelect.parentNode.classList.add('hidden');
+  }
+
+  function enableCameraSelect () {
+    var currentValue = cameraSelect.value;
+    while (cameraSelect.firstChild) {
+      cameraSelect.removeChild(cameraSelect.firstChild);
+    }
+    navigator.mediaDevices.enumerateDevices()
+      .then(function (devices) {
+        var videoCameras = devices.filter(function (item) {
+          return item.kind === 'videoinput';
+        });
+        var i, length = videoCameras.length;
+        var camera, option;
+        for (i = 0; i < length; i++) {
+          camera = videoCameras[i];
+          option = document.createElement('option');
+          option.value = camera.deviceId;
+          option.text = camera.label || 'camera ' + i;
+          cameraSelect.appendChild(option);
+          if (camera.deviceId === currentValue) {
+            cameraSelect.value = camera.deviceId;
+          }
+        }
+      })
+      .catch(function (error) {
+        console.log('Could not enumeration devices: ' + error);
+      });
   }
 
   streamNameField.addEventListener('input', function () {
@@ -126,12 +201,14 @@
             enabled: true,
             label: 'Stop Broadcast'
           });
+          hideCameraSelect()
         })
-        .catch(function () {
+        .catch(function (error) { // eslint-disable-line no-unused-vars
           updateStartStopButtonState({
             enabled: true,
             label: 'Start Broadcast'
           });
+          showOrHideCameraSelect(publisher);
         });
     }
     else if (hasEstablishedPublisher()) {
@@ -141,12 +218,14 @@
             enabled: true,
             label: 'Start Broadcast'
           });
+          showOrHideCameraSelect(publisher);
         })
-        .catch(function () {
+        .catch(function (error) { // eslint-disable-line no-unused-vars
           updateStartStopButtonState({
             enabled: true,
             label: 'Start Broadcast'
           });
+          showOrHideCameraSelect(publisher);
         });
     }
   });
@@ -278,6 +357,7 @@
         .then(function (selectedPublisher) {
           publisher.off('*', onPublisherEvent);
           showPublisherImplStatus(selectedPublisher);
+          showOrHideCameraSelect(selectedPublisher);
           resolve(selectedPublisher);
         })
         .catch(function (error) {
@@ -314,6 +394,7 @@
              window.trackBitrate(publisher.getPeerConnection(), onBitrateUpdate);
              //             console.log('[live]:: Publish dimensions (' + view.view.videoWidth + ', ' + view.view.videoHeight + ').');
           }
+          hideCameraSelect();
           resolve();
         })
         .catch(function (error) {
@@ -328,7 +409,7 @@
   function unpublish () {
     return promisify(function (resolve, reject) {
 
-      if (hasEstablishedPublisher()) {
+      if (hasEstablishedPublisher() && isPublishing) {
         publisher.unpublish()
           .then(function () {
             isPublishing = false;
@@ -360,14 +441,19 @@
     }
   }
 
-  determinePublisher()
-    .then(function (selectedPublisher) {
-      publisher = selectedPublisher;
-    })
-    .catch(function (error) {
-      var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
-      console.error('[live]:: Could not determine and preview publisher: ' + errorStr);
-    });
+  function restart() {
+
+    determinePublisher()
+      .then(function (selectedPublisher) {
+        publisher = selectedPublisher;
+      })
+      .catch(function (error) {
+        var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
+        console.error('[live]:: Could not determine and preview publisher: ' + errorStr);
+      });
+
+  }
+  restart();
 
   function handleBroadcastIpChange (value) {
     window.targetHost = value;
