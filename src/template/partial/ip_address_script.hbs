@@ -2,9 +2,11 @@
   'use strict';
 
   // Host IP state
+  console.log("<%= host_success %>");
   var currentIp = "<%= ip %>";
   var hasValidIp = <%= ipExists %>;
-  var suggestHostIp = window.location.hostname;
+  var isSecureProtocol = <%= isSecure %>;
+  var hostname = "<%= hostname %>";
   var ipAddressField = document.getElementById('ip-address-field');
   var validIpRegex = /^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$/gi;
 
@@ -72,7 +74,9 @@
       }
     };
     addIpToList(localIp);
-    addIpToList(suggestHostIp);
+    if (localIp !== hostname) {
+      addIpToList(hostname);
+    }
     if(items.length > 0) {
       ipSuggestionsTable.innerHTML = items.join('');
     }
@@ -88,6 +92,20 @@
     document.cookie = '<%= cookieName %>=' + value + '; path=/; max-age=' + expiry;
     currentIp = value;
     notifyIpChangeListeners(value);
+    // update URL + query params
+    var params = '<%= kvUrlParams %>'.split(';');
+    var i = params.length;
+    while (--i > -1) {
+      var kv = params[i].split('=');
+      if (kv[0] === 'host') {
+        params[i] = 'host=' + value;
+      }
+      else if (kv[0] === '') {
+        params.splice(i, 1);
+      }
+    }
+    var query = params.length > 1 ? params.join('&') : params[0]
+    window.location = [(window.location.origin + window.location.pathname), query].join('?');
   };
 
   var toggleOverlay = function(event) {

@@ -5,3 +5,5 @@ dist/
 node_modules/
 red5pro-server/
 dist/webapps/api
+**/*/red5pro-sdk.js
+src/webapps/**/WEB-INF

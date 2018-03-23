@@ -10,6 +10,19 @@
   //VOD streams list
   String host = ip;
   String protocol = request.getScheme();
+  String ice = null;
+  String tech = null;
+  String playlistFlag = "0";
+
+  if (request.getParameter("view") != null) {
+    tech = request.getParameter("view");
+  }
+  if (request.getParameter("ice") != null) {
+    ice = request.getParameter("ice");
+  }
+  if (request.getParameter("playlists") != null) {
+    playlistFlag = request.getParameter("playlists");
+  }
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
   String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
@@ -20,15 +33,13 @@
     {{> head_meta }}
     {{> resources }}
     <title>Video On Demand Playback with the Red5 Pro Server!</title>
+    <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
+    <script src="//unpkg.com/video.js/dist/video.js"></script>
+    <script src="//unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+    <script src="//unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
     <style>
       object:focus {
         outline:none;
-      }
-
-      #flashContent {
-        border-radius: 5px;
-        background-color: #e3e3e3;
-        padding: 10px;
       }
 
       #live-page-subcontent {
@@ -67,7 +78,7 @@
       }
 
       .stream-listing {
-        padding-left: 20px;
+        padding: 0 20px 20px 20px;
         border-bottom: 1px solid #e3e3e3;
       }
 
@@ -102,49 +113,82 @@
         padding-top: 20px;
       }
 
-      #red5pro-hls-player {
+      #video-container {
+        border-radius: 5px;
+        background-color: #e3e3e3;
+        padding: 10px;
+      }
+
+      #status-field {
+        text-align: center;
+        padding: 10px;
+        color: #fff;
+        margin: 10px 0;
+      }
+
+      .status-alert {
+        background-color: rgb(227, 25, 0);
+      }
+
+      .status-message {
+        background-color: #aaa;
+      }
+
+      #event-log-field {
+        background-color: #c0c0c0;
+        border-radius: 6px;
+        padding: 10px;
+        margin: 14px;
+      }
+
+      #video-holder, #red5pro-subscriber {
         width: 100%;
-        height: 300px;
       }
+
+      .red5pro-media-control-bar {
+        min-height: 40px;
+      }
+
+      template { display: none }
     </style>
-    <script type="text/javascript" src="swf/swfobject.js"></script>
-    <script type="text/javascript">
-      // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.
-      var swfVersionStr = "11.1.0";
-      // To use express install, set to playerProductInstall.swf, otherwise the empty string.
-      var xiSwfUrlStr = "swf/playerProductInstall.swf";
-      var flashvars = {
-        streamName: "streamName",
-        host: "<%= host %>"
-      };
-      var params = {};
-      params.quality = "high";
-      params.bgcolor = "#000";
-      params.allowscriptaccess = "always";
-      params.allowfullscreen = "true";
-      var attributes = {};
-      attributes.id = "Subscriber";
-      attributes.name = "Subscriber";
-      attributes.align = "middle";
-      if(swfobject.hasFlashPlayerVersion("11.1.0")) {
-        swfobject.embedSWF(
-            "Subscriber.swf", "flashContent",
-            "340", "280",
-            swfVersionStr, xiSwfUrlStr,
-            flashvars, params, attributes);
-        // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
-        swfobject.createCSS("#flashContent", "display:block; text-align:left; padding-top: 10px;");
-      }
-      else {
-        // nada
-      }
-  </script>
-  <link href="videojs/video-js.min.css" rel="stylesheet">
+    <script src="//webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="lib/screenfull/screenfull.min.js"></script>
+    <link href="lib/red5pro/red5pro-media.css" rel="stylesheet"></script>
+    <script>
+      // Shim so we can style in IE6/7/8
+      document.createElement('template');
+    </script>
   </head>
   <body>
-    <template id="video-player">
-      <div id="hls-video-container">
-        <video id="red5pro-hls-player" height="300" class="video-js vjs-default-skin" controls autoplay data-setup="{}"></video>
+    <template id="video-playback">
+      <div id="video-container">
+            <div id="video-holder">
+              <video id="red5pro-subscriber"
+                      controls autoplay playsinline
+                      class="red5pro-media red5pro-media-background">
+              </video>
+            </div>
+            <div id="status-field" class="status-message"></div>
+            <div id="event-log-field" class="event-log-field">
+              <div style="padding: 10px 0">
+                <p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>
+                <div style="clear: both;"></div>
+              </div>
+            </div>
+      </div>
+    </template>
+    <template id="flash-playback">
+      <div id="video-container">
+            <div id="video-holder" style="height:405px;">
+              <object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">
+                <param name="quality" value="high">
+                <param name="wmode" value="opaque">
+                <param name="bgcolor" value="#000000">
+                <param name="allowscriptaccess" value="always">
+                <param name="allowfullscreen" value="true">
+                <param name="allownetworking" value="all">
+            </object>
+          </div>
       </div>
     </template>
     {{> header }}
@@ -171,67 +215,17 @@
         <div class="content-section-story">
           <div>
             <p>Below you will find the list of recorded video to stream.</p>
-            <p>If a stream is available to playback, you can select to view over <span class="red-text">RTSP</span>, within a <span class="red-text">Flash Player</span> or in an <span class="red-text">HLS Player</span> (where supported) on this page.</p>
+            <p>If a stream is available to playback, you can select to view in browser on this page or a seperate window using the <strong>Red5 Pro HTML SDK</strong> or you can view by opening the <strong>RTSP</strong> link.</p>
             <div id="available-streams-listing" class="menu-content streaming-menu-content">
               <h3 class="no-streams-entry">Requesting files...</h3>
             </div>
-            <p>You can begin a Broadcast session to Record by visiting the <a class="broadcast-link link" href="recorder.jsp?host=<%=ip%>" target="_blank">Recorder page</a>.</p>
+            <p>You can Record a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=<%=ip%>" target="_blank">Broadcast page</a> and checking the <b>Enable Recording</b> button.</p>
             <p><em>Once a Broadcast session is started and stopped, the Video On Demand</em> (VOD) <em>Recording will be available. Return to this page to see the stream name listed.</em></p>
           </div>
-          <div id="swf-stream-container" class="stream-container container-hidden">
-                <h2 id="viewing-header" class="stream-header red-text">Viewing</h2>
-                <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough
-                     JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
-                     when JavaScript is disabled.
-                -->
-                <div id="flashContent">
-                    <hr>
-                    <p>
-                        To view this page ensure that Adobe Flash Player version 11.1.0 or greater is installed.
-                    </p>
-                    <script type="text/javascript">
-                        var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");
-                        document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='"
-                                        + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" );
-                    </script>
-                </div>
-                <noscript>
-                    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="Subscriber">
-                        <param name="movie" value="Subscriber.swf" />
-                        <param name="quality" value="high" />
-                        <param name="bgcolor" value="#000000" />
-                        <param name="allowScriptAccess" value="always" />
-                        <param name="allowFullScreen" value="true" />
-                        <!--[if !IE]>-->
-                        <object type="application/x-shockwave-flash" data="Subscriber.swf" width="100%" height="100%">
-                            <param name="quality" value="high" />
-                            <param name="bgcolor" value="#000000" />
-                            <param name="allowScriptAccess" value="always" />
-                            <param name="allowFullScreen" value="true" />
-                        <!--<![endif]-->
-                        <!--[if gte IE 6]>-->
-                            <p>
-                                Either scripts and active content are not permitted to run or Adobe Flash Player version
-                                11.1.0 or greater is not installed.
-                            </p>
-                        <!--<![endif]-->
-                            <a href="http://www.adobe.com/go/getflashplayer">
-                                <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash Player" />
-                            </a>
-                        <!--[if !IE]>-->
-                        </object>
-                        <!--<![endif]-->
-                    </object>
-                </noscript>
-            <p class="medium-font-size download-link"><a class="red-text link" href="https://github.com/red5pro/red5pro-server-examples/releases/download/0.1.2/Red5Pro-Subscriber-Client.zip">Download</a> the source for this example.</p>
-          </div>
-          <div id="hls-stream-container" class="stream-container container-hidden">
-            <h2 id="hls-viewing-header" class="stream-header red-text">Viewing</h2>
-          </div>
           <hr class="top-padded-rule" />
-          <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>
+          <h3><a class="link" href="https://www.red5pro.com/docs/streaming/" target="_blank">Streaming SDKs</a></h3>
           <p>You can download the Streaming SDKs from your <a class="link" href="http://account.red5pro.com/download" target="_blank">Red5 Pro Accounts</a> page.</p>
-          <p>Please visit the online <a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Red5 Pro Documentation</a> for further information about integrating the streaming SDKs into your own native application!</p>
+          <p>Please visit the online <a class="link" href="https://www.red5pro.com/docs/streaming/" target="_blank">Red5 Pro Documentation</a> for further information about integrating the streaming SDKs into your own native application!</p>
           <hr class="top-padded-rule" />
           {{> applications }}
           <hr class="top-padded-rule" />
@@ -241,121 +235,35 @@
     </div>
     {{> footer }}
     <script src="lib/jquery-1.12.4.min.js"></script>
-    <script src="http://webrtc.github.io/adapter/adapter-latest.js"></script>
-    <script src="videojs/video.min.js"></script>
-    <script src="videojs/videojs-media-sources.min.js"></script>
-    <script src="videojs/videojs.hls.min.js"></script>
-    <script src="script/hls-metadata.js"></script>
+    <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+    <script src="script/r5pro-ice-utils.js"></script>
     <script>
-      (function(window, document) {
-
-        var viewHandler;
-        function accessSWF() {
-          return document.getElementById("Subscriber");
-        }
-
-        viewHandler = function viewStream(value) {
-          var swf = accessSWF();
-          var container = document.getElementById("swf-stream-container");
-          var header = document.getElementById("viewing-header");
-          header.innerText = 'Viewing ' + value + '\'s stream.';
-          container.classList.remove('container-hidden');
-          container.classList.add('container-padding');
-          swf.viewStream(value);
-          container.scrollIntoView({block: 'start', behavior: 'smooth'});
-        };
-
-        function handleHostIpChange(value) {
-          var className = 'broadcast-link';
-          var elements = document.getElementsByClassName(className);
-          var length = elements ? elements.length : 0;
-          var index = 0;
-          for(index = 0; index < length; index++) {
-            elements[index].href = ['broadcast.jsp?host', value].join('=');
-          }
-          accessSWF().resetHost(value);
-        }
-        window.r5pro_registerIpChangeListener(handleHostIpChange);
-        window.invokeViewStream = viewHandler;
-
-       }(this, document));
-    </script>
-    <script>
-      (function () {
-
-        var $videoTemplate = document.getElementById('video-player');
-
-        function addPlayer(tmpl, container) {
-          var $el = document.importNode(tmpl.content, true);
-          container.appendChild($el);
-          return $el;
-        }
-
-        function createSource (src, type) {
-          var sourceEl = document.createElement('source');
-          sourceEl.src = src;
-          sourceEl.type = type;
-          return sourceEl;
-        }
-
-        function insertSourceInto (src, type, $parent) {
-          var sourceEl = createSource(src, type);
-          if ($parent.firstChild) {
-            $parent.insertBefore(sourceEl, $parent.firstChild);
-          }
-          else {
-            $parent.appendChild(sourceEl);
-          }
-          return sourceEl;
-        }
-
-        function viewHLS (src) {
-          var player;
-          if (window.hlsplayer) {
-            window.hlsplayer.dispose();
-            window.hlsplayer = undefined;
-          }
-          var parentContainer = document.getElementById('hls-stream-container');
-          if (document.getElementById('hls-video-container')) {
-            document.getElementById('hls-video-container').remove();
-          }
-          addPlayer($videoTemplate, parentContainer);
-          insertSourceInto(src, 'application/x-mpegURL', document.getElementById('red5pro-hls-player'));
-          parentContainer.classList.remove('container-hidden');
-          parentContainer.classList.add('container-padding');
-          parentContainer.scrollIntoView({block: 'start', behavior: 'smooth'});
-
-          var header = document.getElementById("hls-viewing-header");
-          header.innerText = 'Viewing ' + src.substring(src.lastIndexOf('/') + 1, src.lastIndexOf('.')) + '\'s stream.';
-
-          player = videojs('red5pro-hls-player');
-          player.play();
-          window.onOrientation(player, 'red5pro-hls-player', function (value) {
-            var container = document.getElementById('hls-video-container');
-            var element = document.getElementById('red5pro-hls-player');
-            if (container) {
-              container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
-            }
-          });
-          window.hlsplayer = player;
-        }
-
-        window.invokeHLSStream = viewHLS;
-
-       })();
-    </script>
+      // Put server vars globally.
+      var viewTech = "<%=tech%>";
+      if (viewTech && viewTech !== 'null') {
+        window.r5proViewTech = viewTech;
+      }
+      window.targetHost = "<%=ip%>";
+      window.r5proIce = window.determineIceServers('<%=ice%>');
+   </script>
+    <script src="script/r5pro-playback-failover.js"></script>
     <script>
       // Filtering HLS playback using servlet.
-      (function () {
+      (function (window, document, $) {
+       'use strict';
+
+       var protocol = "<%=protocol%>";
+       var ip = "<%=ip%>";
+       var port = window.location.port ? window.location.port : (protocol === 'https' ? 443 : 80);
 
        var httpRegex = /^http/i;
-       var baseUrl = '<%=protocol%>://<%=ip%>:5080/live';
+       var baseUrl = protocol + '://' + ip + ':' + port + '/live';
        var mediafilesServletURL = [baseUrl, 'mediafiles'].join('/');
        var playlistServletURL = [baseUrl, 'playlists'].join('/');
        var store = {}; // name: {name:string, url:string, formats:[hls|flv]}
 
        var parseItem = function (item) {
-          var itemName = item.name.substring(0, item.name.lastIndexOf('.'));
+          var itemName = item.name; // item.name.substring(0, item.name.lastIndexOf('.'));
           var itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
           return {
             name: itemName,
@@ -385,7 +293,7 @@
                 }
                 cb(data);
             }
-            else if (this.status === 0) {
+            else if (this.status === 0 || this.status > 400) {
               cb(data);
             }
           }
@@ -393,20 +301,23 @@
         req.onerror = function () {
           cb(data);
         }
-        req.timeout = 60000;
+        req.timeout = 60000 * 5; // 5 minutes
         req.open('GET', url, true);
         req.send();
       };
 
       var getMediafiles = function (data, cb) {
-        getItemList(data, mediafilesServletURL, 'mediafiles', 'flv', cb);
+        getItemList(data, mediafilesServletURL, 'mediafiles', 'rtmp', cb);
       }
 
       var getPlaylists = function (data, cb) {
-        // Note: Just return without playlist request.
-        // :: Will need to update with HLS playback feature in future.
-        cb(data)
-//        getItemList(data, playlistServletURL, 'playlists', 'hls', cb);
+        var doInclude = "<%=playlistFlag%>" == "1";
+        if (doInclude) {
+          getItemList(data, playlistServletURL, 'playlists', 'hls', cb);
+        }
+        else {
+          cb(data);
+        }
       };
 
       var populateListing = function (data) {
@@ -415,33 +326,20 @@
         var $container = $('#available-streams-listing');
         var innerContent = '';
         var getStreamListItem = function (item) {
+          var json = encodeURIComponent(JSON.stringify(item));
           var streamName = item.name;
           var urls = item.urls;
-          var html = "<li data-stream=\"" + streamName.substring(0, streamName.lastIndexOf('.')) + "\" class=\"stream-listing\">\r\n" +
-                  "<h2 class=\"red-text stream-header\">" + streamName + "</h2>\r\n" +
-                  "<p class=\"internal-players\" class=\"medium-font-size\">\r\n" +
-                    "<span class=\"black-text\">View <strong>" + streamName + "</strong>'s stream in:</span>&nbsp;&nbsp;" +
-                    (urls.hasOwnProperty('flv')
-                     ? "<a class=\"medium-font-size link red-text\" href=\"rtsp://<%=ip%>:8554/live/" + streamName + "\">RTSP</a>" +
-                       "&nbsp;&nbsp;<span class=\"black-text\">or</span>&nbsp;&nbsp;" +
-                       "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">Flash</a>\r\n"
-                     : "");
-          html += (urls.hasOwnProperty('hls')
-                     ? (urls.hasOwnProperty('flv') ? "<span class=\"black-text\">&nbsp;&nbsp;or&nbsp;&nbsp;" : "") +
-                       "<a class=\"medium-font-size link red-text\" href=\"#\" onclick=\"invokeHLSStream('" + item.urls['hls'] + "'); return false;\">HLS</a>" +
-                       "</span>"
-                     : "");
-          html += "</p>\r\n" + "<hr>\r\n" +
-                  "<div class=\"external-players\">\r\n" +
-                    "<p>\r\n" +
-                    (urls.hasOwnProperty('flv')
-                      ? "<p><span class=\"black-text\">Open Flash in another window: <a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "\">" + baseUrl + "/flash.jsp?host=<%=ip%>&stream=" + streamName + "</a></span></p>\r\n"
-                      : "") +
-                    (urls.hasOwnProperty('hls')
-                      ? "<p><span class=\"black-text\">Open HLS in another window:&nbsp;<a class=\"subscriber-link link red-text\" href=\"" + baseUrl + "/hls-vod.jsp?url=" + encodeURIComponent(item.urls['hls']) + "&streamName=" + streamName + "\">" + item.urls['hls'] + "</a></span></p>\r\n"
-                      : "") +
-                    "</p>\r\n" +
-                  "</div>\r\n" +
+          var html = "<li data-stream=\"" + streamName + "\" data-streamitem=\"" + json + "\" class=\"stream-listing\">\r\n" +
+                  "<h2 class=\"stream-header\">" + streamName + "</h2>\r\n" +
+                  "<p>\r\n" +
+                    "<a class=\"medium-font-size subscriber-link link red-text\" style=\"cursor: pointer;\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">\r\n" +
+                      "View <strong>" + streamName + "</strong>'s stream on this page." +
+                    "</a>\r\n" +
+                  "</p>\r\n" +
+                  "<hr>\r\n" +
+                  "<p>\r\n" +
+                    "<span class=\"black-text\">or,&nbsp;&nbsp;<a class=\"subscriber-link link red-text\" style=\"cursor: pointer;\" onclick=\"invokeViewPageStream('" + streamName + "'); return false;\">Open in another window</a></span>\r\n" +
+                  "</p>\r\n" +
                 "</li>";
           return html;
         };
@@ -465,7 +363,7 @@
         });
        });
 
-      })();
+      })(this, document, jQuery.noConflict());
     </script>
   </body>
 </html>

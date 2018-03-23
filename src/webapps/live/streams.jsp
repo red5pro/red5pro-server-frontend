@@ -18,7 +18,8 @@
   //Live streams list returns a json array [] of stream objects, {name:streamName}{name:thatName}
   //as [{name:streamName}{name:thatName}] 
   
-  response.addHeader("Access-Control-Allow-Origin","*");
+// This is now controlled by the CORS filer in WEB-INF/web.xml
+//  response.addHeader("Access-Control-Allow-Origin","*");
   
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
   

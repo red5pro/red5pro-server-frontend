@@ -26,6 +26,7 @@ Table of Contents
       * [Launch](#launch)
   * [How To Create a New WebApp](#how-to-create-a-new-webapp)
 * [Continuous Integration](#continuous-integration)
+* [Query Params](#query-params)
 
 Developer Quickstart
 ===
@@ -250,3 +251,31 @@ Continuous Integration
 This project is not added as a solo project for Continuous Integration (CI) in the Red5 Pro CI. Instead, this project is pulled, built and distributed on CI of the Red5 Pro Server.
 
 [![Analytics](https://ga-beacon.appspot.com/UA-59819838-3/red5pro/red5pro-server-frontend?pixel)](https://github.com/igrigorik/ga-beacon)
+
+Query Params
+===
+There are several Query Parameters you can add to the URL to modify settings when viewing the Front-End within the distribution of the Red5 Pro Server.
+
+| Query Param Name | Type | Description | Default Value |
+| --- | --- | --- | --- |
+| `view` | String | Target tech view to display. `rtc`, `rtmp` or `hls` (Subscriber only). | Allows SDK to failover. |
+| `ice` | String | Target ICE servers to use in WebRTC transactions. `google` or `moz` | Allows browser to choose. |
+| `audioBW` | Integer | Request Audio Bandwidth | `undefined` _(will not attempt to set bandwidth limit)_ |
+| `videoBW` | Integer | Request Video Bandwidth | `undefined` _(will not attempt to set bandwidth limit)_ |
+| `videoWidthMin` | Integer | Request Minimum Video Width  (Publisher only) | `320` |
+| `videoHeightMin` | Integer | Request Minimum Video Height (Publisher only) | `240` |
+| `videoWidthMax` | Integer | Request Maximum Video Width (Publisher only) | `352` |
+| `videoHeightMax` | Integer | Request Maximum Video Height (Publisher only) | `288` |
+| `framerateMin` | Integer | Request Minimum Framerate (Publisher only) | `8` |
+| `framerateMax` | Integer | Request Maximum Framerate (Publisher only) | `24` |
+
+> The publisher-only min/max values are desired settings mostly for WebRTC. See [https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia).
+
+## Usage
+To use a query param, append it to the URL with the first parameter prepended with `?` and following parameters prepended with `&`.
+
+For example:
+
+```sh
+http://localhost:5080/live/broadcast.jsp?view=rtc&ice=google`
+```
