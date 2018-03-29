@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang=en>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <title>Stream Manager Proxy Example Usage</title>
+    <style>
+      table {
+        text-align: left;
+        border-collapse: collapse;
+        border-spacing: 0px;
+      }
+      table, th, td {
+        padding: 5px;
+        border: 1px solid black;
+      }
+      .p-name {
+        background-color: #222;
+        color: #ebefd0;
+      }
+      .example {
+        background-color: #d0efd2;
+        color: #222;
+        line-height: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Usage</h1>
+    <p>This page is designed to establish a broadcast or subscription session over the Stream Manager Proxy of a Red5 Pro Server. You can provide query params in the URL in order to configure the session to your server deployment.</p>
+    <h2>Query Parameters</h2>
+    <p>The following query params are available:</p>
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Description</th><th>Default Value</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="p-name">host</td><td>hostname or IP</td><td><code>window.location.hostname</code></td></tr>
+        <tr><td class="p-name">protocol</td><td> protocol which Stream Manager is served over (<code>http</code> or <code>https</code>)</td><td><code>window.location.protocol</code></td></tr>
+        <tr><td class="p-name">port</td><td>port number that Stream Maager is served on</td><td><code>window.location.port</code></td></tr>
+        <tr><td class="p-name">app</td><td>webapp name to stream to on the server</td><td><code>live</code></td></tr>
+        <tr><td class="p-name">streamName</td><td>The unique stream name to broadcast with or subscribe to</td><td><strong><em>None. Required</em></strong></td></tr>
+        <tr><td class="p-name">verbose</td><td>Flag to enable verbose logging in Dev Console</td><td><em>None. optional</em></td></tr>
+        <tr><td class="p-name">view</td><td>Target broadcast tech (<code>rtc</code> or <code>rtmp</code>)</td><td><em>None. Optional</em></td></tr>
+      </tbody>
+    </table>
+    <h2>Example</h2>
+    <p class="example"><code>proxy-publisher.html?host=myred5proserver.com&protocol=https&port=43&app=live&streamName=mystream&verbose=1</code</p>
+    <h3>Note</h3>
+    <p><em>If this page is served from the <code>live</code> webapp of the Stream Manager Server, the only param you are required to provide is <code>streamName</code>.</em></p>
+  </body>
+</html>

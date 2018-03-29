@@ -50,7 +50,7 @@
           </div>
         </div>
         <div class="content-section-story">
-          <p>Build Facetime-like experiences that connect seamlessly across platforms including Android, iOS, Flash and HTML5 (<span class="red-text"><em>coming soon</em></span>).</p>
+          <p>Build Facetime-like experiences that connect seamlessly across platforms including Android, iOS, HTML5 and Flash.</p>
           <div>
             <h3><a class="broadcast-link link" href="broadcast.jsp?host=<%= ip %>">Start Broadcasting</a></h3>
             <p>We have provided an easy way for you to start a Red5 Pro Broadcast session.</p>
@@ -62,9 +62,9 @@
             <p><a class="link medium-font-size" href="subscribe.jsp">&gt;&nbsp;Start Subscribing Now!</a></p>
           </div>
           <hr class="top-padded-rule" />
-          <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>
+          <h3><a class="link" href="https://www.red5pro.com/docs/streaming/" target="_blank">Streaming SDKs</a></h3>
           <p>You can download the Streaming SDKs from your <a class="link" href="http://account.red5pro.com/download" target="_blank">Red5 Pro Accounts</a> page.</p>
-          <p>Please visit the online <a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Red5 Pro Documentation</a> for further information about integrating the streaming SDKs into your own native application!</p>
+          <p>Please visit the online <a class="link" href="https://www.red5pro.com/docs/streaming/" target="_blank">Red5 Pro Documentation</a> for further information about integrating the streaming SDKs into your own native application!</p>
           <hr class="top-padded-rule" />
           {{> applications }}
           <hr class="top-padded-rule" />

@@ -4,3 +4,7 @@ auto-deploy-config.custom.js
 dist/
 node_modules/
 red5pro-server/
+
+**/*/red5pro-sdk.js
+
+src/webapps/**/WEB-INF

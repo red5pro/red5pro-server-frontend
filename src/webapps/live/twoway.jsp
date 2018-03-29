@@ -39,12 +39,12 @@
         width: 100%;
       }
     </style>
-    <script type="text/javascript" src="swf/swfobject.js"></script>
+    <script type="text/javascript" src="lib/swfobject/swfobject.js"></script>
     <script type="text/javascript">
       // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.
       var swfVersionStr = "11.1.0";
       // To use express install, set to playerProductInstall.swf, otherwise the empty string.
-      var xiSwfUrlStr = "swf/playerProductInstall.swf";
+      var xiSwfUrlStr = "lib/swfobject/playerProductInstall.swf";
       var flashvars = {
         host: "<%= host %>"
       };
@@ -148,9 +148,9 @@
           </noscript>
           <br><br>
           <hr class="top-padded-rule" />
-          <h3><a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Streaming SDKs</a></h3>
+          <h3><a class="link" href="https://www.red5pro.com/docs/streaming/" target="_blank">Streaming SDKs</a></h3>
           <p>You can download the Streaming SDKs from your <a class="link" href="http://account.red5pro.com/download" target="_blank">Red5 Pro Accounts</a> page.</p>
-          <p>Please visit the online <a class="link" href="http://red5pro.com/docs/streaming/overview/" target="_blank">Red5 Pro Documentation</a> for further information about integrating the streaming SDKs into your own native application!</p>
+          <p>Please visit the online <a class="link" href="https://www.red5pro.com/docs/streaming/" target="_blank">Red5 Pro Documentation</a> for further information about integrating the streaming SDKs into your own native application!</p>
           <hr class="top-padded-rule" />
           {{> applications }}
           <hr class="top-padded-rule" />
