@@ -203,11 +203,15 @@
                       <label for="enable-record-field">Enable Recording:</label>
                       <input type="checkbox" name="enable-record-field" id="enable-record-field"></input>
                     </p>
+                    <p class="video-form-item hidden">
+                      <label for="camera-select">Select Camera:</label>
+                      <select name="camera-select" id="camera-select-field"></select>
+                    </p>
             </div>
             <div id="statistics-field" class="statistics-field"></div>
             <div id="video-holder">
               <video id="red5pro-publisher"
-                      controls muted autoplay
+                      controls muted autoplay playsinline
                       class="video-element">
               </video>
             </div>
@@ -232,6 +236,7 @@
       </div>
     </div>
     {{> es6-script-includes }}
+    <script src="lib/jquery-1.12.4.min.js"></script>
     <script src="script/r5pro-ice-utils.js"></script>
     <script>
       function assignIfDefined (value, prop) {

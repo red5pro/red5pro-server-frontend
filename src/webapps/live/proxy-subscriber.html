@@ -30,7 +30,7 @@
   <body>
     <div id="wrapper">
       <video id="red5pro-subscriber" width="640" height="480"
-             controls autoplay
+             controls autoplay playsinline
              class="red5pro-media red5pro-media-background">
      </video>
     </div>
@@ -115,7 +115,7 @@
         var port = getParameterByName('port') || window.location.port;
         var host = getParameterByName('host') || window.location.hostname;
         var app = getParameterByName('app') || 'live';
-        var order = getParameterByName('view') || ['rtc', 'rtmp'];
+        var order = getParameterByName('view') || ['rtc', 'rtmp', 'hls'];
         var streamName = getParameterByName('streamName');
         var isSecure = protocol === 'https';
         var smProtocol = protocol;
@@ -151,6 +151,7 @@
 
         var subscriber;
         var failover;
+        var inFailedState = false;
 
         // Handler subscriber events.
         function onSubscriberEvent (event) {
@@ -166,6 +167,9 @@
 
         // Update UI prompt with message.
         function displayPrompt (message) {
+          if (inFailedState) {
+            return;
+          }
           var prompt = document.getElementById('prompt');
           prompt.innerText = message;
           if (message === 'Subscribe.Start') {
@@ -175,6 +179,7 @@
           else if (message === 'Subscribe.Fail' || message === 'Connect.Failure') {
             prompt.classList.remove('in-progress');
             prompt.classList.add('failure');
+            inFailedState = true;
           }
         }
 

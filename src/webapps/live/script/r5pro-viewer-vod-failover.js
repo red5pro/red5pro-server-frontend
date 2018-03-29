@@ -1,4 +1,4 @@
-/* global document, Promise */
+/* global document, Promise, $ */
 (function(window, document, red5pro) {
   'use strict';
 
@@ -139,8 +139,8 @@
 
   function useFLVFallback (streamName) {
     var container = document.getElementById('red5pro-subscriber')
-    if (container) {
-      container.remove();
+    if (container && container.parentNode) {
+      container.parentNode.removeChild(container);
     }
     addPlayer($flashTemplate, document.getElementById('video-holder'));
     var flashObject = document.getElementById('red5pro-subscriber');
@@ -213,9 +213,20 @@
        });
   }
 
+  function promisify (fn) {
+    if (window.Promise) {
+      return new Promise(fn);
+    }
+    var d = new $.Deferred();
+    fn(d.resolve, d.reject);
+    var promise = d.promise();
+    promise.catch = promise.fail;
+    return promise;
+  }
+
   function determineSubscriber (types) {
     console.log('[playback]:: Available types - ' + types + '.');
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
       var subscriber = new red5pro.Red5ProSubscriber();
       subscriber.on('*', onSubscriberEvent);
 
@@ -268,7 +279,7 @@
   }
 
   function preview (selectedSubscriber) {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
 
       subscriber = selectedSubscriber;
       var type = selectedSubscriber.getType().toLowerCase();
@@ -292,7 +303,7 @@
   }
 
   function subscribe (subscriber) {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
       subscriber.subscribe()
         .then(function () {
@@ -305,7 +316,7 @@
   }
 
   function unsubscribe () {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
       if (hasEstablishedSubscriber()) {
         subscriber.unsubscribe()
           .then(function() {

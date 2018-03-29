@@ -5,6 +5,32 @@
   red5prosdk.setLogLevel('debug');
 
   var iceServers = window.r5proIce;
+  // For IE support.
+  var vidTemplateHTML = '<div id="video-container">' +
+          '<div id="video-holder">' +
+            '<video id="red5pro-subscriber" controls autoplay playsinline class="red5pro-media red5pro-media-background">' +
+            '</video>' +
+          '</div>' +
+          '<div id="status-field" class="status-message"></div>' +
+          '<div id="event-log-field" class="event-log-field">' +
+            '<div style="padding: 10px 0">' +
+              '<p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>' +
+              '<div style="clear: both;"></div>' +
+            '</div>' +
+          '</div>'
+        '</div>';
+  var flashTemplateHTML = '<div id="video-container">' +
+            '<div id="video-holder" style="height:405px;">' +
+              '<object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">' +
+                '<param name="quality" value="high">' +
+                '<param name="wmode" value="opaque">' +
+                '<param name="bgcolor" value="#000000">' +
+                '<param name="allowscriptaccess" value="always">' +
+                '<param name="allowfullscreen" value="true">' +
+                '<param name="allownetworking" value="all">' +
+            '</object>' +
+          '</div>' +
+      '</div>';
 
   var subscriber;
   var streamDataModel;
@@ -126,8 +152,8 @@
     }
   }
 
-  function addPlayer(tmpl, container) {
-    var $el = document.importNode(tmpl.content, true);
+  function addPlayer(tmpl, container, html) {
+    var $el = templateContent(tmpl, html);
     container.appendChild($el);
     return $el;
   }
@@ -136,16 +162,16 @@
     var videoContainer = document.getElementById('video-container');
     unsubscribe()
       .then(function () {
-        if (videoContainer) {
-          videoContainer.remove();
+        if (videoContainer && videoContainer.parentNode) {
+          videoContainer.parentNode.removeChild(videoContainer);
         }
       })
   }
 
-  function setup (dataStreamName, template) {
+  function setup (dataStreamName, template, html) {
     var parentContainer = $('li[data-stream="' + dataStreamName + '"]').get(0);
     if (parentContainer) {
-      addPlayer(template, parentContainer);
+      addPlayer(template, parentContainer, html);
     }
     var clearLogButton = document.getElementById('clear-log-button');
     var eventLogField = document.getElementById('event-log-field');
@@ -182,7 +208,7 @@
     if (container) {
       container.remove();
     }
-    setup(streamName, $flashTemplate);
+    setup(streamName, $flashTemplate, flashTemplateHTML);
     var flashObject = document.getElementById('red5pro-subscriber');
       var flashvars = document.createElement('param');
       flashvars.name = 'flashvars';
@@ -233,7 +259,7 @@
      */
     var streamName = streamData.name;
     baseConfiguration.streamName = streamName;
-    setup(streamName, $videoTemplate);
+    setup(streamName, $videoTemplate, vidTemplateHTML);
     determineSubscriber(Object.keys(streamData.urls))
       .then(preview)
       .then(subscribe)
@@ -287,9 +313,31 @@
     window.open(pageUrl);
   };
 
+  function templateContent(template, templateHTML) {
+    if("content" in document.createElement("template")) {
+      return document.importNode(template.content, true);
+    }
+    else {
+      var div = document.createElement('div');
+      div.innerHTML = templateHTML;
+      return div;
+    }
+  }
+
+  function promisify (fn) {
+    if (window.Promise) {
+      return new Promise(fn);
+    }
+    var d = new $.Deferred();
+    fn(d.resolve, d.reject);
+    var promise = d.promise();
+    promise.catch = promise.fail;
+    return promise;
+  }
+
   function determineSubscriber (types) {
     console.log('[playback]:: Available types - ' + types + '.');
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
       var subscriber = new red5prosdk.Red5ProSubscriber();
       subscriber.on('*', onSubscriberEvent);
 
@@ -342,7 +390,7 @@
   }
 
   function preview (selectedSubscriber) {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
 
       subscriber = selectedSubscriber;
       var type = selectedSubscriber.getType().toLowerCase();
@@ -366,7 +414,7 @@
   }
 
   function subscribe (subscriber) {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
       subscriber.subscribe()
         .then(function () {
@@ -379,7 +427,7 @@
   }
 
   function unsubscribe () {
-    return new Promise(function (resolve, reject) {
+    return promisify(function (resolve, reject) {
       if (hasEstablishedSubscriber()) {
         subscriber.unsubscribe()
           .then(function() {
