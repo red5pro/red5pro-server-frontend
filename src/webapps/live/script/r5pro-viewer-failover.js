@@ -4,8 +4,6 @@
 
   red5pro.setLogLevel('debug');
   var iceServers = window.r5proIce;
-  var qAudioBW = window.r5proAudioBandwidth || -1;//50;
-  var qVideoBW = window.r5proVideoBandwidth || -1;//256;
 
   var protocol = window.location.protocol;
   var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
@@ -21,19 +19,6 @@
   var subscriber;
   var view;
 
-  var desiredBandwidth = (function() {
-    var bw;
-    if (qAudioBW != -1 || qVideoBW != -1) {
-      bw = {};
-      if (qAudioBW != -1) {
-        bw.audio = qAudioBW;
-      }
-      if (qVideoBW != -1) {
-        bw.video = qVideoBW;
-      }
-    }
-    return bw;
-  })();
   var baseConfiguration = {
     host: window.targetHost,
     app: window.r5proApp,
@@ -44,8 +29,7 @@
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,
     port: getSocketLocationFromProtocol(protocol).port,
-    subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16),
-    bandwidth: desiredBandwidth
+    subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16)
   };
   var rtmpConfig = {
     protocol: 'rtmp',
@@ -119,11 +103,11 @@
     }
 
     if (event.type === 'Subscribe.Metadata') {
-      var value = event.data.orientation;
+      var value = event.data.orientation; // eslint-disable-line no-unused-vars
       if (subscriber.getType().toLowerCase() === 'hls' ||
           subscriber.getType().toLowerCase() === 'rtc') {
         var container = document.getElementById('video-holder');
-        var element = document.getElementById('red5pro-subscriber');
+        var element = document.getElementById('red5pro-subscriber'); // eslint-disable-line no-unused-vars
         if (container) {
           // container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
         }
