@@ -81,7 +81,7 @@
   }
 %>
 <!doctype html>
-<html lang="eng">
+<html>
   <head>
     {{> head_meta }}
     {{> resources }}
