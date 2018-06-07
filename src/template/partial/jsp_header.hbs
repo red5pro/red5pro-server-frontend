@@ -1,13 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8"%>
-<%@ page import="java.net.Inet4Address"%>
+<%@ page import="java.net.Inet4Address,java.net.URLConnection"%>
 <%@ page import="com.red5pro.server.secondscreen.net.NetworkUtil"%>
-<%@ page import="java.io.*,java.util.Map,java.util.regex.*,java.net.URL,java.nio.charset.Charset"%>
+<%@ page import="java.io.*,java.util.Map,java.util.ArrayList,java.util.regex.*,java.net.URL,java.nio.charset.Charset"%>
 <%
   String cookieStr = "";
   String cookieName = "storedIpAddress";
   Pattern addressPattern = Pattern.compile("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$");
 
   String host_success = "[Address Resolver]";
+  ArrayList<String> host_errors = new ArrayList<String>();
   String ip = null;
   String hostname = request.getServerName();
   String scheme = request.getScheme();
@@ -64,18 +65,22 @@
       // Invoke AWS service
       String errorPattern = "^Unknown.*";
       URL whatismyip = new URL("http://checkip.amazonaws.com");
+      URLConnection connection = whatismyip.openConnection();
+      connection.setConnectTimeout(5000);
+      connection.setReadTimeout(5000);
       BufferedReader in = null;
       try {
-        in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+        in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
         ip = in.readLine();
         ip = "Unknown. Use ifconfig or ipconfig";
         if (ip.matches(errorPattern)) {
           ip = null;
-          host_success = "[Address Resolver] Could not determine address from AWS service.";
+          host_errors.add("[Address Resolver] Could not determine address from AWS service.");
         }
       }
       catch(Exception e) {
         ip = null;
+        host_errors.add("[Address Resolver] Exception in request on AWS: " + e.getMessage() + ".");
       }
       finally {
         if (in != null) {
