@@ -69,9 +69,6 @@
           "<p>\r\n" +
             "<span class=\"black-text\">Open in another window: <a class=\"subscriber-link link red-text\" href=\"" + pageLocation + "\" target=\"_blank\">" + pageLocation + "</a></span>\r\n" +
           "</p>\r\n" +
-          "<p>\r\n" +
-            "<span class=\"black-text\">Open RTSP link (<em>or right-click and Copy Address</em>): <a class=\"subscriber-link link red-text\" href=\"" + rtspLocation + "\">" + rtspLocation + "</a></span>\r\n" +
-          "</p>\r\n" +
        "</li>\r\n";
       ret.append(listEntry);
     }
