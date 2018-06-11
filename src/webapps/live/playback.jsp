@@ -215,7 +215,7 @@
         <div class="content-section-story">
           <div>
             <p>Below you will find the list of recorded video to stream.</p>
-            <p>If a stream is available to playback, you can select to view in browser on this page or a seperate window using the <strong>Red5 Pro HTML SDK</strong> or you can view by opening the <strong>RTSP</strong> link.</p>
+            <p>If a stream is available to playback, you can select to view in browser on this page or a seperate window using the <strong>Red5 Pro HTML SDK</strong>.</p>
             <div id="available-streams-listing" class="menu-content streaming-menu-content">
               <h3 class="no-streams-entry">Requesting files...</h3>
             </div>

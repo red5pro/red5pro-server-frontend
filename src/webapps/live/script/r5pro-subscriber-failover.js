@@ -19,9 +19,6 @@
 
   var subscriber;
 
-  var qAudioBW = window.r5proAudioBandwidth || -1;//50;
-  var qVideoBW = window.r5proVideoBandwidth || -1;//256;
-
   var host = window.targetHost;
   var buffer = window.r5proBuffer;
   var protocol = window.location.protocol;
@@ -32,19 +29,6 @@
   }
 
   var $videoTemplate = document.getElementById('video-playback');
-  var desiredBandwidth = (function() {
-    var bw;
-    if (qAudioBW != -1 || qVideoBW != -1) {
-      bw = {};
-      if (qAudioBW != -1) {
-        bw.audio = qAudioBW;
-      }
-      if (qVideoBW != -1) {
-        bw.video = qVideoBW;
-      }
-    }
-    return bw;
-  })();
   var baseConfiguration = {
     host: host,
     app: 'live',
@@ -54,8 +38,7 @@
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,
     port: getSocketLocationFromProtocol(protocol).port,
-    subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16),
-    bandwidth: desiredBandwidth
+    subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16)
   };
   var rtmpConfig = {
     protocol: 'rtmp',
