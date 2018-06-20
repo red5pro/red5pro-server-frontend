@@ -7,7 +7,7 @@
   window.trackBitrate = function (connection, cb, resolutionCb) {
     window.untrackBitrate(cb);
     //    var lastResult;
-    var lastOutboundResult;
+    var lastOutboundVideoResult;
     var lastInboundVideoResult;
     var lastInboundAudioResult;
     bitrateInterval = setInterval(function () {
@@ -21,15 +21,17 @@
               (report.type === 'ssrc' && report.bytesSent)) {
             bytes = report.bytesSent;
             packets = report.packetsSent;
-            if (lastOutboundResult && lastOutboundResult.get(report.id)) {
-              // calculate bitrate
-              var bitrate = 8 * (bytes - lastOutboundResult.get(report.id).bytesSent) /
-                  (now - lastOutboundResult.get(report.id).timestamp);
+            if ((report.mediaType === 'video' || report.id.match(/VideoStream/))) {
+              if (lastOutboundVideoResult && lastOutboundVideoResult.get(report.id)) {
+                // calculate bitrate
+                var bitrate = 8 * (bytes - lastOutboundVideoResult.get(report.id).bytesSent) /
+                    (now - lastOutboundVideoResult.get(report.id).timestamp);
 
-              cb(bitrate, packets);
+                cb(bitrate, packets);
 
+              }
+              lastOutboundVideoResult = res;
             }
-            lastOutboundResult = res;
           }
           // playback.
           else if ((report.type === 'inboundrtp') ||
