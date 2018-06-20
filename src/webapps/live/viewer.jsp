@@ -203,6 +203,13 @@
           assignIfDefined("<%=protocol%>", 'targetProtocol');
           assignIfDefined(<%=audioBandwidth%>, 'r5proAudioBandwidth');
           assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
+
+          // load local adapter.js if we have not been able to load it over network.
+          if (!window.adapter) {
+              var script = document.createElement('script');
+              script.src = 'lib/adapter.js';
+              document.head.appendChild(script);
+          }
         </script>
       <script src="script/r5pro-viewer-failover.js"></script>
     </body>
