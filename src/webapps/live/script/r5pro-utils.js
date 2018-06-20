@@ -4,9 +4,12 @@
   var bitrateInterval = 0;
 
   // Based on https://github.com/webrtc/samples/blob/gh-pages/src/content/peerconnection/bandwidth/js/main.js
-  window.trackBitrate = function (connection, cb) {
+  window.trackBitrate = function (connection, cb, resolutionCb) {
     window.untrackBitrate(cb);
-    var lastResult;
+    //    var lastResult;
+    var lastOutboundResult;
+    var lastInboundVideoResult;
+    var lastInboundAudioResult;
     bitrateInterval = setInterval(function () {
       connection.getStats(null).then(function(res) {
         res.forEach(function(report) {
@@ -18,15 +21,47 @@
               (report.type === 'ssrc' && report.bytesSent)) {
             bytes = report.bytesSent;
             packets = report.packetsSent;
-            if (lastResult && lastResult.get(report.id)) {
+            if (lastOutboundResult && lastOutboundResult.get(report.id)) {
               // calculate bitrate
-              var bitrate = 8 * (bytes - lastResult.get(report.id).bytesSent) /
-                  (now - lastResult.get(report.id).timestamp);
+              var bitrate = 8 * (bytes - lastOutboundResult.get(report.id).bytesSent) /
+                  (now - lastOutboundResult.get(report.id).timestamp);
+
               cb(bitrate, packets);
+
+            }
+            lastOutboundResult = res;
+          }
+          // playback.
+          else if ((report.type === 'inboundrtp') ||
+              (report.type === 'inbound-rtp') ||
+              (report.type === 'ssrc' && report.bytesReceived)) {
+            bytes = report.bytesReceived;
+            packets = report.packetsReceived;
+            if ((report.mediaType === 'video' || report.id.match(/VideoStream/))) {
+              if (lastInboundVideoResult && lastInboundVideoResult.get(report.id)) {
+                // calculate bitrate
+                bitrate = 8 * (bytes - lastInboundVideoResult.get(report.id).bytesReceived) /
+                  (now - lastInboundVideoResult.get(report.id).timestamp);
+
+                cb('video', report, bitrate, packets - lastInboundVideoResult.get(report.id).packetsReceived);
+              }
+              lastInboundVideoResult = res;
+            }
+            else if ((report.mediaType === 'audio' || report.id.match(/AudioStream/))) {
+              if (lastInboundAudioResult && lastInboundAudioResult.get(report.id)) {
+                // calculate bitrate
+                bitrate = 8 * (bytes - lastInboundAudioResult.get(report.id).bytesReceived) /
+                  (now - lastInboundAudioResult.get(report.id).timestamp);
+
+                cb('audio', report, bitrate, packets - lastInboundVideoResult.get(report.id).packetsReceived);
+              }
+              lastInboundAudioResult = res;
             }
           }
+          else if (resolutionCb && report.type === 'track' && report.kind === 'video') {
+            resolutionCb(report.frameWidth, report.frameHeight);
+          }
         });
-        lastResult = res;
       });
     }, 1000);
   }

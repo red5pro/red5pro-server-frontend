@@ -15,7 +15,22 @@
   var statusField = document.getElementById('status-field');
   var eventLogField = document.getElementById('event-log-field');
   var clearLogButton = document.getElementById('clear-log-button');
-
+  var videoReportElement = document.getElementById('video-report');
+  var audioReportElement = document.getElementById('audio-report');
+  var reportContainer = document.getElementById('report-container');
+  var showHideReportsButton = document.getElementById('show-hide-reports-btn');
+  if (reportContainer && showHideReportsButton) {
+    showHideReportsButton.addEventListener('click', function () {
+      var isHidden = reportContainer.classList.contains('hidden');
+      if (isHidden) {
+        reportContainer.classList.remove('hidden');
+        showHideReportsButton.innerText = 'Hide Live Reports';
+      } else {
+        reportContainer.classList.add('hidden');
+        showHideReportsButton.innerText = 'Show Live Reports';
+      }
+    })
+  }
   var subscriber;
   var view;
 
@@ -27,8 +42,8 @@
     iceServers: iceServers
   };
   var rtcConfig = {
-    protocol: getSocketLocationFromProtocol(protocol).protocol,
-    port: getSocketLocationFromProtocol(protocol).port,
+    protocol: window.targetProtocol ? window.targetProtocol : getSocketLocationFromProtocol(protocol).protocol,
+    port: window.targetPort ? window.targetPort : getSocketLocationFromProtocol(protocol).port,
     subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16)
   };
   var rtmpConfig = {
@@ -58,6 +73,24 @@
 
   function onSubscribeStart (subscriber) {
     console.log('[subscriber]:: Subscriber started - ' + subscriber.getType());
+    if (subscriber.getType().toLowerCase() === 'rtc') {
+      try {
+        window.trackBitrate(subscriber.getPeerConnection(), function (type, report, bitrate, packetsLastSent) {
+          var el = document.getElementById(type + '-report_stats');
+          if (el) {
+            el.innerHTML = '<span>Bitrate: <strong>' + parseInt(bitrate, 10) + '</strong>. Packets Last: <strong>' + packetsLastSent + '<strong>.</span>';
+          }
+          if (videoReportElement && type === 'video') {
+            videoReportElement.innerText = JSON.stringify(report, null, 2);
+          }
+          if (audioReportElement && type === 'audio') {
+            audioReportElement.innerText = JSON.stringify(report, null, 2);
+           }
+        }); // eslint-disable-line no-unused-vars
+      } catch (e) {
+        //
+      }
+    }
   }
 
   function hasEstablishedSubscriber () {

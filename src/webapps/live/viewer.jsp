@@ -4,15 +4,25 @@
     String ice = null;
     String host="127.0.0.1";
     String stream="myStream";
-    String buffer="2";
+    String buffer="0.5";
     String width="100%";
     String height="100%";
     String tech=null;
+    String protocol=null;
+    String port=null;
     Integer audioBandwidth = -1;
     Integer videoBandwidth = -1;
 
-   if (request.getParameter("view") != null) {
+  if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
+  }
+
+  if (request.getParameter("protocol") != null) {
+    protocol = request.getParameter("protocol");
+  }
+
+  if (request.getParameter("port") != null) {
+    port = request.getParameter("port");
   }
 
   if (request.getParameter("ice") != null) {
@@ -99,10 +109,38 @@
             margin: 14px;
           }
 
-      .red5pro-media-control-bar {
-        min-height: 40px;
-      }
-        </style>
+          .red5pro-media-control-bar {
+            min-height: 40px;
+          }
+
+          .hidden {
+            display: none;
+          }
+
+          .report-field {
+            display: inline-block;
+            float: left;
+            margin: 0 30px;
+          }
+
+          .report-field_header {
+            width: 100%;
+            text-align: center;
+          }
+
+          .report-field_subheader {
+            width: 100%;
+            text-align: center;
+          }
+
+          .clearfix:after {
+           content: " "; /* Older browser do not support empty content */
+           visibility: hidden;
+           display: block;
+           height: 0;
+           clear: both;
+          }
+      </style>
     </head>
     <body>
       <div id="video-container">
@@ -113,6 +151,21 @@
               </video>
             </div>
             <div id="status-field" class="status-message"></div>
+            <div id="reports">
+              <p><button id="show-hide-reports-btn">Show Live Reports</button></p>
+              <div id="report-container" class="hidden clearfix">
+                <div class="report-field">
+                  <h2 class="report-field_header">Video</h2>
+                  <p id="video-report_stats" class="report-field_subheader"></p>
+                  <p id="video-report" />
+                </div>
+                <div class="report-field">
+                  <h2 class="report-field_header">Audio</h2>
+                  <p id="audio-report_stats" class="report-field_subheader"></p>
+                  <p id="audio-report" />
+                </div>
+              </div>
+            </div>
             <div id="event-log-field" class="event-log-field">
               <div style="padding: 10px 0">
                 <p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>
@@ -128,7 +181,8 @@
       <script src="lib/jquery-1.12.4.min.js"></script>
       <script src="lib/red5pro/red5pro-sdk.min.js"></script>
       <script src="script/r5pro-ice-utils.js"></script>
-              <script>
+      <script src="script/r5pro-utils.js"></script>
+      <script>
           // writing params to global.
           window.targetHost = "<%=host%>";
           window.r5proApp = "<%=app%>";
@@ -145,6 +199,8 @@
             }
           }
           assignIfDefined("<%=tech%>", 'r5proViewTech');
+          assignIfDefined("<%=port%>", 'targetPort');
+          assignIfDefined("<%=protocol%>", 'targetProtocol');
           assignIfDefined(<%=audioBandwidth%>, 'r5proAudioBandwidth');
           assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
         </script>
