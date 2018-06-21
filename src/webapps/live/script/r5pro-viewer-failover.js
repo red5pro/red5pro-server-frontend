@@ -15,6 +15,7 @@
   var statusField = document.getElementById('status-field');
   var eventLogField = document.getElementById('event-log-field');
   var clearLogButton = document.getElementById('clear-log-button');
+  var idContainer = document.getElementById('id-container');
   var videoReportElement = document.getElementById('video-report');
   var audioReportElement = document.getElementById('audio-report');
   var reportContainer = document.getElementById('report-container');
@@ -31,6 +32,7 @@
       }
     })
   }
+  var subscriptionId = 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16);
   var subscriber;
   var view;
 
@@ -44,7 +46,7 @@
   var rtcConfig = {
     protocol: window.targetProtocol ? window.targetProtocol : getSocketLocationFromProtocol(protocol).protocol,
     port: window.targetPort ? window.targetPort : getSocketLocationFromProtocol(protocol).port,
-    subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16)
+    subscriptionId: subscriptionId
   };
   var rtmpConfig = {
     protocol: 'rtmp',
@@ -85,7 +87,15 @@
           }
           if (audioReportElement && type === 'audio') {
             audioReportElement.innerText = JSON.stringify(report, null, 2);
-           }
+          }
+          if (window.r5pro_ws_send) {
+            var clientId =  window.adapter.browserDetails.browser + '+' + subscriptionId;
+            if (idContainer && idContainer.classList && idContainer.classList.contains('hidden')) {
+              idContainer.classList.remove('hidden');
+              idContainer.innerText = clientId
+            }
+            window.r5pro_ws_send(clientId, '[' + type + '] bitrate=' + parseInt(bitrate, 10) + ' last_packets_in=' + packetsLastSent);
+          }
         }); // eslint-disable-line no-unused-vars
       } catch (e) {
         //

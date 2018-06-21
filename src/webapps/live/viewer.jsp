@@ -12,6 +12,27 @@
     String port=null;
     Integer audioBandwidth = -1;
     Integer videoBandwidth = -1;
+    Integer enableAnalytics = 0;
+
+    String analytics_protocol = null;
+    String analytics_host = null;
+    String analytics_port = null;
+
+  if (request.getParameter("analyze") != null) {
+    enableAnalytics = 1;
+  }
+
+  if (request.getParameter("analytics_protocol") != null) {
+    analytics_protocol = request.getParameter("analytics_protocol");
+  }
+
+  if (request.getParameter("analytics_host") != null) {
+    analytics_host = request.getParameter("analytics_host");
+  }
+
+  if (request.getParameter("analytics_port") != null) {
+    analytics_port = request.getParameter("analytics_port");
+  }
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
@@ -140,9 +161,17 @@
            height: 0;
            clear: both;
           }
+
+          #id-container {
+            background-color: #aaa;
+            color: #fff;
+            text-align: center;
+            font-size: 2rem;
+          }
       </style>
     </head>
     <body>
+      <div id="id-container" class="hidden"></div>
       <div id="video-container">
             <div id="video-holder">
               <video id="red5pro-subscriber"
@@ -204,6 +233,15 @@
           assignIfDefined(<%=audioBandwidth%>, 'r5proAudioBandwidth');
           assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
 
+          if (<%=enableAnalytics%>) {
+              assignIfDefined("<%=analytics_protocol%>", 'analytics_protocol');
+              assignIfDefined("<%=analytics_host%>", 'analytics_host');
+              assignIfDefined("<%=analytics_port%>", 'analytics_port');
+
+              var script = document.createElement('script');
+              script.src = 'script/r5pro-analytics-plugin.js';
+              document.head.appendChild(script);
+          }
           // load local adapter.js if we have not been able to load it over network.
           if (!window.adapter) {
               var script = document.createElement('script');
