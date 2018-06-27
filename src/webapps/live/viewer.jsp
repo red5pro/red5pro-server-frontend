@@ -209,6 +209,8 @@
       <script src="lib/es6/es6-promise.min.js"></script>
       <script src="lib/jquery-1.12.4.min.js"></script>
       <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+      <script src="lib/red5pro/bm-inject.js"></script>
+      <script src="lib/red5pro/secondscreen-client.min.js"></script>
       <script src="script/r5pro-ice-utils.js"></script>
       <script src="script/r5pro-utils.js"></script>
       <script>
