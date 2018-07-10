@@ -88,13 +88,16 @@
           if (audioReportElement && type === 'audio') {
             audioReportElement.innerText = JSON.stringify(report, null, 2);
           }
+          // with &analyze.
           if (window.r5pro_ws_send) {
             var clientId =  window.adapter.browserDetails.browser + '+' + subscriptionId;
             if (idContainer && idContainer.classList && idContainer.classList.contains('hidden')) {
               idContainer.classList.remove('hidden');
               idContainer.innerText = clientId
             }
-            window.r5pro_ws_send(clientId, '[' + type + '] bitrate=' + parseInt(bitrate, 10) + ' last_packets_in=' + packetsLastSent);
+            window.r5pro_ws_send(clientId, type, 'bitrate=' + parseInt(bitrate, 10) +
+              '|last_packets_in=' + packetsLastSent +
+              '|lost_packets=' + report.packetsLost);
           }
         }); // eslint-disable-line no-unused-vars
       } catch (e) {
