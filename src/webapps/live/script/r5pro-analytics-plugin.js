@@ -1,12 +1,13 @@
 /* global window, WebSocket */
-(function (window, secondscreenClient) {
+(function (window) {
   'use strict';
 
   var isOpen = false;
+  /*
   var a_protocol = window.analytics_protocol || 'ws';
   var a_host = window.analytics_host || 'localhost';
   var a_port = window.analytics_port || 8000;
-
+  */
   /*
   secondscreenClient.setLogLevel(secondscreenClient.LogLevels.INFO);
   secondscreenClient.log.info(secondscreenClient.versionStr());
@@ -16,6 +17,7 @@
   });
   */
 
+  var firstReport;
   var protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
   var port = protocol === 'wss' ? 8083 : 8081;
   var host = window.targetHost;
@@ -38,11 +40,16 @@
     if (isOpen) {
       try {
         // secondscreenClient.send('report', msg);
+        var now = new Date().getTime();
+        if (!firstReport) {
+          firstReport = now;
+        }
         ws.send(JSON.stringify({
           sendBroadcast: id.split('+').join('_'),
-          ts: new Date().getTime(),
+          ts: now,
           data: {
-            message: msg
+            message: msg,
+            elapsed: now - firstReport
           }
         }));
       } catch (e) {
@@ -52,4 +59,4 @@
     }
   }
 
-})(window, window.secondscreenClient.noConflict());
+})(window);
