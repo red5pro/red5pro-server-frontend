@@ -310,6 +310,9 @@
     var eventLog = '[Red5ProPublisher] ' + event.type + '.';
     console.log(eventLog);
     addEventLog(eventLog);
+    if (event.type === 'Connect.Success' && publisher) {
+      showPublisherImplStatus(publisher);
+    }
     if (event.type === 'Publisher.Connection.Closed') {
       window.untrackBitrate();
       updateStatus('Connection has been Closed!');
