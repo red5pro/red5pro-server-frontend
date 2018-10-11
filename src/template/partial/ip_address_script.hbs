@@ -2,6 +2,13 @@
   'use strict';
 
   // Host IP state
+  var hostErrors = "<%= host_errors %>";
+  if (hostErrors && hostErrors.length > 0) {
+    var errors = hostErrors.substring(1, hostErrors.length - 1).split(',');
+    for (var i = 0; i < errors.length; i++) {
+      console.warn(errors[i]);
+    }
+  }
   console.log("<%= host_success %>");
   var currentIp = "<%= ip %>";
   var hasValidIp = <%= ipExists %>;
