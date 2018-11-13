@@ -1,7 +1,5 @@
 # Changes
 
-## 5.3.0
-
 ## 5.2.0
 
 - moving ws.error invoke to promise.reject on timeout of ws connect. (bustardcelly)
