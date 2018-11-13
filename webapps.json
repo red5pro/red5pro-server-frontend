@@ -13,6 +13,6 @@
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "feature/sdk-5.3.0"
+    "branch": "develop"
   }
 }
