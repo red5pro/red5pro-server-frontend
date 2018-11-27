@@ -31,7 +31,7 @@
   var protocol = window.location.protocol;
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
   function getSocketLocationFromProtocol (protocol) {
-    return protocol === 'http' ? {protocol: 'ws', port: 8081} : {protocol: 'wss', port: 8083};
+    return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
   }
 
   var streamNameField = document.getElementById('stream-name-field');
