@@ -122,7 +122,7 @@
         var smProtocol = protocol;
         var smPort = isSecure ? '' : '5080';
         var wsProtocol = isSecure ? 'wss' : 'ws';
-        var wsPort = isSecure ? 8083 : 8081;
+        var wsPort = isSecure ? 443 : 5080;
 
         var rtcConfig = {
           host: host,
