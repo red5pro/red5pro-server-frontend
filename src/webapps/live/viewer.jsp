@@ -86,7 +86,6 @@
         <title>Subscribing to <%= stream %></title>
       <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
       <script src="lib/screenfull/screenfull.min.js"></script>
-      <script src="lib/red5pro/bm-inject.js"></script>
       <script src="lib/red5pro/secondscreen-client.min.js"></script>
       <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
         <style>
