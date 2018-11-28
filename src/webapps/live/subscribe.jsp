@@ -12,7 +12,7 @@
 
   String tech=null;
   String ice=null;
-  String buffer = "2";
+  String buffer = "0.5";
   Integer audioBandwidth = -1;
   Integer videoBandwidth = -1;
 
