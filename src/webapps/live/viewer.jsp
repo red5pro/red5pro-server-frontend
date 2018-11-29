@@ -243,12 +243,6 @@
               script.src = 'script/r5pro-analytics-plugin.js';
               document.head.appendChild(script);
           }
-          // load local adapter.js if we have not been able to load it over network.
-          if (!window.adapter) {
-              var script = document.createElement('script');
-              script.src = 'lib/adapter.js';
-              document.head.appendChild(script);
-          }
         </script>
       <script src="script/r5pro-viewer-failover.js"></script>
     </body>
