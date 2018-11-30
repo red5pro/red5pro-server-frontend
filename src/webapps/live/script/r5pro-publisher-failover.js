@@ -71,7 +71,7 @@
   var baseConfiguration = {
     host: window.targetHost,
     app: 'live',
-    iceServers: iceServers,
+    iceServers: iceServers,  // will override the rtcConfiguration.iceServers
     bandwidth: desiredBandwidth,
     mediaConstraints: forceQuality
   };

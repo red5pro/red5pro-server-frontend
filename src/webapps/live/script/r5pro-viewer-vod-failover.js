@@ -23,7 +23,7 @@
     buffer: isNaN(buffer) ? 2 : buffer,
     embedWidth: '100%',
     embedHeight: '100%',
-    iceServers: iceServers
+    iceServers: iceServers // will override the rtcConfiguration.iceServers
   };
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,

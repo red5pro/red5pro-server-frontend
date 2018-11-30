@@ -33,7 +33,7 @@
     host: host,
     app: 'live',
     buffer: isNaN(buffer) ? 2 : buffer,
-    iceServers: iceServers
+    iceServers: iceServers  // will override the rtcConfiguration.iceServers
   };
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,

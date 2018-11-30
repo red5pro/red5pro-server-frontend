@@ -41,7 +41,7 @@
     app: window.r5proApp,
     streamName: window.r5proStreamName,
     buffer: isNaN(window.r5proBuffer) ? 2 : window.r5proBuffer,
-    iceServers: iceServers
+    iceServers: iceServers  // will override the rtcConfiguration.iceServers
   };
   var rtcConfig = {
     protocol: window.targetProtocol ? window.targetProtocol : getSocketLocationFromProtocol(protocol).protocol,
