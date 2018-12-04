@@ -1,7 +1,7 @@
 {
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
-    "branch": "develop"
+    "branch": "bug/LimelightFixes"
   },
   "r5pro-api": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-api.git",
