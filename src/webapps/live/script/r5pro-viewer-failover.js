@@ -229,12 +229,17 @@
       console.error('[viewer]:: Error in subscribing to stream - ' + errorStr);
     });
 
-  window.addEventListener('beforeunload', function () {
+  var shuttingDown = false;
+  function shutdown () {
+    if (shuttingDown) return;
+    shuttingDown = true;
     unsubscribe()
       .then(function () {
         tearDownSubscriber();
       });
-  });
+  }
+  window.addEventListener('pagehide', shutdown);
+  window.addEventListener('beforeunload', shutdown);
 
   window.subscriberLog = function (message) {
     console.log('[RTMP SUBSCRIBER]:: ' + message);
