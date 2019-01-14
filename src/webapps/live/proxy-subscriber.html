@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width">
     <script src="https://webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
+    <script src="script/r5pro-autoplay-utils.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
     <style>
       #prompt {
@@ -212,6 +213,9 @@
               .then(function (subscriberImpl) {
                 subscriber = subscriberImpl;
                 subscriber.on('*', onSubscriberEvent);
+                if (window.trackAutoplayRestrictions) {
+                  window.trackAutoplayRestrictions(subscriber);
+                }
                 subscriber.subscribe();
               })
               .catch(function (error) {
