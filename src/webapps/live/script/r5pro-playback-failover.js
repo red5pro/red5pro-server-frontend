@@ -41,7 +41,7 @@
   var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
   function getSocketLocationFromProtocol (protocol) {
-    return protocol === 'http' ? {protocol: 'ws', port: 8081} : {protocol: 'wss', port: 8083};
+    return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
   }
 
   var $videoTemplate = document.getElementById('video-playback');
@@ -52,7 +52,7 @@
     buffer: isNaN(buffer) ? 2 : buffer,
     embedWidth: '100%',
     embedHeight: '100%',
-    iceServers: iceServers
+    iceServers: iceServers // will override the rtcConfiguration.iceServers
   };
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,

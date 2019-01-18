@@ -4,6 +4,7 @@
 
   red5prosdk.setLogLevel('debug');
   var isMoz = !!navigator.mozGetUserMedia;
+  var isEdge = navigator.userAgent.indexOf('Edge') > -1;
   var qFramerateMin = window.r5proFramerateMin || 8;
   var qFramerateMax = window.r5proFramerateMax || 24;
   var qVideoWidthMin = window.r5proVideoWidthMin || 640;
@@ -31,7 +32,7 @@
   var protocol = window.location.protocol;
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
   function getSocketLocationFromProtocol (protocol) {
-    return protocol === 'http' ? {protocol: 'ws', port: 8081} : {protocol: 'wss', port: 8083};
+    return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
   }
 
   var streamNameField = document.getElementById('stream-name-field');
@@ -51,7 +52,7 @@
 
   var forceQuality = {
     audio: true,
-    video: isMoz ? true : forceVideo
+    video: (isMoz || isEdge) ? true : forceVideo
   };
 
   var desiredBandwidth = (function() {
@@ -70,7 +71,7 @@
   var baseConfiguration = {
     host: window.targetHost,
     app: 'live',
-    iceServers: iceServers,
+    iceServers: iceServers,  // will override the rtcConfiguration.iceServers
     bandwidth: desiredBandwidth,
     mediaConstraints: forceQuality
   };

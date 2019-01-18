@@ -12,7 +12,7 @@
 
   String tech=null;
   String ice=null;
-  String buffer = "2";
+  String buffer = "0.5";
   Integer audioBandwidth = -1;
   Integer videoBandwidth = -1;
 
@@ -199,7 +199,7 @@
         display: none;
       }
     </style>
-    <script src="//webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
     <script>
