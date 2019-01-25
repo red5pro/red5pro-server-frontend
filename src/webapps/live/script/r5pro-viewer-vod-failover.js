@@ -333,9 +333,14 @@
     });
   }
 
-  window.addEventListener('beforeunload', function () {
+  var shuttingDown = false;
+  function shutdown () {
+    if (shuttingDown) return;
+    shuttingDown = true;
     unsubscribe();
-  });
+  }
+  window.addEventListener('pagehide', shutdown);
+  window.addEventListener('beforeunload', shutdown);
 
   window.subscriberLog = function (message) {
     console.log('[RTMP SUBSCRIBER]:: ' + message);
