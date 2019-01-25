@@ -24,16 +24,16 @@ var deployLibDir = nconf.get('red5pro-server-local')
   : [process.cwd(), 'red5pro-server', 'lib'].join(path.sep);
 
 // Import build task
-var buildSetup = require([taskDirectory, 'build.js'].join(path.sep))(srcDir, distDir, webappBuildScriptDir, gulp);
+var buildSetup = require([taskDirectory, 'build.js'].join(path.sep))(srcDir, distDir, webappBuildScriptDir, gulp); //eslint-disable-line no-unused-vars
 
 // Import deploy task
-var deploySetup = require([taskDirectory, 'deploy.js'].join(path.sep))(distDir, deployWebappDir, deployLibDir, gulp);
+var deploySetup = require([taskDirectory, 'deploy.js'].join(path.sep))(distDir, deployWebappDir, deployLibDir, gulp); //eslint-disable-line no-unused-vars
 
 // Import watch task
-var watchSetup = require([taskDirectory, 'watch.js'].join(path.sep))(srcDir, distDir, gulp, 'deploy');
+var watchSetup = require([taskDirectory, 'watch.js'].join(path.sep))(srcDir, distDir, gulp, 'deploy'); //eslint-disable-line no-unused-vars
 
 // Import launch task
-var launchSetup = require([taskDirectory, 'launch.js'].join(path.sep))(port, gulp);
+var launchSetup = require([taskDirectory, 'launch.js'].join(path.sep))(port, gulp); //eslint-disable-line no-unused-vars
 
 // Import new task
 var newTask = require([taskDirectory, 'new.js'].join(path.sep))(srcDir, distDir, scriptsDir, gulp);

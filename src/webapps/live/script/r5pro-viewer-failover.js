@@ -158,6 +158,8 @@
           // container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
         }
       }
+    } else if (event.type === red5pro.SubscriberEventTypes.AUTO_PLAYBACK_FAILURE) {
+      console.error('ARE YOU ON MOBILE?!?!');
     }
   }
 
@@ -227,6 +229,9 @@
   function subscribe (subscriber) {
     return promisify(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
+      if (window.trackAutoplayRestrictions) {
+        window.trackAutoplayRestrictions(subscriber);
+      }
       subscriber.subscribe()
       .then(function () {
           onSubscribeStart(subscriber);
@@ -243,6 +248,9 @@
       if (hasEstablishedSubscriber()) {
         subscriber.unsubscribe()
           .then(function() {
+            if (window.untrackAutoplayRestrictions) {
+              window.untrackAutoplayRestrictions(subscriber);
+            }
             subscriber.off('*', onSubscriberEvent);
             resolve();
           })

@@ -305,6 +305,9 @@
   function subscribe (subscriber) {
     return promisify(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
+      if (window.trackAutoplayRestrictions) {
+        window.trackAutoplayRestrictions(subscriber);
+      }
       subscriber.subscribe()
         .then(function () {
           resolve();
@@ -320,6 +323,9 @@
       if (hasEstablishedSubscriber()) {
         subscriber.unsubscribe()
           .then(function() {
+            if (window.untrackAutoplayRestrictions) {
+              window.untrackAutoplayRestrictions(subscriber);
+            }
             subscriber.off('*', onSubscriberEvent);
             resolve();
           })

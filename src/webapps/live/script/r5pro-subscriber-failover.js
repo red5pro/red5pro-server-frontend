@@ -264,6 +264,9 @@
 
   function subscribe (subscriber) {
     return promisify(function (resolve, reject) {
+      if (window.trackAutoplayRestrictions) {
+        window.trackAutoplayRestrictions(subscriber);
+      }
       subscriber.on('*', onSubscriberEvent);
       subscriber.subscribe()
         .then(function () {
@@ -281,6 +284,9 @@
       if (hasEstablishedSubscriber()) {
         subscriber.unsubscribe()
           .then(function() {
+            if (window.untrackAutoplayRestrictions) {
+              window.untrackAutoplayRestrictions(subscriber);
+            }
             subscriber.off('*', onSubscriberEvent);
             resolve();
           })
