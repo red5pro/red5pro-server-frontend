@@ -245,7 +245,21 @@
     return typeof publisher !== 'undefined'
   }
 
+  var delayBetweenTextUpdates = 100;//ms
+  var lastSSBUpdateTime = 0;
   function updateStartStopButtonState (state) {
+    var t = new Date().getTime();
+
+    if(new Date().getTime() - lastSSBUpdateTime < delayBetweenTextUpdates){
+      lastSSBUpdateTime = new Date().getTime();
+      delayedSSBStateUpdate(state);
+    } else {
+      lastSSBUpdateTime += delayBetweenTextUpdates;
+      setTimeout( () => delayedSSBStateUpdate(state), lastSSBUpdateTime - t );
+    }
+  }
+
+  function delayedSSBStateUpdate(state){
     if (state.enabled) {
       startStopButton.classList.remove('button-disabled');
       startStopButton.classList.add('button-enabled');
