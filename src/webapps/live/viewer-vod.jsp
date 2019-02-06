@@ -50,7 +50,6 @@
     <script src="//unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
     <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
-    <script src="script/r5pro-autoplay-utils.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
         <style>
           object:focus {
@@ -133,6 +132,7 @@
       <script src="lib/es6/es6-promise.min.js"></script>
       <script src="lib/jquery-1.12.4.min.js"></script>
       <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+      <script src="script/r5pro-autoplay-utils.js"></script>
       <script src="script/r5pro-ice-utils.js"></script>
         <script>
           // Access selected data from the `opener` window.
