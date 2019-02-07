@@ -153,7 +153,6 @@
     </style>
     <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
-    <script src="script/r5pro-autoplay-utils.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet"></script>
     <script>
       // Shim so we can style in IE6/7/8
@@ -238,6 +237,7 @@
     <script src="lib/jquery-1.12.4.min.js"></script>
     <script src="lib/red5pro/red5pro-sdk.min.js"></script>
     <script src="script/r5pro-ice-utils.js"></script>
+    <script src="script/r5pro-autoplay-utils.js"></script>
     <script>
       // Put server vars globally.
       var viewTech = "<%=tech%>";
