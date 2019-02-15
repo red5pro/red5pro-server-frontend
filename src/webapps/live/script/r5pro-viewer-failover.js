@@ -159,7 +159,6 @@
         }
       }
     } else if (event.type === red5pro.SubscriberEventTypes.AUTO_PLAYBACK_FAILURE) {
-      console.error('ARE YOU ON MOBILE?!?!');
     }
   }
 
