@@ -464,16 +464,23 @@
     baseConfiguration.host = window.targetHost;
   }
   window.r5pro_registerIpChangeListener(handleBroadcastIpChange);
-  window.addEventListener('beforeunload', function () {
+   var shuttingDown = false;
+  function shutdown () {
+    if (shuttingDown) return;
+    shuttingDown = true;
     unpublish()
       .then(function() {
         tearDownPublisher();
       });
     window.untrackBitrate(onBitrateUpdate);
-  });
+  }
+  window.addEventListener('pagehide', shutdown);
+  window.addEventListener('beforeunload', shutdown);
 
   window.publisherLog = function (message) {
     console.log('[RTMP PUBLISHER]:: ' + message);
   };
+
+
 
 })(this, document, window.red5prosdk);

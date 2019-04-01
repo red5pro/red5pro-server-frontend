@@ -268,6 +268,7 @@
     <script src="lib/jquery-1.12.4.min.js"></script>
     <script src="lib/red5pro/red5pro-sdk.min.js"></script>
     <script src="script/r5pro-ice-utils.js"></script>
+    <script src="script/r5pro-autoplay-utils.js"></script>
     <script>
       function assignIfDefined (value, prop) {
         if (value && value !== 'null') {

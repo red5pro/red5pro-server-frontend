@@ -264,6 +264,9 @@
 
   function subscribe (subscriber) {
     return promisify(function (resolve, reject) {
+      if (window.trackAutoplayRestrictions) {
+        window.trackAutoplayRestrictions(subscriber);
+      }
       subscriber.on('*', onSubscriberEvent);
       subscriber.subscribe()
         .then(function () {
@@ -281,6 +284,9 @@
       if (hasEstablishedSubscriber()) {
         subscriber.unsubscribe()
           .then(function() {
+            if (window.untrackAutoplayRestrictions) {
+              window.untrackAutoplayRestrictions(subscriber);
+            }
             subscriber.off('*', onSubscriberEvent);
             resolve();
           })
@@ -296,9 +302,14 @@
 
   window.r5pro_registerIpChangeListener(handleHostIpChange);
   window.invokeViewStream = viewHandler;
-  window.addEventListener('beforeunload', function () {
+  var shuttingDown = false;
+  function shutdown () {
+    if (shuttingDown) return;
+    shuttingDown = true;
     unsubscribe();
-  });
+  }
+  window.addEventListener('pagehide', shutdown);
+  window.addEventListener('beforeunload', shutdown);
 
   window.subscriberLog = function (message) {
     console.log('[RTMP SUBSCRIBER]:: ' + message);
