@@ -158,6 +158,7 @@
           // container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
         }
       }
+    } else if (event.type === red5pro.SubscriberEventTypes.AUTO_PLAYBACK_FAILURE) {
     }
   }
 
@@ -227,6 +228,9 @@
   function subscribe (subscriber) {
     return promisify(function (resolve, reject) {
       subscriber.on('*', onSubscriberEvent);
+      if (window.trackAutoplayRestrictions) {
+        window.trackAutoplayRestrictions(subscriber);
+      }
       subscriber.subscribe()
       .then(function () {
           onSubscribeStart(subscriber);
@@ -243,6 +247,9 @@
       if (hasEstablishedSubscriber()) {
         subscriber.unsubscribe()
           .then(function() {
+            if (window.untrackAutoplayRestrictions) {
+              window.untrackAutoplayRestrictions(subscriber);
+            }
             subscriber.off('*', onSubscriberEvent);
             resolve();
           })
@@ -275,12 +282,17 @@
       console.error('[viewer]:: Error in subscribing to stream - ' + errorStr);
     });
 
-  window.addEventListener('beforeunload', function () {
+  var shuttingDown = false;
+  function shutdown () {
+    if (shuttingDown) return;
+    shuttingDown = true;
     unsubscribe()
       .then(function () {
         tearDownSubscriber();
       });
-  });
+  }
+  window.addEventListener('pagehide', shutdown);
+  window.addEventListener('beforeunload', shutdown);
 
   window.subscriberLog = function (message) {
     console.log('[RTMP SUBSCRIBER]:: ' + message);

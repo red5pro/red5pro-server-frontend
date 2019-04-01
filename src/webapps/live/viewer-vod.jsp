@@ -41,6 +41,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Welcome to the Red5 Pro Server Pages!">
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/modal.css">
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
         <title>VOD Playback of <%= stream %></title>
     <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
@@ -131,6 +132,7 @@
       <script src="lib/es6/es6-promise.min.js"></script>
       <script src="lib/jquery-1.12.4.min.js"></script>
       <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+      <script src="script/r5pro-autoplay-utils.js"></script>
       <script src="script/r5pro-ice-utils.js"></script>
         <script>
           // Access selected data from the `opener` window.

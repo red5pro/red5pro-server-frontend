@@ -55,7 +55,7 @@
                 bitrate = 8 * (bytes - lastInboundAudioResult.get(report.id).bytesReceived) /
                   (now - lastInboundAudioResult.get(report.id).timestamp);
 
-                cb('audio', report, bitrate, packets - lastInboundVideoResult.get(report.id).packetsReceived);
+                cb('audio', report, bitrate, packets - lastInboundAudioResult.get(report.id).packetsReceived);
               }
               lastInboundAudioResult = res;
             }
