@@ -92,13 +92,30 @@
         var app = getParameterByName('app') || 'live';
         var order = getParameterByName('view') || ['rtc', 'rtmp'];
         var streamName = getParameterByName('streamName');
+        var videoWidth = getParameterByName('vw') || 640;
+        var videoHeight = getParameterByName('vh') || 480;
+        var frameRate = getParameterByName('fr') || 24;
+        var bandwidthAudio = getParameterByName('bwA') || 56;
+        var bandwidthVideo = getParameterByName('bwV') || 750;
 
         var rtcConfig = {
           host: host,
           streamName: streamName,
           app: app,
-          protocol: isSecure ? 'ws' : 'wss',
-          port: port
+          protocol: isSecure ? 'wss' : 'ws',
+          port: port,
+          bandwidth: {
+            video: parseInt(bandwidthVideo, 10),
+            audio: parseInt(bandwidthAudio, 10)
+          },
+          mediaConstraints: {
+            video: { 
+              width: { exact: parseInt(videoWidth, 10) },
+              height: { exact: parseInt(videoHeight, 10) },
+              frameRate: { exact: parseInt(frameRate, 10) }
+            },
+            audio: true
+          }
         };
         var rtmpConfig = {
           host: host,
@@ -108,7 +125,14 @@
           height: 480,
           embedWidth: "100%",
           embedHeight: 480,
-          backgroundColor: '#000000'
+          backgroundColor: '#000000',
+          mediaConstraints: {
+            video: { 
+              width: { exact: videoWidth },
+              height: { exact: videoHeight }
+            },
+            audio: true
+          }
         };
 
         var publisher;
@@ -162,4 +186,4 @@
       })(window, window.red5prosdk);
     </script>
   </body>
-</html
+</html>
