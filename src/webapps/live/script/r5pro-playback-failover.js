@@ -258,6 +258,18 @@
     var streamName = streamData.name;
     baseConfiguration.streamName = streamName;
     setup(streamName, $videoTemplate, vidTemplateHTML);
+
+    // Unless `view=rtmp` is set in the query params, default to MP4 playback if MP4 file.
+    if (targetViewTech !== 'rtmp') {
+      if (streamData.urls && streamData.urls.rtmp) {
+        if (streamData.urls.rtmp.indexOf('mp4') !== -1) {
+          useMP4Fallback(streamData.urls.rtmp)
+        }
+      }
+      return;
+    }
+
+    // Else, proceed to establish a Subscriber through the SDK.
     determineSubscriber(Object.keys(streamData.urls))
       .then(preview)
       .then(subscribe)
