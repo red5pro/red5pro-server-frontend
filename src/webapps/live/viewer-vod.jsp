@@ -46,7 +46,7 @@
         <title>VOD Playback of <%= stream %></title>
     <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
     <script src="//unpkg.com/video.js/dist/video.js"></script>
-    <script src="//unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+    <!--    <script src="//unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script> -->
     <script src="//unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
     <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
