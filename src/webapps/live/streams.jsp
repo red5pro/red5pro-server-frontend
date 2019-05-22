@@ -3,7 +3,7 @@
 <%@ page import="org.springframework.context.ApplicationContext,
 					com.red5pro.server.secondscreen.net.NetworkUtil,
 					org.springframework.web.context.WebApplicationContext,
-					com.infrared5.red5pro.examples.service.LiveStreamListService,					
+					com.infrared5.red5pro.live.LiveStreamListService,					
 					com.google.gson.*,
 					java.util.Map.Entry,
 					java.util.List,

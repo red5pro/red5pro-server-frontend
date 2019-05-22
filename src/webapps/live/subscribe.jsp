@@ -1,7 +1,7 @@
 {{> jsp_header }}
 <%@ page import="org.springframework.context.ApplicationContext,
           org.springframework.web.context.WebApplicationContext,
-          com.infrared5.red5pro.examples.service.LiveStreamListService,
+          com.infrared5.red5pro.live.LiveStreamListService,
           java.util.List"%>
 <%
   //LIVE streams page.
