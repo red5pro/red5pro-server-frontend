@@ -198,10 +198,10 @@
     if (targetViewTech !== 'rtmp') {
       if (streamData.urls && streamData.urls.rtmp) {
         if (streamData.urls.rtmp.indexOf('mp4') !== -1) {
-          useMP4Fallback(streamData.urls.rtmp)
+          useMP4Fallback(streamData.urls.rtmp);
+          return;
         }
       }
-      return;
     }
 
     // Else, proceed to establish a Subscriber through the SDK.
