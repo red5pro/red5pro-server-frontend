@@ -183,15 +183,18 @@
   }
 
   function useMP4Fallback (src) {
+    /*
+    // Removing `streams` injection. Path provided in server payloads now.
     var vid = src.split('/');
     var len = vid.length;
     vid.splice(len - 1, 0, 'streams');
     var loc = vid.join('/');
+    */
 
     var element = document.getElementById('red5pro-subscriber');
     var source = document.createElement('source');
     source.type = 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"';
-    source.src = loc;
+    source.src = src;
     element.appendChild(source);
     showSubscriberImplStatus({
       getType: function() {
