@@ -33,7 +33,11 @@
     host: host,
     app: 'live',
     buffer: isNaN(buffer) ? 2 : buffer,
-    iceServers: iceServers  // will override the rtcConfiguration.iceServers
+    rtcConfiguration: {
+      iceServers: iceServers,
+      iceCandidatePoolSize: 2,
+      bundlePolicy: 'max-bundle'
+    }
   };
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,

@@ -71,7 +71,11 @@
   var baseConfiguration = {
     host: window.targetHost,
     app: 'live',
-    iceServers: iceServers,  // will override the rtcConfiguration.iceServers
+    rtcConfiguration: {
+      iceServers: iceServers,
+      iceCandidatePoolSize: 2,
+      bundlePolicy: 'max-bundle'
+    },
     bandwidth: desiredBandwidth,
     mediaConstraints: forceQuality
   };
