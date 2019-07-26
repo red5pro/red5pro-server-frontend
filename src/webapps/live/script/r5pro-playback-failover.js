@@ -52,7 +52,11 @@
     buffer: isNaN(buffer) ? 2 : buffer,
     embedWidth: '100%',
     embedHeight: '100%',
-    iceServers: iceServers // will override the rtcConfiguration.iceServers
+    rtcConfiguration: {
+      iceServers: iceServers,
+      iceCandidatePoolSize: 2,
+      bundlePolicy: 'max-bundle'
+    }
   };
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,
@@ -183,15 +187,16 @@
   }
 
   function useMP4Fallback (src) {
+    /*
     var vid = src.split('/');
     var len = vid.length;
     vid.splice(len - 1, 0, 'streams');
     var loc = vid.join('/');
-
+    */
     var element = document.getElementById('red5pro-subscriber');
     var source = document.createElement('source');
     source.type = 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"';
-    source.src = loc;
+    source.src = src;
     element.appendChild(source);
     showSubscriberImplStatus({
       getType: function() {
@@ -258,6 +263,18 @@
     var streamName = streamData.name;
     baseConfiguration.streamName = streamName;
     setup(streamName, $videoTemplate, vidTemplateHTML);
+
+    // Unless `view=rtmp` is set in the query params, default to MP4 playback if MP4 file.
+    if (targetViewTech !== 'rtmp') {
+      if (streamData.urls && streamData.urls.rtmp) {
+        if (streamData.urls.rtmp.indexOf('mp4') !== -1) {
+          useMP4Fallback(streamData.urls.rtmp);
+          return;
+        }
+      }
+    }
+
+    // Else, proceed to establish a Subscriber through the SDK.
     determineSubscriber(Object.keys(streamData.urls))
       .then(preview)
       .then(subscribe)
