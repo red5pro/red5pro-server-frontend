@@ -78,6 +78,7 @@
   }
 %>
 <!doctype html>
+{{> license}}
 <html>
   <head>
     {{> head_meta }}
