@@ -1,5 +1,6 @@
 {{> jsp_header }}
 <!doctype html>
+{{> license}}
 <html lang="eng">
   <head>
     <meta http-equiv="cache-control" content="no-cache">
