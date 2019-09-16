@@ -3,6 +3,7 @@
   String host = ip;
 %>
 <!doctype html>
+{{> license}}
 <html lang="eng">
   <head>
     {{> head_meta }}

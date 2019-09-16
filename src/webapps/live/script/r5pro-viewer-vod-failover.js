@@ -1,3 +1,28 @@
+/*
+Copyright © 2015 Infrared5, Inc. All rights reserved.
+
+The accompanying code comprising examples for use solely in conjunction with Red5 Pro (the "Example Code") 
+is  licensed  to  you  by  Infrared5  Inc.  in  consideration  of  your  agreement  to  the  following  
+license terms  and  conditions.  Access,  use,  modification,  or  redistribution  of  the  accompanying  
+code  constitutes your acceptance of the following license terms and conditions.
+
+Permission is hereby granted, free of charge, to you to use the Example Code and associated documentation 
+files (collectively, the "Software") without restriction, including without limitation the rights to use, 
+copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The Software shall be used solely in conjunction with Red5 Pro. Red5 Pro is licensed under a separate end 
+user  license  agreement  (the  "EULA"),  which  must  be  executed  with  Infrared5,  Inc.   
+An  example  of  the EULA can be found on our website at: https://account.red5pro.com/assets/LICENSE.txt.
+
+The above copyright notice and this license shall be included in all copies or portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,  INCLUDING  BUT  
+NOT  LIMITED  TO  THE  WARRANTIES  OF  MERCHANTABILITY, FITNESS  FOR  A  PARTICULAR  PURPOSE  AND  
+NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
 /* global document, Promise, $ */
 (function(window, document, red5pro) {
   'use strict';
@@ -23,7 +48,11 @@
     buffer: isNaN(buffer) ? 2 : buffer,
     embedWidth: '100%',
     embedHeight: '100%',
-    iceServers: iceServers // will override the rtcConfiguration.iceServers
+    rtcConfiguration: {
+      iceServers: iceServers,
+      iceCandidatePoolSize: 2,
+      bundlePolicy: 'max-bundle'
+    }
   };
   var rtcConfig = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,
@@ -114,15 +143,16 @@
   }
 
   function useMP4Fallback (src) {
+    /*
     var vid = src.split('/');
     var len = vid.length;
     vid.splice(len - 1, 0, 'streams');
     var loc = vid.join('/');
-
+    */
     var element = document.getElementById('red5pro-subscriber');
     var source = document.createElement('source');
     source.type = 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"';
-    source.src = loc;
+    source.src = src;
     element.appendChild(source);
     showSubscriberImplStatus({
       getType: function() {
@@ -193,6 +223,18 @@
      */
     var streamName = streamData.name;
     baseConfiguration.streamName = streamName;
+
+    // Unless `view=rtmp` is set in the query params, default to MP4 playback if MP4 file.
+    if (targetViewTech !== 'rtmp') {
+      if (streamData.urls && streamData.urls.rtmp) {
+        if (streamData.urls.rtmp.indexOf('mp4') !== -1) {
+          useMP4Fallback(streamData.urls.rtmp);
+          return;
+        }
+      }
+    }
+
+    // Else, proceed to establish a Subscriber through the SDK.
     determineSubscriber(Object.keys(streamData.urls))
       .then(preview)
       .then(subscribe)
@@ -227,6 +269,7 @@
   function determineSubscriber (types) {
     console.log('[playback]:: Available types - ' + types + '.');
     return promisify(function (resolve, reject) {
+
       var subscriber = new red5pro.Red5ProSubscriber();
       subscriber.on('*', onSubscriberEvent);
 

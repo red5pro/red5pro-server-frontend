@@ -35,6 +35,7 @@
     "new": "gulp new",
     "start": "cd red5pro-server && ./red5.sh",
     "stop": "cd red5pro-server && ./red5-shutdown.sh",
+    "prebuild": "./scripts/license/inject-license.sh",
     "build": "gulp build",
     "launch": "gulp launch",
     "watch": "gulp deploy && gulp watch",
