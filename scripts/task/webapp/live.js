@@ -15,7 +15,9 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
 
   return function(initChain) {
 
-    gulp.task(generateTaskLabel, [initChain], function(cb) {
+    console.log('!!! init chain !!!')
+    console.log(initChain)
+    gulp.task(generateTaskLabel, gulp.series(initChain, function(cb) {
       gutil.log('Generating Webapps Page: ' + webappDirName);
       var buildPage = function(page, cb) {
         return function() {
@@ -28,8 +30,8 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
       var buildPlayback = buildPage('playback.jsp', buildBroadcaster);
       var buildTwoWay = buildPage('twoway.jsp', buildPlayback);
       Builder.generateIndexPage(buildTwoWay);
-    });
-    gulp.task(copyContentsTaskLabel, [generateTaskLabel], function(cb) {
+    }));
+    gulp.task(copyContentsTaskLabel, gulp.series(generateTaskLabel, function(cb) {
       Builder.copyWebappContents([
         'index.jsp',
         'broadcast.jsp',
@@ -37,10 +39,10 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
         'playback.jsp',
         'twoway.jsp'
       ], cb);
-    });
-    gulp.task(copyStaticTaskLabel, [copyContentsTaskLabel], function(cb) {
+    }));
+    gulp.task(copyStaticTaskLabel, gulp.series(copyContentsTaskLabel, function(cb) {
       Builder.copyStatic([], cb);
-    });
+    }));
 
     return [
       generateTaskLabel,
