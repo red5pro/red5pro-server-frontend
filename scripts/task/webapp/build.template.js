@@ -41,8 +41,8 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
      */
 
     return [
-      generateTaskLabel,
-      copyContentsTaskLabel,
+      //      generateTaskLabel,
+      //      copyContentsTaskLabel,
       copyStaticTaskLabel
       /* Add any additional task names with properly dependency chain defined. */
     ];
