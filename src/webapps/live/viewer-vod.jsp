@@ -101,6 +101,8 @@
         </style>
     </head>
     <body>
+    {{> top-bar }}
+    {{> navigation }}
     <template id="flash-playback">
       <object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">
         <param name="quality" value="high">

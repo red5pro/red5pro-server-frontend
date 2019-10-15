@@ -74,6 +74,8 @@
   </script>
   </head>
   <body>
+    {{> top-bar }}
+    {{> navigation }}
     {{> header }}
     <div class="container main-container clear-fix">
       <div id="menu-section">

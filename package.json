@@ -43,6 +43,7 @@
     "deploy:prod": "shipit production buildAndDeploy",
     "deploy:qa": "shipit staging buildAndDeploy",
     "deploy:feature": "shipit feature buildAndDeploy",
-    "reap": "node red5pro-frontendfile.js"
+    "reap": "node red5pro-frontendfile.js",
+    "postdeploy:local": "cp -R /Users/toddanderson/Desktop/red5pro-server-develop.b2375-feature/WEB-INF /Users/toddanderson/Desktop/red5pro-server-develop.b2753-feature/webapps/live && cp -R /Users/toddanderson/Desktop/red5pro-server-develop.b2375-feature/WEB-INF-ROOT /Users/toddanderson/Desktop/red5pro-server-develop.b2753-feature/webapps/root/WEB-INF"
   }
 }

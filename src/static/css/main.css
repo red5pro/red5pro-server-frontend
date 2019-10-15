@@ -49,8 +49,9 @@ body {
   font-family: 'Lato', 'Times New Roman';
   margin: 0;
   padding: 0;
-  line-height: 1.5;
-  font-size: 14px;
+  line-height: 1.5rem;
+  font-size: 16px;
+  font-weight: 400;
 }
 
 p {
@@ -84,15 +85,19 @@ hr.top-padded-rule {
 }
 
 .black-text {
-  color: #444;
+  color: #3b3b3b;
 }
 
 .red-text {
-  color: rgb(227, 25, 0);
+  color: #db1f26;
 }
 
 .white-text {
-  color: rgb(255, 255, 255);
+  color: #ffffff;
+}
+
+.blue-text {
+  color: #3580A2;
 }
 
 .small-font-size {
@@ -128,46 +133,36 @@ a.link:hover {
 }
 
 #header-field {
-  position: relative;
-  float: left;
-  margin-top: 16px;
 }
 
 #server-version-field {
-  background-color: #e3e3e3;
-  padding: 2px 22px;
 }
 
 #ip-field {
-  text-align: right;
-  color: rgb(255, 255, 255);
-  position: relative;
-  float: right;
-  margin-top: 0px;
 }
 
 #ip-overlay {
   position: absolute;
-  width: 230px;
+  width: 260px;
   right: 20px;
-  top: 80px;
-  background-color: rgb(239, 239, 239);
-  border: 1px solid #e3e3e3;
+  top: 140px;
+  background-color: #dbdbdb;
+  border: 1px solid #dbdbdb;
   border-radius: 4px;
-  box-shadow: 3px 3px 5px #e3e3e3;
+  box-shadow: 3px 3px 5px #3b3b3b;
   padding: 20px;
   z-index: 1000;
 }
 
 #ip-address-overlay {
   position: absolute;
-  width: 230px;
+  width: 260px;
   right: 20px;
-  top: 106px;
-  background-color: rgb(239, 239, 239);
-  border: 1px solid #e3e3e3;
+  top: 140px;
+  background-color: #dbdbdb;
+  border: 1px solid #dbdbdb;
   border-radius: 4px;
-  box-shadow: 3px 3px 5px #e3e3e3;
+  box-shadow: 3px 3px 5px #3b3b3b;
   padding: 20px;
   z-index: 1001;
 }
@@ -231,10 +226,14 @@ a.link:hover {
 }
 
 .header-bar {
-  background-color: #a8a8a8;
-  border-color: rgb(166, 168, 168);
-  padding: 12px 30px 12px 20px;
- }
+  width: 100%;
+  background-color: rgb(255, 255, 255);
+  color: rgb(59, 59, 59);
+  padding: 1.4rem 1.4rem 0.6rem 1.4rem;
+  border-bottom: 1px solid rgb(153, 153, 153);
+  border-top: 3px solid rgb(219, 31, 38);
+  overflow: auto;
+}
 
 .footer {
   background-color: #f7f7f7;
@@ -374,6 +373,15 @@ a.link:hover {
 
 .content-section-story {
   max-width: 560px;
+}
+
+@media (min-width: 768px) {
+  #header-field {
+    float: left;
+  }
+  #server-version-field {
+    float: right;
+  }
 }
 
 @media (min-width: 992px) {

@@ -161,6 +161,8 @@
     </script>
   </head>
   <body>
+    {{> top-bar }}
+    {{> navigation }}
     <template id="video-playback">
       <div id="video-container">
             <div id="video-holder">

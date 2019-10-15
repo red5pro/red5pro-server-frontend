@@ -173,6 +173,8 @@
       </style>
     </head>
     <body>
+      {{> top-bar }}
+      {{> navigation }}
       <div id="id-container" class="hidden"></div>
       <div id="video-container">
             <div id="video-holder">

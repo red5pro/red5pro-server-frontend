@@ -1,23 +1,26 @@
 <!-- view jsp_header for details on variables used. -->
-
 <!-- Display IP Address used through the page -->
 <div id="ip-field">
   <% if (ipExists) { %>
-    <p><span class="black-text">Your server IP address is:</span>&nbsp;&nbsp;<span id="ip-address-field" class="red-text medium-font-size"><%= ip %></span></p>
+    <p>
+      <span class="black-text">Your streaming host address is:</span>&nbsp;&nbsp;<span id="ip-address-field" class="red-text medium-font-size"><%= ip %></span>
+      <br/>
+      <span>
+        <a id="ip-overlay-button" class="blue-text small-font-size" href="#">Why would I need to know the host address?</a>
+      </span>
+    </p>
   <% } else { %>
-    <p><span class="black-text">Uh-Oh!!</span></p>
+    <p><span class="black-text">Could not determine host address.</span></p>
   <% } %>
-  <p><a id="ip-overlay-button" class="white-text" href="#">Why would I need to know the server IP address?</a></p>
-  <p><a id="ip-incorrect-button" class="black-text" href="#">Not the correct IP address?</a></p>
 </div>
 
 <!-- Overlay explaining what the IP Address is used for. -->
 <div id="ip-overlay" class="hidden">
-  <p class="overlay-close-button"><a id="ip-overlay-close" href="#" class="red-text">Close</a></p>
-  <p>This IP address needs to be provided to applications integrated with the Red5 Pro SDKs.</p>
+  <p class="overlay-close-button"><a href="#" class="red-text">Close</a></p>
+  <p>This host address needs to be provided to applications integrating with the Red5 Pro SDKs.</p>
   <p>If using the example projects from our <a id="header-github-link" class="link" href="http://github.com/red5pro" target="_blank">Github</a>, you will enter this IP into the <strong>Server</strong> input field of the Settings menu.</p>
   <hr>
-  <p class="top-nudge"><a id="ip-overlay-ip-incorrect-button" href="#" class="red-text">Not the correct IP address?</a></p>
+  <p class="top-nudge"><a id="ip-overlay-ip-incorrect-button" href="#" class="red-text">Not the correct host address?</a></p>
 </div>
 
 <!-- Overlay to allow User to update IP Address to be used. -->

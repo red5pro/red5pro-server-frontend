@@ -32,9 +32,9 @@ module.exports = function(distDir, deployWebappDir, deployLibDir, gulp) {
   }));
 
   gulp.task('deploy', gulp.series(
-                        'build',
-                        'clean-deploy',
-                        'copy-dist',
+    // 'build',
+    // 'clean-deploy',
+    // 'copy-dist',
                         'copy-libs'));
 
 };

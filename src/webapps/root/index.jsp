@@ -5,7 +5,7 @@
   <head>
     {{> head_meta }}
     {{> resources }}
-    <title>Welcome to the Red5 Pro Server!</title>
+    <title>dWelcome to the Red5 Pro Server!</title>
     <style>
       #main-page-subcontent {
           text-align: center;
@@ -39,6 +39,8 @@
     </style>
   </head>
   <body>
+    {{> top-bar }}
+    {{> navigation }}
     {{> header }}
     <div class="container main-container clear-fix">
       <div id="menu-section">
