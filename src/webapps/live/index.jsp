@@ -45,7 +45,7 @@
                </a>
             </p>
           </div>
-          <h2 class="tag-line">LIVE STREAMING FOR ANY SCREEN</h2>
+          <h1 class="tag-line">LIVE STREAMING FOR ANY SCREEN</h1>
         </div>
         <div id="live-page-subcontent" class="clear-fix">
           <div id="live-image-container">

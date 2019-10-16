@@ -69,14 +69,17 @@
         }
 
         #tablet-container {
-          width: 520px;
+          width: 100%;
+          max-width: 520px;
         }
 
         #features-container {
-          margin-left: 20px;
-          margin-top: 120px;
-          width: 460px;
+          margin-left: -1.5%;
+          margin-top: 21%;
+          width: 100%;
+          max-width: 520px;
         }
+
 
         #main-page-tablet-img {
           width: 100%;
