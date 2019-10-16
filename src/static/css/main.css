@@ -61,20 +61,17 @@ p {
 h1 {
   font-weight: 500;
   line-height: 1.2rem;
-  font-size: 42px;
   color: #3b3b3b;
   text-transform: uppercase;
 }
 
 h2 {
   font-weight: 400;
-  font-size: 35px;
   color: #3b3b3b;
   text-transform: uppercase;
 }
 
 h3 {
-  font-size: 24px;
   font-weight: 400;
   color: #db1f26;
   text-transform: uppercase;
@@ -82,6 +79,10 @@ h3 {
 
 hr.top-padded-rule {
   margin-top: 40px;
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #dbdbdb;
 }
 
 .left {
@@ -199,7 +200,6 @@ a.link:hover {
   border-color: #999999;
   text-align: center;
   padding-top: 20px;
-  padding-bottom: 10px;
 }
 
 .red5pro-logo-footer {
@@ -213,7 +213,18 @@ a.link:hover {
 }
 
 .footer-copyright {
-  margin-top: 0.8rem
+  background-color: #3b3b3b;
+  margin-top: 20px;
+  border-top: 3px solid #db1f26;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer-copyright-text {
+  color: #dbdbdb;
+  font-size: 14px;
+  align-self: flex-end;
 }
 
 #footer-email {
@@ -237,7 +248,7 @@ a.link:hover {
 .email-header {
   font-weight: 300;
   font-size: 24px;
-  font-family: 'Lato', sans-serif;
+  text-transform: uppercase;
 }
 
 /* MENU */
@@ -310,44 +321,12 @@ a.link:hover {
 
 /* /MENU */
 
-/*
-.container:before {
-  display: table;
-  content: " ";
-}
-
-.container:after {
-  clear: both;
-  display: table;
-  content: " ";
-}
-
-.container {
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-  margin-top: 20px
-}
-
-#content-section {
-  display: block;
-  position: relative;
-  float: left;
-  width: 75%;
-  margin-bottom: 60px;
-  padding-left: 20px;
-}
-
-.content-section-story {
-  max-width: 560px;
-}
-*/
-
 .main-container {
   display: flex;
   flex-direction: row;
   margin: 20px 40px 0 40px;
+  justify-content: center;
+  margin-bottom: 40px;
 }
 
 #menu-section {
@@ -357,15 +336,35 @@ a.link:hover {
   border-radius: 4px;
   max-width: 260px;
   height: 100%;
+  padding-bottom: 10px;
 }
 
 #content-section {
   order: 2;
   flex: 3;
   margin-left: 40px;
+  max-width: 900px;
+}
+
+#subcontent-section {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+#subcontent-section-text {
+  flex: 2;
+  min-width: 200px;
+}
+
+#subscontent-section-image {
+  flex: 3;
 }
 
 /* GENERIC */
+
+.no-break {
+  white-space: nowrap;
+}
 
 .hidden {
   display: none;
@@ -378,12 +377,9 @@ a.link:hover {
   vertical-align: middle;
   display: inline-block;
   height: auto;
-  max-width: 100%;
 }
 
 .heading-title {
-  font-size: 24px;
-  font-weight: 600;
   line-height: 1.5em;
 }
 
@@ -414,5 +410,10 @@ a.link:hover {
   #content-section {
     flex: 1;
     margin-left: 0;
+    margin-top: 20px;
+  }
+  .image-block {
+    margin-top: 20px;
+    width: 100%;
   }
 }
