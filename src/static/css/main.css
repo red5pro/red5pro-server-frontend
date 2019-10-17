@@ -60,21 +60,43 @@ p {
 
 h1 {
   font-weight: 500;
-  line-height: 1.2rem;
+  line-height: 1.5em;
   color: #3b3b3b;
   text-transform: uppercase;
 }
 
 h2 {
   font-weight: 400;
+  line-height: 1.5em;
   color: #3b3b3b;
   text-transform: uppercase;
 }
 
 h3 {
   font-weight: 400;
+  line-height: 1.5em;
   color: #db1f26;
   text-transform: uppercase;
+}
+
+input[type="text"] {
+  height: 1.5rem;
+  font-size: 1rem;
+  padding-left: 0.8rem;
+  -webkit-appearance: textfield;
+  background-color: #fff;
+}
+
+.form-button {
+  height: 1.5rem;
+  font-size: 0.8rem;
+}
+
+.warning {
+  display: block;
+  background-color: #db1f26;
+  color: #fff;
+  padding: 16px;
 }
 
 hr.top-padded-rule {
@@ -216,20 +238,21 @@ a.link:hover {
   background-color: #3b3b3b;
   margin-top: 20px;
   border-top: 3px solid #db1f26;
-  padding: 40px 20px;
-  display: flex;
-  justify-content: space-between;
+  padding: 20px;
 }
 
 .footer-copyright-text {
   color: #dbdbdb;
   font-size: 14px;
-  align-self: flex-end;
 }
 
 #footer-email {
   text-decoration: none;
   cursor: pointer;
+}
+
+#footer-email-lead {
+  padding-left: 32px;
 }
 
 #footer-email-lead:before {
@@ -379,6 +402,10 @@ a.link:hover {
   height: auto;
 }
 
+.bold {
+  font-weight: 700;
+}
+
 .heading-title {
   line-height: 1.5em;
 }
@@ -416,4 +443,7 @@ a.link:hover {
     margin-top: 20px;
     width: 100%;
   }
+  .email-header {
+    font-size: 18px;
+   }
 }

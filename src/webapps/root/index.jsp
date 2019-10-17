@@ -6,16 +6,6 @@
     {{> head_meta }}
     {{> resources }}
     <title>Welcome to the Red5 Pro Server!</title>
-    <style>
-/*
-        #main-page-subcontent {
-          text-align: center;
-          position: relative;
-          width: 100%;
-          overflow: hidden;
-        }
-*/
-    </style>
   </head>
   <body>
     {{> top-bar }}
@@ -43,7 +33,9 @@
             <p>Add live video, audio and data streaming to your app with just a few lines of code.</p>
             <p><a class="link" href="/live/broadcast.jsp?host=<%= ip %>">Start a Broadcast Now!</a></p>
             <hr class="top-padded-rule">
-            {{> applications }}
+            {{> web-applications }}
+            <hr class="top-padded-rule">
+            {{> mobile-applications }}
             <hr class="top-padded-rule">
             {{> additional_info }}
           </div>
