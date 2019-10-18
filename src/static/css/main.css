@@ -52,6 +52,7 @@ body {
   line-height: 1.5rem;
   font-size: 16px;
   font-weight: 400;
+  color: #3b3b3b;
 }
 
 p {
@@ -417,6 +418,10 @@ a.link:hover {
   font-size: 16px;
   font-weight: 700;
 }
+
+.broadcast-section {
+  display: flex;
+}
 /* /GENERIC */
 
 @media (min-width: 768px) {
@@ -430,6 +435,9 @@ a.link:hover {
 
 @media (max-width: 767px) {
   .main-container {
+    flex-direction: column;
+  }
+  .broadcast-section {
     flex-direction: column;
   }
   #menu-section {

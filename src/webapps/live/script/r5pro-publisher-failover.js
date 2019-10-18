@@ -265,14 +265,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   });
 
-  clearLogButton.addEventListener('click', function () {
+  clearLogButton.addEventListener('click', clearLog);
+
+  function clearLog () {
     while (eventLogField.children.length > 1) {
       eventLogField.removeChild(eventLogField.lastChild);
     }
-  });
+  }
 
   function onBitrateUpdate (bitrate, packets) {
-    statisticsField.innerText = 'Bitrate: ' + Math.floor(bitrate) + '. Packets Sent: ' + packets + '.';
+    statisticsField.classList.remove('hidden');
+    statisticsField.innerText = 'Bitrate: ' + Math.floor(bitrate) + '.   Packets Sent: ' + packets + '.';
   }
 
   function hasEstablishedPublisher () {
@@ -301,29 +304,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     p.appendChild(text);
     eventLogField.appendChild(p);
     return p;
-  }
-
-  function addObjectLog (object, offset) {
-    offset = offset || 10;
-    var p;
-    var c = addEventLog('{');
-    c.style.paddingLeft = offset + 'px';
-    Object.keys(object).forEach(function(key) {
-      if (typeof object[key] === 'undefined') {
-        return;
-      }
-      if (object[key].toString() === '[object Object]') {
-        p = addEventLog(key + ': ');
-        p.style.paddingLeft = (offset+10) + 'px';
-        addObjectLog(object[key], offset + 10);
-      }
-      else {
-        p = addEventLog(key + ': ' + object[key]);
-        p.style.paddingLeft = (offset+10) + 'px';
-      }
-    });
-    c = addEventLog('}');
-    c.style.paddingLeft = offset + 'px';
   }
 
   function showPublisherImplStatus (publisher) {
@@ -399,19 +379,20 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   function publish () {
-      var fn = function () {
-        startPublisher()
-      }
-      window.r5pro_isStreamManager()
-        .then(function () {
-          window.r5pro_requestOrigin('live', getStreamName())
-            .then(function (origin) {
-              updateConfigurationsForStreamManager(origin);
-              fn();
-            })
-            .catch(fn);
-        })
-        .catch(fn);
+    clearLog();
+    var fn = function () {
+      startPublisher()
+    }
+    window.r5pro_isStreamManager()
+      .then(function () {
+        window.r5pro_requestOrigin('live', getStreamName())
+          .then(function (origin) {
+            updateConfigurationsForStreamManager(origin);
+            fn();
+          })
+          .catch(fn);
+      })
+      .catch(fn);
   }
 
   function unpublish () {
@@ -449,7 +430,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   }
 
-  function startPublisher (resolve, reject) {
+  function startPublisher () {
 
     var onSuccess = function () {
       updateStartStopButtonState({
@@ -474,11 +455,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       streamMode: mode,
       streamName: streamName
     });
-    console.log('[live]:: Publish options:\r\n' + JSON.stringify(publisher._options, null, 2));
+    console.log('[live]:: Publish options:\r\n' + JSON.stringify(publisher.getOptions(), null, 2));
 
     showPublisherImplStatus(publisher);
-    addEventLog('[Red5ProPublisher] configuration ->');
-    addObjectLog(publisher.getOptions());
     publisher.on('*', onPublisherEvent);
     publisher.publish()
       .then(function () {
@@ -489,13 +468,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         }
         hideCameraSelect();
         onSuccess();
-        resolve();
       })
       .catch(function (error) {
         isPublishing = false;
         console.error('[live]:: Error in publish request: ' + error);
         onFailure();
-        reject(error);
       });
 
   }

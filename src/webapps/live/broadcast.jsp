@@ -66,16 +66,18 @@
         outline:none;
       }
 
+      #video-container, #event-container {
+        flex: 1;
+      }
+
       #video-container {
-        border-radius: 5px;
-        background-color: #e3e3e3;
-        padding: 10px;
+        background-color: #999999;
+        height: 100%;
       }
 
       #video-form {
-        background-color: #eee;
+        background-color: #dbdbdb;
         padding: 10px;
-        margin-bottom: 10px;
       }
 
       .video-form-item > label {
@@ -83,6 +85,11 @@
         margin-right: 10px;
         min-width: 120px;
         display: inline-block;
+        font-size: 14px;
+      }
+
+      #video-holder {
+        line-height: 0px;
       }
 
       #status-field {
@@ -94,9 +101,9 @@
 
       #statistics-field {
         text-align: center;
-        padding: 5px;
-        color: #000
-        margin: 10px 0;
+        padding: 10px;
+        background-color: #3b3b3b;
+        color: #dbdbdb;
       }
 
       .status-alert {
@@ -108,10 +115,10 @@
       }
 
       #start-stop-button {
-        font-size: 16px;
-        background-color: #efefef;
+        color: #ffffff;
+        background-color: #3580A2;
         text-align: center;
-        border-radius: 5px;
+        border-radius: 0px;
         padding: 10px;
       }
 
@@ -120,16 +127,8 @@
       }
 
       .button-disabled {
-        color: gray;
+        opacity: 0.5;
         pointer-events: none;
-      }
-
-      #live-page-subcontent {
-        text-align: center;
-        position: relative;
-        width: 100%;
-        height: 230px;
-        overflow: hidden;
       }
 
       #event-log-field {
@@ -142,12 +141,13 @@
       .notify-callout {
         margin: 0px;
         padding: 26px 26px;
-        background-color: #eeeeee
+        background-color: #dbdbdb
       }
 
       .video-element {
         width: 100%;
       }
+
     </style>
   </head>
   <body>
@@ -162,7 +162,13 @@
         <div id="subcontent-section">
           <div id="subcontent-section-text">
             <h1 class="red-text">Live Broadcast For Any Screen</h1>
-            <p class="heading-title">To start a Broadcast session, allow device access, provide a <span class="bold">Stream Name</span>, select any additional broadcast options, then click <span class="bold">Start Broadcast.</span>
+            <p class="heading-title">To start a Broadcast: 
+              <ol>
+                <li>Allow browser access to device(s)</li>
+                <li>Provide a <span class="bold">Stream Name</span></li>
+                <li>Select any additional broadcast options</li>
+                <li>Click <span class="bold">Start Broadcast</span></li>
+              </ol>
             </p>
           </div>
           <div id="subcontent-section-image">
@@ -171,36 +177,40 @@
         </div>
         <hr class="top-padded-rule">
         <div class="content-section-story">
-                <p class="notify-callout">Select <strong>Enable Recording</strong> to save your broadcast for Video on Demand playback!<br/><span class="small-font-size">To view the current Video On Demand (VOD) files on your server, visit the <a class="link" href="playback.jsp" target="_blank">Playback</a> page.</span></p>
-          <hr />
-          <div id="video-container">
-            <div id="video-form">
-              <p class="video-form-item">
-                <label for="stream-name-field">Stream Name:</label>
-                <input name="stream-name-field" id="stream-name-field"></input>
-              </p>
-              <p class="video-form-item">
-                <label for="enable-record-field">Enable Recording:</label>
-                <input type="checkbox" name="enable-record-field" id="enable-record-field"></input>
-              </p>
-              <p class="video-form-item hidden">
-                <label for="camera-select">Select Camera:</label>
-                <select name="camera-select" id="camera-select-field"></select>
-              </p>
+          <p class="notify-callout">Select <strong>Enable Recording</strong> to save your broadcast for Video on Demand playback!<br/><span class="small-font-size">To view the current Video On Demand (VOD) files on your server, visit the <a class="link" href="playback.jsp" target="_blank">Playback</a> page.</span></p>
+          <hr class="top-padded-rule" style="margin-top: 0">
+          <div class="broadcast-section">
+            <div id="video-container">
+              <div id="video-form">
+                <p class="video-form-item">
+                  <label for="stream-name-field">Stream Name:</label>
+                  <input name="stream-name-field" id="stream-name-field"></input>
+                </p>
+                <p class="video-form-item">
+                  <label for="enable-record-field">Enable Recording:</label>
+                  <input type="checkbox" name="enable-record-field" id="enable-record-field"></input>
+                </p>
+                <p class="video-form-item hidden">
+                  <label for="camera-select">Select Camera:</label>
+                  <select name="camera-select" id="camera-select-field"></select>
+                </p>
+              </div>
+              <div id="statistics-field" class="statistics-field hidden"></div>
+              <div id="video-holder">
+                <video id="red5pro-publisher"
+                        controls muted autoplay playsinline
+                        class="video-element">
+                </video>
+              </div>
+              <div id="start-stop-button" class="button-disabled">Start Broadcast</div>
             </div>
-            <div id="statistics-field" class="statistics-field"></div>
-            <div id="video-holder">
-              <video id="red5pro-publisher"
-                      controls muted autoplay playsinline
-                      class="video-element">
-              </video>
-            </div>
-            <div id="status-field" class="status-message"></div>
-            <div id="start-stop-button" class="button-disabled">Start Broadcast</div>
-            <div id="event-log-field" class="event-log-field">
-              <div style="padding: 10px 0">
-                <p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>
-                <div style="clear: both;"></div>
+            <div id="event-container">
+              <div id="status-field" class="status-message"></div>
+              <div id="event-log-field" class="event-log-field">
+                <div style="padding: 10px 0">
+                  <p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>
+                  <div style="clear: both;"></div>
+                </div>
               </div>
             </div>
           </div>
