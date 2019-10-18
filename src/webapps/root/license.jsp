@@ -83,7 +83,6 @@
             <h1 class="red-text">Red5 Pro License Check</h1>
           <% if (keyFileExists) { %>
             <p class="bold">Your Red5 Pro Server is licensed.</p>
-            <p>If you are experiencing issues, <a class="link" href="https://red5pro.zendesk.com/?origin=webapps" target="_blank">please contact support.</a></p>
           <% } else { %>
             <hr class="top-padded-rule">
             <p class="bold">If you are seeing this form, then your Red5 Pro Server is not yet licensed.</p>
@@ -97,9 +96,10 @@
                 <br />
                 <p class="warning"><%= errMessage %></p>
               <% } %>
-              <hr class="top-padded-rule">
             </div>
           <% } %>
+            <hr class="top-padded-rule">
+            <p>If you are experiencing issues, <a class="link" href="https://red5pro.zendesk.com/?origin=webapps" target="_blank">please contact support.</a></p>
           </div>
         </div>
       </div>

@@ -576,10 +576,21 @@
 <script>
 // SmartMenus init
 $(function() {
-  $('#main-menu').smartmenus({
-    subMenusSubOffsetX: 1,
-    subMenusSubOffsetY: -8
-  });
+  var init = function () {
+    if ($().smartmenus) {
+      $('#main-menu').smartmenus({
+        subMenusSubOffsetX: 1,
+        subMenusSubOffsetY: -8
+      });
+    } else {
+      var t = setTimeout(function () {
+        clearTimeout(t);
+        init();
+      }, 500);
+    }
+  }
+
+  init();
 });
 
 // SmartMenus mobile menu toggle button

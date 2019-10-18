@@ -128,7 +128,7 @@ hr.top-padded-rule {
 }
 
 .small-font-size {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .medium-font-size {
@@ -163,7 +163,6 @@ a.link:hover {
 .header-bar {
   width: 100%;
   background-color: #ffffff;
-  color: #dbdbdb;
   padding: 20px 40px 10px 40px;
   border-bottom: 1px solid #dbdbdb;
   border-top: 3px solid #db1F26;
@@ -181,6 +180,7 @@ a.link:hover {
   box-shadow: 3px 3px 5px #3b3b3b;
   padding: 20px;
   z-index: 1000;
+  font-size: 14px;
 }
 
 #ip-address-overlay {
@@ -194,6 +194,7 @@ a.link:hover {
   box-shadow: 3px 3px 5px #3b3b3b;
   padding: 20px;
   z-index: 1001;
+  font-size: 14px;
 }
 
 .overlay-close-button {
@@ -372,11 +373,13 @@ a.link:hover {
 #subcontent-section {
   display: flex;
   flex-flow: row wrap;
+  align-items: center;
 }
 
 #subcontent-section-text {
   flex: 2;
   min-width: 200px;
+  align-self: flex-start;
 }
 
 #subscontent-section-image {

@@ -56,18 +56,14 @@
   <head>
     {{> head_meta }}
     {{> resources }}
-    <title>Stream Broadcasting with the Red5 Pro Server!</title>
+    <title>Stream Broadcasting with the Red5 Pro Server</title>
     <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
+    <script src="lib/jquery-1.12.4.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css"></script>
     <style>
       object:focus {
         outline:none;
-      }
-
-      .hidden {
-        display: none;
-        visibility: hidden;
       }
 
       #video-container {
@@ -136,18 +132,6 @@
         overflow: hidden;
       }
 
-      #live-container {
-        position: absolute;
-      }
-
-      #live-image-container {
-        width: 540px;
-      }
-
-      #live-page-img {
-        width: 100%;
-      }
-
       #event-log-field {
         background-color: #c0c0c0;
         border-radius: 6px;
@@ -170,46 +154,39 @@
     {{> top-bar }}
     {{> navigation }}
     {{> header }}
-    <div class="container main-container clear-fix">
+    <div class="main-container">
       <div id="menu-section">
         {{> menu }}
       </div>
       <div id="content-section">
-        <div>
-          <div class="clear-fix">
-            <p class="left">
-                <a class="red5pro-header-link" href="/">
-                  <img class="red5pro-logo-page" src="images/red5pro_logo.svg">
-               </a>
+        <div id="subcontent-section">
+          <div id="subcontent-section-text">
+            <h1 class="red-text">Live Broadcast For Any Screen</h1>
+            <p class="heading-title">To start a Broadcast session, allow device access, provide a <span class="bold">Stream Name</span>, select any additional broadcast options, then click <span class="bold">Start Broadcast.</span>
             </p>
           </div>
-          <h2 class="tag-line">LIVE BROADCAST FOR ANY SCREEN</h2>
-        </div>
-        <div id="live-page-subcontent" class="clear-fix">
-          <div id="live-image-container">
-            <img id="live-page-img" src="images/red5pro_live_broadcast.png">
+          <div id="subcontent-section-image">
+            <img class="image-block" width="380" id="live-page-img" src="images/red5pro_live_broadcast.png">
           </div>
         </div>
+        <hr class="top-padded-rule">
         <div class="content-section-story">
-          <p>To start a Broadcast session, allow device access, provide a <strong>stream name</strong>, select any additional broadcast options, then click <strong>Start Broadcast.</strong>
-          </p>
-          <hr />
-          <p class="notify-callout">You can also select to <strong>Enable Recording</strong> the live stream for Video On Demand playback after the Broadcast session! To view the current Video On Demand (VOD) files on your server, visit the <a class="link" href="playback.jsp" target="_blank">Playback</a> page.</p>
+                <p class="notify-callout">Select <strong>Enable Recording</strong> to save your broadcast for Video on Demand playback!<br/><span class="small-font-size">To view the current Video On Demand (VOD) files on your server, visit the <a class="link" href="playback.jsp" target="_blank">Playback</a> page.</span></p>
           <hr />
           <div id="video-container">
             <div id="video-form">
-                    <p class="video-form-item">
-                      <label for="stream-name-field">Stream Name:</label>
-                      <input name="stream-name-field" id="stream-name-field"></input>
-                    </p>
-                    <p class="video-form-item">
-                      <label for="enable-record-field">Enable Recording:</label>
-                      <input type="checkbox" name="enable-record-field" id="enable-record-field"></input>
-                    </p>
-                    <p class="video-form-item hidden">
-                      <label for="camera-select">Select Camera:</label>
-                      <select name="camera-select" id="camera-select-field"></select>
-                    </p>
+              <p class="video-form-item">
+                <label for="stream-name-field">Stream Name:</label>
+                <input name="stream-name-field" id="stream-name-field"></input>
+              </p>
+              <p class="video-form-item">
+                <label for="enable-record-field">Enable Recording:</label>
+                <input type="checkbox" name="enable-record-field" id="enable-record-field"></input>
+              </p>
+              <p class="video-form-item hidden">
+                <label for="camera-select">Select Camera:</label>
+                <select name="camera-select" id="camera-select-field"></select>
+              </p>
             </div>
             <div id="statistics-field" class="statistics-field"></div>
             <div id="video-holder">
@@ -228,10 +205,6 @@
             </div>
           </div>
           <hr class="top-padded-rule" />
-          <h3><a class="link" href="https://www.red5pro.com/docs/streaming/" target="_blank">Streaming SDKs</a></h3>
-          <p>You can download the Streaming SDKs from your <a class="link" href="http://account.red5pro.com/download" target="_blank">Red5 Pro Accounts</a> page.</p>
-          <p>Please visit the online <a class="link" href="https://www.red5pro.com/docs/streaming/" target="_blank">Red5 Pro Documentation</a> for further information about integrating the streaming SDKs into your own native application!</p>
-          <hr class="top-padded-rule" />
           {{> web-applications }}
           <hr class="top-padded-rule">
           {{> mobile-applications }}
@@ -241,7 +214,6 @@
       </div>
     </div>
     {{> es6-script-includes }}
-    <script src="lib/jquery-1.12.4.min.js"></script>
     <script src="script/r5pro-ice-utils.js"></script>
     <script>
       function assignIfDefined (value, prop) {
@@ -264,7 +236,8 @@
     </script>
     <script src="lib/red5pro/red5pro-sdk.min.js"></script>
     <script src="script/r5pro-utils.js"></script>
-   <script src="script/r5pro-publisher-failover.js"></script>
+    <script src="script/r5pro-sm-utils.js"></script>
+    <script src="script/r5pro-publisher-failover.js"></script>
     {{> footer }}
    </body>
 </html>

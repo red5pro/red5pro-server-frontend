@@ -23,8 +23,21 @@ NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM,
 WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-(function (window) {
+/*global window, $ */
+(function (window, Promise, $) {
   'use strict';
+
+  // If Promise or the Promise polyfill fails (thanks IE!), use jQuery.
+  window.promisify = function(fn) {
+    if (window.Promise) {
+      return new window.Promise(fn);
+    }
+    var d = new $.Deferred();
+    fn(d.resolve, d.reject);
+    var promise = d.promise();
+    promise.catch = promise.fail;
+    return promise;
+  }
 
   var bitrateInterval = 0;
 
@@ -97,4 +110,4 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     clearInterval(bitrateInterval);
   }
 
-})(this);
+})(window, window.Promise, $);

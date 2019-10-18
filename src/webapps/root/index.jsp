@@ -5,7 +5,7 @@
   <head>
     {{> head_meta }}
     {{> resources }}
-    <title>Welcome to the Red5 Pro Server!</title>
+    <title>Welcome to the Red5 Pro Server</title>
   </head>
   <body>
     {{> top-bar }}

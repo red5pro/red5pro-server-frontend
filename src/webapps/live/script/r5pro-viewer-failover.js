@@ -23,8 +23,8 @@ NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM,
 WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* global document, Promise, $ */
-(function (window, document, red5pro) {
+/* global window, document */
+(function (window, document, promisify, red5pro) {
   'use strict';
 
   red5pro.setLogLevel('debug');
@@ -191,17 +191,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   }
 
-  function promisify (fn) {
-    if (window.Promise) {
-      return new Promise(fn);
-    }
-    var d = new $.Deferred();
-    fn(d.resolve, d.reject);
-    var promise = d.promise();
-    promise.catch = promise.fail;
-    return promise;
-  }
-
   function determineSubscriber () {
     return promisify(function (resolve, reject) {
       var subscriber = new red5pro.Red5ProSubscriber();
@@ -327,5 +316,5 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     console.log('[RTMP SUBSCRIBER]:: ' + message);
   };
 
-})(this, document, this.red5prosdk);
+})(window, document, window.promisify, window.red5prosdk);
 
