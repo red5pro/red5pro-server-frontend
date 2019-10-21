@@ -75,6 +75,12 @@
         height: 100%;
       }
 
+      #event-container {
+        margin-left: 10px;
+        height: 100%;
+        border: #3b3b3b solid 1px;
+      }
+
       #video-form {
         background-color: #dbdbdb;
         padding: 10px;
@@ -96,7 +102,7 @@
         text-align: center;
         padding: 10px;
         color: #fff;
-        margin: 10px 0;
+        background-color: #999;
       }
 
       #statistics-field {
@@ -104,14 +110,6 @@
         padding: 10px;
         background-color: #3b3b3b;
         color: #dbdbdb;
-      }
-
-      .status-alert {
-        background-color: rgb(227, 25, 0);
-      }
-
-      .status-message {
-        background-color: #aaa;
       }
 
       #start-stop-button {
@@ -132,10 +130,7 @@
       }
 
       #event-log-field {
-        background-color: #c0c0c0;
-        border-radius: 6px;
         padding: 10px;
-        margin: 14px;
       }
 
       .notify-callout {
@@ -146,6 +141,25 @@
 
       .video-element {
         width: 100%;
+      }
+
+      .event-header {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .event-hr {
+        display: block;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid #dbdbdb;
+      }
+
+      @media (max-width: 767px) {
+        #event-container {
+          margin-left: 0;
+          margin-top: 20px;
+        }
       }
 
     </style>
@@ -207,9 +221,12 @@
             <div id="event-container">
               <div id="status-field" class="status-message"></div>
               <div id="event-log-field" class="event-log-field">
-                <div style="padding: 10px 0">
-                  <p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>
-                  <div style="clear: both;"></div>
+                <div>
+                  <div class="event-header">
+                    <span>Event Log:</span>
+                    <button id="clear-log-button">clear</button>
+                  </div>
+                  <hr class="event-hr">
                 </div>
               </div>
             </div>

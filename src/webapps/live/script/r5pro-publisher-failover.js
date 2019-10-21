@@ -134,7 +134,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     protocol: 'rtmp',
     port: 1935,
     embedWidth: '100%',
-    embedHeight: 405,
+    embedHeight: 360,
     backgroundColor: '#000000',
     swf: 'lib/red5pro/red5pro-publisher.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
