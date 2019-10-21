@@ -1,7 +1,7 @@
 {
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
-    "branch": "master"
+    "branch": "bug/handling_invalid_sm_response_RPRO-6913"
   },
   "r5pro-api": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-api.git",
@@ -13,6 +13,6 @@
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "master"
+    "branch": "bug/handling_invalid_sm_response_RPRO-6913"
   }
 }
