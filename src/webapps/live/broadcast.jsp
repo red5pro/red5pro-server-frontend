@@ -105,6 +105,11 @@
         background-color: #999;
       }
 
+      #stream-manager-info {
+        padding: 10px;
+        background-color: #dbdbdb;
+      }
+
       #statistics-field {
         text-align: center;
         padding: 10px;
@@ -220,6 +225,7 @@
             </div>
             <div id="event-container">
               <div id="status-field" class="status-message"></div>
+              <div id="stream-manager-info" class="status-message hidden">Using Stream Manager Proxy.</div>
               <div id="event-log-field" class="event-log-field">
                 <div>
                   <div class="event-header">

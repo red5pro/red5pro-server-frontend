@@ -63,6 +63,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var streamNameField = document.getElementById('stream-name-field');
   var enableRecordField = document.getElementById('enable-record-field');
   var statusField = document.getElementById('status-field');
+  var streamManagerInfo = document.getElementById('stream-manager-info');
   var statisticsField = document.getElementById('statistics-field');
   var eventLogField = document.getElementById('event-log-field');
   var clearLogButton = document.getElementById('clear-log-button');
@@ -388,6 +389,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         window.r5pro_requestOrigin('live', getStreamName())
           .then(function (origin) {
             updateConfigurationsForStreamManager(origin);
+            streamManagerInfo.classList.remove('hidden');
+            streamManagerInfo.innerText = 'Using Stream Manager Origin at: ' + origin.serverAddress + '.';
             fn();
           })
           .catch(fn);
