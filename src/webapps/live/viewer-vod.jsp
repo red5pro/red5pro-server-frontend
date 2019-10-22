@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+{{> jsp_header }}
 <%
     String app = "live";
     String host="127.0.0.1";
@@ -37,21 +37,16 @@
 {{> license}}
 <html lang="eng">
     <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Welcome to the Red5 Pro Server Pages!">
-        <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/modal.css">
-        <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
-        <title>VOD Playback of <%= stream %></title>
-    <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
-    <script src="//unpkg.com/video.js/dist/video.js"></script>
-    <script src="//unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
-    <script src="//unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
-    <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
-    <script src="lib/screenfull/screenfull.min.js"></script>
-    <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
+      {{> head_meta }}
+      {{> resources }}
+      <title>VOD Playback of <%= stream %></title>
+      <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
+      <script src="//unpkg.com/video.js/dist/video.js"></script>
+      <script src="//unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+      <script src="//unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
+      <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
+      <script src="lib/screenfull/screenfull.min.js"></script>
+      <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
         <style>
           object:focus {
             outline:none;
@@ -101,18 +96,19 @@
         </style>
     </head>
     <body>
-    {{> top-bar }}
-    {{> navigation }}
-    <template id="flash-playback">
-      <object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">
-        <param name="quality" value="high">
-        <param name="wmode" value="opaque">
-        <param name="bgcolor" value="#000000">
-        <param name="allowscriptaccess" value="always">
-        <param name="allowfullscreen" value="true">
-        <param name="allownetworking" value="all">
-      </object>
-    </template>
+      {{> top-bar }}
+      {{> navigation }}
+      {{> header }}
+      <template id="flash-playback">
+        <object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">
+          <param name="quality" value="high">
+          <param name="wmode" value="opaque">
+          <param name="bgcolor" value="#000000">
+          <param name="allowscriptaccess" value="always">
+          <param name="allowfullscreen" value="true">
+          <param name="allownetworking" value="all">
+        </object>
+      </template>
       <div id="video-container">
             <div id="video-holder">
               <video id="red5pro-subscriber"
@@ -128,16 +124,9 @@
               </div>
             </div>
       </div>
-      <script src="lib/es6/es6-array.js"></script>
-      <script src="lib/es6/es6-bind.js"></script>
-      <script src="lib/es6/es6-fetch.js"></script>
-      <script src="lib/es6/es6-object-assign.js"></script>
-      <script src="lib/es6/es6-promise.min.js"></script>
-      <script src="lib/jquery-1.12.4.min.js"></script>
-      <script src="lib/red5pro/red5pro-sdk.min.js"></script>
-      <script src="script/r5pro-autoplay-utils.js"></script>
+      {{> es6-script-includes }}
       <script src="script/r5pro-ice-utils.js"></script>
-        <script>
+      <script>
           // Access selected data from the `opener` window.
           var opener = window.opener;
           if (opener) {
@@ -162,7 +151,11 @@
           if (viewTech && viewTech !== 'null') {
             window.r5proViewTech = viewTech;
           }
-        </script>
+      </script>
+      <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+      <script src="script/r5pro-utils.js"></script>
+      <script src="script/r5pro-sm-utils.js"></script>
+      <script src="script/r5pro-autoplay-utils.js"></script>
       <script src="script/r5pro-viewer-vod-failover.js"></script>
     </body>
 </html>

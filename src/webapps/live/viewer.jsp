@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8"%>
+{{> jsp_header }}
 <%
     String app = "live";
     String ice = null;
@@ -78,13 +78,8 @@
 {{> license}}
 <html lang="eng">
     <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Welcome to the Red5 Pro Server Pages!">
-        <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/modal.css">
-        <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
+      {{> head_meta }}
+      {{> resources }}
         <title>Subscribing to <%= stream %></title>
       <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
       <script src="lib/screenfull/screenfull.min.js"></script>
@@ -105,8 +100,7 @@
           }
 
           #video-container {
-            border-radius: 5px;
-            background-color: #e3e3e3;
+            background-color: #dbdbdb;
             padding: 10px;
           }
 
@@ -175,6 +169,7 @@
     <body>
       {{> top-bar }}
       {{> navigation }}
+      {{> header }}
       <div id="id-container" class="hidden"></div>
       <div id="video-container">
             <div id="video-holder">
@@ -206,16 +201,8 @@
               </div>
             </div>
       </div>
-      <script src="lib/es6/es6-array.js"></script>
-      <script src="lib/es6/es6-bind.js"></script>
-      <script src="lib/es6/es6-fetch.js"></script>
-      <script src="lib/es6/es6-object-assign.js"></script>
-      <script src="lib/es6/es6-promise.min.js"></script>
-      <script src="lib/jquery-1.12.4.min.js"></script>
-      <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+      {{> es6-script-includes }}
       <script src="script/r5pro-ice-utils.js"></script>
-      <script src="script/r5pro-utils.js"></script>
-      <script src="script/r5pro-autoplay-utils.js"></script>
       <script>
           // writing params to global.
           window.targetHost = "<%=host%>";
@@ -248,6 +235,10 @@
               document.head.appendChild(script);
           }
         </script>
+      <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+      <script src="script/r5pro-utils.js"></script>
+      <script src="script/r5pro-sm-utils.js"></script>
+      <script src="script/r5pro-autoplay-utils.js"></script>
       <script src="script/r5pro-viewer-failover.js"></script>
     </body>
 </html>

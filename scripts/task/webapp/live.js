@@ -29,7 +29,8 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
       var buildBroadcaster = buildPage('broadcast.jsp', buildSubscriber);
       var buildPlayback = buildPage('playback.jsp', buildBroadcaster);
       var buildTwoWay = buildPage('twoway.jsp', buildPlayback);
-      Builder.generateIndexPage(buildTwoWay);
+      var buildViewer = buildPage('viewer.jsp', buildTwoWay);
+      Builder.generateIndexPage(buildViewer);
     }));
     gulp.task(copyContentsTaskLabel, gulp.series(generateTaskLabel, function(cb) {
       Builder.copyWebappContents([
@@ -37,7 +38,8 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
         'broadcast.jsp',
         'subscribe.jsp',
         'playback.jsp',
-        'twoway.jsp'
+        'twoway.jsp',
+        'viewer.jsp'
       ], cb);
     }));
     gulp.task(copyStaticTaskLabel, gulp.series(copyContentsTaskLabel, function(cb) {
