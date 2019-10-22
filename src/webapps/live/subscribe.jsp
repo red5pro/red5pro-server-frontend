@@ -75,7 +75,6 @@
     <title>Stream Subscription with the Red5 Pro Server</title>
     <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
-    <script src="lib/jquery-1.12.4.min.js"></script>
     <link rel="stylesheet" href="lib/red5pro/red5pro-media.css"></script>
     <style>
       object:focus {
@@ -225,11 +224,10 @@
     </script>
   </head>
   <body>
-    {{> top-bar }}
-    {{> navigation }}
     <template id="video-playback">
       <div class="broadcast-section">
         <div id="video-container">
+          <div id="statistics-field" class="statistics-field hidden"></div>
           <div id="video-holder">
             <video id="red5pro-subscriber"
                     controls autoplay playsinline
@@ -252,6 +250,8 @@
         </div>
       </div>
     </template>
+    {{> top-bar }}
+    {{> navigation }}
     {{> header }}
     <div class="main-container">
       <div id="menu-section">

@@ -576,17 +576,22 @@
 <script>
 // SmartMenus init
 $(function() {
+  var retry = function () {
+    var t = setTimeout(function () {
+      clearTimeout(t);
+      init();
+    }, 500);
+  }
   var init = function () {
-    if ($().smartmenus) {
-      $('#main-menu').smartmenus({
+    if (!$ && !window.jQuery) {
+      retry();
+    } else if ((window.jQuery && window.jQuery().smartmenus) || ($ && $().smartmenus)) {
+      ($ || jQuery)('#main-menu').smartmenus({
         subMenusSubOffsetX: 1,
         subMenusSubOffsetY: -8
       });
     } else {
-      var t = setTimeout(function () {
-        clearTimeout(t);
-        init();
-      }, 500);
+      retry();
     }
   }
 

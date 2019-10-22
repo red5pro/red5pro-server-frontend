@@ -32,6 +32,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   // For IE support.
   var templateHTML = '<div class="broadcast-section">' +
         '<div id="video-container">' +
+          '<div id="statistics-field" class="statistics-field hidden"></div>' +
           '<div id="video-holder">' +
             '<video id="red5pro-subscriber" controls autoplay playsinline class="red5pro-media red5pro-media-background">' +
             '</video>' +
@@ -166,12 +167,27 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   function onSubscribeStart (subscriber) {
     console.log('[subscriber]:: Subscriber started - ' + subscriber.getType());
+    if (subscriber.getType().toLowerCase() === 'rtc') {
+      try {
+        var $parentContainer = $('li[data-active="true"]');
+        if ($parentContainer && $parentContainer.length === 0) return;
+        var $reportField = $parentContainer.find('#statistics-field');
+        // eslint-disable-next-line no-unused-vars
+        window.trackBitrate(subscriber.getPeerConnection(), function (type, report, bitrate, packetsLastSent) {
+          if (type === 'video') {
+            var video = $parentContainer.find('#red5pro-subscriber').get(0);
+            $reportField.get(0).classList.remove('hidden');
+            $reportField.text('Bitrate: ' + Math.floor(bitrate) + '. ' + video.videoWidth + 'x' + video.videoHeight + '.');
+          }
+        });
+      } catch (e) { /* nada */ }
+    }
   }
 
   function onSubscriberEvent (event) {
     var eventLog = '[Red5ProSubscriber] ' + event.type + '.';
-    console.log(eventLog);
     if (event.type !== 'Subscribe.Time.Update') {
+      console.log(eventLog);
       addEventLogToField(document.getElementById('event-log-field'), eventLog);
     }
     if (event.type === 'Subscriber.Connection.Closed') {
@@ -235,9 +251,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         openLink.text('Close');
       }
     }
-    var clearLogButton = document.getElementById('clear-log-button');
-    var eventLogField = document.getElementById('event-log-field');
-    if (clearLogButton) {
+    var clearLogButton = parentContainer.find('#clear-log-button').get(0);
+    var eventLogField = parentContainer.find('#event-log-field').get(0)
+    if (clearLogButton && eventLogField) {
       clearLogButton.addEventListener('click', function () {
         while (eventLogField.children.length > 1) {
           eventLogField.removeChild(eventLogField.lastChild);
@@ -354,6 +370,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   function unsubscribe () {
+    window.untrackBitrate();
     return promisify(function (resolve, reject) {
       if (hasEstablishedSubscriber()) {
         subscriber.unsubscribe()
