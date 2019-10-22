@@ -381,9 +381,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   function publish () {
     clearLog();
-    var fn = function () {
-      startPublisher()
-    }
+    var fn = startPublisher;
     window.r5pro_isStreamManager()
       .then(function () {
         window.r5pro_requestOrigin('live', getStreamName())

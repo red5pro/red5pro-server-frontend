@@ -41,40 +41,29 @@
 
   StringBuffer ret = new StringBuffer();
   String baseUrl = protocol + "://" + ip + ":" + port;
-  if(names.size() == 0) {
-    ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
-    ret.append("<h3 class=\"no-streams-entry\">No streams found</h3>\r\n");
-    ret.append("</div>\r\n");
-    ret.append("<p>You can begin a Broadcast session by visiting the <a class=\"broadcast-link link\" href=\"broadcast.jsp?host=" + ip + "\" target=\"_blank\">Broadcast page</a>.</p>\r\n");
-    ret.append("<p><em>Once a Broadcast session is started, return to this page to see the stream name listed.</em></p>");
-  }
-  else {
-    ret.append("<div class=\"menu-content streaming-menu-content\">\r\n");
+  if(names.size() > 0) {
     ret.append("<ul class=\"stream-menu-listing\">\r\n");
     for(String streamName:names) {
       String rtspLocation = "rtsp://" + ip + ":8554/live/" + streamName;
-      String hlsLocation =  baseUrl + "/live/" + streamName + ".m3u8";
+      String streamLocation =  baseUrl + "/live/" + streamName;
+      String hlsLocation =  streamLocation + ".m3u8";
       String pageLocation = baseUrl + "/live/viewer.jsp?host=" + ip + "&stream=" + streamName;
       if (tech != null) {
         pageLocation += "&view=" + tech;
       }
       String listEntry = "<li data-stream=\"" + streamName + "\" class=\"stream-listing\">\r\n" +
-        "<h2 class=\"stream-header\">" + streamName + "</h2>\r\n" +
+        "<div>\r\n" +
+          "<h2 class=\"stream-header\">" + streamName + "</h2>\r\n" +
+          "<a class=\"medium-font-size subscriber-link link red-text\" style=\"cursor: pointer; text-decoration: underline;\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">View</a>\r\n" +
+          "<hr class=\"stream-rule\" />\r\n" +
           "<p>\r\n" +
-            "<a class=\"medium-font-size subscriber-link link red-text\" style=\"cursor: pointer;\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">\r\n" +
-              "View <strong>" + streamName + "</strong>'s stream on this page." +
-            "</a>\r\n" +
+            "<a class=\"link red-text\" href=\"" + pageLocation + "\" target=\"_blank\">" + streamLocation + "</a></span>\r\n" +
           "</p>\r\n" +
-          "<hr>\r\n" +
-          "<p>\r\n" +
-            "<span class=\"black-text\">Open in another window: <a class=\"subscriber-link link red-text\" href=\"" + pageLocation + "\" target=\"_blank\">" + pageLocation + "</a></span>\r\n" +
-          "</p>\r\n" +
+        "</div>\r\n" +
        "</li>\r\n";
       ret.append(listEntry);
     }
     ret.append("</ul>\r\n");
-    ret.append("</div>\r\n");
-    ret.append("<p>To begin your own Broadcast session, visit the <a class=\"broadcast-link link\" href=\"broadcast.jsp?host=" + ip + "\">Broadcast page</a>!</p>\r\n");
   }
 %>
 <!doctype html>
@@ -83,30 +72,23 @@
   <head>
     {{> head_meta }}
     {{> resources }}
-    <title>Stream Subscription with the Red5 Pro Server!</title>
+    <title>Stream Subscription with the Red5 Pro Server</title>
+    <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
+    <script src="lib/screenfull/screenfull.min.js"></script>
+    <script src="lib/jquery-1.12.4.min.js"></script>
+    <link rel="stylesheet" href="lib/red5pro/red5pro-media.css"></script>
     <style>
       object:focus {
         outline:none;
       }
 
-      #live-page-subcontent {
-        text-align: center;
-        position: relative;
-        width: 100%;
-        height: 230px;
-        overflow: hidden;
-      }
-
-      #live-container {
-        position: absolute;
-      }
-
-      #live-image-container {
-        width: 540px;
-      }
-
-      #live-page-img {
-        width: 100%;
+      .no-streams-entry {
+        padding: 20px;
+        color: #db1f26;
+        font-size: 20px;
+        font-weight: 500;
+        text-transform: uppercase;
+        background-color: #dbdbdb;
       }
 
       .stream-menu-listing {
@@ -115,22 +97,29 @@
         margin: 0;
       }
 
-      .no-streams-entry {
-        padding-left: 20px;
-      }
-
-      .streaming-menu-content {
-        margin-top: 30px;
-        margin-bottom: 30px;
-      }
-
       .stream-listing {
-        padding: 0 20px 20px 20px;
         border-bottom: 1px solid #e3e3e3;
       }
 
+      .stream-menu-listing li {
+        background: #dbdbdb;
+        padding: 20px 20px 20px 20px;
+      }
+      .stream-menu-listing li:nth-child(even) { 
+        background: #ebebeb;
+      }
+
       .stream-header {
-        margin: 10px 0;
+        margin: 10px 10px 10px 0;
+        display: inline-block;
+      }
+
+      .stream-rule {
+        display: block;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid #999999;
+        margin-bottom: 20px;
       }
 
       .stream-container {
@@ -139,10 +128,6 @@
         background-color: rgb(239, 239, 239);
         border: 1px solid #e3e3e3;
         border-radius: 4px;
-      }
-
-      .stream-header {
-        margin-top: 8px;
       }
 
       .container-hidden {
@@ -160,32 +145,43 @@
         padding-top: 20px;
       }
 
+      #video-container, #event-container {
+        flex: 1;
+      }
+
       #video-container {
-        border-radius: 5px;
-        background-color: #e3e3e3;
-        padding: 10px;
+        background-color: #999999;
+        height: 100%;
+      }
+
+      #event-container {
+        margin-left: 10px;
+        height: 100%;
+        border: #3b3b3b solid 1px;
+        background-color: #fff;
+      }
+
+      #video-holder {
+        line-height: 0px;
       }
 
       #status-field {
         text-align: center;
         padding: 10px;
         color: #fff;
-        margin: 10px 0;
+        background-color: #999;
       }
 
-      .status-alert {
-        background-color: rgb(227, 25, 0);
-      }
-
-      .status-message {
-        background-color: #aaa;
-      }
-
-      #event-log-field {
-        background-color: #c0c0c0;
-        border-radius: 6px;
+      #stream-manager-info {
         padding: 10px;
-        margin: 14px;
+        background-color: #dbdbdb;
+      }
+
+      #statistics-field {
+        text-align: center;
+        padding: 10px;
+        background-color: #3b3b3b;
+        color: #dbdbdb;
       }
 
       #video-holder, #red5pro-subscriber {
@@ -196,13 +192,33 @@
         min-height: 40px;
       }
 
+      #event-log-field {
+        padding: 10px;
+      }
+
+      .event-header {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .event-hr {
+        display: block;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid #dbdbdb;
+      }
+
+      @media (max-width: 767px) {
+        #event-container {
+          margin-left: 0;
+          margin-top: 20px;
+        }
+      }
+
       template {
         display: none;
       }
     </style>
-    <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
-    <script src="lib/screenfull/screenfull.min.js"></script>
-    <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
     <script>
       // Shim so we can style in IE6/7/8
       document.createElement('template');
@@ -212,68 +228,67 @@
     {{> top-bar }}
     {{> navigation }}
     <template id="video-playback">
-      <div id="video-container">
-            <div id="video-holder">
-              <video id="red5pro-subscriber"
-                      controls autoplay playsinline
-                      class="red5pro-media red5pro-media-background">
-              </video>
-            </div>
-            <div id="status-field" class="status-message"></div>
-            <div id="event-log-field" class="event-log-field">
-              <div style="padding: 10px 0">
-                <p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>
-                <div style="clear: both;"></div>
+      <div class="broadcast-section">
+        <div id="video-container">
+          <div id="video-holder">
+            <video id="red5pro-subscriber"
+                    controls autoplay playsinline
+                    class="red5pro-media red5pro-media-background">
+            </video>
+          </div>
+        </div>
+        <div id="event-container">
+          <div id="status-field" class="status-message"></div>
+          <div id="stream-manager-info" class="status-message hidden">Using Stream Manager Proxy.</div>
+          <div id="event-log-field" class="event-log-field">
+            <div>
+              <div class="event-header">
+                <span>Event Log:</span>
+                <button id="clear-log-button">clear</button>
               </div>
+              <hr class="event-hr">
             </div>
+          </div>
+        </div>
       </div>
     </template>
     {{> header }}
-    <div class="container main-container clear-fix">
+    <div class="main-container">
       <div id="menu-section">
         {{> menu }}
       </div>
       <div id="content-section">
-        <div>
-          <div class="clear-fix">
-            <p class="left">
-                <a class="red5pro-header-link" href="/">
-                  <img class="red5pro-logo-page" src="images/red5pro_logo.svg">
-               </a>
-            </p>
+        <div id="subcontent-section">
+          <div id="subcontent-section-text">
+            <h1 class="red-text">Live Subscribing For Any Screen</h1>
+            <p class="heading-title">Below you will find the list of current live streams to subscribe to.
           </div>
-          <h2 class="tag-line">LIVE SUBSCRIBING FOR ANY SCREEN</h2>
-        </div>
-        <div id="live-page-subcontent" class="clear-fix">
-          <div id="live-image-container">
-            <img id="live-page-img" src="images/red5pro_live_streaming.png">
+          <div id="subcontent-section-image">
+            <img class="image-block" width="424" src="images/red5pro_live_streaming.png">
           </div>
         </div>
+        <hr class="top-padded-rule">
         <div class="content-section-story">
-          <div>
-            <p>Below you will find the list of current live streams to subscribe to.</p>
-            <p>If a stream is available to subscribe to, you can select to view in browser on this page or a seperate window using the <strong>Red5 Pro HTML SDK</strong> or you can view by opening the <strong>RTSP</strong> link.</p>
-            <%=ret.toString()%>
-          </div>
-          <hr class="top-padded-rule" />
-          <h3><a class="link" href="https://www.red5pro.com/docs/streaming/" target="_blank">Streaming SDKs</a></h3>
-          <p>You can download the Streaming SDKs from your <a class="link" href="http://account.red5pro.com/download" target="_blank">Red5 Pro Accounts</a> page.</p>
-          <p>Please visit the online <a class="link" href="https://www.red5pro.com/docs/streaming/" target="_blank">Red5 Pro Documentation</a> for further information about integrating the streaming SDKs into your own native application!</p>
-          <hr class="top-padded-rule" />
-          {{> web-applications }}
-          <hr class="top-padded-rule">
-          {{> mobile-applications }}
-          <hr class="top-padded-rule" />
-          {{> additional_info }}
+          <% if (names.size() <= 0) { %>
+            <p class="no-streams-entry">No streams found</p>
+            <p style="margin-top: 20px;">You can begin a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=<%= ip %>" target="_blank">Broadcast page</a>.</p>
+            <p class="small-font-size">Once a Broadcast session is started, return to this page to see the stream name listed.</p>
+          <% } else { %>
+            <div class="streaming-menu-content">
+              <%=ret.toString()%>
+            </div>
+          <% } %>
         </div>
+        <hr class="top-padded-rule" />
+        {{> web-applications }}
+        <hr class="top-padded-rule">
+        {{> mobile-applications }}
+        <hr class="top-padded-rule" />
+        {{> additional_info }}
       </div>
     </div>
-    {{> footer }}
     {{> es6-script-includes }}
-    <script src="lib/jquery-1.12.4.min.js"></script>
-    <script src="lib/red5pro/red5pro-sdk.min.js"></script>
     <script src="script/r5pro-ice-utils.js"></script>
-    <script src="script/r5pro-autoplay-utils.js"></script>
     <script>
       function assignIfDefined (value, prop) {
         if (value && value !== 'null') {
@@ -288,6 +303,11 @@
       window.r5proIce = window.determineIceServers('<%=ice%>');
       window.r5proBuffer = Number("<%=buffer%>");
     </script>
+    <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+    <script src="script/r5pro-utils.js"></script>
+    <script src="script/r5pro-sm-utils.js"></script>
+    <script src="script/r5pro-autoplay-utils.js"></script>
     <script src="script/r5pro-subscriber-failover.js"></script>
+    {{> footer }}
   </body>
 </html>
