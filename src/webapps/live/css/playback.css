@@ -1,0 +1,169 @@
+object:focus {
+  outline:none;
+}
+
+.no-streams-entry {
+  padding: 20px;
+  color: #db1f26;
+  font-size: 20px;
+  font-weight: 500;
+  text-transform: uppercase;
+  background-color: #dbdbdb;
+}
+
+.stream-menu-content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: -10px;
+}
+
+.stream-menu-listing {
+  padding: 0;
+  margin: 10px;
+  flex: 1;
+  max-width: 380px;
+  box-sizing: border-box;
+}
+
+.playback-block-listing {
+  background: #dbdbdb;
+  padding: 20px 20px 20px 20px;
+}
+
+.stream-playback-button {
+  color: #ffffff;
+  background-color: #3580A2;
+  text-align: center;
+  border-radius: 0px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.button-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.stream-header {
+  margin: 0 0 20px 0;
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+  text-transform: NONE;
+}
+
+.stream-rule {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #999999;
+  margin-bottom: 20px;
+}
+
+.stream-link {
+  width: 100%;
+  text-align: center;
+}
+
+.stream-container {
+  margin-top: 20px;
+  text-align: center;
+  background-color: rgb(239, 239, 239);
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+}
+
+.container-hidden {
+  width: 0px;
+  height: 0px;
+  visibility: hidden;
+  margin-top: 0px;
+}
+
+.container-padding {
+  padding: 10px 0 20px 0;
+}
+
+.download-link {
+  padding-top: 20px;
+}
+
+.video-container, .event-container {
+flex: 1;
+}
+
+.video-container {
+  background-color: #999999;
+  height: 100%;
+}
+
+.event-container {
+  margin-left: 10px;
+  height: 100%;
+  border: #3b3b3b solid 1px;
+  background-color: #fff;
+}
+
+.video-holder {
+  line-height: 0px;
+}
+
+.status-field {
+  text-align: center;
+  padding: 10px;
+  color: #fff;
+  background-color: #999;
+}
+
+.stream-manager-info {
+  padding: 10px;
+  background-color: #dbdbdb;
+}
+
+.statistics-field {
+  text-align: center;
+  padding: 10px;
+  background-color: #3b3b3b;
+  color: #dbdbdb;
+}
+
+.video-holder, .red5pro-subscriber {
+  width: 100%;
+}
+
+.red5pro-media-control-bar {
+  min-height: 40px;
+}
+
+.event-log-field {
+  padding: 10px;
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.event-hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #dbdbdb;
+}
+
+@media (max-width: 767px) {
+  .event-container {
+    margin-left: 0;
+    margin-top: 20px;
+  }
+  .stream-menu-listing {
+    max-width: NONE;
+  }
+}
+
+template {
+  display: none;
+}
+

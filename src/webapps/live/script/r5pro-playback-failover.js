@@ -29,22 +29,31 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   red5prosdk.setLogLevel('debug');
 
-  var iceServers = window.r5proIce;
   // For IE support.
-  var vidTemplateHTML = '<div id="video-container">' +
+  var vidTemplateHTML ='<div class="broadcast-section">' +
+        '<div id="video-container">' +
+          '<div id="statistics-field" class="statistics-field hidden"></div>' +
           '<div id="video-holder">' +
             '<video id="red5pro-subscriber" controls autoplay playsinline class="red5pro-media red5pro-media-background">' +
             '</video>' +
           '</div>' +
+        '</div>' +
+        '<div id="event-container">' +
           '<div id="status-field" class="status-message"></div>' +
+          '<div id="stream-manager-info" class="status-message hidden">Using Stream Manager Proxy.</div>' +
           '<div id="event-log-field" class="event-log-field">' +
-            '<div style="padding: 10px 0">' +
-              '<p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>' +
-              '<div style="clear: both;"></div>' +
+            '<div>' +
+              '<div class="event-header">' +
+                '<span>Event Log:</span>' +
+                '<button id="clear-log-button">clear</button>' +
+              '</div>' +
+              '<hr class="event-hr">' +
             '</div>' +
-          '</div>'
-        '</div>';
-  var flashTemplateHTML = '<div id="video-container">' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  var flashTemplateHTML = '<div class="broadcast-section">' +
+        '<div id="video-container">' +
             '<div id="video-holder" style="height:405px;">' +
               '<object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">' +
                 '<param name="quality" value="high">' +
@@ -53,9 +62,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 '<param name="allowscriptaccess" value="always">' +
                 '<param name="allowfullscreen" value="true">' +
                 '<param name="allownetworking" value="all">' +
-            '</object>' +
+              '</object>' +
+            '</div>' +
           '</div>' +
-      '</div>';
+        '</div>';
 
   var subscriber;
   var streamDataModel;
@@ -65,50 +75,33 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var protocol = window.location.protocol;
   var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
-  function getSocketLocationFromProtocol (protocol) {
-    return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
-  }
 
   var $videoTemplate = document.getElementById('video-playback');
   var $flashTemplate = document.getElementById('flash-playback');
   var baseConfiguration = {
     host: host,
-    app: 'live',
-    buffer: isNaN(buffer) ? 2 : buffer,
-    embedWidth: '100%',
-    embedHeight: '100%',
-    rtcConfiguration: {
-      iceServers: iceServers,
-      iceCandidatePoolSize: 2,
-      bundlePolicy: 'max-bundle'
-    }
-  };
-  var rtcConfig = {
-    protocol: getSocketLocationFromProtocol(protocol).protocol,
-    port: getSocketLocationFromProtocol(protocol).port,
-    subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16)
+    app: 'live'
   };
   var rtmpConfig = {
     protocol: 'rtmp',
     port: 1935,
-    mimeType: 'rtmp/flv',
     width: '100%',
     height: '100%',
+    embedWidth: '100%',
+    embedHeight: '100%',
     backgroundColor: '#000000',
     swf: 'lib/red5pro/red5pro-subscriber.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
-    productInstallURL: 'lib/swfobject/playerProductInstall.swf'
+    productInstallURL: 'lib/swfobject/playerProductInstall.swf',
+    buffer: isNaN(buffer) ? 2 : buffer
   };
   var hlsConfig = {
     protocol: protocol,
-    port: port,
-    mimeType: 'application/x-mpegURL',
-    swfobjectURL: 'lib/swfobject/swfobject.js',
-    productInstallURL: 'lib/swfobject/playerProductInstall.swf'
+    port: port
   };
 
   var targetViewTech = window.r5proViewTech;
-  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
+  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtmp', 'hls'];
 
   function hasEstablishedSubscriber () {
     return typeof subscriber !== 'undefined';
@@ -131,9 +124,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var statusField = document.getElementById('status-field');
     var type = subscriber ? subscriber.getType().toLowerCase() : undefined;
     switch (type) {
-      case 'rtc':
-        updateStatusField(statusField, 'Using WebRTC-based Playback!');
-        break;
       case 'rtmp':
       case 'livertmp':
       case 'rtmp - videojs':
@@ -159,23 +149,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   function onSubscriberEvent (event) {
     var eventLog = '[Red5ProSubscriber] ' + event.type + '.';
-    console.log(eventLog);
-    addEventLogToField(document.getElementById('event-log-field'), eventLog);
-    if (event.type === 'Subscribe.Metadata') {
-      var value = event.data.orientation; // eslint-disable-line no-unused-vars
-      if (subscriber.getType().toLowerCase() === 'hls' ||
-          subscriber.getType().toLowerCase() === 'rtc') {
-        var container = document.getElementById('video-holder');
-        var element = document.getElementById('red5pro-subscriber'); // eslint-disable-line no-unused-vars
-        if (container) {
-          //          container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
-          //          if (subscriber.getType().toLowerCase() === 'hls') {
-          //            element.style.height = '100%'
-          //          }
-        }
-      }
-    } else if (event.type === red5prosdk.SubscriberEventTypes.AUTO_PLAYBACK_FAILURE) {
-      console.error('ARE YOU ON MOBILE?!?!');
+    if (event.type !== 'Subscribe.Time.Update') {
+      console.log(eventLog);
+      addEventLogToField(document.getElementById('event-log-field'), eventLog);
     }
   }
 
@@ -184,6 +160,32 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     container.appendChild($el);
     return $el;
   }
+
+  function handleHostIpChange (value) {
+    host = baseConfiguration.host = value;
+    if (streamDataModel && hasEstablishedSubscriber()) {
+      teardown();
+      startSubscription(streamDataModel);
+    }
+  }
+
+  function queryExists (elements) {
+    return elements && elements.length > 0;
+  }
+
+  var toggleSelectedPlayback = function viewStream (streamName) {
+    var currentPlayback = $('li[data-active="true"]');
+    var targetPlayback = $('li[data-stream="' + streamName + '"]');
+    var dataString = decodeURIComponent(targetPlayback.data('streamitem'));
+    var streamData = JSON.parse(dataString);
+    console.log('[playback]:: Selected stream data -\r\n' + JSON.stringify(streamData, null, 2));
+    streamDataModel = streamData;
+    teardown();
+    if (!queryExists(currentPlayback) || 
+        (queryExists(targetPlayback) && currentPlayback.get(0) != targetPlayback.get(0))) {
+      startSubscription(streamData);
+    }
+  };
 
   function teardown () {
     var videoContainer = document.getElementById('video-container');
@@ -212,12 +214,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   function useMP4Fallback (src) {
-    /*
-    var vid = src.split('/');
-    var len = vid.length;
-    vid.splice(len - 1, 0, 'streams');
-    var loc = vid.join('/');
-    */
     var element = document.getElementById('red5pro-subscriber');
     var source = document.createElement('source');
     source.type = 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"';
@@ -276,19 +272,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   function startSubscription (streamData) {
-    /**
-     * streamData format:
-     * {
-     *    "name": "webrtc2",
-     *    "urls": {
-     *      "rtmp": "http://10.0.0.10:5080/live/webrtc2.flv"
-     *    }
-     *  }
-     */
     var streamName = streamData.name;
     baseConfiguration.streamName = streamName;
     setup(streamName, $videoTemplate, vidTemplateHTML);
-
     // Unless `view=rtmp` is set in the query params, default to MP4 playback if MP4 file.
     if (targetViewTech !== 'rtmp') {
       if (streamData.urls && streamData.urls.rtmp) {
@@ -320,25 +306,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
        });
   }
 
-  function handleHostIpChange (value) {
-    host = baseConfiguration.host = value;
-    if (streamDataModel && hasEstablishedSubscriber()) {
-      teardown();
-      startSubscription(streamDataModel);
-    }
-  }
-
-  var viewHandler = function viewStream (value) {
-    var dataString = decodeURIComponent($('li[data-stream="' + value + '"]').data('streamitem'));
-    var streamData = JSON.parse(dataString);
-    console.log('[playback]:: Selected stream data -\r\n' + JSON.stringify(streamData, null, 2));
-
-    streamDataModel = streamData;
-
-    teardown();
-    startSubscription(streamData);
-  };
-
   var viewPageHandler = function viewPageStream (value) {
     var json = $('li[data-stream="' + value + '"]').data('streamitem');
     var streamDataStr = decodeURIComponent(json);
@@ -350,7 +317,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     if (targetViewTech) {
       pageUrl += '&view=' + targetViewTech;
     }
-    window.open(pageUrl);
+    window.location = pageUrl;
+    //    window.open(pageUrl);
   };
 
   function templateContent(template, templateHTML) {
@@ -371,7 +339,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       subscriber.on('*', onSubscriberEvent);
 
       var typeConfig = {
-        rtc: rtcConfig,
         rtmp: rtmpConfig,
         hls: hlsConfig
       };
@@ -480,7 +447,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   window.r5pro_registerIpChangeListener(handleHostIpChange);
-  window.invokeViewStream = viewHandler;
+  window.invokeViewStream = toggleSelectedPlayback;
   window.invokeViewPageStream = viewPageHandler;
   var shuttingDown = false;
   function shutdown () {

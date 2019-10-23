@@ -195,7 +195,7 @@
         </div>
         <hr class="top-padded-rule">
         <div class="content-section-story">
-          <p class="notify-callout">Select <strong>Enable Recording</strong> to save your broadcast for Video on Demand playback!<br/><span class="small-font-size">To view the current Video On Demand (VOD) files on your server, visit the <a class="link" href="playback.jsp" target="_blank">Playback</a> page.</span></p>
+          <p class="notify-callout">Select <span class="bold">Enable Recording</span> to save your broadcast for Video on Demand playback!<br/><span class="small-font-size">To view the current Video On Demand (VOD) files on your server, visit the <a class="link" href="playback.jsp" target="_blank">Playback</a> page.</span></p>
           <hr class="top-padded-rule" style="margin-top: 0">
           <div class="broadcast-section">
             <div id="video-container">

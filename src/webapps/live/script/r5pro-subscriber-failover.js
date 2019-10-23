@@ -24,39 +24,17 @@ WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* global window, document, jQuery */
-(function(window, document, $, promisify, red5pro) {
+(function(window, document, $, promisify, red5pro, R5PlaybackBlock) {
   'use strict';
 
   red5pro.setLogLevel('debug');
   var iceServers = window.r5proIce;
-  // For IE support.
-  var templateHTML = '<div class="broadcast-section">' +
-        '<div id="video-container">' +
-          '<div id="statistics-field" class="statistics-field hidden"></div>' +
-          '<div id="video-holder">' +
-            '<video id="red5pro-subscriber" controls autoplay playsinline class="red5pro-media red5pro-media-background">' +
-            '</video>' +
-          '</div>' +
-        '</div>' +
-        '<div id="event-container">' +
-          '<div id="status-field" class="status-message"></div>' +
-          '<div id="stream-manager-info" class="status-message hidden">Using Stream Manager Proxy.</div>' +
-          '<div id="event-log-field" class="event-log-field">' +
-            '<div>' +
-              '<div class="event-header">' +
-                '<span>Event Log:</span>' +
-                '<button id="clear-log-button">clear</button>' +
-              '</div>' +
-              '<hr class="event-hr">' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
 
   var subscriber;
-
   var host = window.targetHost;
   var buffer = window.r5proBuffer;
+  var targetViewTech = window.r5proViewTech;
+  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
   var protocol = window.location.protocol;
   var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
@@ -64,14 +42,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
   }
 
-  var streamManagerInfo = document.getElementById('stream-manager-info');
-  var $videoTemplate = document.getElementById('video-playback');
-
   var baseConfiguration = {
     host: host,
     app: 'live'
   };
-  var rtcConfig = {
+  var rtcConfiguration = {
     protocol: getSocketLocationFromProtocol(protocol).protocol,
     port: getSocketLocationFromProtocol(protocol).port,
     rtcConfiguration: {
@@ -80,7 +55,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       bundlePolicy: 'max-bundle'
     }
   };
-  var rtmpConfig = {
+  var rtmpConfiguration = {
     protocol: 'rtmp',
     port: 1935,
     width: 640,
@@ -88,24 +63,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     embedWidth: '100%',
     embedHeight: '100%',
     backgroundColor: '#000000',
-    swf: 'lib/red5pro/red5pro-subscriber.swf',
-    swfobjectURL: 'lib/swfobject/swfobject.js',
-    productInstallURL: 'lib/swfobject/playerProductInstall.swf',
     buffer: isNaN(buffer) ? 2 : buffer,    
   };
-  var hlsConfig = {
+  var hlsConfiguration = {
     protocol: protocol,
-    port: port,
-    mimeType: 'application/x-mpegURL',
-    swfobjectURL: 'lib/swfobject/swfobject.js',
-    productInstallURL: 'lib/swfobject/playerProductInstall.swf'
+    port: port
   };
 
   function updateConfigurationsForStreamManager (serverJSON) {
     var host = serverJSON.serverAddress;
     var app = serverJSON.scope;
     var streamName = serverJSON.name;
-    rtcConfig = Object.assign({}, rtcConfig, {
+    rtcConfiguration = Object.assign({}, rtcConfiguration, {
       host: window.targetHost,
       app: 'streammanager',
       streamName: streamName,
@@ -114,18 +83,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         app: app
       }
     });
-    rtmpConfig = Object.assign({}, rtmpConfig, {
+    rtmpConfiguration = Object.assign({}, rtmpConfiguration, {
       host: host,
       app: app
     });
-    hlsConfig = Object.assign({}, hlsConfig, {
+    hlsConfiguration = Object.assign({}, hlsConfiguration, {
       host: host,
       app: app
     });
   }
-
-  var targetViewTech = window.r5proViewTech;
-  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
 
   function hasEstablishedSubscriber () {
     return typeof subscriber !== 'undefined';
@@ -217,12 +183,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   };
 
+  /*
   function addPlayer(tmpl, container) {
     var $el = templateContent(tmpl);
     container.appendChild($el);
     return $el;
   }
-
+  */
   function teardown () {
     var currentPlayback = $('li[data-active="true"]');
     var removePlayback = function () {
@@ -242,10 +209,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   function setup (streamName) {
+    $('body').append(new R5PlaybackBlock(streamName, streamName, 'http://' + streamName).create())
     var parentContainer = $('li[data-stream=' + streamName + ']');
     if (queryExists(parentContainer)) {
       var openLink = parentContainer.find('.subscriber-link');
-      addPlayer($videoTemplate, parentContainer.get(0));
+      //      addPlayer($videoTemplate, parentContainer.get(0));
       parentContainer.attr('data-active', true);
       if (queryExists(openLink)) {
         openLink.text('Close');
@@ -270,6 +238,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       .then(function () {
         window.r5pro_requestEdge('live', streamName)
           .then(function (origin) {
+            var streamManagerInfo = document.getElementById('stream-manager-info');
             updateConfigurationsForStreamManager(origin);
             streamManagerInfo.classList.remove('hidden');
             streamManagerInfo.innerText = 'Using Stream Manager Origin at: ' + origin.serverAddress + '.';
@@ -296,9 +265,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       subscriber.on('*', onSubscriberEvent);
 
       var config = {
-        rtc: Object.assign({}, baseConfiguration, rtcConfig),
-        rtmp: Object.assign({}, baseConfiguration, rtmpConfig),
-        hls: Object.assign({}, baseConfiguration, hlsConfig)
+        rtc: Object.assign({}, baseConfiguration, rtcConfiguration),
+        rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
+        hls: Object.assign({}, baseConfiguration, hlsConfiguration)
       };
       console.log('[subscriber]:: Configuration\r\n' + JSON.stringify(config, null, 2));
 
@@ -340,7 +309,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     });
   }
-
+    /*
   function templateContent(template) {
     if("content" in document.createElement("template")) {
       return document.importNode(template.content, true);
@@ -351,6 +320,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       return div;
     }
   }
+  */
 
   function subscribe (subscriber) {
     return promisify(function (resolve, reject) {
@@ -395,11 +365,39 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   window.r5pro_registerIpChangeListener(handleHostIpChange);
   window.invokeViewStream = toggleSelectedPlayback;
 
+  var playbackBlocks = [];
+  var $listing = $('.stream-menu-listing');
+  if ($listing && $listing.length > 0) {
+    var i = 0, length = $listing.length;
+    for (i; i < length; i++) {
+      var $item = $listing[i];
+      var name = $item.getAttribute('data-streamName');
+      var page = $item.getAttribute('data-pageLocation');
+      var location = $item.getAttribute('data-streamLocation');
+      var block = new R5PlaybackBlock(name, name, location, page);
+      $item.append(block.create().getElement());
+      (function (b, delay) {
+        var t = setTimeout(function () {
+          clearTimeout(t);
+          b.init(Object.assign({}, baseConfiguration, {
+            rtc: Object.assign({}, baseConfiguration, rtcConfiguration),
+            rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
+            hls: Object.assign({}, baseConfiguration, hlsConfiguration)
+          }), playbackOrder, true);
+        }, delay)
+      })(block, i * 1000);
+      playbackBlocks.push(block);
+    }
+  }
+
   var shuttingDown = false;
   function shutdown () {
     if (shuttingDown) return;
     shuttingDown = true;
-    unsubscribe();
+    //    unsubscribe();
+    while(playbackBlocks.length > -1) {
+      playbackBlocks.shift().stop();
+    }
   }
   window.addEventListener('pagehide', shutdown);
   window.addEventListener('beforeunload', shutdown);
@@ -408,4 +406,4 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     console.log('[RTMP SUBSCRIBER]:: ' + message);
   };
 
- })(window, document, jQuery.noConflict(), window.promisify, window.red5prosdk);
+ })(window, document, jQuery.noConflict(), window.promisify, window.red5prosdk, window.R5PlaybackBlock);

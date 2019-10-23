@@ -2,7 +2,7 @@
 <%@ page import="org.springframework.context.ApplicationContext,
           org.springframework.web.context.WebApplicationContext,
           com.infrared5.red5pro.live.LiveStreamListService,
-          java.util.List"%>
+          java.util.List, java.util.ArrayList"%>
 <%
   //LIVE streams page.
   String host = ip;
@@ -37,33 +37,22 @@
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
   LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
-  List<String> names = service.getLiveStreams();
+  List<String> names = new ArrayList<String>();
+  names.add("one");
+  names.add("two");
+  names.add("three");// service.getLiveStreams();
 
   StringBuffer ret = new StringBuffer();
   String baseUrl = protocol + "://" + ip + ":" + port;
   if(names.size() > 0) {
-    ret.append("<ul class=\"stream-menu-listing\">\r\n");
     for(String streamName:names) {
-      String rtspLocation = "rtsp://" + ip + ":8554/live/" + streamName;
       String streamLocation =  baseUrl + "/live/" + streamName;
-      String hlsLocation =  streamLocation + ".m3u8";
       String pageLocation = baseUrl + "/live/viewer.jsp?host=" + ip + "&stream=" + streamName;
       if (tech != null) {
         pageLocation += "&view=" + tech;
       }
-      String listEntry = "<li data-stream=\"" + streamName + "\" class=\"stream-listing\">\r\n" +
-        "<div>\r\n" +
-          "<h2 class=\"stream-header\">" + streamName + "</h2>\r\n" +
-          "<a class=\"medium-font-size subscriber-link link red-text\" style=\"cursor: pointer; text-decoration: underline;\" onclick=\"invokeViewStream('" + streamName + "'); return false;\">View</a>\r\n" +
-          "<hr class=\"stream-rule\" />\r\n" +
-          "<p>\r\n" +
-            "<a class=\"link red-text\" href=\"" + pageLocation + "\" target=\"_blank\">" + streamLocation + "</a></span>\r\n" +
-          "</p>\r\n" +
-        "</div>\r\n" +
-       "</li>\r\n";
-      ret.append(listEntry);
+      ret.append("<div class=\"stream-menu-listing\" data-streamName=\"" + streamName + "\" data-streamLocation=\"" + streamLocation + "\" data-pageLocation=\"" + pageLocation + "\"></div>\r\n");
     }
-    ret.append("</ul>\r\n");
   }
 %>
 <!doctype html>
@@ -75,149 +64,8 @@
     <title>Stream Subscription with the Red5 Pro Server</title>
     <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
-    <link rel="stylesheet" href="lib/red5pro/red5pro-media.css"></script>
-    <style>
-      object:focus {
-        outline:none;
-      }
-
-      .no-streams-entry {
-        padding: 20px;
-        color: #db1f26;
-        font-size: 20px;
-        font-weight: 500;
-        text-transform: uppercase;
-        background-color: #dbdbdb;
-      }
-
-      .stream-menu-listing {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      .stream-listing {
-        border-bottom: 1px solid #e3e3e3;
-      }
-
-      .stream-menu-listing li {
-        background: #dbdbdb;
-        padding: 20px 20px 20px 20px;
-      }
-      .stream-menu-listing li:nth-child(even) { 
-        background: #ebebeb;
-      }
-
-      .stream-header {
-        margin: 10px 10px 10px 0;
-        display: inline-block;
-      }
-
-      .stream-rule {
-        display: block;
-        height: 1px;
-        border: 0;
-        border-top: 1px solid #999999;
-        margin-bottom: 20px;
-      }
-
-      .stream-container {
-        margin-top: 20px;
-        text-align: center;
-        background-color: rgb(239, 239, 239);
-        border: 1px solid #e3e3e3;
-        border-radius: 4px;
-      }
-
-      .container-hidden {
-        width: 0px;
-        height: 0px;
-        visibility: hidden;
-        margin-top: 0px;
-      }
-
-      .container-padding {
-        padding: 10px 0 20px 0;
-      }
-
-      .download-link {
-        padding-top: 20px;
-      }
-
-      #video-container, #event-container {
-        flex: 1;
-      }
-
-      #video-container {
-        background-color: #999999;
-        height: 100%;
-      }
-
-      #event-container {
-        margin-left: 10px;
-        height: 100%;
-        border: #3b3b3b solid 1px;
-        background-color: #fff;
-      }
-
-      #video-holder {
-        line-height: 0px;
-      }
-
-      #status-field {
-        text-align: center;
-        padding: 10px;
-        color: #fff;
-        background-color: #999;
-      }
-
-      #stream-manager-info {
-        padding: 10px;
-        background-color: #dbdbdb;
-      }
-
-      #statistics-field {
-        text-align: center;
-        padding: 10px;
-        background-color: #3b3b3b;
-        color: #dbdbdb;
-      }
-
-      #video-holder, #red5pro-subscriber {
-        width: 100%;
-      }
-
-      .red5pro-media-control-bar {
-        min-height: 40px;
-      }
-
-      #event-log-field {
-        padding: 10px;
-      }
-
-      .event-header {
-        display: flex;
-        justify-content: space-between;
-      }
-
-      .event-hr {
-        display: block;
-        height: 1px;
-        border: 0;
-        border-top: 1px solid #dbdbdb;
-      }
-
-      @media (max-width: 767px) {
-        #event-container {
-          margin-left: 0;
-          margin-top: 20px;
-        }
-      }
-
-      template {
-        display: none;
-      }
-    </style>
+    <link rel="stylesheet" href="lib/red5pro/red5pro-media.css">
+    <link rel="stylesheet" href="css/playback.css">
     <script>
       // Shim so we can style in IE6/7/8
       document.createElement('template');
@@ -274,7 +122,7 @@
             <p style="margin-top: 20px;">You can begin a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=<%= ip %>" target="_blank">Broadcast page</a>.</p>
             <p class="small-font-size">Once a Broadcast session is started, return to this page to see the stream name listed.</p>
           <% } else { %>
-            <div class="streaming-menu-content">
+            <div class="stream-menu-content">
               <%=ret.toString()%>
             </div>
           <% } %>
@@ -307,6 +155,7 @@
     <script src="script/r5pro-utils.js"></script>
     <script src="script/r5pro-sm-utils.js"></script>
     <script src="script/r5pro-autoplay-utils.js"></script>
+    <script src="script/r5pro-playback-block.js"></script>
     <script src="script/r5pro-subscriber-failover.js"></script>
     {{> footer }}
   </body>

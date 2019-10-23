@@ -599,7 +599,7 @@ $(function() {
 });
 
 // SmartMenus mobile menu toggle button
-$(function() {
+(function($) {
   var $mainMenuState = $('#main-menu-state');
   if ($mainMenuState.length) {
     // animate mobile menu
@@ -618,5 +618,5 @@ $(function() {
       }
     });
   }
-});
+})(($ || window.jQuery));
 </script>
