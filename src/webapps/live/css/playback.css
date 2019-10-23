@@ -15,7 +15,6 @@ object:focus {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
   margin: -10px;
 }
 
@@ -25,6 +24,10 @@ object:focus {
   flex: 1;
   max-width: 380px;
   box-sizing: border-box;
+}
+
+.stream-menu-listing-active {
+  max-width: NONE;
 }
 
 .playback-block-listing {
@@ -99,6 +102,10 @@ flex: 1;
   height: 100%;
 }
 
+.video-container-active {
+  min-width: 320px;
+}
+
 .event-container {
   margin-left: 10px;
   height: 100%;
@@ -139,6 +146,7 @@ flex: 1;
 
 .event-log-field {
   padding: 10px;
+  font-size: 14px;
 }
 
 .event-header {
@@ -157,9 +165,14 @@ flex: 1;
   .event-container {
     margin-left: 0;
     margin-top: 20px;
+    word-break: break-word;
   }
   .stream-menu-listing {
     max-width: NONE;
+  }
+  .video-container-active {
+    min-width: auto;
+    width: 100%;
   }
 }
 

@@ -114,7 +114,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var eventLog = '[Red5ProSubscriber] ' + event.type + '.';
     if (event.type !== 'Subscribe.Time.Update') {
       console.log(eventLog);
-      this.addEventLog($(this.getElement()).find('.event-log-field').get(0), eventLog);
+      this.addEventLog($(this.getElement()).find('.event-log-field').get(0), event.type);
     }
   }
 
@@ -172,8 +172,21 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   PlaybackBlock.prototype.handleWatchToggle = function () {
-    console.log('WATCH');
-    this.start(this.configuration, this.playbackOrder);
+    if (!this.subscriber) {
+      this.start(this.configuration, this.playbackOrder);
+    } else {
+      this.stop();
+    }
+  }
+
+  PlaybackBlock.prototype.setActive = function (isActive) {
+    if (isActive) {
+      $(this.getElement()).find('.event-container').get(0).classList.remove('hidden');
+      $(this.getElement()).find('.stream-playback-button').get(0).innerText = 'stop';
+    } else {
+      $(this.getElement()).find('.event-container').get(0).classList.add('hidden');
+      $(this.getElement()).find('.stream-playback-button').get(0).innerText = 'watch';
+    }
   }
 
   PlaybackBlock.prototype.addUIDelegates = function (element) {
@@ -247,8 +260,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       .then(function (subscriber) {
         self.subscriber = subscriber;
         self.subscriber.on('*', self.subscriberEventsHandler);
-        $(self.getElement()).find('.event-container').get(0).classList.remove('hidden');
-        return subscriber.subscribe();
+        self.setActive(true);
+        if (self.isHalted) {
+          self.stop();
+          return true;
+        } else {
+          return subscriber.subscribe();
+        }
       })
       .catch(function (error) {
         console.error(error);
@@ -259,13 +277,23 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   PlaybackBlock.prototype.stop = function () {
     this.collapse();
     this.isHalted = true;
+    if (this.subscriber) {
+      this.subscriber.unsubscribe();
+      this.subscriber = undefined;
+      this.setActive(false);
+      this.isHalted = false;
+    }
     return this;
   }
 
   PlaybackBlock.prototype.expand = function () {
+    this.getElement().parentNode.classList.add('stream-menu-listing-active');
+    $(this.getElement()).find('.video-container').get(0).classList.add('video-container-active');
   }
 
   PlaybackBlock.prototype.collapse = function () {
+    this.getElement().parentNode.classList.remove('stream-menu-listing-active');
+    $(this.getElement()).find('.video-container').get(0).classList.remove('video-container-active');
   }
 
   PlaybackBlock.prototype.getSubscriber = function () {
