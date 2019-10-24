@@ -75,6 +75,7 @@
     }
 %>
 <!doctype html>
+{{> license}}
 <html lang="eng">
     <head>
         <meta charset="utf-8">

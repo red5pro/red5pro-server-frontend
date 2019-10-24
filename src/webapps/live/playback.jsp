@@ -28,6 +28,7 @@
   String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
 %>
 <!doctype html>
+{{> license}}
 <html lang="eng">
   <head>
     {{> head_meta }}

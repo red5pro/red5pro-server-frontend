@@ -1,5 +1,6 @@
 {{> jsp_header }}
 <!doctype html>
+{{> license}}
 <html lang="eng">
   <head>
     {{> head_meta }}
@@ -65,16 +66,11 @@
         <div class="content-section-story">
           <h1 class="red-text">Welcome!</h1>
           <h4>If you are seeing this page, then you have successfully downloaded and are running the Red5 Pro Server!</h4>
-          <p>Built on the open source <a class="link" href="https://github.com/Red5/red5-server" target="_blank">Red5 Server</a>, Red5 Pro allows you to build scalable live streaming and second screen applications.</p>
+          <p>Built on the open source <a class="link" href="https://github.com/Red5/red5-server" target="_blank">Red5 Server</a>, Red5 Pro allows you to build scalable live streaming applications.</p>
           <div>
             <h3><a class="link" href="/live">Live Streaming</a></h3>
             <p>Add two way live audio, video and data streaming to your app with just a few lines of code using our SDKs (iOS and Android).</p>
             <p><a class="link" href="/live">Visit the Live Streaming example shipped with the Red5 Pro Server</a></p>
-          </div>
-          <div>
-            <h3>Second Screen</h3>
-            <p>Create cross-platform second screen experiences similar to Google's ChromeCast. Enable instant control of digital signs, smart TVs and more through our easy to use SDKs.</p>
-            <p><a class="link" href="/secondscreen">Visit the Second Screen example shipped with the Red5 Pro Server</a></p>
           </div>
           <hr class="top-padded-rule">
           {{> applications }}
