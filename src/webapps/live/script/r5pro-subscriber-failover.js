@@ -366,6 +366,19 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   window.invokeViewStream = toggleSelectedPlayback;
 
   var playbackBlocks = [];
+  var playbackBlockClient = {
+    onPlaybackBlockStart: function (playbackBlock) {
+      var i = playbackBlocks.length;
+      while( --i > -1) {
+        if (playbackBlocks[i] !== playbackBlock) {
+          playbackBlocks[i].stop();
+        }
+      }
+    },
+    onPlaybackBlockStop: function (playbackBlock) {
+      console.log(playbackBlock);
+    }
+  }
   var $listing = $('.stream-menu-listing');
   if ($listing && $listing.length > 0) {
     var i = 0, length = $listing.length;
@@ -375,6 +388,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       var page = $item.getAttribute('data-pageLocation');
       var location = $item.getAttribute('data-streamLocation');
       var block = new R5PlaybackBlock(name, name, location, page);
+      block.setClient(playbackBlockClient);
       $item.append(block.create().getElement());
       (function (b, delay) {
         var t = setTimeout(function () {
@@ -394,9 +408,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   function shutdown () {
     if (shuttingDown) return;
     shuttingDown = true;
-    //    unsubscribe();
-    while(playbackBlocks.length > -1) {
-      playbackBlocks.shift().stop();
+    while(playbackBlocks.length > 0) {
+      playbackBlocks.shift().setClient(undefined).stop();
     }
   }
   window.addEventListener('pagehide', shutdown);

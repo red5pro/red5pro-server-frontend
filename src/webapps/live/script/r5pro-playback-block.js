@@ -37,18 +37,22 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var playbackButton = document.createElement('div');
     var playbackLabel = document.createTextNode('watch');
     var videoHolder = document.createElement('div');
+    var frame = document.createElement('canvas');
     var video = document.createElement('video');
     playbackButton.appendChild(playbackLabel);
     videoContainer.appendChild(statsField);
     videoContainer.appendChild(videoHolder);
     videoContainer.appendChild(playbackButton);
+    videoHolder.appendChild(frame);
     videoHolder.appendChild(video);
     statsField.classList.add('statistics-field');
     videoContainer.classList.add('video-container');
     videoHolder.classList.add('video-holder');
+    frame.classList.add('video-frame');
     video.classList.add('red5pro-subscriber');
     video.classList.add('red5pro-media');
     video.classList.add('red5pro-media-background');
+    video.classList.add('hidden');
     video.controls = true;
     video.autoplay = true;
     video.setAttribute('playsinline', 'playsinline');
@@ -63,11 +67,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var smField = document.createElement('div');
     var eventField = document.createElement('div');
     var eventHeader = document.createElement('div');
+    var eventRule = document.createElement('hr');
+    var eventLog = document.createElement('div');
     var eventTitle = document.createElement('span');
     var clearButton = document.createElement('button');
     eventHeader.appendChild(eventTitle);
     eventHeader.appendChild(clearButton);
     eventField.appendChild(eventHeader);
+    eventField.appendChild(eventRule);
+    eventField.appendChild(eventLog);
     eventContainer.appendChild(statusField);
     eventContainer.appendChild(smField);
     eventContainer.appendChild(eventField);
@@ -78,6 +86,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     smField.classList.add('status-message');
     smField.classList.add('hidden');
     eventField.classList.add('event-log-field');
+    eventRule.classList.add('stream-rule');
+    eventLog.classList.add('event-log');
     eventHeader.classList.add('event-header');
     clearButton.classList.add('event-clear-button');
     eventTitle.innerText = 'Event Log:';
@@ -104,25 +114,54 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     this.externalLink = externalLink;
     this.elementNode = undefined;
     this.subscriber = undefined;
+    this.videoElement = undefined;
     this.isHalted = false;
     this.playbackOrder = undefined;
     this.configuration = undefined;
+    this.client = undefined;
     this.subscriberEventsHandler = this.subscriberEventsHandler.bind(this);
+    this.handleBitrateReport = this.handleBitrateReport.bind(this);
   }
 
   PlaybackBlock.prototype.subscriberEventsHandler = function (event) {
     var eventLog = '[Red5ProSubscriber] ' + event.type + '.';
     if (event.type !== 'Subscribe.Time.Update') {
       console.log(eventLog);
-      this.addEventLog($(this.getElement()).find('.event-log-field').get(0), event.type);
+      this.addEventLog(event.type);
     }
   }
 
-  PlaybackBlock.prototype.addEventLog = function (element, log) {
+  PlaybackBlock.prototype.addEventLog = function (log) {
+    var element = $(this.getElement()).find('.event-log').get(0)
     var p = document.createElement('p');
     var t = document.createTextNode(log);
     p.appendChild(t);
     element.appendChild(p);
+  }
+
+  PlaybackBlock.prototype.clearEventLog = function () {
+    var element = $(this.getElement()).find('.event-log').get(0);
+    while (element.children.length > 0) {
+      element.removeChild(element.lastChild);
+    }
+  }
+
+  PlaybackBlock.prototype.updateStatisticsField = function (message) {
+      var $el = $(this.getElement());
+      var $reportField = $el.find('.statistics-field');
+      $reportField.text(message);
+  }
+
+  PlaybackBlock.prototype.updateStatusFieldWithType = function (subscriberType) {
+    var typeMap = {
+      rtc: 'WebRTC',
+      rtmp: 'Flash',
+      hls: 'HLS'
+    }
+    var message = subscriberType
+                  ? 'Using ' + typeMap[subscriberType.toLowerCase()] + ' Playback' 
+                  : 'Could not determine appropriate playback option.';
+    $(this.getElement()).find('.status-field').text(message);
   }
 
   PlaybackBlock.prototype.updateConfigurationsForStreamManager = function (serverJSON) {
@@ -163,12 +202,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     });
   }
 
+  // eslint-disable-next-line no-unused-vars
+  PlaybackBlock.prototype.handleBitrateReport = function (type, report, bitrate, packetsLastSent) {
+    var video = this.getVideoElement();
+    this.updateStatisticsField('Bitrate: ' + Math.floor(bitrate) + '. ' + video.videoWidth + 'x' + video.videoHeight + '.');
+  }
+
   PlaybackBlock.prototype.handleExternalLink = function () {
 
   }
 
   PlaybackBlock.prototype.handleClearLog = function () {
-    console.log('CLEAR');
+    this.clearEventLog();
   }
 
   PlaybackBlock.prototype.handleWatchToggle = function () {
@@ -254,6 +299,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     this.expand();
     var self = this;
     console.log(JSON.stringify(configuration, null, 2));
+    if (this.client) {
+      this.client.onPlaybackBlockStart(this);
+    }
     new red5pro.Red5ProSubscriber()
       .setPlaybackOrder(playbackOrder)
       .init(configuration)
@@ -261,6 +309,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         self.subscriber = subscriber;
         self.subscriber.on('*', self.subscriberEventsHandler);
         self.setActive(true);
+        self.updateStatusFieldWithType(subscriber.getType())
         if (self.isHalted) {
           self.stop();
           return true;
@@ -268,32 +317,75 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           return subscriber.subscribe();
         }
       })
+      .then(function (subscriber) {
+        if (subscriber.getType().toUpperCase() === 'RTC') {
+          try {
+            window.trackBitrate(subscriber.getPeerConnection(), self.handleBitrateReport)
+          } catch (e) {
+            // nada.
+          }
+        }
+      })
       .catch(function (error) {
         console.error(error);
+        self.updateStatusFieldWithType(null)
       });
     return this;
   }
 
   PlaybackBlock.prototype.stop = function () {
-    this.collapse();
     this.isHalted = true;
+    this.capture();
+    if (this.client) {
+      this.client.onPlaybackBlockStop(this);
+    }
     if (this.subscriber) {
       this.subscriber.unsubscribe();
       this.subscriber = undefined;
+      this.videoElement = undefined;
       this.setActive(false);
       this.isHalted = false;
     }
+    try {
+      window.untrackBitrate(this.handleBitrateReport);
+    } catch (e) { /* nada */ }
+    this.collapse();
+    this.clearEventLog();
+    this.updateStatisticsField('');
     return this;
   }
 
+  PlaybackBlock.prototype.capture = function () {
+    var $el = $(this.getElement());
+    var frame = $el.find('.video-frame').get(0);
+    var video = $el.find('.red5pro-subscriber').get(0);
+    var context = frame.getContext('2d');
+    context.clearRect(0, 0, frame.width, frame.height);
+    frame.classList.remove('hidden');
+    //    console.log(video.clientWidth, video.clientHeight, frame.clientWidth, frame.clientHeight);
+    //    var wPerc = frame.clientWidth / video.clientWidth;
+    //    var hPerc = frame.clientHeight / video.clientHeight;
+    context.drawImage(video, 
+      0, 0, video.clientWidth, video.clientHeight,
+      //      (video.clientWidth - frame.clientWidth) * 0.5, (video.clientHeight - frame.clientHeight) * 0.5,
+      0, 0,
+      frame.width, frame.height);
+  }
+
   PlaybackBlock.prototype.expand = function () {
+    var $el = $(this.getElement());
     this.getElement().parentNode.classList.add('stream-menu-listing-active');
-    $(this.getElement()).find('.video-container').get(0).classList.add('video-container-active');
+    $el.find('.video-container').get(0).classList.add('video-container-active');
+    $el.find('.red5pro-subscriber').get(0).classList.remove('hidden');
+    $el.find('.video-frame').get(0).classList.add('hidden');
   }
 
   PlaybackBlock.prototype.collapse = function () {
+    var $el = $(this.getElement());
     this.getElement().parentNode.classList.remove('stream-menu-listing-active');
     $(this.getElement()).find('.video-container').get(0).classList.remove('video-container-active');
+    $el.find('.red5pro-subscriber').get(0).classList.add('hidden');
+    $el.find('.video-frame').get(0).classList.remove('hidden');
   }
 
   PlaybackBlock.prototype.getSubscriber = function () {
@@ -302,6 +394,20 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   PlaybackBlock.prototype.getElement = function () {
     return this.elementNode;
+  }
+
+  PlaybackBlock.prototype.getVideoElement = function () {
+    if (this.videoElement === undefined) {
+      var $el = $(this.getElement());
+      var video = $el.find('#' + getVideoElementId(this.streamName)).get(0);
+      this.videoElement = video;
+    }
+    return this.videoElement;
+  }
+
+  PlaybackBlock.prototype.setClient = function (client) {
+    this.client = client;
+    return this;
   }
 
   window.R5PlaybackBlock = PlaybackBlock;
