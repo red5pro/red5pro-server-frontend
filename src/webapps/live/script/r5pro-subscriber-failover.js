@@ -94,16 +94,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       var block = new R5PlaybackBlock(name, name, location, page);
       block.setClient(playbackBlockClient);
       $item.append(block.create().getElement());
-      (function (b, delay) {
-        var t = setTimeout(function () {
-          clearTimeout(t);
-          b.init(Object.assign({}, baseConfiguration, {
-            rtc: Object.assign({}, baseConfiguration, rtcConfiguration),
-            rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
-            hls: Object.assign({}, baseConfiguration, hlsConfiguration)
-          }), playbackOrder, true);
-        }, delay)
-      })(block, i * 1000);
+      block.init(Object.assign({}, baseConfiguration, {
+        rtc: Object.assign({}, baseConfiguration, rtcConfiguration),
+        rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
+        hls: Object.assign({}, baseConfiguration, hlsConfiguration)
+      }), playbackOrder, true);
       playbackBlocks.push(block);
     }
   }

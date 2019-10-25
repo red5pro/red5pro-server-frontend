@@ -469,15 +469,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         block.setVODData(streamData, (targetViewTech === 'rtmp'));
         block.setClient(playbackBlockClient);
         $item.append(block.create().getElement());
-        (function (b, delay) {
-          var t = setTimeout(function () {
-            clearTimeout(t);
-            b.init(Object.assign({}, baseConfiguration, {
-              rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
-              hls: Object.assign({}, baseConfiguration, hlsConfiguration)
-            }), playbackOrder, false);
-          }, delay)
-        })(block, i * 1000);
+        block.init(Object.assign({}, baseConfiguration, {
+          rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
+          hls: Object.assign({}, baseConfiguration, hlsConfiguration)
+        }), playbackOrder, false);
         playbackBlocks.push(block);
       }
     }

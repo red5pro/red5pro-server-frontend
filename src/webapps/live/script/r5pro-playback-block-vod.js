@@ -28,6 +28,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   'use strict';
 
   var originalStart = R5PlaybackBlock.prototype.start;
+  var originalHandleStartError = R5PlaybackBlock.prototype.handleStartError;
 
   var isHLSFile = function (data) {
     return (data.urls && data.urls.hasOwnProperty('hls'));
@@ -47,7 +48,25 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     return false;
   }
 
+  R5PlaybackBlock.prototype.startVideoJSPlayback = function (url) {
+    console.log('[' + this.streamName + '] :: Defaulting to VideoJS Playback.');
+    var $element = $(this.getElement());
+    var video = $element.find('#' + this.getVideoElementId(this.streamName)).get(0);
+    video.classList.add('video-js');
+    var source = document.createElement('source');
+    source.type = 'application/x-mpegURL';
+    source.src = url.indexOf('.m3u8') === -1 ? url + '.m3u8' : url;
+    video.appendChild(source);
+    new window.videojs(video, {
+      techOrder: ['html5', 'flash']
+    }, function () {
+      // success.
+    });
+    this.updateStatusFieldWithType('videojs');
+  }
+
   R5PlaybackBlock.prototype.startMP4Playback = function (url) {
+    console.log('[' + this.streamName + '] :: Defaulting to MP4 Playback.');
     if (url.indexOf('streams/') === -1) {
       var paths = url.split('/');
       paths.splice(paths.length - 1, 0, 'streams');
@@ -59,6 +78,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     source.type = 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"';
     source.src = url;
     video.appendChild(source);
+    this.updateStatusFieldWithType('mp4');
+    this.setActive(true);
   }
 
   R5PlaybackBlock.prototype.start = function (configuration, playbackOrder) {
@@ -72,8 +93,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           this.client.onPlaybackBlockStart(this);
         }
         this.startMP4Playback(this.streamData.urls.rtmp)
-        this.updateStatusFieldWithType('mp4');
-        this.setActive(true);
       } catch (error) {
           console.error(error);
           this.handleStartError(error);
@@ -82,9 +101,22 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       var hlsConfig = Object.assign({}, configuration.hls, {
         streamName: configuration.hls.streamName.split('.m3u8')[0]
       });
+      this.useFailover = true;
       originalStart.call(this, Object.assign({}, configuration, {hls:hlsConfig}), playbackOrder);
-    } else {
+    } else if (isFLVFile(this.streamData)) {
+      this.useFailover = true;
       originalStart.call(this, configuration, playbackOrder);
+    } else {
+      this.useFailover = true;
+      originalStart.call(this, configuration, playbackOrder);
+    }
+  }
+
+  R5PlaybackBlock.prototype.handleStartError = function (error) {
+    if (this.useFailover && isHLSFile(this.streamData)) {
+      this.startVideoJSPlayback(this.streamData.urls.hls);
+    } else {
+      originalHandleStartError.call(this, error);
     }
   }
 
