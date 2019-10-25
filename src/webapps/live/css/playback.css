@@ -56,17 +56,18 @@ body.vjs-full-window {
 }
 
 .stream-menu-content {
+  /* This will align them in a row...
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   margin: -10px;
+  */
 }
 
 .stream-menu-listing {
   padding: 0;
   margin: 10px;
   flex: 1;
-  max-width: 380px;
   box-sizing: border-box;
 }
 
@@ -138,23 +139,34 @@ body.vjs-full-window {
 }
 
 .video-container, .event-container {
-flex: 1;
+  flex: 1;
 }
 
 .video-container {
   background-color: #999999;
   height: 100%;
+  max-width: 360px;
+  margin: 0 auto;
 }
 
 .video-container-active {
-  min-width: 320px;
+  min-width: auto;
+  width: 100%;  
+  max-width: NONE;
+}
+
+.subscribe-section {
+  display: flex;
+  flex-direction: column;
 }
 
 .event-container {
-  margin-left: 10px;
   height: 100%;
   border: #3b3b3b solid 1px;
   background-color: #fff;
+  margin-left: 0;
+  margin-top: 20px;
+  word-break: break-word;
 }
 
 .video-holder {
@@ -211,11 +223,6 @@ flex: 1;
 }
 
 @media (max-width: 767px) {
-  .event-container {
-    margin-left: 0;
-    margin-top: 20px;
-    word-break: break-word;
-  }
   .stream-menu-listing {
     max-width: NONE;
   }

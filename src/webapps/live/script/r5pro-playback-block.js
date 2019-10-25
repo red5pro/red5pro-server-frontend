@@ -27,6 +27,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 (function (window, document, promisify, $, red5pro) {
   'use strict';
 
+  var requestFrame = (function (time) {
+    return window.requestAnimationFrame ||
+         window.mozRequestAnimationFrame ||
+         window.webkitRequestAnimationFrame ||
+         window.msRequestAnimationFrame ||
+         function (fn) {
+           return window.setTimeout(fn, time)
+         }
+  })(2000);
+
   function getVideoElementId (streamName) {
     return ['red5pro-subscriber', streamName].join('-');
   }
@@ -103,7 +113,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     parent.appendChild(videoSection);
     parent.appendChild(eventSection);
     eventSection.classList.add('hidden'); // Only shown when viewing.
-    parent.classList.add('broadcast-section');
+    parent.classList.add('subscribe-section');
     return parent;
   }
 
@@ -160,7 +170,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
     var message = subscriberType
                   ? 'Using ' + typeMap[subscriberType.toLowerCase()] + ' Playback' 
-                  : 'Could not determine appropriate playback option.';
+                  : 'Could not determine playback option.';
     $(this.getElement()).find('.status-field').text(message);
   }
 
@@ -298,6 +308,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   PlaybackBlock.prototype.start = function (configuration, playbackOrder) {
     this.expand();
     var self = this;
+    this.isHalted = false;
     console.log(JSON.stringify(configuration, null, 2));
     if (this.client) {
       this.client.onPlaybackBlockStart(this);
@@ -378,6 +389,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     $el.find('.video-container').get(0).classList.add('video-container-active');
     $el.find('.red5pro-subscriber').get(0).classList.remove('hidden');
     $el.find('.video-frame').get(0).classList.add('hidden');
+    requestFrame(function () {
+      window.scrollTo(0, $el.get(0).offsetTop);
+    });
   }
 
   PlaybackBlock.prototype.collapse = function () {

@@ -38,7 +38,7 @@
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
   LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
   List<String> names = new ArrayList<String>();
-  names.add("one");
+  names.add("one_really_long-name-because_i_can");
   names.add("two");
   names.add("three");// service.getLiveStreams();
 
