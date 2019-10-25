@@ -107,7 +107,18 @@ body.vjs-full-window {
   height: 1px;
   border: 0;
   border-top: 1px solid #999999;
+  margin-top: 20px;
   margin-bottom: 20px;
+  max-width: 240px;
+}
+
+.event-rule {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #999999;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .stream-link {
@@ -152,12 +163,13 @@ body.vjs-full-window {
 .video-container-active {
   min-width: auto;
   width: 100%;  
-  max-width: NONE;
+  max-width: 640px;
 }
 
 .subscribe-section {
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
 }
 
 .event-container {
@@ -169,6 +181,12 @@ body.vjs-full-window {
   word-break: break-word;
 }
 
+.frame-holder {
+  width: 100%;
+  cursor: pointer;
+  position: relative;
+}
+
 .video-holder {
   line-height: 0px;
 }
@@ -177,6 +195,19 @@ body.vjs-full-window {
   background-color: #000000;
   width: 100%;
 }
+
+.stream-play-button {
+  width: 50px;
+  height: 50px;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
 
 .status-field {
   text-align: center;

@@ -44,20 +44,21 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   function generateVideoSection (streamName) {
     var videoContainer = document.createElement('div');
     var statsField = document.createElement('div');
-    var playbackButton = document.createElement('div');
-    var playbackLabel = document.createTextNode('watch');
     var videoHolder = document.createElement('div');
+    var frameHolder = document.createElement('div');
     var frame = document.createElement('canvas');
     var video = document.createElement('video');
-    playbackButton.appendChild(playbackLabel);
+    var playButton = document.createElement('img');
     videoContainer.appendChild(statsField);
     videoContainer.appendChild(videoHolder);
-    videoContainer.appendChild(playbackButton);
-    videoHolder.appendChild(frame);
+    frameHolder.appendChild(frame);
+    frameHolder.appendChild(playButton);
+    videoHolder.appendChild(frameHolder);
     videoHolder.appendChild(video);
     statsField.classList.add('statistics-field');
     videoContainer.classList.add('video-container');
     videoHolder.classList.add('video-holder');
+    frameHolder.classList.add('frame-holder');
     frame.classList.add('video-frame');
     video.classList.add('red5pro-subscriber');
     video.classList.add('red5pro-media');
@@ -67,7 +68,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     video.autoplay = true;
     video.setAttribute('playsinline', 'playsinline');
     video.id = getVideoElementId(streamName);
-    playbackButton.classList.add('stream-playback-button');
+    playButton.src = 'images/play_circle.svg';
+    playButton.classList.add('stream-play-button');
     return videoContainer;
   }
 
@@ -96,7 +98,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     smField.classList.add('status-message');
     smField.classList.add('hidden');
     eventField.classList.add('event-log-field');
-    eventRule.classList.add('stream-rule');
+    eventRule.classList.add('event-rule');
     eventLog.classList.add('event-log');
     eventHeader.classList.add('event-header');
     clearButton.classList.add('event-clear-button');
@@ -237,19 +239,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   PlaybackBlock.prototype.setActive = function (isActive) {
     if (isActive) {
       $(this.getElement()).find('.event-container').get(0).classList.remove('hidden');
-      $(this.getElement()).find('.stream-playback-button').get(0).innerText = 'stop';
     } else {
       $(this.getElement()).find('.event-container').get(0).classList.add('hidden');
-      $(this.getElement()).find('.stream-playback-button').get(0).innerText = 'watch';
     }
   }
 
   PlaybackBlock.prototype.addUIDelegates = function (element) {
     var $el = $(element);
     var $clearButton = $el.find('.event-clear-button');
-    var $watchButton = $el.find('.stream-playback-button');
+    var $playButton = $el.find('.frame-holder');
     $clearButton.on('click', this.handleClearLog.bind(this));
-    $watchButton.on('click', this.handleWatchToggle.bind(this));
+    $playButton.on('click', this.handleWatchToggle.bind(this));
   }
 
   PlaybackBlock.prototype.create = function () {
@@ -368,11 +368,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   PlaybackBlock.prototype.capture = function () {
     var $el = $(this.getElement());
+    var frameHolder = $el.find('.frame-holder').get(0);
     var frame = $el.find('.video-frame').get(0);
     var video = $el.find('.red5pro-subscriber').get(0);
     var context = frame.getContext('2d');
     context.clearRect(0, 0, frame.width, frame.height);
-    frame.classList.remove('hidden');
+    frameHolder.classList.remove('hidden');
     //    console.log(video.clientWidth, video.clientHeight, frame.clientWidth, frame.clientHeight);
     //    var wPerc = frame.clientWidth / video.clientWidth;
     //    var hPerc = frame.clientHeight / video.clientHeight;
@@ -388,7 +389,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     this.getElement().parentNode.classList.add('stream-menu-listing-active');
     $el.find('.video-container').get(0).classList.add('video-container-active');
     $el.find('.red5pro-subscriber').get(0).classList.remove('hidden');
-    $el.find('.video-frame').get(0).classList.add('hidden');
+    $el.find('.frame-holder').get(0).classList.add('hidden');
     requestFrame(function () {
       window.scrollTo(0, $el.get(0).offsetTop);
     });
@@ -397,9 +398,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   PlaybackBlock.prototype.collapse = function () {
     var $el = $(this.getElement());
     this.getElement().parentNode.classList.remove('stream-menu-listing-active');
-    $(this.getElement()).find('.video-container').get(0).classList.remove('video-container-active');
-    $el.find('.red5pro-subscriber').get(0).classList.add('hidden');
-    $el.find('.video-frame').get(0).classList.remove('hidden');
+    $el.find('.video-container').get(0).classList.remove('video-container-active');
+    var subscriber = $el.find('.red5pro-subscriber').get(0);
+    var frameHolder = $el.find('.frame-holder').get(0);
+    if (subscriber) subscriber.classList.add('hidden');
+    if (frameHolder) frameHolder.classList.remove('hidden');
   }
 
   PlaybackBlock.prototype.getSubscriber = function () {
