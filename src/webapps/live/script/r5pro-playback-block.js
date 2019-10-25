@@ -27,6 +27,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 (function (window, document, promisify, $, red5pro) {
   'use strict';
 
+  var typeMap = {
+    rtc: 'WebRTC',
+    rtmp: 'Flash',
+    hls: 'HLS'
+  };
+
   var requestFrame = (function (time) {
     return window.requestAnimationFrame ||
          window.mozRequestAnimationFrame ||
@@ -128,11 +134,21 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     this.subscriber = undefined;
     this.videoElement = undefined;
     this.isHalted = false;
-    this.playbackOrder = undefined;
     this.configuration = undefined;
+    this.playbackOrder = undefined;
+    this.requiresStreamManagerCheck = false;
     this.client = undefined;
+    this.handleStartError = this.handleStartError.bind(this);
     this.subscriberEventsHandler = this.subscriberEventsHandler.bind(this);
     this.handleBitrateReport = this.handleBitrateReport.bind(this);
+    window.r5pro_registerIpChangeListener(this.handleHostIpChange.bind(this));
+  }
+
+  PlaybackBlock.prototype.handleHostIpChange = function (value) {
+    if (this.configuration) {
+      this.configuration.host = value;
+      this.stop().init(this.configuration, this.playbackOrder, this.requiresStreamManagerCheck);
+    }
   }
 
   PlaybackBlock.prototype.subscriberEventsHandler = function (event) {
@@ -143,11 +159,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   }
 
-  PlaybackBlock.prototype.addEventLog = function (log) {
+  PlaybackBlock.prototype.addEventLog = function (log, optionalClass) {
     var element = $(this.getElement()).find('.event-log').get(0)
     var p = document.createElement('p');
     var t = document.createTextNode(log);
     p.appendChild(t);
+    if (optionalClass) p.classList.add(optionalClass);
     element.appendChild(p);
   }
 
@@ -165,11 +182,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   PlaybackBlock.prototype.updateStatusFieldWithType = function (subscriberType) {
-    var typeMap = {
-      rtc: 'WebRTC',
-      rtmp: 'Flash',
-      hls: 'HLS'
-    }
     var message = subscriberType
                   ? 'Using ' + typeMap[subscriberType.toLowerCase()] + ' Playback' 
                   : 'Could not determine playback option.';
@@ -214,6 +226,25 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     });
   }
 
+  PlaybackBlock.prototype.handleStartError = function (error) {
+    var log = typeof error === 'string' ? error : (error.hasOwnProperty('message') ? error.message : 'ERROR');
+    this.addEventLog(log, 'event-log-error');
+    this.updateStatusFieldWithType(null);
+    this.collapse();
+    if (this.client) {
+      this.client.onPlaybackBlockStop(this);
+    }
+    if (this.subscriber) {
+//      this.subscriber.unsubscribe();
+      this.subscriber = undefined;
+      this.videoElement = undefined;
+      this.isHalted = false;
+    }
+    try {
+      window.untrackBitrate(this.handleBitrateReport);
+    } catch (e) { /* nada */ }
+  }
+
   // eslint-disable-next-line no-unused-vars
   PlaybackBlock.prototype.handleBitrateReport = function (type, report, bitrate, packetsLastSent) {
     var video = this.getVideoElement();
@@ -231,9 +262,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   PlaybackBlock.prototype.handleWatchToggle = function () {
     if (!this.subscriber) {
       this.start(this.configuration, this.playbackOrder);
-    } else {
-      this.stop();
-    }
+    } 
   }
 
   PlaybackBlock.prototype.setActive = function (isActive) {
@@ -286,6 +315,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     checkStreamManager = checkStreamManager || false;
     this.configuration = configuration;
     this.playbackOrder = playbackOrder;
+    this.requiresStreamManagerCheck = checkStreamManager;
     this.assignStreamAttributesToPlaybackConfigurations(this.streamName, getVideoElementId(this.streamName));
     if (checkStreamManager) {
       var self = this;
@@ -339,7 +369,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       })
       .catch(function (error) {
         console.error(error);
-        self.updateStatusFieldWithType(null)
+        self.handleStartError(error);
       });
     return this;
   }
@@ -354,12 +384,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       this.subscriber.unsubscribe();
       this.subscriber = undefined;
       this.videoElement = undefined;
-      this.setActive(false);
       this.isHalted = false;
     }
     try {
       window.untrackBitrate(this.handleBitrateReport);
     } catch (e) { /* nada */ }
+    this.setActive(false);
     this.collapse();
     this.clearEventLog();
     this.updateStatisticsField('');
@@ -388,8 +418,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var $el = $(this.getElement());
     this.getElement().parentNode.classList.add('stream-menu-listing-active');
     $el.find('.video-container').get(0).classList.add('video-container-active');
-    $el.find('.red5pro-subscriber').get(0).classList.remove('hidden');
-    $el.find('.frame-holder').get(0).classList.add('hidden');
+    var subscriber = $el.find('.red5pro-subscriber').get(0);
+    var frameHolder = $el.find('.frame-holder').get(0);
+    if (subscriber) subscriber.classList.remove('hidden');
+    if (frameHolder) frameHolder.classList.add('hidden');
     requestFrame(function () {
       window.scrollTo(0, $el.get(0).offsetTop);
     });

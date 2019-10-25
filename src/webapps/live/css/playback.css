@@ -241,6 +241,10 @@ body.vjs-full-window {
   font-size: 14px;
 }
 
+.event-log-error {
+  color: #db1f26;
+}
+
 .event-header {
   display: flex;
   justify-content: space-between;
