@@ -30,7 +30,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var typeMap = {
     rtc: 'WebRTC',
     rtmp: 'Flash',
-    hls: 'HLS'
+    hls: 'HLS',
+    mp4: 'MP4',
+    videojs: 'Video.JS'
   };
 
   var requestFrame = (function (time) {
@@ -44,7 +46,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   })(2000);
 
   function getVideoElementId (streamName) {
-    return ['red5pro-subscriber', streamName].join('-');
+    return ['red5pro-subscriber', streamName.split('.').join('-')].join('-');
   }
 
   function generateVideoSection (streamName) {
@@ -62,6 +64,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     videoHolder.appendChild(frameHolder);
     videoHolder.appendChild(video);
     statsField.classList.add('statistics-field');
+    statsField.classList.add('hidden');
     videoContainer.classList.add('video-container');
     videoHolder.classList.add('video-holder');
     frameHolder.classList.add('frame-holder');
@@ -176,9 +179,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   PlaybackBlock.prototype.updateStatisticsField = function (message) {
-      var $el = $(this.getElement());
-      var $reportField = $el.find('.statistics-field');
-      $reportField.text(message);
+    var $el = $(this.getElement());
+    var $reportField = $el.find('.statistics-field');
+    $reportField.removeClass('hidden');
+    $reportField.text(message);
   }
 
   PlaybackBlock.prototype.updateStatusFieldWithType = function (subscriberType) {
@@ -343,13 +347,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     if (this.client) {
       this.client.onPlaybackBlockStart(this);
     }
+    this.setActive(true);
     new red5pro.Red5ProSubscriber()
       .setPlaybackOrder(playbackOrder)
       .init(configuration)
       .then(function (subscriber) {
         self.subscriber = subscriber;
         self.subscriber.on('*', self.subscriberEventsHandler);
-        self.setActive(true);
         self.updateStatusFieldWithType(subscriber.getType())
         if (self.isHalted) {
           self.stop();
@@ -453,6 +457,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
     return this.videoElement;
   }
+
+  PlaybackBlock.prototype.getVideoElementId = getVideoElementId;
 
   PlaybackBlock.prototype.setClient = function (client) {
     this.client = client;
