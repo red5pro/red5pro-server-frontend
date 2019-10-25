@@ -30,6 +30,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var originalStart = R5PlaybackBlock.prototype.start;
   var originalHandleStartError = R5PlaybackBlock.prototype.handleStartError;
 
+  var generateFlashEmbedObject = function (id) {
+    return $('<object type="application/x-shockwave-flash" id="' + id + '" name="' + id + '" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="480" class="red5pro-subscriber red5pro-media-background red5pro-media">' +
+              '<param name="quality" value="high">' +
+              '<param name="wmode" value="opaque">' +
+              '<param name="bgcolor" value="#000000">' +
+              '<param name="allowscriptaccess" value="always">' +
+              '<param name="allowfullscreen" value="true">' +
+              '<param name="allownetworking" value="all">' +
+            '</object>').get(0);
+  }
+
   var isHLSFile = function (data) {
     return (data.urls && data.urls.hasOwnProperty('hls'));
   }
@@ -48,10 +59,31 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     return false;
   }
 
+  R5PlaybackBlock.prototype.startFlashEmbedPlayback = function () {
+    console.log('[' + this.streamName + '] :: Defaulting to Flash Embed Playback.');
+    var video = this.getVideoElement();
+    var parent = video.parentNode;
+    parent.removeChild(video);
+    var flashElement = generateFlashEmbedObject(this.getVideoElementId(this.streamName));
+    var flashvars = document.createElement('param');
+    flashvars.name = 'flashvars';
+    flashvars.value = 'stream='+this.streamName+'&'+
+                      'app='+this.configuration.rtmp.app+'&'+
+                      'host='+this.configuration.rtmp.host+'&'+
+                      'muted=false&'+
+                      'autoplay=true&'+
+                      'backgroundColor=#000000&'+
+                      'buffer=0.5&'+
+                      'autosize=true';
+    flashElement.appendChild(flashvars);
+    parent.appendChild(flashElement);
+    this.updateStatusFieldWithType('rtmp');
+    this.setActive(true);
+  }
+
   R5PlaybackBlock.prototype.startVideoJSPlayback = function (url) {
     console.log('[' + this.streamName + '] :: Defaulting to VideoJS Playback.');
-    var $element = $(this.getElement());
-    var video = $element.find('#' + this.getVideoElementId(this.streamName)).get(0);
+    var video = this.getVideoElement();
     video.classList.add('video-js');
     var source = document.createElement('source');
     source.type = 'application/x-mpegURL';
@@ -63,6 +95,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       // success.
     });
     this.updateStatusFieldWithType('videojs');
+    this.setActive(true);
   }
 
   R5PlaybackBlock.prototype.startMP4Playback = function (url) {
@@ -72,8 +105,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       paths.splice(paths.length - 1, 0, 'streams');
       url = paths.join('/');
     }
-    var $element = $(this.getElement());
-    var video = $element.find('#' + this.getVideoElementId(this.streamName)).get(0);
+    var video = this.getVideoElement();
     var source = document.createElement('source');
     source.type = 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"';
     source.src = url;
@@ -103,9 +135,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       });
       this.useFailover = true;
       originalStart.call(this, Object.assign({}, configuration, {hls:hlsConfig}), playbackOrder);
-    } else if (isFLVFile(this.streamData)) {
-      this.useFailover = true;
-      originalStart.call(this, configuration, playbackOrder);
     } else {
       this.useFailover = true;
       originalStart.call(this, configuration, playbackOrder);
@@ -114,7 +143,31 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   R5PlaybackBlock.prototype.handleStartError = function (error) {
     if (this.useFailover && isHLSFile(this.streamData)) {
-      this.startVideoJSPlayback(this.streamData.urls.hls);
+      this.useFailover = false;
+      try {
+        this.expand();
+        this.isHalted = false;
+        if (this.client) {
+          this.client.onPlaybackBlockStart(this);
+        }
+        this.startVideoJSPlayback(this.streamData.urls.hls);
+      } catch (error) {
+        console.error(error);
+        this.handleStartError(error);
+      }
+    } else if (this.useFailover && isFLVFile(this.streamData)) {
+      this.useFailover = false;
+      try {
+        this.expand();
+        this.isHalted = false;
+        if (this.client) {
+          this.client.onPlaybackBlockStart(this);
+        }
+        this.startFlashEmbedPlayback();
+      } catch (error) {
+        console.error(error);
+        this.handleStartError(error);
+      }
     } else {
       originalHandleStartError.call(this, error);
     }

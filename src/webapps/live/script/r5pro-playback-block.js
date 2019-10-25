@@ -404,7 +404,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var $el = $(this.getElement());
     var frameHolder = $el.find('.frame-holder').get(0);
     var frame = $el.find('.video-frame').get(0);
-    var video = $el.find('.red5pro-subscriber').get(0);
+    var video = this.getVideoElement();
     var context = frame.getContext('2d');
     context.clearRect(0, 0, frame.width, frame.height);
     frameHolder.classList.remove('hidden');
