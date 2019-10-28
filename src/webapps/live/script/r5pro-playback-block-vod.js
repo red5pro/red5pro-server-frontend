@@ -24,10 +24,11 @@ WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* global window, document, jQuery */
-(function (window, document, $, R5PlaybackBlock) {
+(function (window, document, $, videojs, R5PlaybackBlock) {
   'use strict';
 
   var originalStart = R5PlaybackBlock.prototype.start;
+  var originalStop = R5PlaybackBlock.prototype.stop;
   var originalHandleStartError = R5PlaybackBlock.prototype.handleStartError;
 
   var generateFlashEmbedObject = function (id) {
@@ -84,18 +85,29 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   R5PlaybackBlock.prototype.startVideoJSPlayback = function (url) {
     console.log('[' + this.streamName + '] :: Defaulting to VideoJS Playback.');
     var video = this.getVideoElement();
+    var parent = video.parentNode;
+    var videoElementClone = video.cloneNode(true);
     video.classList.add('video-js');
     var source = document.createElement('source');
     source.type = 'application/x-mpegURL';
     source.src = url.indexOf('.m3u8') === -1 ? url + '.m3u8' : url;
     video.appendChild(source);
-    new window.videojs(video, {
+    new videojs(video, {
       techOrder: ['html5', 'flash']
     }, function () {
       // success.
     });
     this.updateStatusFieldWithType('videojs');
     this.setActive(true);
+    this.subscriber = {
+      unsubscribe: function () {
+        var player = videojs.getPlayer(video);
+        if (player) {
+          player.dispose();
+          parent.appendChild(videoElementClone);
+        }
+      }
+    }
   }
 
   R5PlaybackBlock.prototype.startMP4Playback = function (url) {
@@ -134,11 +146,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         streamName: configuration.hls.streamName.split('.m3u8')[0]
       });
       this.useFailover = true;
-      originalStart.call(this, Object.assign({}, configuration, {hls:hlsConfig}), playbackOrder);
+      originalStart.call(this, Object.assign({}, configuration, {hls:hlsConfig}), ['hls']);
     } else {
       this.useFailover = true;
       originalStart.call(this, configuration, playbackOrder);
     }
+  }
+
+  R5PlaybackBlock.prototype.stop = function () {
+    this.useFailover = false;
+    originalStop.call(this);
   }
 
   R5PlaybackBlock.prototype.handleStartError = function (error) {
@@ -178,4 +195,4 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     this.forceFlashPlayback = forceFlashPlayback;
   }
 
-})(window, document, jQuery.noConflict(), window.R5PlaybackBlock);
+})(window, document, jQuery.noConflict(), window.videojs, window.R5PlaybackBlock);
