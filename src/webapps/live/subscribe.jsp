@@ -37,11 +37,7 @@
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
   LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
-  List<String> names = new ArrayList<String>();
-  names.add("one_really_long-name-because_i_can");
-  names.add("two");
-  names.add("three");// service.getLiveStreams();
-
+  List<String> names = service.getLiveStreams();
   StringBuffer ret = new StringBuffer();
   String baseUrl = protocol + "://" + ip + ":" + port;
   if(names.size() > 0) {
@@ -66,38 +62,8 @@
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link rel="stylesheet" href="lib/red5pro/red5pro-media.css">
     <link rel="stylesheet" href="css/playback.css">
-    <script>
-      // Shim so we can style in IE6/7/8
-      document.createElement('template');
-    </script>
   </head>
   <body>
-    <template id="video-playback">
-      <div class="broadcast-section">
-        <div id="video-container">
-          <div id="statistics-field" class="statistics-field hidden"></div>
-          <div id="video-holder">
-            <video id="red5pro-subscriber"
-                    controls autoplay playsinline
-                    class="red5pro-media red5pro-media-background">
-            </video>
-          </div>
-        </div>
-        <div id="event-container">
-          <div id="status-field" class="status-message"></div>
-          <div id="stream-manager-info" class="status-message hidden">Using Stream Manager Proxy.</div>
-          <div id="event-log-field" class="event-log-field">
-            <div>
-              <div class="event-header">
-                <span>Event Log:</span>
-                <button id="clear-log-button">clear</button>
-              </div>
-              <hr class="event-hr">
-            </div>
-          </div>
-        </div>
-      </div>
-    </template>
     {{> top-bar }}
     {{> navigation }}
     {{> header }}

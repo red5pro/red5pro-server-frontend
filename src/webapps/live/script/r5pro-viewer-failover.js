@@ -37,9 +37,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
   }
 
-  var statusField = document.getElementById('status-field');
-  var eventLogField = document.getElementById('event-log-field');
-  var clearLogButton = document.getElementById('clear-log-button');
+  var statusField = document.getElementsByClassName('status-field')[0];
+  var eventLogField = document.getElementsByClassName('event-log-field')[0];
+  //  var clearLogButton = document.getElementById('clear-log-button');
   var idContainer = document.getElementById('id-container');
   var videoReportElement = document.getElementById('video-report');
   var audioReportElement = document.getElementById('audio-report');
@@ -80,8 +80,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var rtmpConfig = {
     protocol: 'rtmp',
     port: 1935,
-    width: '100%',
-    height: '100%',
+    width: 640,
+    height: 480,
     backgroundColor: '#000000',
     embedWidth: window.r5proVideoWidth,
     embedHeight: window.r5proVideoHeight,
@@ -95,13 +95,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   var targetViewTech = window.r5proViewTech;
   var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
-
+  /*
   clearLogButton.addEventListener('click', function () {
     while (eventLogField.children.length > 1) {
       eventLogField.removeChild(eventLogField.lastChild);
     }
   });
-
+  */
   function onSubscribeStart (subscriber) {
     console.log('[subscriber]:: Subscriber started - ' + subscriber.getType());
     if (subscriber.getType().toLowerCase() === 'rtc') {
@@ -232,8 +232,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         case 'rtmp':
         case 'livertmp':
         case 'rtmp - videojs':
-          var holder = document.getElementById('video-holder');
-          holder.style.height = '405px';
           resolve(subscriber);
           break;
         default:

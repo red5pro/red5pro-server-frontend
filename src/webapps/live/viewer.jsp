@@ -6,7 +6,7 @@
     String stream="myStream";
     String buffer="0.5";
     String width="100%";
-    String height="100%";
+    String height="480";
     String tech=null;
     String protocol=null;
     String port=null;
@@ -80,60 +80,12 @@
     <head>
       {{> head_meta }}
       {{> resources }}
-        <title>Subscribing to <%= stream %></title>
+      <title>Subscribing to <%= stream %></title>
       <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
       <script src="lib/screenfull/screenfull.min.js"></script>
-      <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
-        <style>
-          object:focus {
-            outline:none;
-          }
-
-          #video-holder, .video-element {
-            width: <%=width%>;
-            height: <%=height%>;
-          }
-
-          #video-holder {
-            max-width: 640px;
-            margin: 0 auto;
-          }
-
-          #video-container {
-            background-color: #dbdbdb;
-            padding: 10px;
-          }
-
-          #status-field {
-            text-align: center;
-            padding: 10px;
-            color: #fff;
-            margin: 10px 0;
-          }
-
-          .status-alert {
-            background-color: rgb(227, 25, 0);
-          }
-
-          .status-message {
-            background-color: #aaa;
-          }
-
-          #event-log-field {
-            background-color: #c0c0c0;
-            border-radius: 6px;
-            padding: 10px;
-            margin: 14px;
-          }
-
-          .red5pro-media-control-bar {
-            min-height: 40px;
-          }
-
-          .hidden {
-            display: none;
-          }
-
+      <link rel="stylesheet" href="lib/red5pro/red5pro-media.css">
+      <link rel="stylesheet" href="css/playback.css">
+      <style>
           .report-field {
             display: inline-block;
             float: left;
@@ -150,19 +102,53 @@
             text-align: center;
           }
 
-          .clearfix:after {
-           content: " "; /* Older browser do not support empty content */
-           visibility: hidden;
-           display: block;
-           height: 0;
-           clear: both;
+          #id-container {
+            padding: 10px 0;
+            color: #3b3b3b;
+            text-align: center;
+            font-size: 1.6rem;
           }
 
-          #id-container {
-            background-color: #aaa;
-            color: #fff;
+          #subviewer-section-text {
             text-align: center;
-            font-size: 2rem;
+          }
+          .video-container {
+            max-width: NONE;
+          }
+          .content-section-story {
+            background-color: #dbdbdb;
+            padding-bottom: 40px;
+          }
+          .subscribe-section {
+            margin: 0;
+            flex-direction: row;
+          }
+          .subviewer-title {
+            margin: 0px;
+          }
+          .event-container {
+            margin: 10px 5% 0 5%;
+          }
+          .reports-container {
+            flex: 1;
+          }
+
+          #show-hide-reports-btn {
+            color: #ffffff;
+            background-color: #3580A2;
+            text-align: center;
+            border-radius: 0px;
+            padding: 10px;
+            cursor: pointer;
+          }
+
+          @media (max-width: 767px) {
+            .subscribe-section {
+              flex-direction: column;
+            }
+            .video-container {
+              width: 100%;
+            }
           }
       </style>
     </head>
@@ -170,36 +156,51 @@
       {{> top-bar }}
       {{> navigation }}
       {{> header }}
-      <div id="id-container" class="hidden"></div>
-      <div id="video-container">
-            <div id="video-holder">
-              <video id="red5pro-subscriber"
-                      controls="controls" autoplay="autoplay" playsinline
-                      class="red5pro-media red5pro-media-background">
-              </video>
+      <div id="viewer-section">
+        <div id="subviewer-section">
+          <div id="subviewer-section-text">
+            <h1 class="red-text subviewer-title">Live Subscribing to <span style="text-transform: none;"><%=stream%></span></h1>
+          </div>
+        </div>
+        <div class="content-section-story">
+          <div id="id-container"><p>I AM ID</p></div>
+          <div class="subscribe-section">
+            <div class="video-container">
+              <div class="statistics-field">Bitrate: 0. 0x0.</div>
+              <div class="video-holder">
+                <video id="red5pro-subscriber"
+                      controls="controls" autoplay="autoplay" playsinline muted
+                      class="red5pro-subscriber red5pro-media red5pro-media-background">
+                </video>
+              </div>
+              <div id="show-hide-reports-btn">Show Live Reports</div>
             </div>
-            <div id="status-field" class="status-message"></div>
-            <div id="reports">
-              <p><button id="show-hide-reports-btn">Show Live Reports</button></p>
-              <div id="report-container" class="hidden clearfix">
-                <div class="report-field">
-                  <h2 class="report-field_header">Video</h2>
-                  <p id="video-report_stats" class="report-field_subheader"></p>
-                  <p id="video-report" />
-                </div>
-                <div class="report-field">
-                  <h2 class="report-field_header">Audio</h2>
-                  <p id="audio-report_stats" class="report-field_subheader"></p>
-                  <p id="audio-report" />
-                </div>
+            <div id="report-container" class="reports-container hidden">
+              <div class="report-field">
+                <h3 class="report-field_header">Video</h3>
+                <p id="video-report_stats" class="report-field_subheader"></p>
+                <p id="video-report" />
+              </div>
+              <div class="report-field">
+                <h3 class="report-field_header">Audio</h3>
+                <p id="audio-report_stats" class="report-field_subheader"></p>
+                <p id="audio-report" />
               </div>
             </div>
-            <div id="event-log-field" class="event-log-field">
-              <div style="padding: 10px 0">
-                <p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>
-                <div style="clear: both;"></div>
+          </div>
+          <div class="event-container">
+            <div class="status-field status-message"></div>
+            <div class="stream-manager-info status-message hidden"></div>
+            <div class="event-log-field">
+              <div class="event-header">
+                <span>Event Log:</span>
+                <button class="event-clear-button">clear</button>
               </div>
+              <hr class="event-rule">
+              <div class="event-log">
             </div>
+          </div>
+        </div>
       </div>
       {{> es6-script-includes }}
       <script src="script/r5pro-ice-utils.js"></script>
@@ -239,6 +240,8 @@
       <script src="script/r5pro-utils.js"></script>
       <script src="script/r5pro-sm-utils.js"></script>
       <script src="script/r5pro-autoplay-utils.js"></script>
+      <script src="script/r5pro-playback-block.js"></script>
       <script src="script/r5pro-viewer-failover.js"></script>
+      {{> footer }}
     </body>
 </html>

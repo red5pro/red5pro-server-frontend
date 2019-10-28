@@ -42,26 +42,8 @@
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet"></script>
     <link rel="stylesheet" href="css/playback.css">
-    <script>
-      // Shim so we can style in IE6/7/8
-      document.createElement('template');
-    </script>
   </head>
   <body>
-    <template id="flash-playback">
-      <div class="video-container">
-            <div class="video-holder">
-              <object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" class="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">
-                <param name="quality" value="high">
-                <param name="wmode" value="opaque">
-                <param name="bgcolor" value="#000000">
-                <param name="allowscriptaccess" value="always">
-                <param name="allowfullscreen" value="true">
-                <param name="allownetworking" value="all">
-            </object>
-          </div>
-      </div>
-    </template>
     {{> top-bar }}
     {{> navigation }}
     {{> header }}

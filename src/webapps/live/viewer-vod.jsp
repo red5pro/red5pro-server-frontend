@@ -5,7 +5,7 @@
     String stream="myStream";
     String buffer="2";
     String width="100%";
-    String height="100%";
+    String height="480";
     String ice=null;
     String tech=null;
 
@@ -135,14 +135,7 @@
             var streamData = JSON.parse(streamDataStr);
             console.log('Stream data:\r\n' + JSON.stringify(streamData, null, 2));
             window.streamData = streamData;
-              } else {
-              window.streamData = {
-                name: 'todd2.flv',
-                urls: {
-                  rtmp: 'http://localhost:5080/live/todd2.flv'
-                }
-              }
-              }
+          }
 
           // writing params to global.
           window.targetHost = "<%=host%>";

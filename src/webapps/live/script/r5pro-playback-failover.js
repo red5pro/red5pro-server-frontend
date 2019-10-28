@@ -28,21 +28,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   'use strict';
 
   red5prosdk.setLogLevel('debug');
-  var flashTemplateHTML = '<div class="broadcast-section">' +
-        '<div id="video-container">' +
-            '<div id="video-holder" style="height:405px;">' +
-              '<object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">' +
-                '<param name="quality" value="high">' +
-                '<param name="wmode" value="opaque">' +
-                '<param name="bgcolor" value="#000000">' +
-                '<param name="allowscriptaccess" value="always">' +
-                '<param name="allowfullscreen" value="true">' +
-                '<param name="allownetworking" value="all">' +
-              '</object>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-
   var host = window.targetHost;
   var buffer = window.r5proBuffer;
   var targetViewTech = window.r5proViewTech;
@@ -69,43 +54,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     protocol: protocol,
     port: port
   };
-
-  function useFLVFallback (streamName) {
-    var container = document.getElementById('video-container')
-    if (container) {
-      container.remove();
-    }
-    //setup(streamName, $flashTemplate, flashTemplateHTML);
-    var flashObject = document.getElementById('red5pro-subscriber');
-      var flashvars = document.createElement('param');
-      flashvars.name = 'flashvars';
-      flashvars.value = 'stream='+streamName+'&'+
-                        'app='+baseConfiguration.app+'&'+
-                        'host='+baseConfiguration.host+'&'+
-                        'muted=false&'+
-                        'autoplay=true&'+
-                        'backgroundColor=#000000&'+
-                        'buffer=0.5&'+
-                        'autosize=true';
-    flashObject.appendChild(flashvars);
-  }
-
-  var viewPageHandler = function viewPageStream (value) {
-    var json = $('li[data-stream="' + value + '"]').data('streamitem');
-    var streamDataStr = decodeURIComponent(json);
-    var streamData = JSON.parse(streamDataStr);
-    console.log('Stream data:\r\n' + JSON.stringify(streamData, null, 2));
-
-    window.streamdata = json;
-    var pageUrl = 'viewer-vod.jsp?host=' + window.targetHost + '&stream=' + streamData.name;
-    if (targetViewTech) {
-      pageUrl += '&view=' + targetViewTech;
-    }
-    window.location = pageUrl;
-    //    window.open(pageUrl);
-  };
-
-  window.invokeViewPageStream = viewPageHandler;
 
   var $streamMenu = $('.stream-menu-content');
   var playbackBlocks = [];
