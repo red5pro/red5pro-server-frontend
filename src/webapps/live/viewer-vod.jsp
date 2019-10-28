@@ -129,13 +129,20 @@
       <script>
           // Access selected data from the `opener` window.
           var opener = window.opener;
-          if (opener) {
+          if (opener && opener.streamdata) {
             var json = opener.streamdata;
             var streamDataStr = decodeURIComponent(json);
             var streamData = JSON.parse(streamDataStr);
             console.log('Stream data:\r\n' + JSON.stringify(streamData, null, 2));
             window.streamData = streamData;
-          }
+              } else {
+              window.streamData = {
+                name: 'todd2.flv',
+                urls: {
+                  rtmp: 'http://localhost:5080/live/todd2.flv'
+                }
+              }
+              }
 
           // writing params to global.
           window.targetHost = "<%=host%>";
