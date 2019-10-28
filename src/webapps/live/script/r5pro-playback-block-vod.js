@@ -80,6 +80,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     parent.appendChild(flashElement);
     this.updateStatusFieldWithType('rtmp');
     this.setActive(true);
+    this.subscriber = {
+      unsubscribe: function () {
+        try {
+          flashElement.stop();
+        } catch (e) {
+          console.log(e.message);
+        }
+      }
+    }
   }
 
   R5PlaybackBlock.prototype.startVideoJSPlayback = function (url) {
@@ -118,12 +127,33 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       url = paths.join('/');
     }
     var video = this.getVideoElement();
-    var source = document.createElement('source');
-    source.type = 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"';
-    source.src = url;
-    video.appendChild(source);
+    var appendSource = function () {
+      var source = document.createElement('source');
+      source.type = 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"';
+      source.src = url;
+      video.appendChild(source);
+    }
+    if (video.children.length > 0) {
+      var hasSource = $(video).find('source').get(0);
+      if (!hasSource) {
+        appendSource();
+      } else {
+        try {
+          video.play();
+        } catch (e) {
+          console.log(e.message);
+        }
+      }
+    } else {
+      appendSource();
+    }
     this.updateStatusFieldWithType('mp4');
     this.setActive(true);
+    this.subscriber = {
+      unsubscribe: function () {
+        video.pause();
+      }
+    }
   }
 
   R5PlaybackBlock.prototype.start = function (configuration, playbackOrder) {
