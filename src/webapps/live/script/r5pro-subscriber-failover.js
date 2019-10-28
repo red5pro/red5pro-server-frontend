@@ -58,9 +58,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     protocol: 'rtmp',
     port: 1935,
     width: 640,
-    height: 360,
+    height: 480,
     embedWidth: '100%',
-    embedHeight: '100%',
+    embedHeight: 480,
     backgroundColor: '#000000',
     buffer: isNaN(buffer) ? 2 : buffer
   };
