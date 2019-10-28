@@ -27,7 +27,9 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
       var buildBroadcaster = buildPage('broadcast.jsp', buildSubscriber);
       var buildPlayback = buildPage('playback.jsp', buildBroadcaster);
       var buildTwoWay = buildPage('twoway.jsp', buildPlayback);
-      Builder.generateIndexPage(buildTwoWay);
+      var buildViewer = buildPage('viewer.jsp', buildTwoWay);
+      var buildViewerVOD = buildPage('viewer-vod.jsp', buildViewer);
+      Builder.generateIndexPage(buildViewerVOD);    
     });
     gulp.task(copyContentsTaskLabel, [generateTaskLabel], function(cb) {
       Builder.copyWebappContents([
