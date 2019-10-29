@@ -20,13 +20,13 @@
         {{> menu }}
       </div>
       <div id="content-section">
-          <div id="subcontent-section">
-            <div id="subcontent-section-text">
-              <h1 class="red-text">@webapp@</h1>
-            </div>
+        <div id="subcontent-section">
+          <div id="subcontent-section-text">
+            <h1 class="red-text">@webapp@</h1>
           </div>
-          <hr class="top-padded-rule">
-          <div class="content-section-story">
+        </div>
+        <hr class="top-padded-rule">
+        <div class="content-section-story">
           <p>Content Here</p>
           <hr class="top-padded-rule">
           <p>
