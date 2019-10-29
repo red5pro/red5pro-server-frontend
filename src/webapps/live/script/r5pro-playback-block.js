@@ -103,6 +103,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     eventContainer.classList.add('event-container');
     statusField.classList.add('status-field');
     statusField.classList.add('status-message');
+    statusField.classList.add('hidden');
     smField.classList.add('stream-manager-info');
     smField.classList.add('status-message');
     smField.classList.add('hidden');
@@ -181,7 +182,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   PlaybackBlock.prototype.updateStatisticsField = function (message) {
     var $el = $(this.getElement());
     var $reportField = $el.find('.statistics-field');
-    $reportField.removeClass('hidden');
+    if (message && message.length > 0) {
+      $reportField.removeClass('hidden');
+    } else {
+      $reportField.addClass('hidden');
+    }
     $reportField.text(message);
   }
 
