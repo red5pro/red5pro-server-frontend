@@ -30,8 +30,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   red5pro.setLogLevel('debug');
 
   var statusField = document.getElementsByClassName('status-field')[0];
+  var statsField = document.getElementsByClassName('statistics-field')[0];
+  var streamManagerInfo = document.getElementById('stream-manager-info');
   var eventLogField = document.getElementsByClassName('event-log-field')[0];
-  //  var clearLogButton = document.getElementById('clear-log-button');
+  var clearLogButton = document.getElementById('clear-log-button');
   var idContainer = document.getElementById('id-container');
   var videoReportElement = document.getElementById('video-report');
   var audioReportElement = document.getElementById('audio-report');
@@ -43,17 +45,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       if (isHidden) {
         reportContainer.classList.remove('hidden');
         showHideReportsButton.innerText = 'Hide Live Reports';
-        toggleReportTracking(subscriber, true);
       } else {
         reportContainer.classList.add('hidden');
         showHideReportsButton.innerText = 'Show Live Reports';
-        toggleReportTracking(subscriber, false);
       }
     })
   }
+
   var subscriptionId = 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16);
   var subscriber;
-  var view;
 
   var iceServers = window.r5proIce;
   var protocol = window.location.protocol;
@@ -62,6 +62,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   function getSocketLocationFromProtocol (protocol) {
     return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
   }
+  var targetViewTech = window.r5proViewTech;
+  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
 
   var baseConfiguration = {
     host: window.targetHost,
@@ -92,15 +94,30 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     port: port
   };
 
-  var targetViewTech = window.r5proViewTech;
-  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
-  /*
-  clearLogButton.addEventListener('click', function () {
+  function updateConfigurationsForStreamManager (serverJSON) {
+    var host = serverJSON.serverAddress;
+    var app = serverJSON.scope;
+    rtcConfig = Object.assign({}, rtcConfig, {
+      host: window.targetHost,
+      app: 'streammanager',
+      connectionParams: {
+        host: host,
+        app: app
+      }
+    });
+    rtmpConfig = Object.assign({}, rtmpConfig, {
+      host: host,
+      app: app
+    });
+  }
+
+  clearLogButton.addEventListener('click', clearLog);
+
+  function clearLog () {
     while (eventLogField.children.length > 1) {
       eventLogField.removeChild(eventLogField.lastChild);
     }
-  });
-  */
+  }
 
   function generateReportBlock (key, value, $parent) {
     var $el = $parent.find('.' + key);
@@ -130,13 +147,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       var $video = $(videoReportElement);
       var $audioStats = $('#audio-report_stats');
       var $videoStats = $('#video-report_stats');
+      var videoElement = document.getElementById('red5pro-subscriber');
+      statsField.classList.remove('hidden');
       try {
         window.trackBitrate(subscriber.getPeerConnection(), function (type, report, bitrate, packetsLastSent) {
+          statsField.innerText = 'Bitrate: ' + parseInt(bitrate, 10) + '. ' + videoElement.videoWidth + 'x' + videoElement.videoHeight;
+          videoElement.style['max-height'] = videoElement.videoHeight + 'px';
           generateReportStats(parseInt(bitrate, 10), packetsLastSent, type === 'video' ? $videoStats : $audioStats);
           Object.keys(report).forEach(function(key) {
             generateReportBlock(key, report[key], type === 'video' ? $video : $audio);
           });
-
           // with &analyze.
           if (window.r5pro_ws_send) {
             var clientId =  window.adapter.browserDetails.browser + '+' + subscriptionId;
@@ -154,6 +174,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
     } else {
       window.untrackBitrate();
+      statsField.classList.add('hidden');
     }
   }
 
@@ -176,15 +197,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var type = subscriber ? subscriber.getType().toLowerCase() : undefined;
     switch (type) {
       case 'rtc':
-        updateStatus('Using WebRTC-based Playback!');
+        updateStatus('Using WebRTC Playback');
         break;
       case 'rtmp':
-      case 'livertmp':
-      case 'rtmp - videojs':
-        updateStatus('Failover to use Flash-based Playback.');
+        updateStatus('Using Flash Playback');
         break;
       case 'hls':
-        updateStatus('Failover to use HLS-based Playback.');
+        updateStatus('Using HLS Playback');
         break;
       default:
         updateStatus('No suitable Subscriber found. WebRTC, Flash and HLS are not supported.');
@@ -198,26 +217,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       console.log(eventLog);
       addEventLog(eventLog);
     }
-
-    if (event.type === 'Subscribe.Metadata') {
-      var value = event.data.orientation; // eslint-disable-line no-unused-vars
-      if (subscriber.getType().toLowerCase() === 'hls' ||
-          subscriber.getType().toLowerCase() === 'rtc') {
-        var container = document.getElementById('video-holder');
-        var element = document.getElementById('red5pro-subscriber'); // eslint-disable-line no-unused-vars
-        if (container) {
-          // container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
-        }
-      }
-    } else if (event.type === red5pro.SubscriberEventTypes.AUTO_PLAYBACK_FAILURE) {
-    }
   }
 
   function determineSubscriber () {
     return promisify(function (resolve, reject) {
+
       var subscriber = new red5pro.Red5ProSubscriber();
       subscriber.on('*', onSubscriberEvent);
-
       var config = {
         rtc: Object.assign({}, baseConfiguration, rtcConfig),
         rtmp: Object.assign({}, baseConfiguration, rtmpConfig),
@@ -269,12 +275,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       if (window.trackAutoplayRestrictions) {
         window.trackAutoplayRestrictions(subscriber);
       }
-      if (subscriber.getType().toLowerCase() === 'rtc') {
-        showHideReportsButton.classList.remove('hidden');
-      }
       subscriber.subscribe()
       .then(function () {
           console.log('[subscriber]:: Subscriber started - ' + subscriber.getType());
+          if (subscriber.getType().toLowerCase() === 'rtc') {
+            toggleReportTracking(subscriber, true);
+            showHideReportsButton.classList.remove('hidden');
+          }
           resolve();
         })
         .catch(function (error) {
@@ -304,33 +311,39 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     });
   }
 
-  function tearDownSubscriber () {
-    if (view) {
-      view.view.src = '';
-      view = undefined;
+  function start () {
+    clearLog();
+    var fn = function () {
+      determineSubscriber()
+        .then(preview)
+        .then(subscribe)
+        .catch(function (error) {
+          var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
+          console.error('[viewer]:: Error in subscribing to stream - ' + errorStr);
+        });
     }
-    if (subscriber) {
-      subscriber.setView(undefined);
-      subscriber = undefined;
-    }
+    window.r5pro_isStreamManager()
+      .then(function () {
+        window.r5pro_requestOrigin('live', baseConfiguration.streamName)
+          .then(function (origin) {
+            updateConfigurationsForStreamManager(origin);
+            streamManagerInfo.classList.remove('hidden');
+            streamManagerInfo.innerText = 'Using Stream Manager Origin at: ' + origin.serverAddress + '.';
+            fn();
+          })
+          .catch(fn);
+      })
+      .catch(fn);
   }
 
-  determineSubscriber()
-    .then(preview)
-    .then(subscribe)
-    .catch(function (error) {
-      var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
-      console.error('[viewer]:: Error in subscribing to stream - ' + errorStr);
-    });
+  start();
 
   var shuttingDown = false;
   function shutdown () {
     if (shuttingDown) return;
     shuttingDown = true;
-    unsubscribe()
-      .then(function () {
-        tearDownSubscriber();
-      });
+    window.untrackBitrate();
+    unsubscribe();
   }
   window.addEventListener('pagehide', shutdown);
   window.addEventListener('beforeunload', shutdown);

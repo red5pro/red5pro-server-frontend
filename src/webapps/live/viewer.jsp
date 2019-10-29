@@ -98,10 +98,10 @@
           </div>
         </div>
         <div class="content-section-story">
-          <div id="id-container"><p>I AM ID</p></div>
+          <div id="id-container" class="hidden"></div>
           <div class="subscribe-section">
             <div class="video-container">
-              <div class="statistics-field">Bitrate: 0. 0x0.</div>
+              <div class="statistics-field hidden">Bitrate: 0. 0x0.</div>
               <div class="video-holder">
                 <video id="red5pro-subscriber"
                       controls="controls" autoplay="autoplay" playsinline muted
@@ -129,7 +129,7 @@
             <div class="event-log-field">
               <div class="event-header">
                 <span>Event Log:</span>
-                <button class="event-clear-button">clear</button>
+                <button id="clear-log-button" class="event-clear-button">clear</button>
               </div>
               <hr class="event-rule">
               <div class="event-log">
