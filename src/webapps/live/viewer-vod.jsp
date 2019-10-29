@@ -47,82 +47,43 @@
       <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
       <script src="lib/screenfull/screenfull.min.js"></script>
       <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
-        <style>
-          object:focus {
-            outline:none;
-          }
-
-          #video-holder, .video-element {
-            width: <%=width%>;
-            height: <%=height%>;
-          }
-
-          #video-holder {
-            max-width: 600px;
-            margin: 0 auto;
-          }
-
-          #video-container {
-            border-radius: 5px;
-            background-color: #e3e3e3;
-            padding: 10px;
-          }
-
-          #status-field {
-            text-align: center;
-            padding: 10px;
-            color: #fff;
-            margin: 10px 0;
-          }
-
-          .status-alert {
-            background-color: rgb(227, 25, 0);
-          }
-
-          .status-message {
-            background-color: #aaa;
-          }
-
-          #event-log-field {
-            background-color: #c0c0c0;
-            border-radius: 6px;
-            padding: 10px;
-            margin: 14px;
-          }
-
-      .red5pro-media-control-bar {
-        min-height: 40px;
-      }
-        </style>
+      <link rel="stylesheet" href="css/playback.css">
+      <link rel="stylesheet" href="css/viewer.css">
     </head>
     <body>
       {{> top-bar }}
       {{> navigation }}
       {{> header }}
-      <template id="flash-playback">
-        <object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">
-          <param name="quality" value="high">
-          <param name="wmode" value="opaque">
-          <param name="bgcolor" value="#000000">
-          <param name="allowscriptaccess" value="always">
-          <param name="allowfullscreen" value="true">
-          <param name="allownetworking" value="all">
-        </object>
-      </template>
-      <div id="video-container">
-            <div id="video-holder">
-              <video id="red5pro-subscriber"
-                      controls autoplay playsinline
-                      class="red5pro-media red5pro-media-background">
-              </video>
-            </div>
-            <div id="status-field" class="status-message"></div>
-            <div id="event-log-field" class="event-log-field">
-              <div style="padding: 10px 0">
-                <p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>
-                <div style="clear: both;"></div>
+      <div id="viewer-section">
+        <div id="subviewer-section">
+          <div id="subviewer-section-text">
+            <h1 class="red-text subviewer-title">VOD Subscribing to <span style="text-transform: none;"><%=stream%></span></h1>
+          </div>
+        </div>
+        <div class="content-section-story">
+          <div class="subscribe-section">
+            <div class="video-container">
+              <div class="video-holder">
+                <video id="red5pro-subscriber"
+                      controls="controls" autoplay="autoplay" playsinline muted
+                      class="red5pro-subscriber red5pro-media red5pro-media-background">
+                </video>
               </div>
             </div>
+          </div>
+          <div class="event-container">
+            <div class="status-field status-message"></div>
+            <div class="stream-manager-info status-message hidden"></div>
+            <div class="event-log-field">
+              <div class="event-header">
+                <span>Event Log:</span>
+                <button id="clear-log-button" class="event-clear-button">clear</button>
+              </div>
+              <hr class="event-rule">
+              <div class="event-log">
+            </div>
+          </div>
+        </div>
       </div>
       {{> es6-script-includes }}
       <script src="script/r5pro-ice-utils.js"></script>
@@ -154,8 +115,8 @@
       </script>
       <script src="lib/red5pro/red5pro-sdk.min.js"></script>
       <script src="script/r5pro-utils.js"></script>
-      <script src="script/r5pro-sm-utils.js"></script>
       <script src="script/r5pro-autoplay-utils.js"></script>
       <script src="script/r5pro-viewer-vod-failover.js"></script>
+      {{> footer }}
     </body>
 </html>

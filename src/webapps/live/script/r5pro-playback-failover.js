@@ -187,6 +187,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       var baseUrl = protocol + "://" + host + (port === 443 ? "" : ":" + port);
       var streamLocation =  urls[type];
       var pageLocation = baseUrl + "/live/viewer-vod.jsp?host=" + host + "&stream=" + streamName;
+      if (targetViewTech) {
+        pageLocation += '&view=' + targetViewTech;
+      }
       var listing = "<div class=\"stream-menu-listing\"" +
         "data-streamName=\"" + streamName + "\" " +
         "data-streamLocation=\"" + streamLocation + "\" " +

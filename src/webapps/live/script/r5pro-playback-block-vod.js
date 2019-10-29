@@ -220,6 +220,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   }
 
+  R5PlaybackBlock.prototype.handleExternalLink = function () {
+    var json = this.getElement().parentNode.getAttribute('data-stream');
+    if (json) {
+      window.streamdata = json;
+    }
+  }
+
   R5PlaybackBlock.prototype.setVODData = function (data, forceFlashPlayback) {
     this.streamData = data;
     this.forceFlashPlayback = forceFlashPlayback;
