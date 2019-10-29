@@ -23,107 +23,116 @@ NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM,
 WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-object:focus {
-outline:none;
+.report-field {
+  flex: 1;
+  background-color: #fff;
+  border: 1px solid #3b3b3b;
+  color: #3b3b3b;
 }
 
-#video-container, #event-container {
-flex: 1;
+.report-field_header {
+  width: 100%;
+  text-align: center;
+  background-color: #db1f26;
+  text-transform: uppercase;
+  color: #fff;
+  font-size: 1rem;
 }
 
-#video-container {
-background-color: #999999;
-height: 100%;
+.report-field_subheader {
+  width: 100%;
+  text-align: center;
+  background-color: #3b3b3b;
+  color: #fff;
+  padding: 10px;
 }
 
-#event-container {
-margin-left: 10px;
-height: 100%;
-border: #3b3b3b solid 1px;
+.report {
+  padding: 10px;
+  font-size: 0.8rem;  
 }
 
-#video-form {
-background-color: #dbdbdb;
-padding: 10px;
+.report_key {
+  display: inline-block;
+  float: left;
+}
+.report_value {
+  display: inline-block;
+  float: right;
 }
 
-.video-form-item > label {
-text-align: right;
-margin-right: 10px;
-min-width: 120px;
-display: inline-block;
-font-size: 14px;
+.report-field:nth-child(even) {
+  margin-left: 10px;
 }
 
-#video-holder {
-line-height: 0px;
+#id-container {
+  padding: 10px 0;
+  color: #3b3b3b;
+  text-align: center;
+  font-size: 1.6rem;
 }
 
-#status-field {
-text-align: center;
-padding: 10px;
-color: #fff;
-background-color: #999;
+#subviewer-section-text {
+  text-align: center;
 }
 
-#stream-manager-info {
-padding: 10px;
-background-color: #dbdbdb;
+.video-container {
+  max-width: NONE;
 }
 
-#statistics-field {
-text-align: center;
-padding: 10px;
-background-color: #3b3b3b;
-color: #dbdbdb;
+.content-section-story {
+  background-color: #dbdbdb;
+  padding-bottom: 40px;
 }
 
-#start-stop-button {
-color: #ffffff;
-background-color: #3580A2;
-text-align: center;
-border-radius: 0px;
-padding: 10px;
+.subscribe-section {
+  margin: 10px 5% 0 5%;
+  flex-direction: row;
 }
 
-.button-enabled {
-cursor: pointer;
+.subviewer-title {
+  margin: 0px;
 }
 
-.button-disabled {
-opacity: 0.5;
-pointer-events: none;
+.event-container {
+  margin: 10px 5% 0 5%;
 }
 
-#event-log-field {
-padding: 10px;
+.reports-container {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
 }
 
-.notify-callout {
-margin: 0px;
-padding: 26px 26px;
-background-color: #dbdbdb
-}
-
-.video-element {
-width: 100%;
-}
-
-.event-header {
-display: flex;
-justify-content: space-between;
-}
-
-.event-hr {
-display: block;
-height: 1px;
-border: 0;
-border-top: 1px solid #dbdbdb;
+#show-hide-reports-btn {
+  color: #ffffff;
+  background-color: #3580A2;
+  text-align: center;
+  border-radius: 0px;
+  padding: 10px;
+  cursor: pointer;
 }
 
 @media (max-width: 767px) {
-#event-container {
-  margin-left: 0;
-  margin-top: 20px;
+  .subscribe-section {
+    flex-direction: column;
+  }
+  .video-container {
+    width: 100%;
+  }
+  .reports-container {
+    margin-top: 20px;
+    margin-left: 0px;
+  }
 }
+
+@media (max-width: 549px) {
+  .reports-container {
+    flex-direction: column;
+  }
+  .report-field:nth-child(even) {
+    margin-left: 0px;
+    margin-top: 10px;
+  }
 }

@@ -23,19 +23,11 @@ NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM,
 WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* global window, document */
-(function (window, document, promisify, red5pro) {
+/* global window, document, jQuery */
+(function (window, document, $, promisify, red5pro) {
   'use strict';
 
   red5pro.setLogLevel('debug');
-  var iceServers = window.r5proIce;
-
-  var protocol = window.location.protocol;
-  var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
-  protocol = protocol.substring(0, protocol.lastIndexOf(':'));
-  function getSocketLocationFromProtocol (protocol) {
-    return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
-  }
 
   var statusField = document.getElementsByClassName('status-field')[0];
   var eventLogField = document.getElementsByClassName('event-log-field')[0];
@@ -51,9 +43,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       if (isHidden) {
         reportContainer.classList.remove('hidden');
         showHideReportsButton.innerText = 'Hide Live Reports';
+        toggleReportTracking(subscriber, true);
       } else {
         reportContainer.classList.add('hidden');
         showHideReportsButton.innerText = 'Show Live Reports';
+        toggleReportTracking(subscriber, false);
       }
     })
   }
@@ -61,21 +55,27 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var subscriber;
   var view;
 
+  var iceServers = window.r5proIce;
+  var protocol = window.location.protocol;
+  var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
+  protocol = protocol.substring(0, protocol.lastIndexOf(':'));
+  function getSocketLocationFromProtocol (protocol) {
+    return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
+  }
+
   var baseConfiguration = {
     host: window.targetHost,
     app: window.r5proApp,
-    streamName: window.r5proStreamName,
-    buffer: isNaN(window.r5proBuffer) ? 2 : window.r5proBuffer,
+    streamName: window.r5proStreamName
+  };
+  var rtcConfig = {
+    protocol: window.targetProtocol ? window.targetProtocol : getSocketLocationFromProtocol(protocol).protocol,
+    port: window.targetPort ? window.targetPort : getSocketLocationFromProtocol(protocol).port,
     rtcConfiguration: {
       iceServers: iceServers,
       iceCandidatePoolSize: 2,
       bundlePolicy: 'max-bundle'
     }
-  };
-  var rtcConfig = {
-    protocol: window.targetProtocol ? window.targetProtocol : getSocketLocationFromProtocol(protocol).protocol,
-    port: window.targetPort ? window.targetPort : getSocketLocationFromProtocol(protocol).port,
-    subscriptionId: subscriptionId
   };
   var rtmpConfig = {
     protocol: 'rtmp',
@@ -85,12 +85,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     backgroundColor: '#000000',
     embedWidth: window.r5proVideoWidth,
     embedHeight: window.r5proVideoHeight,
-    mimeType: 'rtmp/flv'
+    buffer: isNaN(window.r5proBuffer) ? 2 : window.r5proBuffer
   };
   var hlsConfig = {
     protocol: protocol,
-    port: port,
-    mimeType: 'application/x-mpegURL'
+    port: port
   };
 
   var targetViewTech = window.r5proViewTech;
@@ -102,21 +101,42 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   });
   */
-  function onSubscribeStart (subscriber) {
-    console.log('[subscriber]:: Subscriber started - ' + subscriber.getType());
-    if (subscriber.getType().toLowerCase() === 'rtc') {
+
+  function generateReportBlock (key, value, $parent) {
+    var $el = $parent.find('.' + key);
+    if ($el.length > 0) {
+      $el.text(value);
+    } else {
+      $parent.append('<p><span class="report_key">' + key + '</span>:<span class="report_value ' + key + '">' + value + '</span></p>');
+    }
+  }
+
+  function generateReportStats (bitrate, packets, $parent) {
+    var $b = $parent.find('.bitrate');
+    var $p = $parent.find('.packets');
+    if ($b.length > 0 && $p.length > 0) {
+      $b.text(bitrate);
+      $p.text(packets);
+    } else {
+    $parent.append('<span>Bitrate: </span><span class="bold bitrate">' + bitrate + '</span>' +
+                    '<span>. Packets Last: </span><span class="bold packets">' + packets + '</span>' + 
+                    '<span>.</span>');
+    }
+  }
+
+  function toggleReportTracking (subscriber, turnOn) {
+    if (subscriber && turnOn) {
+      var $audio = $(audioReportElement);
+      var $video = $(videoReportElement);
+      var $audioStats = $('#audio-report_stats');
+      var $videoStats = $('#video-report_stats');
       try {
         window.trackBitrate(subscriber.getPeerConnection(), function (type, report, bitrate, packetsLastSent) {
-          var el = document.getElementById(type + '-report_stats');
-          if (el) {
-            el.innerHTML = '<span>Bitrate: <strong>' + parseInt(bitrate, 10) + '</strong>. Packets Last: <strong>' + packetsLastSent + '<strong>.</span>';
-          }
-          if (videoReportElement && type === 'video') {
-            videoReportElement.innerText = JSON.stringify(report, null, 2);
-          }
-          if (audioReportElement && type === 'audio') {
-            audioReportElement.innerText = JSON.stringify(report, null, 2);
-          }
+          generateReportStats(parseInt(bitrate, 10), packetsLastSent, type === 'video' ? $videoStats : $audioStats);
+          Object.keys(report).forEach(function(key) {
+            generateReportBlock(key, report[key], type === 'video' ? $video : $audio);
+          });
+
           // with &analyze.
           if (window.r5pro_ws_send) {
             var clientId =  window.adapter.browserDetails.browser + '+' + subscriptionId;
@@ -132,6 +152,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       } catch (e) {
         //
       }
+    } else {
+      window.untrackBitrate();
     }
   }
 
@@ -247,9 +269,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       if (window.trackAutoplayRestrictions) {
         window.trackAutoplayRestrictions(subscriber);
       }
+      if (subscriber.getType().toLowerCase() === 'rtc') {
+        showHideReportsButton.classList.remove('hidden');
+      }
       subscriber.subscribe()
       .then(function () {
-          onSubscribeStart(subscriber);
+          console.log('[subscriber]:: Subscriber started - ' + subscriber.getType());
           resolve();
         })
         .catch(function (error) {
@@ -314,5 +339,5 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     console.log('[RTMP SUBSCRIBER]:: ' + message);
   };
 
-})(window, document, window.promisify, window.red5prosdk);
+})(window, document, jQuery.noConflict(), window.promisify, window.red5prosdk);
 

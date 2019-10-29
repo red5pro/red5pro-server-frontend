@@ -85,72 +85,7 @@
       <script src="lib/screenfull/screenfull.min.js"></script>
       <link rel="stylesheet" href="lib/red5pro/red5pro-media.css">
       <link rel="stylesheet" href="css/playback.css">
-      <style>
-          .report-field {
-            display: inline-block;
-            float: left;
-            margin: 0 30px;
-          }
-
-          .report-field_header {
-            width: 100%;
-            text-align: center;
-          }
-
-          .report-field_subheader {
-            width: 100%;
-            text-align: center;
-          }
-
-          #id-container {
-            padding: 10px 0;
-            color: #3b3b3b;
-            text-align: center;
-            font-size: 1.6rem;
-          }
-
-          #subviewer-section-text {
-            text-align: center;
-          }
-          .video-container {
-            max-width: NONE;
-          }
-          .content-section-story {
-            background-color: #dbdbdb;
-            padding-bottom: 40px;
-          }
-          .subscribe-section {
-            margin: 0;
-            flex-direction: row;
-          }
-          .subviewer-title {
-            margin: 0px;
-          }
-          .event-container {
-            margin: 10px 5% 0 5%;
-          }
-          .reports-container {
-            flex: 1;
-          }
-
-          #show-hide-reports-btn {
-            color: #ffffff;
-            background-color: #3580A2;
-            text-align: center;
-            border-radius: 0px;
-            padding: 10px;
-            cursor: pointer;
-          }
-
-          @media (max-width: 767px) {
-            .subscribe-section {
-              flex-direction: column;
-            }
-            .video-container {
-              width: 100%;
-            }
-          }
-      </style>
+      <link rel="stylesheet" href="css/viewer.css">
     </head>
     <body>
       {{> top-bar }}
@@ -173,18 +108,18 @@
                       class="red5pro-subscriber red5pro-media red5pro-media-background">
                 </video>
               </div>
-              <div id="show-hide-reports-btn">Show Live Reports</div>
+              <div id="show-hide-reports-btn" class="hidden">Show Live Reports</div>
             </div>
             <div id="report-container" class="reports-container hidden">
               <div class="report-field">
-                <h3 class="report-field_header">Video</h3>
-                <p id="video-report_stats" class="report-field_subheader"></p>
-                <p id="video-report" />
+                <div id="video-report_stats" class="statistics-field"></div>
+                <div class="report-field_header">Video</div>
+                <div id="video-report" class="report"></div>
               </div>
               <div class="report-field">
-                <h3 class="report-field_header">Audio</h3>
-                <p id="audio-report_stats" class="report-field_subheader"></p>
-                <p id="audio-report" />
+                <div id="audio-report_stats" class="statistics-field"></div>
+                <div class="report-field_header">Audio</div>
+                <div id="audio-report" class="report"></div>
               </div>
             </div>
           </div>

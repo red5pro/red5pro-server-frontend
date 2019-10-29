@@ -394,7 +394,7 @@ a.link:hover {
 }
 
 .hidden {
-  display: none;
+  display: none!important;
 }
 .unhide {
   display: block;
