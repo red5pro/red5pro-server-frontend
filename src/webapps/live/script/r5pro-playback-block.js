@@ -49,6 +49,28 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     return ['red5pro-subscriber', streamName.split('.').join('-')].join('-');
   }
 
+  function removeLoadingIcon (video) {
+    var parent = video ? video.parentNode : null;
+    if (!parent) return;
+    var $p = $(parent);
+    var $icon = $p.find('.loading-icon');
+    if ($icon.length === 0) {
+      removeLoadingIcon($p.get(0));
+      return;
+    }
+    $icon.remove();
+  }
+
+  function addLoadingIcon (video) {
+    var parent = video ? video.parentNode : null;
+    if (!parent) return;
+    var loadingIcon = document.createElement('img');
+    loadingIcon.src = 'images/loading.svg';
+    loadingIcon.classList.add('stream-play-button');
+    loadingIcon.classList.add('loading-icon');
+    parent.appendChild(loadingIcon);
+  }
+
   function generateVideoSection (streamName) {
     var videoContainer = document.createElement('div');
     var statsField = document.createElement('div');
@@ -143,6 +165,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     this.requiresStreamManagerCheck = false;
     this.client = undefined;
     this.handleStartError = this.handleStartError.bind(this);
+    this.handleStreamPlayback = this.handleStreamPlayback.bind(this);
     this.subscriberEventsHandler = this.subscriberEventsHandler.bind(this);
     this.handleBitrateReport = this.handleBitrateReport.bind(this);
     window.r5pro_registerIpChangeListener(this.handleHostIpChange.bind(this));
@@ -155,11 +178,23 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   }
 
+  PlaybackBlock.prototype.handleStreamPlayback = function () {
+    removeLoadingIcon(this.getVideoElement());
+    this.getVideoElement().removeEventListener('canplay', this.handleStreamPlayback);
+  }
+
   PlaybackBlock.prototype.subscriberEventsHandler = function (event) {
     var eventLog = '[Red5ProSubscriber] ' + event.type + '.';
     if (event.type !== 'Subscribe.Time.Update') {
       console.log(eventLog);
       this.addEventLog(event.type);
+      if (event.type === 'Subscribe.Start') {
+        if (event.subscriber.getType().toLowerCase() === 'rtmp') {
+          removeLoadingIcon(this.getVideoElement());
+        } else {
+          this.getVideoElement().addEventListener('canplay', this.handleStreamPlayback);
+        }
+      }
     }
   }
 
@@ -239,6 +274,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var log = typeof error === 'string' ? error : (error.hasOwnProperty('message') ? error.message : 'ERROR');
     this.addEventLog(log, 'event-log-error');
     this.updateStatusFieldWithType(null);
+    removeLoadingIcon(this.getVideoElement());
     this.collapse();
     if (this.client) {
       this.client.onPlaybackBlockStop(this);
@@ -357,6 +393,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       .setPlaybackOrder(playbackOrder)
       .init(configuration)
       .then(function (subscriber) {
+        addLoadingIcon(self.getVideoElement());
         self.subscriber = subscriber;
         self.subscriber.on('*', self.subscriberEventsHandler);
         self.updateStatusFieldWithType(subscriber.getType())
@@ -386,6 +423,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   PlaybackBlock.prototype.stop = function () {
     this.isHalted = true;
     this.capture();
+    removeLoadingIcon(this.getVideoElement());
     if (this.client) {
       this.client.onPlaybackBlockStop(this);
     }

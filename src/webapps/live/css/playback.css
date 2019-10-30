@@ -216,6 +216,7 @@ body.vjs-full-window {
 
 .video-holder {
   line-height: 0px;
+  position: relative;
 }
 
 .video-frame {

@@ -311,10 +311,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var type = publisher ? publisher.getType().toLowerCase() : undefined;
     switch (type) {
       case 'rtc':
-        updateStatus('Using WebRTC-based Publisher!');
+        updateStatus('Using WebRTC Publisher');
         break;
       case 'rtmp':
-        updateStatus('Failover to use Flash-based Publisher.');
+        updateStatus('Using Flash Publisher.');
         break;
       default:
         updateStatus('No suitable Publisher found. WebRTC & Flash not supported.');
