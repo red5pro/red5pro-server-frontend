@@ -122,6 +122,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         }
         navigator.mediaDevices.getUserMedia(baseConfiguration.mediaConstraints)
           .then(function (stream) {
+            stream.getVideoTracks().forEach(function (track) {
+              cameraSelect.value = track.getSettings().deviceId;
+            });
             resolve(stream);
           })
           .catch(function (error) {
