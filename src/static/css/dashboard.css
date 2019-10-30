@@ -1,0 +1,297 @@
+@font-face {
+  font-family: 'Lato';
+  src: url('../fonts/Lato-Regular.ttf'), url('http://fonts.googleapis.com/css?family=Lato:400,700');
+  src: url('../fonts/fontawesome-webfont.eot?v=4.0.3');
+  src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.0.3') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff?v=4.0.3') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.0.3') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.0.3#fontawesomeregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lato Bold';
+  src: url('../fonts/Lato-Bold.ttf'), url('http://fonts.googleapis.com/css?family=Lato:400,700');
+  font-weight: normal;
+  font-style: normal;
+}
+
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+  font-family: 'Lato', 'Times New Roman';
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+p {
+    margin: 0 0 10px;
+}
+
+h1 {
+  font-weight: 400;
+  font-size: 42px;
+  color: #444;
+  margin: 0;
+}
+
+h2 {
+  font-weight: 400;
+  font-size: 24px;
+  color: #E31900;
+}
+
+h3 {
+  font-weight: 400;
+  font-size: 20px;
+  color: #a8a8a8;
+}
+
+h4 {
+  text-align: center;
+  font-size: 20px;
+  margin-top: 0;
+  color: #a8a8a8;
+  font-weight: 400;
+}
+hr {
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
+
+header {
+  width: 100%;
+  margin: auto;
+  overflow: hidden;
+  bottom: 0;
+  right: 0;
+}
+header a{
+  float: right;
+  text-decoration: none;
+  padding: 4px 6px 4px 6px;
+  font-size: 16px;
+  color: #a8a8a8;
+}
+header a:hover {
+  color: #E31900;
+  cursor: pointer;
+}
+a {
+  color: #a8a8a8;
+  float: right;
+  margin: 0;
+  padding: 10px;
+}
+a:hover {
+  color: #E31900;
+  cursor: pointer;
+}
+.position-relative {
+  position: relative;
+}
+.position-absolute {
+  position: absolute;
+}
+.bottom{
+  bottom: 0;
+  margin-bottom: 0;
+}
+.right{
+  right:0;
+  margin-right: 0;
+}
+.top {
+  top: 0;
+  margin-top: 0 !important;
+}
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right;
+}
+.float-center {
+  float: left;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+.center-text {
+  text-align: center
+}
+.black-text {
+  color: #444;
+}
+.red-text {
+  color: rgb(227, 25, 0);
+}
+
+.white-text {
+  color: rgb(255, 255, 255);
+}
+
+.small-font-size {
+  font-size: 12px;
+}
+
+.medium-font-size {
+  font-size: 16px;
+}
+
+.clear-fix {
+  overflow: auto;
+}
+
+.clear-fix:after {
+    clear: both;
+}
+
+.clear-fix:before, .clear-fix:after {
+    display: table;
+    content: " ";
+}
+.container {
+  width: 100%;
+}
+.container .img-link {
+  margin: 0;
+  padding: 0;
+  float: none;
+}
+.row {
+  overflow: hidden;
+  margin: auto;
+  width: 90%;
+  margin-top: 2%;
+}
+.wide{
+  width: 100%;
+}
+.one-fifth-col {
+  width:20%;
+}
+.four-fifth-col{
+  width: 80%;
+}
+.one-half-col{
+  width: 50%;
+}
+.one-third-col{
+  width: 30%;
+  text-align: center;
+}
+.two-third-col{
+  width: 70%;
+}
+table {
+  margin: auto;
+  font-size: 16px;
+}
+table tbody tr td:first-child {
+  color: #a8a8a8;
+  text-align: left;
+}
+table tbody tr td:nth-child(2) {
+  color: #E31900;
+  text-align: left
+}
+video {
+  background-color: black;
+  margin-bottom: 5%;
+}
+
+button {
+  border: solid #a8a8a8;
+  color: white;
+  border-width: 0px;
+  padding: 2px;
+  background-color: #a8a8a8;
+  border-radius: 3px;
+  margin: 3% auto;
+  font-size: 16px;
+  display: block;
+  outline: none;
+}
+button:hover {
+  background-color: #E31900;
+  cursor: pointer;
+}
+.active {
+}
+.activeTable{
+  border: solid 2px;
+  border-color: #a8a8a8;
+  width: 100%;
+  overflow: scroll;
+  height: 100%;
+  max-width: 100%;
+  word-break: break-all;
+  display:block;
+  max-height: 500px;
+}
+.activeTableBody {
+  margin: 0;
+  max-width: 100%;
+}
+.activeTable .activeTableBody tr td {
+  color: #a8a8a8;
+  max-width: 100%;
+}
+.activeTable .activeTableBody tr td:hover {
+  color: #E31900;
+  cursor: pointer;
+}
+
+.logo {
+  width: 50%;
+}
+.video-js {
+  width: 100%;
+  height: 100%;
+}
+.vjs-tech{
+  width: 100%;
+  height: 100%;
+}
+.vjs-control-bar{
+  display: none;
+}
+.vjs-hidden{
+  display: none;
+}
+.vjs-big-play-button{
+  display: none;
+}
+
+#streamVid_Flash_api{
+
+}
+
+.dashboard header a.dashboard {
+  color: #E31900;
+}
+
+.clients header a.clients {
+  color: #E31900;
+}
+.vod header a.vod {
+  color: #E31900;
+}
+.no-padding{
+  padding: 0;
+}
+.no-margin{
+  margin: 0;
+}
+
+#mapData header .map {
+  color: #E31900;
+}
+
+#streamData header .stream {
+  color: #E31900;
+}

@@ -1,0 +1,62 @@
+<beans xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+    	http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
+        
+    <context:annotation-config/>
+    <context:component-scan base-package="com.red5pro.services.*" />	
+    
+    
+    <bean id="gsonBuilder" class="com.google.gson.GsonBuilder">
+        <property name="dateFormat" value="yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'" />
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" ref="gsonBuilder" />
+        <property name="targetMethod" value="excludeFieldsWithoutExposeAnnotation" />
+    </bean>
+
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="com.red5pro.services.api.mvc.http.converter.GsonHttpMessageConverter">
+            	<property name="namingPolicy" value="LOWERCASEWITHUNDERSCORES" />
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+	
+	<mvc:resources mapping="/images/**" location="/images/" />
+	<mvc:resources mapping="/scripts/**" location="/layout/" />
+	<mvc:resources mapping="/css/**" location="/css/" />
+	<mvc:resources mapping="/js/**" location="/js/" />
+	
+	
+	<!--  custom security implementation  -->
+	<import resource="security-config.xml" />
+	
+    
+	
+	<!--  core api services provider -->
+	<bean id="apiServices" class=" com.red5pro.services.api.impl.ApiServices" scope="singleton">
+	
+	</bean>	
+	
+	
+	
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix">
+            <value>/WEB-INF/pages/</value>
+        </property>
+        <property name="suffix">
+            <value>.jsp</value>
+        </property>
+    </bean>
+
+</beans>
