@@ -40,6 +40,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   var bitrateInterval = 0;
+  var vRegex = /VideoStream/;
+  var aRegex = /AudioStream/;
 
   // Based on https://github.com/webrtc/samples/blob/gh-pages/src/content/peerconnection/bandwidth/js/main.js
   window.trackBitrate = function (connection, cb, resolutionCb) {
@@ -59,7 +61,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               (report.type === 'ssrc' && report.bytesSent)) {
             bytes = report.bytesSent;
             packets = report.packetsSent;
-            if ((report.mediaType === 'video' || report.id.match(/VideoStream/))) {
+            if ((report.mediaType === 'video' || report.id.match(vRegex))) {
               if (lastOutboundVideoResult && lastOutboundVideoResult.get(report.id)) {
                 // calculate bitrate
                 var bitrate = 8 * (bytes - lastOutboundVideoResult.get(report.id).bytesSent) /
@@ -77,7 +79,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               (report.type === 'ssrc' && report.bytesReceived)) {
             bytes = report.bytesReceived;
             packets = report.packetsReceived;
-            if ((report.mediaType === 'video' || report.id.match(/VideoStream/))) {
+            if ((report.mediaType === 'video' || report.id.match(vRegex))) {
               if (lastInboundVideoResult && lastInboundVideoResult.get(report.id)) {
                 // calculate bitrate
                 bitrate = 8 * (bytes - lastInboundVideoResult.get(report.id).bytesReceived) /
@@ -87,7 +89,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               }
               lastInboundVideoResult = res;
             }
-            else if ((report.mediaType === 'audio' || report.id.match(/AudioStream/))) {
+            else if ((report.mediaType === 'audio' || report.id.match(aRegex))) {
               if (lastInboundAudioResult && lastInboundAudioResult.get(report.id)) {
                 // calculate bitrate
                 bitrate = 8 * (bytes - lastInboundAudioResult.get(report.id).bytesReceived) /
@@ -99,7 +101,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             }
           }
           else if (resolutionCb && report.type === 'track' && report.kind === 'video') {
-            resolutionCb(report.frameWidth, report.frameHeight);
+            if (report.frameWidth > 0 || report.frameHeight > 0) {
+              resolutionCb(report.frameWidth, report.frameHeight);
+            }
           }
         });
       });
