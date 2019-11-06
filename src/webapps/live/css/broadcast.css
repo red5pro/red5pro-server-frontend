@@ -67,6 +67,7 @@ background-color: #999;
 }
 
 #stream-manager-info {
+text-align: center;
 padding: 10px;
 background-color: #dbdbdb;
 }

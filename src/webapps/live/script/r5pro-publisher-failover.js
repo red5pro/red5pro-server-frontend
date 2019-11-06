@@ -145,21 +145,25 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
   });
 
-  function updateConfigurationsForStreamManager (serverJSON) {
+  function updateConfigurationsForStreamManager (serverJSON, publisher) {
     var host = serverJSON.serverAddress;
     var app = serverJSON.scope;
-    rtcConfig = Object.assign({}, rtcConfig, {
-      host: window.targetHost,
-      app: 'streammanager',
-      connectionParams: {
+    var isRTC = publisher.getType().toLowerCase() === 'rtc';
+    if (isRTC) {
+      publisher.overlayOptions({
+        host: window.targetHost,
+        app: 'streammanager',
+        connectionParams: {
+          host: host,
+          app: app
+        }
+      });
+    } else {
+      publisher.overlayOptions({
         host: host,
         app: app
-      }
-    });
-    rtmpConfig = Object.assign({}, rtmpConfig, {
-      host: host,
-      app: app
-    });
+      });
+    }
   }
 
   function getPublishMode () {
@@ -389,7 +393,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       .then(function () {
         window.r5pro_requestOrigin('live', getStreamName())
           .then(function (origin) {
-            updateConfigurationsForStreamManager(origin);
+            updateConfigurationsForStreamManager(origin, publisher);
             streamManagerInfo.classList.remove('hidden');
             streamManagerInfo.innerText = 'Using Stream Manager Origin at: ' + origin.serverAddress + '.';
             fn();
@@ -455,7 +459,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var streamName = getStreamName();
     var isRTC = publisher.getType().toLowerCase() === 'rtc';
     publisher.overlayOptions({
-      host: window.targetHost,
       streamMode: mode,
       streamName: streamName
     });
