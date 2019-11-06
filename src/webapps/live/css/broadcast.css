@@ -78,12 +78,15 @@ background-color: #3b3b3b;
 color: #dbdbdb;
 }
 
-#start-stop-button {
-color: #ffffff;
-background-color: #3580A2;
-text-align: center;
-border-radius: 0px;
-padding: 10px;
+.start-stop-button {
+  color: #ffffff;
+  background-color: #3580A2;
+  text-align: center;
+  border-radius: 0px;
+  padding: 10px;
+  width: 100%;
+  font-size: 1em;
+  padding: 1em;
 }
 
 .button-enabled {

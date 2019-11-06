@@ -114,7 +114,9 @@
                         class="video-element">
                 </video>
               </div>
-              <div id="start-stop-button" class="button-disabled">Start Broadcast</div>
+              <div>
+                <button id="start-stop-button" class="start-stop-button button-disabled">Start Broadcast</button>
+              </div>
             </div>
             <div id="event-container">
               <div id="status-field" class="status-message"></div>
