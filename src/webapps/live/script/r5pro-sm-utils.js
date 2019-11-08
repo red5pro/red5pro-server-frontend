@@ -97,4 +97,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     return streamManagerRequest(url);
   }
 
+  window.r5pro_requestLiveStreams = function (app) {
+    return window.promisify(function (resolve, reject) {
+      var url = apiEndpoint + '/event/list';
+      streamManagerRequest(url)
+        .then(function (jsonData) {
+          var appFiltered = jsonData.filter(function (stream) {
+            return stream.scope === app && stream.type === 'edge';
+          });
+          resolve(appFiltered);
+        })
+        .catch(reject);
+    });
+  }
+
 })(window, window.fetch);

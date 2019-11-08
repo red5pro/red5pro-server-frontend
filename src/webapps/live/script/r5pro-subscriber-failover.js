@@ -83,25 +83,65 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       console.log(playbackBlock);
     }
   }
-  var $listing = $('.stream-menu-listing');
-  if ($listing && $listing.length > 0) {
-    var i = 0, length = $listing.length;
-    for (i; i < length; i++) {
-      var $item = $listing[i];
-      var name = $item.getAttribute('data-streamName');
-      var page = $item.getAttribute('data-pageLocation');
-      var location = $item.getAttribute('data-streamLocation');
-      var block = new R5PlaybackBlock(name, name, location, page);
-      block.setClient(playbackBlockClient);
-      $item.append(block.create().getElement());
-      block.init(Object.assign({}, baseConfiguration, {
-        rtc: Object.assign({}, baseConfiguration, rtcConfiguration),
-        rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
-        hls: Object.assign({}, baseConfiguration, hlsConfiguration)
-      }), playbackOrder, true);
-      playbackBlocks.push(block);
+
+  function generatePlaybackBlocks () {
+    var $listing = $('.stream-menu-listing');
+    if ($listing && $listing.length > 0) {
+      var i = 0, length = $listing.length;
+      for (i; i < length; i++) {
+        var $item = $listing[i];
+        var name = $item.getAttribute('data-streamName');
+        var page = $item.getAttribute('data-pageLocation');
+        var location = $item.getAttribute('data-streamLocation');
+        var block = new R5PlaybackBlock(name, name, location, page);
+        block.setClient(playbackBlockClient);
+        $item.append(block.create().getElement());
+        block.init(Object.assign({}, baseConfiguration, {
+          rtc: Object.assign({}, baseConfiguration, rtcConfiguration),
+          rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
+          hls: Object.assign({}, baseConfiguration, hlsConfiguration)
+        }), playbackOrder, true);
+        playbackBlocks.push(block);
+      }
     }
   }
+
+  generatePlaybackBlocks();
+
+  // If hosted on a stream manager, access and replace.
+  window.r5pro_isStreamManager()
+    .then(function () {
+      return window.r5pro_requestLiveStreams('live');
+    })
+    .then(function (streamList) {
+      var menuContent = document.getElementsByClassName('stream-menu-content')[0];
+      var elements = streamList.map(function (streamData) {
+        var name = streamData.name;
+        var streamLocation = 'http://' + streamData.serverAddress + ':' + port + '/' + streamData.scope + '/' + name;
+        var pageLocation = protocol + '://' + host + ':' + port + '/live/viewer.jsp?host=' + host + '&stream=' + name;
+        var div = document.createElement('div');
+        div.classList.add('stream-menu-listing');
+        div.setAttribute('data-streamName', name);
+        div.setAttribute('data-streamLocation', streamLocation);
+        div.setAttribute('data-pageLocation', pageLocation);
+        return div;
+      });
+      if (menuContent) {
+        while (menuContent.hasChildNodes()) {
+          menuContent.removeChild(menuContent.lastChild);
+        }
+        if (elements.length > 0) {
+          for (var i = 0; i < elements.length; i++) {
+            menuContent.appendChild(elements[i]);
+          }
+        } else {
+          menuContent.innerHTML = '<p class="no-streams-entry">No streams found</p>' +
+            '<p style="margin-top: 20px;">You can begin a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=' + host + '" target="_blank">Broadcast page</a>.</p>';
+
+        }
+      }
+      generatePlaybackBlocks();
+    })
 
   var shuttingDown = false;
   function shutdown () {
