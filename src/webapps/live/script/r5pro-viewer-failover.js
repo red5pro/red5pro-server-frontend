@@ -29,6 +29,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   red5pro.setLogLevel('debug');
 
+  var loadingIcon = document.getElementsByClassName('loading-icon')[0];
   var statusField = document.getElementsByClassName('status-field')[0];
   var statsField = document.getElementsByClassName('statistics-field')[0];
   var streamManagerInfo = document.getElementById('stream-manager-info');
@@ -219,6 +220,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   }
 
+  function trackLoadingIcon (elementId) {
+    document.getElementById(elementId).oncanplay = removeLoadingIcon;
+  }
+
+  function removeLoadingIcon () {
+    if (loadingIcon && loadingIcon.parentNode) {
+      loadingIcon.parentNode.removeChild(loadingIcon);
+    }
+  }
+
   function determineSubscriber () {
     return promisify(function (resolve, reject) {
 
@@ -279,8 +290,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       .then(function () {
           console.log('[subscriber]:: Subscriber started - ' + subscriber.getType());
           if (subscriber.getType().toLowerCase() === 'rtc') {
+            trackLoadingIcon(subscriber.getOptions().mediaElementId);
             toggleReportTracking(subscriber, true);
             showHideReportsButton.classList.remove('hidden');
+          } else {
+            removeLoadingIcon();
           }
           resolve();
         })
@@ -318,6 +332,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         .then(preview)
         .then(subscribe)
         .catch(function (error) {
+          removeLoadingIcon();
           var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
           console.error('[viewer]:: Error in subscribing to stream - ' + errorStr);
         });

@@ -107,6 +107,7 @@
                       controls="controls" autoplay="autoplay" playsinline muted
                       class="red5pro-subscriber red5pro-media red5pro-media-background">
                 </video>
+                <img src="images/loading.svg" class="stream-play-button loading-icon">
               </div>
               <div id="show-hide-reports-btn" class="hidden">Show Live Reports</div>
             </div>
