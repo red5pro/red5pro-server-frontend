@@ -50,7 +50,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           resolve(json);
         })
         .catch(function (error) {
-          var jsonError = typeof error === 'string' ? error : JSON.stringify(error, null, 2)
+          var jsonError = typeof error === 'string' ? error : error.message;
           console.error('[Red5 Pro] :: Error - Could not request Edge/Orgin from Stream Manager. ' + jsonError)
           reject(error)
         });

@@ -398,7 +398,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             streamManagerInfo.innerText = 'Using Stream Manager Origin at: ' + origin.serverAddress + '.';
             fn();
           })
-          .catch(fn);
+          .catch(function (error) {
+            var jsonError = typeof error === 'string' ? error : error.message;
+            console.error('[live]:: Error in publish request: ' + jsonError);
+            updateStatus(jsonError);
+            updateStartStopButtonState({
+              enabled: true,
+              label: 'Start Broadcast'
+            });
+            showOrHideCameraSelect(null);
+          });
       })
       .catch(fn);
   }

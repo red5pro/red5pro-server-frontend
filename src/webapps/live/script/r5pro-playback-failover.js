@@ -55,7 +55,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     port: port
   };
 
-  var $streamMenu = $('.stream-menu-content');
+  var $contentSection = $('.content-section-story');
   var playbackBlocks = [];
   var playbackBlockClient = {
     onPlaybackBlockStart: function (playbackBlock) {
@@ -203,11 +203,23 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       innerContent += getStreamListItem(data[key]);
     }
 
+    var $streamMenu = $('.stream-menu-content');
+    // If no streamMenu already exists, we need to empty the container and generate one.
+    if ($streamMenu && $streamMenu.length === 0) {
+      $contentSection.empty();
+      $contentSection.append('<div class="stream-menu-content"></div>');
+      $streamMenu = $('.stream-menu-content');
+    } else {
+      $streamMenu.empty();
+    }
+
     if (innerContent.length > 0) {
       $streamMenu.html(innerContent);
       generatePlaybackBlocks();
     } else {
-      $streamMenu.html('<p class="no-streams-entry">No recordings found.</p>');
+      $contentSection.empty();
+      $contentSection.append('<p class="no-streams-entry">No recordings found.</p>');
+      $contentSection.append('<p style="margin-top: 20px;">You can begin a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=<%= ip %>" target="_blank">Broadcast page</a>.</p>');
     }
   };
 

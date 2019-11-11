@@ -339,7 +339,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
     window.r5pro_isStreamManager()
       .then(function () {
-        window.r5pro_requestOrigin('live', baseConfiguration.streamName)
+        window.r5pro_requestEdge('live', baseConfiguration.streamName)
           .then(function (origin) {
             updateConfigurationsForStreamManager(origin);
             streamManagerInfo.classList.remove('hidden');

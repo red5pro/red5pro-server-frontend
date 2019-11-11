@@ -225,11 +225,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     $reportField.text(message);
   }
 
+  PlaybackBlock.prototype.updateStatusFieldMessage = function (message) {
+     $(this.getElement()).find('.status-field').text(message);
+  }
+
   PlaybackBlock.prototype.updateStatusFieldWithType = function (subscriberType) {
     var message = subscriberType
                   ? 'Using ' + typeMap[subscriberType.toLowerCase()] + ' Playback' 
                   : 'Could not determine playback option.';
-    $(this.getElement()).find('.status-field').text(message);
+   this.updateStatusFieldMessage(message);
   }
 
   PlaybackBlock.prototype.updateConfigurationsForStreamManager = function (serverJSON) {
@@ -373,7 +377,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               streamManagerInfo.classList.remove('hidden');
               streamManagerInfo.innerText = 'Using Stream Manager Origin at: ' + origin.serverAddress + '.';
             })
-            .catch(function () { /* catch means not exists. ok. */ });
+            .catch(function (error) {
+              self.updateStatusFieldMessage(typeof error === 'string' ? error : error.message);
+            });
         })
         .catch(function () { /* catch means not exists. ok. */ });
     }
