@@ -422,6 +422,14 @@ a.link:hover {
 .broadcast-section {
   display: flex;
 }
+
+.stream-manager-notification {
+  background-color: #eee;
+  text-align: center;
+  font-size: 14px;
+  padding: 8px;
+  text-transform: uppercase;
+}
 /* /GENERIC */
 
 @media (min-width: 768px) {

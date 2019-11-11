@@ -62,6 +62,9 @@
           </div>
         </div>
         <hr class="top-padded-rule">
+        <% if (is_stream_manager) { %>
+          <p class="stream-manager-notification">USING STREAM MANAGER</p>
+        <% } %>
         <div class="content-section-story">
           <p class="notify-callout">You can record a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=<%=ip%>" target="_blank">Broadcast page</a> and checking the <span class="bold">Enable Recording button.</span><br/><span class="small-font-size">After the Broadcast is started and stopped, the Video On Demand (VOD) recording will be available. Return to this page to see the stream name listed.</span></p>
           <hr class="top-padded-rule" style="margin-top: 0">
@@ -78,6 +81,7 @@
       </div>
     </div>
     {{> es6-script-includes }}
+    {{> stream_manager_script }}
     <script src="script/r5pro-ice-utils.js"></script>
     <script>
       // Put server vars globally.

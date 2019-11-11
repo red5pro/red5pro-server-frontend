@@ -27,7 +27,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 (function (window, fetch) {
   'use strict';
 
-  var isStreamManager;
+  // see /template/partial/stream_manager_script.hbs
+  var isStreamManager = window.jsp_isStreamManager;
   var apiEndpoint = '/streammanager/api/3.1'
   var smEndpoint = apiEndpoint + '/admin/debug/cloudcontroller';
 

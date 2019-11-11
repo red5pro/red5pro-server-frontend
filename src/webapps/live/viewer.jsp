@@ -139,6 +139,7 @@
         </div>
       </div>
       {{> es6-script-includes }}
+      {{> stream_manager_script }}
       <script src="script/r5pro-ice-utils.js"></script>
       <script>
           // writing params to global.

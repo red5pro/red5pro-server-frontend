@@ -142,6 +142,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
       generatePlaybackBlocks();
     })
+    .catch(function (error) {
+      console.log('Host is Stream Manager? (' + error + ')');
+    });
 
   var shuttingDown = false;
   function shutdown () {

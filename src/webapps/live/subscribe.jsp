@@ -9,7 +9,6 @@
   String protocol = request.getScheme();
   Integer port = request.getServerPort();
   port = port == -1 ? (protocol == "https" ? 443 : 80) : port;
-
   String tech=null;
   String ice=null;
   String buffer = "0.5";
@@ -82,6 +81,9 @@
           </div>
         </div>
         <hr class="top-padded-rule">
+        <% if (is_stream_manager) { %>
+          <p class="stream-manager-notification">USING STREAM MANAGER</p>
+        <% } %>
         <div class="content-section-story">
           <% if (names.size() <= 0) { %>
             <p class="no-streams-entry">No streams found</p>
@@ -102,6 +104,7 @@
       </div>
     </div>
     {{> es6-script-includes }}
+    {{> stream_manager_script }}
     <script src="script/r5pro-ice-utils.js"></script>
     <script>
       function assignIfDefined (value, prop) {

@@ -89,6 +89,9 @@
         </div>
         <hr class="top-padded-rule">
         <div class="content-section-story">
+          <% if (is_stream_manager) { %>
+            <p class="stream-manager-notification">USING STREAM MANAGER</p>
+          <% } %>
           <p class="notify-callout">Select <span class="bold">Enable Recording</span> to save your broadcast for Video on Demand playback!<br/><span class="small-font-size">To view the current Video On Demand (VOD) files on your server, visit the <a class="link" href="playback.jsp" target="_blank">Playback</a> page.</span></p>
           <hr class="top-padded-rule" style="margin-top: 0">
           <div class="broadcast-section">
@@ -142,6 +145,7 @@
       </div>
     </div>
     {{> es6-script-includes }}
+    {{> stream_manager_script }}
     <script src="script/r5pro-ice-utils.js"></script>
     <script>
       function assignIfDefined (value, prop) {
