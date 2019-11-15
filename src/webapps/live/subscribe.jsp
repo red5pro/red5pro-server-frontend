@@ -39,7 +39,8 @@
   List<String> names = service.getLiveStreams();
   StringBuffer ret = new StringBuffer();
   String baseUrl = protocol + "://" + ip + ":" + port;
-  if(names.size() > 0) {
+  // is_stream_manager determined in jsp_header.
+  if(!is_stream_manager && names.size() > 0) {
     for(String streamName:names) {
       String streamLocation =  baseUrl + "/live/" + streamName;
       String pageLocation = baseUrl + "/live/viewer.jsp?host=" + ip + "&stream=" + streamName;

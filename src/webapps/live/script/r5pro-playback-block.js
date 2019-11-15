@@ -370,12 +370,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       var self = this;
       window.r5pro_isStreamManager()
         .then(function () {
-          window.r5pro_requestEdge(this.configuration.app, this.streamName)
+          window.r5pro_requestEdge(self.configuration.app, self.streamName)
             .then(function (origin) {
-              var streamManagerInfo = $(self.getElement()).find('.stream-manager-info');
+              var $streamManagerInfo = $(self.getElement()).find('.stream-manager-info');
               self.updateConfigurationsForStreamManager(origin);
-              streamManagerInfo.classList.remove('hidden');
-              streamManagerInfo.innerText = 'Using Stream Manager Origin at: ' + origin.serverAddress + '.';
+              if ($streamManagerInfo && $streamManagerInfo.length > 0) {
+                var info = $streamManagerInfo.get(0);
+                info.classList.remove('hidden');
+                info.innerText = 'Using Stream Manager Origin at: ' + origin.serverAddress + '.';
+              }
             })
             .catch(function (error) {
               self.updateStatusFieldMessage(typeof error === 'string' ? error : error.message);

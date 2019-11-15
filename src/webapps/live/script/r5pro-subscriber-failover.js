@@ -79,8 +79,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         }
       }
     },
-    onPlaybackBlockStop: function (playbackBlock) {
-      console.log(playbackBlock);
+    onPlaybackBlockStop: function (playbackBlock) { // eslint-disable-line no-unused-vars
+      // console.log(playbackBlock);
     }
   }
 
