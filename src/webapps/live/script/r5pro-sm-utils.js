@@ -112,4 +112,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     });
   }
 
+  window.r5pro_requestVODStreams = function (app, type) {
+    return window.promisify(function (resolve, reject) {
+      var url = apiEndpoint + '/media/' + app + '/' + type;
+      streamManagerRequest(url)
+        .then(function (jsonData) {
+          console.log("Response: " + JSON.stringify(jsonData, null, 2));
+          var list = jsonData.hasOwnProperty(type) ? jsonData[type] : [];
+          resolve(list);
+        })
+        .catch(reject);
+    });
+  }
+
 })(window, window.fetch);

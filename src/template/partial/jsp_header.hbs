@@ -117,6 +117,7 @@
   // Determine if is a Stream Manager host.
   String stream_manager_message = "";
   Boolean is_stream_manager = false;
+  String stream_manager_token = "";
   FileReader reader = null;
   Pattern pattern = Pattern.compile("(rest\\.administratorToken=)(.*)");
   try {
@@ -129,6 +130,7 @@
       Matcher matcher = pattern.matcher(st);
       if (matcher.find()) {
         is_stream_manager = !matcher.group(2).equals("");
+        stream_manager_token = matcher.group(2);
         break;
       }
     }

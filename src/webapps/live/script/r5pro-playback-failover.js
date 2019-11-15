@@ -132,36 +132,49 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   var getItemList = function (data, url, listProperty, formatType, cb) {
-    var req = new XMLHttpRequest();
-    req.onreadystatechange = function () {
-      if (this.readyState === 4) {
-        if (this.status >= 200 && this.status < 400) {
-          var response = JSON.parse(this.response);
-          console.log("Response: " + JSON.stringify(response, null, 2));
-          var list = response.hasOwnProperty(listProperty) ? response[listProperty] : [];
-          var i, item, length = list.length;
-          for (i = 0; i < length; i++) {
-            item = parseItem(list[i]);
-            if (!data.hasOwnProperty(item.name)) {
-              data[item.name] = {
-                name: item.name,
-                urls: {}
-              };
+    var respondWithList = function (list) {
+      var i, item, length = list.length;
+      for (i = 0; i < length; i++) {
+        item = parseItem(list[i]);
+        if (!data.hasOwnProperty(item.name)) {
+          data[item.name] = {
+            name: item.name,
+            urls: {}
+          };
+        }
+        data[item.name].urls[formatType] = item.url;
+      }
+      cb(data);
+    };
+
+    window.r5pro_isStreamManager()
+      .then(function () {
+        return window.r5pro_requestVODStreams('live', listProperty);
+      })
+      .then(function (list) {
+        respondWithList(list);
+      })
+      .catch(function () {
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function () {
+          if (this.readyState === 4) {
+            if (this.status >= 200 && this.status < 400) {
+              var response = JSON.parse(this.response);
+              console.log("Response: " + JSON.stringify(response, null, 2));
+              var list = response.hasOwnProperty(listProperty) ? response[listProperty] : [];
+              respondWithList(list);
+            } else if (this.status === 0 || this.status > 400) {
+              cb(data);
             }
-            data[item.name].urls[formatType] = item.url;
           }
-          cb(data);
-        } else if (this.status === 0 || this.status > 400) {
+        }
+        req.onerror = function () {
           cb(data);
         }
-      }
-    }
-    req.onerror = function () {
-      cb(data);
-    }
-    req.timeout = 60000 * 5; // 5 minutes
-    req.open('GET', url, true);
-    req.send();
+        req.timeout = 60000 * 5; // 5 minutes
+        req.open('GET', url, true);
+        req.send();
+      });
   }
 
   var getMediafiles = function (data, cb) {
