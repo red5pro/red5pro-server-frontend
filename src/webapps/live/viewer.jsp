@@ -99,6 +99,9 @@
         </div>
         <div class="content-section-story">
           <div id="id-container" class="hidden"></div>
+          <% if (is_stream_manager) { %>
+            <p class="stream-manager-notification">USING STREAM MANAGER</p>
+          <% } %>
           <div class="subscribe-section">
             <div class="video-container">
               <div class="statistics-field hidden">Bitrate: 0. 0x0.</div>

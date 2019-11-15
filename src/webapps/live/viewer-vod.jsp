@@ -61,6 +61,9 @@
           </div>
         </div>
         <div class="content-section-story">
+          <% if (is_stream_manager) { %>
+            <p class="stream-manager-notification">USING STREAM MANAGER</p>
+          <% } %>
           <div class="subscribe-section">
             <div class="video-container">
               <div class="video-holder">
