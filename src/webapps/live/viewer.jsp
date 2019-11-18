@@ -107,7 +107,7 @@
               <div class="statistics-field hidden">Bitrate: 0. 0x0.</div>
               <div class="video-holder">
                 <video id="red5pro-subscriber"
-                      controls="controls" autoplay="autoplay" playsinline muted
+                      controls="controls" autoplay="autoplay" playsinline
                       class="red5pro-subscriber red5pro-media red5pro-media-background">
                 </video>
                 <img src="images/loading.svg" class="stream-play-button loading-icon">

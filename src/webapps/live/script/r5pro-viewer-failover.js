@@ -32,7 +32,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var loadingIcon = document.getElementsByClassName('loading-icon')[0];
   var statusField = document.getElementsByClassName('status-field')[0];
   var statsField = document.getElementsByClassName('statistics-field')[0];
-  var streamManagerInfo = document.getElementById('stream-manager-info');
+  var streamManagerInfo = document.getElementsByClassName('stream-manager-info')[0];
   var eventLogField = document.getElementsByClassName('event-log-field')[0];
   var clearLogButton = document.getElementById('clear-log-button');
   var idContainer = document.getElementById('id-container');
@@ -346,7 +346,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             streamManagerInfo.innerText = 'Using Stream Manager Origin at: ' + origin.serverAddress + '.';
             fn();
           })
-          .catch(fn);
+          .catch(function (error) {
+            streamManagerInfo.classList.remove('hidden');
+            streamManagerInfo.innerText = 'Error accessing Edge: ' + (error.message || error) + '.';
+            removeLoadingIcon();
+          });
       })
       .catch(fn);
   }

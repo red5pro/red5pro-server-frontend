@@ -144,15 +144,19 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         }
         data[item.name].urls[formatType] = item.url;
       }
-      cb(data);
+      cb(null, data);
     };
 
     window.r5pro_isStreamManager()
       .then(function () {
-        return window.r5pro_requestVODStreams('live', listProperty);
-      })
-      .then(function (list) {
-        respondWithList(list);
+        window.r5pro_requestVODStreams('live', listProperty)
+              .then(function (list) {
+                respondWithList(list);
+              })
+              .catch(function (error) {
+                cb(error.message || error, data);
+              });
+        return true
       })
       .catch(function () {
         var req = new XMLHttpRequest();
@@ -164,12 +168,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               var list = response.hasOwnProperty(listProperty) ? response[listProperty] : [];
               respondWithList(list);
             } else if (this.status === 0 || this.status > 400) {
-              cb(data);
+              try {
+                var error = JSON.parse(this.response);
+                cb(error.errorMessage, data);
+              } catch (e) {
+                cb('Request returned HTTP code: ' + this.status, data);
+              }
             }
           }
         }
-        req.onerror = function () {
-          cb(data);
+        req.onerror = function (error) {
+          cb(error.message || error, data);
         }
         req.timeout = 60000 * 5; // 5 minutes
         req.open('GET', url, true);
@@ -185,7 +194,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     if (doIncludePlaylists) {
       getItemList(data, playlistServletURL, 'playlists', 'hls', cb);
     } else {
-      cb(data);
+      cb(null, data);
     }
   }
 
@@ -236,10 +245,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   };
 
-  getMediafiles(store, function(data) {
-    getPlaylists(data, function(data) {
-      populateListing(data);
-    });
+  var showLoadError = function (message) {
+    $contentSection.empty();
+    $contentSection.append('<p class="no-streams-entry">No recordings found.</p>');
+    $contentSection.append('<p class="error-notification">' + message + '</p>');
+  }
+
+  getMediafiles(store, function(error, data) {
+    if (error) {
+      showLoadError(error);
+    } else {
+      getPlaylists(data, function(error, data) {
+        if (error && (!data || (data && data.length === 0))) {
+          showLoadError(error);
+        } else {
+          populateListing(data);
+        }
+      });
+    }
   });
 
  }(window, document, window.promisify, jQuery.noConflict(), window.red5prosdk, window.R5PlaybackBlock));

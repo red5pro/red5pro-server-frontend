@@ -142,8 +142,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
       generatePlaybackBlocks();
     })
-    .catch(function (error) {
-      console.log('Host is Stream Manager? (' + error + ')');
+    .catch(function (error) { // eslint-disable-line no-unused-vars
+      // console.log('Host is Stream Manager? (' + error + ')');
+      // Else, if not on stream manager host, most likely was populated
+      //  on page creation.
     });
 
   var shuttingDown = false;
