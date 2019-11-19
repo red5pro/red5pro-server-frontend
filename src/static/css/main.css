@@ -49,34 +49,63 @@ body {
   font-family: 'Lato', 'Times New Roman';
   margin: 0;
   padding: 0;
-  line-height: 1.5;
-  font-size: 14px;
+  line-height: 1.5rem;
+  font-size: 16px;
+  font-weight: 400;
+  color: #3b3b3b;
 }
 
 p {
-    margin: 0 0 10px;
+  margin: 0 0 10px;
 }
 
 h1 {
-  font-weight: 400;
-  font-size: 42px;
-  color: #444;
+  font-weight: 500;
+  line-height: 1.5em;
+  color: #3b3b3b;
+  text-transform: uppercase;
 }
 
 h2 {
-  font-weight: 300;
-  font-size: 30px;
-  color: #444;
+  font-weight: 400;
+  line-height: 1.5em;
+  color: #3b3b3b;
+  text-transform: uppercase;
 }
 
 h3 {
-  font-weight: 300;
-  font-size: 24px;
-  color: rgb(227, 25, 0);
+  font-weight: 400;
+  line-height: 1.5em;
+  color: #db1f26;
+  text-transform: uppercase;
+}
+
+input[type="text"] {
+  height: 1.5rem;
+  font-size: 1rem;
+  padding-left: 0.8rem;
+  -webkit-appearance: textfield;
+  background-color: #fff;
+}
+
+.form-button {
+  height: 1.5rem;
+  font-size: 0.8rem;
+}
+
+.warning {
+  display: block;
+  background-color: #db1f26;
+  color: #fff;
+  padding: 16px;
 }
 
 hr.top-padded-rule {
   margin-top: 40px;
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #dbdbdb;
 }
 
 .left {
@@ -84,19 +113,23 @@ hr.top-padded-rule {
 }
 
 .black-text {
-  color: #444;
+  color: #3b3b3b;
 }
 
 .red-text {
-  color: rgb(227, 25, 0);
+  color: #db1f26;
 }
 
 .white-text {
-  color: rgb(255, 255, 255);
+  color: #ffffff;
+}
+
+.blue-text {
+  color: #3580A2;
 }
 
 .small-font-size {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .medium-font-size {
@@ -118,58 +151,51 @@ hr.top-padded-rule {
 }
 
 a.link {
-  color: rgb(227, 25, 0);
+  color: #db1f26;
   text-decoration: none;
 }
 
 a.link:hover {
   text-decoration: underline;
-  color: rgb(149, 0, 0);
 }
 
-#header-field {
-  position: relative;
-  float: left;
-  margin-top: 16px;
-}
+/* HEADER */
 
-#server-version-field {
-  background-color: #e3e3e3;
-  padding: 2px 22px;
-}
-
-#ip-field {
-  text-align: right;
-  color: rgb(255, 255, 255);
-  position: relative;
-  float: right;
-  margin-top: 0px;
+.header-bar {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 20px 40px 10px 40px;
+  border-bottom: 1px solid #dbdbdb;
+  border-top: 3px solid #db1F26;
+  overflow: auto;
 }
 
 #ip-overlay {
   position: absolute;
-  width: 230px;
+  width: 260px;
   right: 20px;
-  top: 80px;
-  background-color: rgb(239, 239, 239);
-  border: 1px solid #e3e3e3;
+  top: 140px;
+  background-color: #dbdbdb;
+  border: 1px solid #dbdbdb;
   border-radius: 4px;
-  box-shadow: 3px 3px 5px #e3e3e3;
+  box-shadow: 3px 3px 5px #3b3b3b;
   padding: 20px;
   z-index: 1000;
+  font-size: 14px;
 }
 
 #ip-address-overlay {
   position: absolute;
-  width: 230px;
+  width: 260px;
   right: 20px;
-  top: 106px;
-  background-color: rgb(239, 239, 239);
-  border: 1px solid #e3e3e3;
+  top: 140px;
+  background-color: #dbdbdb;
+  border: 1px solid #dbdbdb;
   border-radius: 4px;
-  box-shadow: 3px 3px 5px #e3e3e3;
+  box-shadow: 3px 3px 5px #3b3b3b;
   padding: 20px;
   z-index: 1001;
+  font-size: 14px;
 }
 
 .overlay-close-button {
@@ -188,23 +214,16 @@ a.link:hover {
   padding: 6px;
   margin: 0;
 }
+/* /HEADER */
 
-.hidden {
-  display: none;
-}
-.unhide {
-  display: block;
-}
+/* FOOTER */
 
-.red5pro-logo-page {
-  margin-left: -12px;
-}
-
-.red5pro-logo-header {
-  display: inline-block;
-  width: 205px;
-  position: relative;
-  padding-top: 12px;
+.footer {
+  background-color: #dbdbdb;
+  border-top: 1px solid;
+  border-color: #999999;
+  text-align: center;
+  padding-top: 20px;
 }
 
 .red5pro-logo-footer {
@@ -212,46 +231,30 @@ a.link:hover {
   margin: -5px 0px -3px -5px;
 }
 
-.red5pro-header-link {
-  text-decoration: none;
-  color: rgb(0, 0, 0);
-}
-
-.red5pro-header-link:active {
-  color: rgb(0, 0, 0);
-}
-
-.red5pro-header {
-  font-size: 32px;
-}
-
 .red5pro-header.registration-mark {
-  font-size: 16px;
+  font-size: 1rem;
   vertical-align: text-top;
 }
 
-.header-bar {
-  background-color: #a8a8a8;
-  border-color: rgb(166, 168, 168);
-  padding: 12px 30px 12px 20px;
- }
-
-.footer {
-  background-color: #f7f7f7;
-  border-top: 1px solid;
-  border-color: rgb(166, 168, 168);
-  text-align: center;
-  padding-top: 20px;
-  padding-bottom: 10px;
+.footer-copyright {
+  background-color: #3b3b3b;
+  margin-top: 20px;
+  border-top: 3px solid #db1f26;
+  padding: 20px;
 }
 
-.footer-copyright {
-  margin-top: 12px
+.footer-copyright-text {
+  color: #dbdbdb;
+  font-size: 14px;
 }
 
 #footer-email {
   text-decoration: none;
   cursor: pointer;
+}
+
+#footer-email-lead {
+  padding-left: 32px;
 }
 
 #footer-email-lead:before {
@@ -265,53 +268,27 @@ a.link:hover {
     background: url('../images/email.png') no-repeat;
     background-size: 32px 32px;
 }
+/* /FOOTER */
 
 .email-header {
   font-weight: 300;
   font-size: 24px;
-  font-family: 'Lato', sans-serif;
+  text-transform: uppercase;
 }
 
-.container:before {
-  display: table;
-  content: " ";
-}
+/* MENU */
 
-.container:after {
-  clear: both;
-  display: table;
-  content: " ";
-}
-
-.container {
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-  margin-top: 20px
-}
-
+/*
 #menu-section {
   display: block;
   position: relative;
   float: left;
   width: 25%;
 }
-
-#content-section {
-  display: block;
-  position: relative;
-  float: left;
-  width: 75%;
-  margin-bottom: 60px;
-  padding-left: 20px;
-}
-
+*/
 .menu-content {
-  background-color: rgb(239, 239, 239);
-  border: 1px solid #e3e3e3;
+  background-color: #dbdbdb;
   border-radius: 4px;
-  margin-bottom: 20px;
 }
 
 .menu-listing {
@@ -342,8 +319,8 @@ a.link:hover {
 
 .menu-listing li a:hover {
   text-decoration: underline;
-  color: rgb(149, 0, 0);
-  background-color: #f7f7f7;
+  color: #db1f26;
+  background-color: #fff;
   border-right: 1px solid;
 }
 
@@ -351,12 +328,12 @@ a.link:hover {
   padding: 0;
 }
 
-.menu-sublisting li {
-  margin-left: 20px;
+.menu-sublisting li a {
+  padding-left: 40px;
 }
 
 .menu-listing-internal {
-  font-weight: bold;
+  font-weight: bold;  
 }
 
 .menu-listing-external {
@@ -367,30 +344,125 @@ a.link:hover {
   font-weight: normal;
 }
 
-.tag-line {
-  margin-top: 0px;
-  color: #a8a8a8;
+/* /MENU */
+
+.main-container {
+  display: flex;
+  flex-direction: row;
+  margin: 20px 40px 0 40px;
+  justify-content: center;
+  margin-bottom: 40px;
 }
 
-.content-section-story {
-  max-width: 560px;
+#menu-section {
+  order: 1;
+  flex: 2;
+  background-color: #dbdbdb;
+  border-radius: 4px;
+  max-width: 260px;
+  height: 100%;
+  padding-bottom: 10px;
 }
 
-@media (min-width: 992px) {
+#content-section {
+  order: 2;
+  flex: 3;
+  margin-left: 40px;
+  max-width: 900px;
+}
 
+#subcontent-section {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+#subcontent-section-text {
+  flex: 2;
+  min-width: 200px;
+  align-self: flex-start;
+}
+
+#subscontent-section-image {
+  flex: 3;
+}
+
+/* GENERIC */
+
+.no-break {
+  white-space: nowrap;
+}
+
+.hidden {
+  display: none!important;
+}
+.unhide {
+  display: block;
+}
+
+.image-block {
+  vertical-align: middle;
+  display: inline-block;
+  height: auto;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.heading-title {
+  line-height: 1.5em;
+}
+
+.heading-subtitle {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.broadcast-section {
+  display: flex;
+}
+
+.stream-manager-notification {
+  background-color: #eee;
+  text-align: center;
+  font-size: 14px;
+  padding: 8px;
+  text-transform: uppercase;
+}
+/* /GENERIC */
+
+@media (min-width: 768px) {
+  #header-field {
+    float: left;
+  }
+  #server-version-field {
+    float: right;
+  }
+}
+
+@media (max-width: 767px) {
   .main-container {
-    width: 970px;
+    flex-direction: column;
   }
-
+  .broadcast-section {
+    flex-direction: column;
+  }
   #menu-section {
-    width: 213px;
+    flex: 1;
+    width: 100%;
+    max-width: 768px;
   }
-/*
   #content-section {
-    width: 556px;
+    flex: 1;
+    margin-left: 0;
+    margin-top: 20px;
   }
-*/
-}
-
-@media (max-width: 991px) {
+  .image-block {
+    margin-top: 20px;
+    width: 100%;
+  }
+  .email-header {
+    font-size: 18px;
+   }
 }

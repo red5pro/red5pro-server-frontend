@@ -31,9 +31,11 @@ var updateMenuListing = function(menuListItems) {
 module.exports = {
   update: function(webapps) {
     var items = webapps.map(function(config) {
-      return menuListItemTemplate
-              .replace('$webappName', config.webappName)
-              .replace('$title', config.title);
+      return config.title.length === ''
+              ? 0
+              : menuListItemTemplate
+                  .replace('$webappName', config.webappName)
+                  .replace('$title', config.title)
     });
     return updateMenuListing(items);
   }

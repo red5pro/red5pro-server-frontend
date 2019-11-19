@@ -23,22 +23,17 @@ NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM,
 WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* global document, Promise, $ */
-(function (window, document, red5pro) {
+/* global window, document, jQuery */
+(function (window, document, $, promisify, red5pro) {
   'use strict';
 
   red5pro.setLogLevel('debug');
-  var iceServers = window.r5proIce;
 
-  var protocol = window.location.protocol;
-  var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
-  protocol = protocol.substring(0, protocol.lastIndexOf(':'));
-  function getSocketLocationFromProtocol (protocol) {
-    return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
-  }
-
-  var statusField = document.getElementById('status-field');
-  var eventLogField = document.getElementById('event-log-field');
+  var loadingIcon = document.getElementsByClassName('loading-icon')[0];
+  var statusField = document.getElementsByClassName('status-field')[0];
+  var statsField = document.getElementsByClassName('statistics-field')[0];
+  var streamManagerInfo = document.getElementsByClassName('stream-manager-info')[0];
+  var eventLogField = document.getElementsByClassName('event-log-field')[0];
   var clearLogButton = document.getElementById('clear-log-button');
   var idContainer = document.getElementById('id-container');
   var videoReportElement = document.getElementById('video-report');
@@ -57,66 +52,112 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
     })
   }
+
   var subscriptionId = 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16);
   var subscriber;
-  var view;
+
+  var iceServers = window.r5proIce;
+  var protocol = window.location.protocol;
+  var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
+  protocol = protocol.substring(0, protocol.lastIndexOf(':'));
+  function getSocketLocationFromProtocol (protocol) {
+    return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
+  }
+  var targetViewTech = window.r5proViewTech;
+  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
 
   var baseConfiguration = {
     host: window.targetHost,
     app: window.r5proApp,
-    streamName: window.r5proStreamName,
-    buffer: isNaN(window.r5proBuffer) ? 2 : window.r5proBuffer,
+    streamName: window.r5proStreamName
+  };
+  var rtcConfig = {
+    protocol: window.targetProtocol ? window.targetProtocol : getSocketLocationFromProtocol(protocol).protocol,
+    port: window.targetPort ? window.targetPort : getSocketLocationFromProtocol(protocol).port,
     rtcConfiguration: {
       iceServers: iceServers,
       iceCandidatePoolSize: 2,
       bundlePolicy: 'max-bundle'
     }
   };
-  var rtcConfig = {
-    protocol: window.targetProtocol ? window.targetProtocol : getSocketLocationFromProtocol(protocol).protocol,
-    port: window.targetPort ? window.targetPort : getSocketLocationFromProtocol(protocol).port,
-    subscriptionId: subscriptionId
-  };
   var rtmpConfig = {
     protocol: 'rtmp',
     port: 1935,
-    width: '100%',
-    height: '100%',
+    width: 640,
+    height: 480,
     backgroundColor: '#000000',
     embedWidth: window.r5proVideoWidth,
     embedHeight: window.r5proVideoHeight,
-    mimeType: 'rtmp/flv'
+    buffer: isNaN(window.r5proBuffer) ? 2 : window.r5proBuffer
   };
   var hlsConfig = {
     protocol: protocol,
-    port: port,
-    mimeType: 'application/x-mpegURL'
+    port: port
   };
 
-  var targetViewTech = window.r5proViewTech;
-  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
+  function updateConfigurationsForStreamManager (serverJSON) {
+    var host = serverJSON.serverAddress;
+    var app = serverJSON.scope;
+    rtcConfig = Object.assign({}, rtcConfig, {
+      host: window.targetHost,
+      app: 'streammanager',
+      connectionParams: {
+        host: host,
+        app: app
+      }
+    });
+    rtmpConfig = Object.assign({}, rtmpConfig, {
+      host: host,
+      app: app
+    });
+  }
 
-  clearLogButton.addEventListener('click', function () {
+  clearLogButton.addEventListener('click', clearLog);
+
+  function clearLog () {
     while (eventLogField.children.length > 1) {
       eventLogField.removeChild(eventLogField.lastChild);
     }
-  });
+  }
 
-  function onSubscribeStart (subscriber) {
-    console.log('[subscriber]:: Subscriber started - ' + subscriber.getType());
-    if (subscriber.getType().toLowerCase() === 'rtc') {
+  function generateReportBlock (key, value, $parent) {
+    var $el = $parent.find('.' + key);
+    if ($el.length > 0) {
+      $el.text(value);
+    } else {
+      $parent.append('<p><span class="report_key">' + key + '</span>:<span class="report_value ' + key + '">' + value + '</span></p>');
+    }
+  }
+
+  function generateReportStats (bitrate, packets, $parent) {
+    var $b = $parent.find('.bitrate');
+    var $p = $parent.find('.packets');
+    if ($b.length > 0 && $p.length > 0) {
+      $b.text(bitrate);
+      $p.text(packets);
+    } else {
+    $parent.append('<span>Bitrate: </span><span class="bold bitrate">' + bitrate + '</span>' +
+                    '<span>. Packets Last: </span><span class="bold packets">' + packets + '</span>' + 
+                    '<span>.</span>');
+    }
+  }
+
+  function toggleReportTracking (subscriber, turnOn) {
+    if (subscriber && turnOn) {
+      var $audio = $(audioReportElement);
+      var $video = $(videoReportElement);
+      var $audioStats = $('#audio-report_stats');
+      var $videoStats = $('#video-report_stats');
+      var videoElement = document.getElementById('red5pro-subscriber');
+      statsField.classList.remove('hidden');
       try {
         window.trackBitrate(subscriber.getPeerConnection(), function (type, report, bitrate, packetsLastSent) {
-          var el = document.getElementById(type + '-report_stats');
-          if (el) {
-            el.innerHTML = '<span>Bitrate: <strong>' + parseInt(bitrate, 10) + '</strong>. Packets Last: <strong>' + packetsLastSent + '<strong>.</span>';
-          }
-          if (videoReportElement && type === 'video') {
-            videoReportElement.innerText = JSON.stringify(report, null, 2);
-          }
-          if (audioReportElement && type === 'audio') {
-            audioReportElement.innerText = JSON.stringify(report, null, 2);
-          }
+          statsField.innerText = 'Bitrate: ' + parseInt(bitrate, 10) + '. ' + videoElement.videoWidth + 'x' + videoElement.videoHeight;
+          videoElement.style['max-height'] = videoElement.videoHeight + 'px';
+          generateReportStats(parseInt(bitrate, 10), packetsLastSent, type === 'video' ? $videoStats : $audioStats);
+          Object.keys(report).forEach(function(key) {
+            generateReportBlock(key, report[key], type === 'video' ? $video : $audio);
+          });
           // with &analyze.
           if (window.r5pro_ws_send) {
             var clientId =  window.adapter.browserDetails.browser + '+' + subscriptionId;
@@ -132,6 +173,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       } catch (e) {
         //
       }
+    } else {
+      window.untrackBitrate();
+      statsField.classList.add('hidden');
     }
   }
 
@@ -154,15 +198,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var type = subscriber ? subscriber.getType().toLowerCase() : undefined;
     switch (type) {
       case 'rtc':
-        updateStatus('Using WebRTC-based Playback!');
+        updateStatus('Using WebRTC Playback');
         break;
       case 'rtmp':
-      case 'livertmp':
-      case 'rtmp - videojs':
-        updateStatus('Failover to use Flash-based Playback.');
+        updateStatus('Using Flash Playback');
         break;
       case 'hls':
-        updateStatus('Failover to use HLS-based Playback.');
+        updateStatus('Using HLS Playback');
         break;
       default:
         updateStatus('No suitable Subscriber found. WebRTC, Flash and HLS are not supported.');
@@ -176,37 +218,23 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       console.log(eventLog);
       addEventLog(eventLog);
     }
-
-    if (event.type === 'Subscribe.Metadata') {
-      var value = event.data.orientation; // eslint-disable-line no-unused-vars
-      if (subscriber.getType().toLowerCase() === 'hls' ||
-          subscriber.getType().toLowerCase() === 'rtc') {
-        var container = document.getElementById('video-holder');
-        var element = document.getElementById('red5pro-subscriber'); // eslint-disable-line no-unused-vars
-        if (container) {
-          // container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
-        }
-      }
-    } else if (event.type === red5pro.SubscriberEventTypes.AUTO_PLAYBACK_FAILURE) {
-    }
   }
 
-  function promisify (fn) {
-    if (window.Promise) {
-      return new Promise(fn);
+  function trackLoadingIcon (elementId) {
+    document.getElementById(elementId).oncanplay = removeLoadingIcon;
+  }
+
+  function removeLoadingIcon () {
+    if (loadingIcon && loadingIcon.parentNode) {
+      loadingIcon.parentNode.removeChild(loadingIcon);
     }
-    var d = new $.Deferred();
-    fn(d.resolve, d.reject);
-    var promise = d.promise();
-    promise.catch = promise.fail;
-    return promise;
   }
 
   function determineSubscriber () {
     return promisify(function (resolve, reject) {
+
       var subscriber = new red5pro.Red5ProSubscriber();
       subscriber.on('*', onSubscriberEvent);
-
       var config = {
         rtc: Object.assign({}, baseConfiguration, rtcConfig),
         rtmp: Object.assign({}, baseConfiguration, rtmpConfig),
@@ -243,8 +271,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         case 'rtmp':
         case 'livertmp':
         case 'rtmp - videojs':
-          var holder = document.getElementById('video-holder');
-          holder.style.height = '405px';
           resolve(subscriber);
           break;
         default:
@@ -262,7 +288,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
       subscriber.subscribe()
       .then(function () {
-          onSubscribeStart(subscriber);
+          console.log('[subscriber]:: Subscriber started - ' + subscriber.getType());
+          if (subscriber.getType().toLowerCase() === 'rtc') {
+            trackLoadingIcon(subscriber.getOptions().mediaElementId);
+            toggleReportTracking(subscriber, true);
+            showHideReportsButton.classList.remove('hidden');
+          } else {
+            removeLoadingIcon();
+          }
           resolve();
         })
         .catch(function (error) {
@@ -292,33 +325,44 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     });
   }
 
-  function tearDownSubscriber () {
-    if (view) {
-      view.view.src = '';
-      view = undefined;
+  function start () {
+    clearLog();
+    var fn = function () {
+      determineSubscriber()
+        .then(preview)
+        .then(subscribe)
+        .catch(function (error) {
+          removeLoadingIcon();
+          var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
+          console.error('[viewer]:: Error in subscribing to stream - ' + errorStr);
+        });
     }
-    if (subscriber) {
-      subscriber.setView(undefined);
-      subscriber = undefined;
-    }
+    window.r5pro_isStreamManager()
+      .then(function () {
+        window.r5pro_requestEdge('live', baseConfiguration.streamName)
+          .then(function (origin) {
+            updateConfigurationsForStreamManager(origin);
+            streamManagerInfo.classList.remove('hidden');
+            streamManagerInfo.innerText = 'Using Stream Manager Origin at: ' + origin.serverAddress + '.';
+            fn();
+          })
+          .catch(function (error) {
+            streamManagerInfo.classList.remove('hidden');
+            streamManagerInfo.innerText = 'Error accessing Edge: ' + (error.message || error) + '.';
+            removeLoadingIcon();
+          });
+      })
+      .catch(fn);
   }
 
-  determineSubscriber()
-    .then(preview)
-    .then(subscribe)
-    .catch(function (error) {
-      var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
-      console.error('[viewer]:: Error in subscribing to stream - ' + errorStr);
-    });
+  start();
 
   var shuttingDown = false;
   function shutdown () {
     if (shuttingDown) return;
     shuttingDown = true;
-    unsubscribe()
-      .then(function () {
-        tearDownSubscriber();
-      });
+    window.untrackBitrate();
+    unsubscribe();
   }
   window.addEventListener('pagehide', shutdown);
   window.addEventListener('beforeunload', shutdown);
@@ -327,5 +371,5 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     console.log('[RTMP SUBSCRIBER]:: ' + message);
   };
 
-})(this, document, this.red5prosdk);
+})(window, document, jQuery.noConflict(), window.promisify, window.red5prosdk);
 

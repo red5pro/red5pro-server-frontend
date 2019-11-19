@@ -27,9 +27,10 @@ module.exports = function(srcDir, distDir, gulp, buildTask) {
 
   gulp.task('watch', function() {
     reload(function() {
-      gulp.watch([srcDir, '**', '*'].join(path.sep), [buildTask])
-          .on('change', function(event) {
-            console.log(('File ' + event.path + ' was ' + event.type + ', reloading...').cyan);
+      gulp.watch([srcDir, '**', '*'].join(path.sep), gulp.series([buildTask, 'deploy']))
+        .on('change', function(event) {
+            console.log(event);
+            console.log(('File ' + event + ' was ' + event.type + ', reloading...').cyan);
           });
       openProcess = exec('npm run launch', function(error, stdout, stderror) {
         console.log(stdout);

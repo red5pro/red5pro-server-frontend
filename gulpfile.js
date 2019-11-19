@@ -37,10 +37,11 @@ var launchSetup = require([taskDirectory, 'launch.js'].join(path.sep))(port, gul
 
 // Import new task
 var newTask = require([taskDirectory, 'new.js'].join(path.sep))(srcDir, distDir, scriptsDir, gulp);
-gulp.task('new', function() {
+gulp.task('new', function(cb) {
   var webappNameOption = argv.name;
   if(webappNameOption) {
     newTask(webappNameOption);
+    cb()
   }
   else {
     console.log('You need to provide a --name option.');

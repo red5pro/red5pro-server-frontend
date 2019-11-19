@@ -23,10 +23,25 @@ NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM,
 WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-(function (window) {
+/*global window, $ */
+(function (window, Promise, $) {
   'use strict';
 
+  // If Promise or the Promise polyfill fails (thanks IE!), use jQuery.
+  window.promisify = function(fn) {
+    if (window.Promise) {
+      return new window.Promise(fn);
+    }
+    var d = new $.Deferred();
+    fn(d.resolve, d.reject);
+    var promise = d.promise();
+    promise.catch = promise.fail;
+    return promise;
+  }
+
   var bitrateInterval = 0;
+  var vRegex = /VideoStream/;
+  var aRegex = /AudioStream/;
 
   // Based on https://github.com/webrtc/samples/blob/gh-pages/src/content/peerconnection/bandwidth/js/main.js
   window.trackBitrate = function (connection, cb, resolutionCb) {
@@ -46,7 +61,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               (report.type === 'ssrc' && report.bytesSent)) {
             bytes = report.bytesSent;
             packets = report.packetsSent;
-            if ((report.mediaType === 'video' || report.id.match(/VideoStream/))) {
+            if ((report.mediaType === 'video' || report.id.match(vRegex))) {
               if (lastOutboundVideoResult && lastOutboundVideoResult.get(report.id)) {
                 // calculate bitrate
                 var bitrate = 8 * (bytes - lastOutboundVideoResult.get(report.id).bytesSent) /
@@ -64,7 +79,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               (report.type === 'ssrc' && report.bytesReceived)) {
             bytes = report.bytesReceived;
             packets = report.packetsReceived;
-            if ((report.mediaType === 'video' || report.id.match(/VideoStream/))) {
+            if ((report.mediaType === 'video' || report.id.match(vRegex))) {
               if (lastInboundVideoResult && lastInboundVideoResult.get(report.id)) {
                 // calculate bitrate
                 bitrate = 8 * (bytes - lastInboundVideoResult.get(report.id).bytesReceived) /
@@ -74,7 +89,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               }
               lastInboundVideoResult = res;
             }
-            else if ((report.mediaType === 'audio' || report.id.match(/AudioStream/))) {
+            else if ((report.mediaType === 'audio' || report.id.match(aRegex))) {
               if (lastInboundAudioResult && lastInboundAudioResult.get(report.id)) {
                 // calculate bitrate
                 bitrate = 8 * (bytes - lastInboundAudioResult.get(report.id).bytesReceived) /
@@ -86,7 +101,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             }
           }
           else if (resolutionCb && report.type === 'track' && report.kind === 'video') {
-            resolutionCb(report.frameWidth, report.frameHeight);
+            if (report.frameWidth > 0 || report.frameHeight > 0) {
+              resolutionCb(report.frameWidth, report.frameHeight);
+            }
           }
         });
       });
@@ -97,4 +114,4 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     clearInterval(bitrateInterval);
   }
 
-})(this);
+})(window, window.Promise, $);

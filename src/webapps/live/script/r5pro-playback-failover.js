@@ -23,481 +23,87 @@ NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM,
 WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* global document, Promise, jQuery */
-(function(window, document, $, red5prosdk) {
+/* global window, document, jQuery, XMLHttpRequest */
+(function(window, document, promisify, $, red5prosdk, R5PlaybackBlock) {
   'use strict';
 
   red5prosdk.setLogLevel('debug');
-
-  var iceServers = window.r5proIce;
-  // For IE support.
-  var vidTemplateHTML = '<div id="video-container">' +
-          '<div id="video-holder">' +
-            '<video id="red5pro-subscriber" controls autoplay playsinline class="red5pro-media red5pro-media-background">' +
-            '</video>' +
-          '</div>' +
-          '<div id="status-field" class="status-message"></div>' +
-          '<div id="event-log-field" class="event-log-field">' +
-            '<div style="padding: 10px 0">' +
-              '<p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>' +
-              '<div style="clear: both;"></div>' +
-            '</div>' +
-          '</div>'
-        '</div>';
-  var flashTemplateHTML = '<div id="video-container">' +
-            '<div id="video-holder" style="height:405px;">' +
-              '<object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">' +
-                '<param name="quality" value="high">' +
-                '<param name="wmode" value="opaque">' +
-                '<param name="bgcolor" value="#000000">' +
-                '<param name="allowscriptaccess" value="always">' +
-                '<param name="allowfullscreen" value="true">' +
-                '<param name="allownetworking" value="all">' +
-            '</object>' +
-          '</div>' +
-      '</div>';
-
-  var subscriber;
-  var streamDataModel;
-
   var host = window.targetHost;
   var buffer = window.r5proBuffer;
+  var targetViewTech = window.r5proViewTech;
+  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtmp', 'hls'];
   var protocol = window.location.protocol;
   var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
-  function getSocketLocationFromProtocol (protocol) {
-    return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
-  }
 
-  var $videoTemplate = document.getElementById('video-playback');
-  var $flashTemplate = document.getElementById('flash-playback');
   var baseConfiguration = {
     host: host,
-    app: 'live',
-    buffer: isNaN(buffer) ? 2 : buffer,
-    embedWidth: '100%',
-    embedHeight: '100%',
-    rtcConfiguration: {
-      iceServers: iceServers,
-      iceCandidatePoolSize: 2,
-      bundlePolicy: 'max-bundle'
-    }
+    app: 'live'
   };
-  var rtcConfig = {
-    protocol: getSocketLocationFromProtocol(protocol).protocol,
-    port: getSocketLocationFromProtocol(protocol).port,
-    subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16)
-  };
-  var rtmpConfig = {
+  var rtmpConfiguration = {
     protocol: 'rtmp',
     port: 1935,
-    mimeType: 'rtmp/flv',
-    width: '100%',
-    height: '100%',
+    width: 640,
+    height: 480,
+    embedWidth: '100%',
+    embedHeight: 480,
     backgroundColor: '#000000',
-    swf: 'lib/red5pro/red5pro-subscriber.swf',
-    swfobjectURL: 'lib/swfobject/swfobject.js',
-    productInstallURL: 'lib/swfobject/playerProductInstall.swf'
+    buffer: isNaN(buffer) ? 2 : buffer
   };
-  var hlsConfig = {
+  var hlsConfiguration = {
     protocol: protocol,
-    port: port,
-    mimeType: 'application/x-mpegURL',
-    swfobjectURL: 'lib/swfobject/swfobject.js',
-    productInstallURL: 'lib/swfobject/playerProductInstall.swf'
+    port: port
   };
 
-  var targetViewTech = window.r5proViewTech;
-  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
-
-  function hasEstablishedSubscriber () {
-    return typeof subscriber !== 'undefined';
-  }
-
-  function updateStatusField (element, message) {
-    if (element) {
-      element.innerText = message;
-    }
-  }
-
-  function addEventLogToField (element, eventLog) {
-    var p = document.createElement('p');
-    var text = document.createTextNode(eventLog);
-    p.appendChild(text);
-    element.appendChild(p);
-  }
-
-  function showSubscriberImplStatus (subscriber) {
-    var statusField = document.getElementById('status-field');
-    var type = subscriber ? subscriber.getType().toLowerCase() : undefined;
-    switch (type) {
-      case 'rtc':
-        updateStatusField(statusField, 'Using WebRTC-based Playback!');
-        break;
-      case 'rtmp':
-      case 'livertmp':
-      case 'rtmp - videojs':
-        updateStatusField(statusField, 'Failover to use Flash-based Playback.');
-        break;
-      case 'hls':
-        updateStatusField(statusField, 'Failover to use HLS-based Playback.');
-        break;
-       case 'mp4':
-        updateStatusField(statusField, 'Failover to MP4 playback in video element.');
-        break;
-       case 'flv':
-        updateStatusField(statusField, 'Attempting force of Flash embed for FLV playback.');
-        break;
-      case 'videojs':
-        updateStatusField(statusField, 'Attempting force of HLS playback using VideoJS.');
-        break;
-     default:
-        updateStatusField(statusField, 'No suitable Subscriber found. WebRTC, Flash and HLS are not supported.');
-        break;
-    }
-  }
-
-  function onSubscriberEvent (event) {
-    var eventLog = '[Red5ProSubscriber] ' + event.type + '.';
-    console.log(eventLog);
-    addEventLogToField(document.getElementById('event-log-field'), eventLog);
-    if (event.type === 'Subscribe.Metadata') {
-      var value = event.data.orientation; // eslint-disable-line no-unused-vars
-      if (subscriber.getType().toLowerCase() === 'hls' ||
-          subscriber.getType().toLowerCase() === 'rtc') {
-        var container = document.getElementById('video-holder');
-        var element = document.getElementById('red5pro-subscriber'); // eslint-disable-line no-unused-vars
-        if (container) {
-          //          container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
-          //          if (subscriber.getType().toLowerCase() === 'hls') {
-          //            element.style.height = '100%'
-          //          }
+  var $contentSection = $('.content-section-story');
+  var playbackBlocks = [];
+  var playbackBlockClient = {
+    onPlaybackBlockStart: function (playbackBlock) {
+      var i = playbackBlocks.length;
+      while( --i > -1) {
+        if (playbackBlocks[i] !== playbackBlock) {
+          playbackBlocks[i].stop();
         }
       }
-    } else if (event.type === red5prosdk.SubscriberEventTypes.AUTO_PLAYBACK_FAILURE) {
-      console.error('ARE YOU ON MOBILE?!?!');
+    },
+    // eslint-disable-next-line no-unused-vars
+    onPlaybackBlockStop: function (playbackBlock) {
+      // console.log(playbackBlock);
     }
   }
 
-  function addPlayer(tmpl, container, html) {
-    var $el = templateContent(tmpl, html);
-    container.appendChild($el);
-    return $el;
-  }
-
-  function teardown () {
-    var videoContainer = document.getElementById('video-container');
-    unsubscribe()
-      .then(function () {
-        if (videoContainer && videoContainer.parentNode) {
-          videoContainer.parentNode.removeChild(videoContainer);
-        }
-      })
-  }
-
-  function setup (dataStreamName, template, html) {
-    var parentContainer = $('li[data-stream="' + dataStreamName + '"]').get(0);
-    if (parentContainer) {
-      addPlayer(template, parentContainer, html);
-    }
-    var clearLogButton = document.getElementById('clear-log-button');
-    var eventLogField = document.getElementById('event-log-field');
-    if (clearLogButton) {
-      clearLogButton.addEventListener('click', function () {
-        while (eventLogField.children.length > 1) {
-          eventLogField.removeChild(eventLogField.lastChild);
-        }
-      });
-    }
-  }
-
-  function useMP4Fallback (src) {
-    /*
-    var vid = src.split('/');
-    var len = vid.length;
-    vid.splice(len - 1, 0, 'streams');
-    var loc = vid.join('/');
-    */
-    var element = document.getElementById('red5pro-subscriber');
-    var source = document.createElement('source');
-    source.type = 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"';
-    source.src = src;
-    element.appendChild(source);
-    showSubscriberImplStatus({
-      getType: function() {
-        return 'mp4';
-      }
-    });
-  }
-
-  function useFLVFallback (streamName) {
-    teardown();
-    var container = document.getElementById('video-container')
-    if (container) {
-      container.remove();
-    }
-    setup(streamName, $flashTemplate, flashTemplateHTML);
-    var flashObject = document.getElementById('red5pro-subscriber');
-      var flashvars = document.createElement('param');
-      flashvars.name = 'flashvars';
-      flashvars.value = 'stream='+streamName+'&'+
-                        'app='+baseConfiguration.app+'&'+
-                        'host='+baseConfiguration.host+'&'+
-                        'muted=false&'+
-                        'autoplay=true&'+
-                        'backgroundColor=#000000&'+
-                        'buffer=0.5&'+
-                        'autosize=true';
-    flashObject.appendChild(flashvars);
-    showSubscriberImplStatus({
-      getType: function() {
-        return 'flv';
-      }
-    });
-  }
-
-  function useVideoJSFallback (url) {
-    var videoElement = document.getElementById('red5pro-subscriber');
-    videoElement.classList.add('video-js');
-    var source = document.createElement('source');
-    source.type = 'application/x-mpegURL';
-    source.src = url;
-    videoElement.appendChild(source);
-    new window.videojs(videoElement, {
-      techOrder: ['html5', 'flash']
-    }, function () {
-      // success.
-    });
-    showSubscriberImplStatus({
-      getType: function() {
-        return 'videojs';
-      }
-    });
-  }
-
-  function startSubscription (streamData) {
-    /**
-     * streamData format:
-     * {
-     *    "name": "webrtc2",
-     *    "urls": {
-     *      "rtmp": "http://10.0.0.10:5080/live/webrtc2.flv"
-     *    }
-     *  }
-     */
-    var streamName = streamData.name;
-    baseConfiguration.streamName = streamName;
-    setup(streamName, $videoTemplate, vidTemplateHTML);
-
-    // Unless `view=rtmp` is set in the query params, default to MP4 playback if MP4 file.
-    if (targetViewTech !== 'rtmp') {
-      if (streamData.urls && streamData.urls.rtmp) {
-        if (streamData.urls.rtmp.indexOf('mp4') !== -1) {
-          useMP4Fallback(streamData.urls.rtmp);
-          return;
-        }
+  function generatePlaybackBlocks () {
+    var $listing = $('.stream-menu-listing');
+    if ($listing && $listing.length > 0) {
+      var i = 0, length = $listing.length;
+      for (i; i < length; i++) {
+        var $item = $listing[i];
+        var name = $item.getAttribute('data-streamName');
+        var page = $item.getAttribute('data-pageLocation');
+        var location = $item.getAttribute('data-streamLocation');
+        var data = $item.getAttribute('data-stream');
+        var dataString = decodeURIComponent(data);
+        var streamData = JSON.parse(dataString);
+        var block = new R5PlaybackBlock(name, name, location, page);
+        block.setVODData(streamData, (targetViewTech === 'rtmp'));
+        block.setClient(playbackBlockClient);
+        $item.append(block.create().getElement());
+        block.init(Object.assign({}, baseConfiguration, {
+          rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
+          hls: Object.assign({}, baseConfiguration, hlsConfiguration)
+        }), playbackOrder, false);
+        playbackBlocks.push(block);
       }
     }
-
-    // Else, proceed to establish a Subscriber through the SDK.
-    determineSubscriber(Object.keys(streamData.urls))
-      .then(preview)
-      .then(subscribe)
-      .catch(function (error) {
-        var errorStr = typeof error === 'string' ? error : JSON.stringify(error, null, 2);
-        console.error('[viewer]:: Error in subscribing to stream - ' + errorStr);
-        if (streamData.urls && streamData.urls.rtmp) {
-          if (streamData.urls.rtmp.indexOf('mp4') !== -1) {
-            useMP4Fallback(streamData.urls.rtmp)
-          }
-          else {
-            useFLVFallback(streamData.name)
-          }
-        }
-        else if (streamData.urls && streamData.urls.hls) {
-          useVideoJSFallback(streamData.urls.hls);
-        }
-       });
   }
 
-  function handleHostIpChange (value) {
-    host = baseConfiguration.host = value;
-    if (streamDataModel && hasEstablishedSubscriber()) {
-      teardown();
-      startSubscription(streamDataModel);
-    }
-  }
-
-  var viewHandler = function viewStream (value) {
-    var dataString = decodeURIComponent($('li[data-stream="' + value + '"]').data('streamitem'));
-    var streamData = JSON.parse(dataString);
-    console.log('[playback]:: Selected stream data -\r\n' + JSON.stringify(streamData, null, 2));
-
-    streamDataModel = streamData;
-
-    teardown();
-    startSubscription(streamData);
-  };
-
-  var viewPageHandler = function viewPageStream (value) {
-    var json = $('li[data-stream="' + value + '"]').data('streamitem');
-    var streamDataStr = decodeURIComponent(json);
-    var streamData = JSON.parse(streamDataStr);
-    console.log('Stream data:\r\n' + JSON.stringify(streamData, null, 2));
-
-    window.streamdata = json;
-    var pageUrl = 'viewer-vod.jsp?host=' + window.targetHost + '&stream=' + streamData.name;
-    if (targetViewTech) {
-      pageUrl += '&view=' + targetViewTech;
-    }
-    window.open(pageUrl);
-  };
-
-  function templateContent(template, templateHTML) {
-    if("content" in document.createElement("template")) {
-      return document.importNode(template.content, true);
-    }
-    else {
-      var div = document.createElement('div');
-      div.innerHTML = templateHTML;
-      return div;
-    }
-  }
-
-  function promisify (fn) {
-    if (window.Promise) {
-      return new Promise(fn);
-    }
-    var d = new $.Deferred();
-    fn(d.resolve, d.reject);
-    var promise = d.promise();
-    promise.catch = promise.fail;
-    return promise;
-  }
-
-  function determineSubscriber (types) {
-    console.log('[playback]:: Available types - ' + types + '.');
-    return promisify(function (resolve, reject) {
-      var subscriber = new red5prosdk.Red5ProSubscriber();
-      subscriber.on('*', onSubscriberEvent);
-
-      var typeConfig = {
-        rtc: rtcConfig,
-        rtmp: rtmpConfig,
-        hls: hlsConfig
-      };
-      var key;
-      var config = {};
-      for (key in typeConfig) {
-        if (types.indexOf(key) > -1) {
-          config[key] = Object.assign({}, baseConfiguration, typeConfig[key]);
-        }
-        if (key === 'hls' && config.hasOwnProperty('hls') && config[key].streamName) {
-          config[key].streamName = config[key].streamName.substring(0, config[key].streamName.indexOf('.'));
-        }
-      }
-      var order = playbackOrder;
-      var index = order.length;
-      while (--index > -1) {
-        if (types.indexOf(order[index]) === -1) {
-          order.splice(index, 1);
-        }
-      }
-      console.log('[playback]:: Playback Order - ' + order + '.');
-      console.log('[viewer]:: Configuration\r\n' + JSON.stringify(config, null, 2));
-
-      if (order.length === 0) {
-        var error = 'Cannot start playback. No available playback options.';
-        console.error(error);
-        throw new Error(error);
-        return;
-      }
-
-      subscriber.setPlaybackOrder(order)
-        .init(config)
-        .then(function (selectedSubscriber) {
-          subscriber.off('*', onSubscriberEvent);
-          showSubscriberImplStatus(selectedSubscriber);
-          resolve(selectedSubscriber);
-        })
-        .catch(function (error) {
-          subscriber.off('*', onSubscriberEvent);
-          showSubscriberImplStatus(null);
-          reject(error);
-        });
-
-    });
-  }
-
-  function preview (selectedSubscriber) {
-    return promisify(function (resolve, reject) {
-
-      subscriber = selectedSubscriber;
-      var type = selectedSubscriber.getType().toLowerCase();
-      switch (type) {
-        case 'hls':
-        case 'rtc':
-          resolve(subscriber);
-          break;
-        case 'rtmp':
-        case 'livertmp':
-        case 'rtmp - videojs':
-          var holder = document.getElementById('video-holder');
-          holder.style.height = '405px';
-          resolve(subscriber);
-          break;
-        default:
-          reject('View not available for ' + type + '.');
-      }
-
-    });
-  }
-
-  function subscribe (subscriber) {
-    return promisify(function (resolve, reject) {
-      if (window.trackAutoplayRestrictions) {
-        window.trackAutoplayRestrictions(subscriber);
-      }
-      subscriber.on('*', onSubscriberEvent);
-      subscriber.subscribe()
-        .then(function () {
-          resolve();
-        })
-        .catch(function (error) {
-          reject(error);
-        });
-    });
-  }
-
-  function unsubscribe () {
-    return promisify(function (resolve, reject) {
-      if (hasEstablishedSubscriber()) {
-        subscriber.unsubscribe()
-          .then(function() {
-            if (window.untrackAutoplayRestrictions) {
-              window.untrackAutoplayRestrictions(subscriber);
-            }
-            subscriber.off('*', onSubscriberEvent);
-            resolve();
-          })
-          .catch(function (error) {
-            reject(error);
-          });
-      }
-      else {
-        resolve();
-      }
-    });
-  }
-
-  window.r5pro_registerIpChangeListener(handleHostIpChange);
-  window.invokeViewStream = viewHandler;
-  window.invokeViewPageStream = viewPageHandler;
   var shuttingDown = false;
   function shutdown () {
     if (shuttingDown) return;
     shuttingDown = true;
-    unsubscribe();
+    while(playbackBlocks.length > 0) {
+      playbackBlocks.shift().setClient(undefined).stop();
+    }
   }
   window.addEventListener('pagehide', shutdown);
   window.addEventListener('beforeunload', shutdown);
@@ -506,4 +112,157 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     console.log('[RTMP SUBSCRIBER]:: ' + message);
   };
 
- }(this, document, jQuery.noConflict(), this.red5prosdk));
+  var protocol = window.targetProtocol;
+  var doIncludePlaylists = window.requestPlaylists;
+  var port = window.location.port ? window.location.port : (protocol === 'https' ? 443 : 80);
+
+  var httpRegex = /^http/i;
+  var baseUrl = protocol + '://' + host + ':' + port + '/live';
+  var mediafilesServletURL = [baseUrl, 'mediafiles'].join('/');
+  var playlistServletURL = [baseUrl, 'playlists'].join('/');
+  var store = {}; // name: {name:string, url:string, formats:[hls|flv]}
+
+  var parseItem = function (item) {
+    var itemName = item.name; // item.name.substring(0, item.name.lastIndexOf('.'));
+    var itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
+    return {
+      name: itemName,
+      url: itemUrl
+    };
+  }
+
+  var getItemList = function (data, url, listProperty, formatType, cb) {
+    var respondWithList = function (list) {
+      var i, item, length = list.length;
+      for (i = 0; i < length; i++) {
+        item = parseItem(list[i]);
+        if (!data.hasOwnProperty(item.name)) {
+          data[item.name] = {
+            name: item.name,
+            urls: {}
+          };
+        }
+        data[item.name].urls[formatType] = item.url;
+      }
+      cb(null, data);
+    };
+
+    window.r5pro_isStreamManager()
+      .then(function () {
+        window.r5pro_requestVODStreams('live', listProperty)
+              .then(function (list) {
+                respondWithList(list);
+              })
+              .catch(function (error) {
+                cb(error.message || error, data);
+              });
+        return true
+      })
+      .catch(function () {
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function () {
+          if (this.readyState === 4) {
+            if (this.status >= 200 && this.status < 400) {
+              var response = JSON.parse(this.response);
+              console.log("Response: " + JSON.stringify(response, null, 2));
+              var list = response.hasOwnProperty(listProperty) ? response[listProperty] : [];
+              respondWithList(list);
+            } else if (this.status === 0 || this.status > 400) {
+              try {
+                var error = JSON.parse(this.response);
+                cb(error.errorMessage, data);
+              } catch (e) {
+                cb('Request returned HTTP code: ' + this.status, data);
+              }
+            }
+          }
+        }
+        req.onerror = function (error) {
+          cb(error.message || error, data);
+        }
+        req.timeout = 60000 * 5; // 5 minutes
+        req.open('GET', url, true);
+        req.send();
+      });
+  }
+
+  var getMediafiles = function (data, cb) {
+    getItemList(data, mediafilesServletURL, 'mediafiles', 'rtmp', cb);
+  }
+
+  var getPlaylists = function (data, cb) {
+    if (doIncludePlaylists) {
+      getItemList(data, playlistServletURL, 'playlists', 'hls', cb);
+    } else {
+      cb(null, data);
+    }
+  }
+
+  var populateListing = function (data) {
+    console.log("Store:\r\n" + JSON.stringify(data, null, 2));
+    var innerContent = '';
+    var getStreamListItem = function (item) {
+      var json = encodeURIComponent(JSON.stringify(item));
+      var streamName = item.name;
+      var urls = item.urls;
+      var type = item.name.split('.')[1] === 'm3u8' ? 'hls' : 'rtmp';
+      var baseUrl = protocol + "://" + host + (port === 443 ? "" : ":" + port);
+      var streamLocation =  urls[type];
+      var pageLocation = baseUrl + "/live/viewer-vod.jsp?host=" + host + "&stream=" + streamName;
+      if (targetViewTech) {
+        pageLocation += '&view=' + targetViewTech;
+      }
+      var listing = "<div class=\"stream-menu-listing\"" +
+        "data-streamName=\"" + streamName + "\" " +
+        "data-streamLocation=\"" + streamLocation + "\" " +
+        "data-pageLocation=\"" + pageLocation + "\" " +
+        "data-stream=\"" + json + "\">" +
+        "</div>";
+      return listing;
+    }
+
+    for (var key in data) {
+      innerContent += getStreamListItem(data[key]);
+    }
+
+    var $streamMenu = $('.stream-menu-content');
+    // If no streamMenu already exists, we need to empty the container and generate one.
+    if ($streamMenu && $streamMenu.length === 0) {
+      $contentSection.empty();
+      $contentSection.append('<div class="stream-menu-content"></div>');
+      $streamMenu = $('.stream-menu-content');
+    } else {
+      $streamMenu.empty();
+    }
+
+    if (innerContent.length > 0) {
+      $streamMenu.html(innerContent);
+      generatePlaybackBlocks();
+    } else {
+      $contentSection.empty();
+      $contentSection.append('<p class="no-streams-entry">No recordings found.</p>');
+      $contentSection.append('<p style="margin-top: 20px;">You can begin a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=<%= ip %>" target="_blank">Broadcast page</a>.</p>');
+    }
+  };
+
+  var showLoadError = function (message) {
+    $contentSection.empty();
+    $contentSection.append('<p class="no-streams-entry">No recordings found.</p>');
+    $contentSection.append('<p class="error-notification">' + message + '</p>');
+  }
+
+  getMediafiles(store, function(error, data) {
+    if (error) {
+      showLoadError(error);
+    } else {
+      getPlaylists(data, function(error, data) {
+        if (error && (!data || (data && data.length === 0))) {
+          showLoadError(error);
+        } else {
+          populateListing(data);
+        }
+      });
+    }
+  });
+
+ }(window, document, window.promisify, jQuery.noConflict(), window.red5prosdk, window.R5PlaybackBlock));

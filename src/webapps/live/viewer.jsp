@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8"%>
+{{> jsp_header }}
 <%
     String app = "live";
     String ice = null;
@@ -6,7 +6,7 @@
     String stream="myStream";
     String buffer="0.5";
     String width="100%";
-    String height="100%";
+    String height="480";
     String tech=null;
     String protocol=null;
     String port=null;
@@ -78,142 +78,72 @@
 {{> license}}
 <html lang="eng">
     <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Welcome to the Red5 Pro Server Pages!">
-        <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/modal.css">
-        <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
-        <title>Subscribing to <%= stream %></title>
+      {{> head_meta }}
+      {{> resources }}
+      <title>Subscribing to <%= stream %></title>
       <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
       <script src="lib/screenfull/screenfull.min.js"></script>
-      <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
-        <style>
-          object:focus {
-            outline:none;
-          }
-
-          #video-holder, .video-element {
-            width: <%=width%>;
-            height: <%=height%>;
-          }
-
-          #video-holder {
-            max-width: 640px;
-            margin: 0 auto;
-          }
-
-          #video-container {
-            border-radius: 5px;
-            background-color: #e3e3e3;
-            padding: 10px;
-          }
-
-          #status-field {
-            text-align: center;
-            padding: 10px;
-            color: #fff;
-            margin: 10px 0;
-          }
-
-          .status-alert {
-            background-color: rgb(227, 25, 0);
-          }
-
-          .status-message {
-            background-color: #aaa;
-          }
-
-          #event-log-field {
-            background-color: #c0c0c0;
-            border-radius: 6px;
-            padding: 10px;
-            margin: 14px;
-          }
-
-          .red5pro-media-control-bar {
-            min-height: 40px;
-          }
-
-          .hidden {
-            display: none;
-          }
-
-          .report-field {
-            display: inline-block;
-            float: left;
-            margin: 0 30px;
-          }
-
-          .report-field_header {
-            width: 100%;
-            text-align: center;
-          }
-
-          .report-field_subheader {
-            width: 100%;
-            text-align: center;
-          }
-
-          .clearfix:after {
-           content: " "; /* Older browser do not support empty content */
-           visibility: hidden;
-           display: block;
-           height: 0;
-           clear: both;
-          }
-
-          #id-container {
-            background-color: #aaa;
-            color: #fff;
-            text-align: center;
-            font-size: 2rem;
-          }
-      </style>
+      <link rel="stylesheet" href="lib/red5pro/red5pro-media.css">
+      <link rel="stylesheet" href="css/playback.css">
+      <link rel="stylesheet" href="css/viewer.css">
     </head>
     <body>
-      <div id="id-container" class="hidden"></div>
-      <div id="video-container">
-            <div id="video-holder">
-              <video id="red5pro-subscriber"
+      {{> top-bar }}
+      {{> navigation }}
+      {{> header }}
+      <div id="viewer-section">
+        <div id="subviewer-section">
+          <div id="subviewer-section-text">
+            <h1 class="red-text subviewer-title">Live Subscribing to <span style="text-transform: none;"><%=stream%></span></h1>
+          </div>
+        </div>
+        <div class="content-section-story">
+          <div id="id-container" class="hidden"></div>
+          <% if (is_stream_manager) { %>
+            <p class="stream-manager-notification">USING STREAM MANAGER</p>
+          <% } %>
+          <div class="subscribe-section">
+            <div class="video-container">
+              <div class="statistics-field hidden">Bitrate: 0. 0x0.</div>
+              <div class="video-holder">
+                <video id="red5pro-subscriber"
                       controls="controls" autoplay="autoplay" playsinline
-                      class="red5pro-media red5pro-media-background">
-              </video>
+                      class="red5pro-subscriber red5pro-media red5pro-media-background">
+                </video>
+                <img src="images/loading.svg" class="stream-play-button loading-icon">
+              </div>
+              <div id="show-hide-reports-btn" class="hidden">Show Live Reports</div>
             </div>
-            <div id="status-field" class="status-message"></div>
-            <div id="reports">
-              <p><button id="show-hide-reports-btn">Show Live Reports</button></p>
-              <div id="report-container" class="hidden clearfix">
-                <div class="report-field">
-                  <h2 class="report-field_header">Video</h2>
-                  <p id="video-report_stats" class="report-field_subheader"></p>
-                  <p id="video-report" />
-                </div>
-                <div class="report-field">
-                  <h2 class="report-field_header">Audio</h2>
-                  <p id="audio-report_stats" class="report-field_subheader"></p>
-                  <p id="audio-report" />
-                </div>
+            <div id="report-container" class="reports-container hidden">
+              <div class="report-field">
+                <div id="video-report_stats" class="statistics-field"></div>
+                <div class="report-field_header">Video</div>
+                <div id="video-report" class="report"></div>
+              </div>
+              <div class="report-field">
+                <div id="audio-report_stats" class="statistics-field"></div>
+                <div class="report-field_header">Audio</div>
+                <div id="audio-report" class="report"></div>
               </div>
             </div>
-            <div id="event-log-field" class="event-log-field">
-              <div style="padding: 10px 0">
-                <p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>
-                <div style="clear: both;"></div>
+          </div>
+          <div class="event-container">
+            <div class="status-field status-message"></div>
+            <div class="stream-manager-info status-message hidden"></div>
+            <div class="event-log-field">
+              <div class="event-header">
+                <span>Event Log:</span>
+                <button id="clear-log-button" class="event-clear-button">clear</button>
               </div>
+              <hr class="event-rule">
+              <div class="event-log">
             </div>
+          </div>
+        </div>
       </div>
-      <script src="lib/es6/es6-array.js"></script>
-      <script src="lib/es6/es6-bind.js"></script>
-      <script src="lib/es6/es6-fetch.js"></script>
-      <script src="lib/es6/es6-object-assign.js"></script>
-      <script src="lib/es6/es6-promise.min.js"></script>
-      <script src="lib/jquery-1.12.4.min.js"></script>
-      <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+      {{> es6-script-includes }}
+      {{> stream_manager_script }}
       <script src="script/r5pro-ice-utils.js"></script>
-      <script src="script/r5pro-utils.js"></script>
-      <script src="script/r5pro-autoplay-utils.js"></script>
       <script>
           // writing params to global.
           window.targetHost = "<%=host%>";
@@ -246,6 +176,12 @@
               document.head.appendChild(script);
           }
         </script>
+      <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+      <script src="script/r5pro-utils.js"></script>
+      <script src="script/r5pro-sm-utils.js"></script>
+      <script src="script/r5pro-autoplay-utils.js"></script>
+      <script src="script/r5pro-playback-block.js"></script>
       <script src="script/r5pro-viewer-failover.js"></script>
+      {{> footer }}
     </body>
 </html>

@@ -1,11 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+{{> jsp_header }}
 <%
     String app = "live";
     String host="127.0.0.1";
     String stream="myStream";
     String buffer="2";
     String width="100%";
-    String height="100%";
+    String height="480";
     String ice=null;
     String tech=null;
 
@@ -37,108 +37,64 @@
 {{> license}}
 <html lang="eng">
     <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Welcome to the Red5 Pro Server Pages!">
-        <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/modal.css">
-        <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
-        <title>VOD Playback of <%= stream %></title>
-    <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
-    <script src="//unpkg.com/video.js/dist/video.js"></script>
-    <script src="//unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
-    <script src="//unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
-    <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
-    <script src="lib/screenfull/screenfull.min.js"></script>
-    <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
-        <style>
-          object:focus {
-            outline:none;
-          }
-
-          #video-holder, .video-element {
-            width: <%=width%>;
-            height: <%=height%>;
-          }
-
-          #video-holder {
-            max-width: 600px;
-            margin: 0 auto;
-          }
-
-          #video-container {
-            border-radius: 5px;
-            background-color: #e3e3e3;
-            padding: 10px;
-          }
-
-          #status-field {
-            text-align: center;
-            padding: 10px;
-            color: #fff;
-            margin: 10px 0;
-          }
-
-          .status-alert {
-            background-color: rgb(227, 25, 0);
-          }
-
-          .status-message {
-            background-color: #aaa;
-          }
-
-          #event-log-field {
-            background-color: #c0c0c0;
-            border-radius: 6px;
-            padding: 10px;
-            margin: 14px;
-          }
-
-      .red5pro-media-control-bar {
-        min-height: 40px;
-      }
-        </style>
+      {{> head_meta }}
+      {{> resources }}
+      <title>VOD Playback of <%= stream %></title>
+      <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
+      <script src="//unpkg.com/video.js/dist/video.js"></script>
+      <script src="//unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+      <script src="//unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
+      <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
+      <script src="lib/screenfull/screenfull.min.js"></script>
+      <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
+      <link rel="stylesheet" href="css/playback.css">
+      <link rel="stylesheet" href="css/viewer.css">
     </head>
     <body>
-    <template id="flash-playback">
-      <object type="application/x-shockwave-flash" id="red5pro-subscriber" name="red5pro-subscriber" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="100%" class="red5pro-media-background red5pro-media">
-        <param name="quality" value="high">
-        <param name="wmode" value="opaque">
-        <param name="bgcolor" value="#000000">
-        <param name="allowscriptaccess" value="always">
-        <param name="allowfullscreen" value="true">
-        <param name="allownetworking" value="all">
-      </object>
-    </template>
-      <div id="video-container">
-            <div id="video-holder">
-              <video id="red5pro-subscriber"
-                      controls autoplay playsinline
-                      class="red5pro-media red5pro-media-background">
-              </video>
-            </div>
-            <div id="status-field" class="status-message"></div>
-            <div id="event-log-field" class="event-log-field">
-              <div style="padding: 10px 0">
-                <p><span style="float: left;">Event Log:</span><button id="clear-log-button" style="float: right;">clear</button></p>
-                <div style="clear: both;"></div>
+      {{> top-bar }}
+      {{> navigation }}
+      {{> header }}
+      <div id="viewer-section">
+        <div id="subviewer-section">
+          <div id="subviewer-section-text">
+            <h1 class="red-text subviewer-title">VOD Subscribing to <span style="text-transform: none;"><%=stream%></span></h1>
+          </div>
+        </div>
+        <div class="content-section-story">
+          <% if (is_stream_manager) { %>
+            <p class="stream-manager-notification">USING STREAM MANAGER</p>
+          <% } %>
+          <div class="subscribe-section">
+            <div class="video-container">
+              <div class="video-holder">
+                <video id="red5pro-subscriber"
+                      controls="controls" autoplay="autoplay" playsinline muted
+                      class="red5pro-subscriber red5pro-media red5pro-media-background">
+                </video>
               </div>
             </div>
+          </div>
+          <div class="event-container">
+            <div class="status-field status-message"></div>
+            <div class="stream-manager-info status-message hidden"></div>
+            <div class="event-log-field">
+              <div class="event-header">
+                <span>Event Log:</span>
+                <button id="clear-log-button" class="event-clear-button">clear</button>
+              </div>
+              <hr class="event-rule">
+              <div class="event-log">
+            </div>
+          </div>
+        </div>
       </div>
-      <script src="lib/es6/es6-array.js"></script>
-      <script src="lib/es6/es6-bind.js"></script>
-      <script src="lib/es6/es6-fetch.js"></script>
-      <script src="lib/es6/es6-object-assign.js"></script>
-      <script src="lib/es6/es6-promise.min.js"></script>
-      <script src="lib/jquery-1.12.4.min.js"></script>
-      <script src="lib/red5pro/red5pro-sdk.min.js"></script>
-      <script src="script/r5pro-autoplay-utils.js"></script>
+      {{> es6-script-includes }}
+      {{> stream_manager_script }}
       <script src="script/r5pro-ice-utils.js"></script>
-        <script>
+      <script>
           // Access selected data from the `opener` window.
           var opener = window.opener;
-          if (opener) {
+          if (opener && opener.streamdata) {
             var json = opener.streamdata;
             var streamDataStr = decodeURIComponent(json);
             var streamData = JSON.parse(streamDataStr);
@@ -160,7 +116,11 @@
           if (viewTech && viewTech !== 'null') {
             window.r5proViewTech = viewTech;
           }
-        </script>
+      </script>
+      <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+      <script src="script/r5pro-utils.js"></script>
+      <script src="script/r5pro-autoplay-utils.js"></script>
       <script src="script/r5pro-viewer-vod-failover.js"></script>
+      {{> footer }}
     </body>
 </html>
