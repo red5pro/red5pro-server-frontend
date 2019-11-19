@@ -1,7 +1,7 @@
 {
   "r5pro-inspector": {
     "repositoryUrl": "git@github.com:infrared5/automation.git",
-    "branch": "feature/frontend_integration_AUT-113"
+    "branch": "develop"
   },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
