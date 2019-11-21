@@ -113,7 +113,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   };
 
   var protocol = window.targetProtocol;
-  protocol = protocol.substring(0, protocol.lastIndexOf(':'));
   var doIncludePlaylists = window.requestPlaylists;
   var port = window.location.port ? window.location.port : (protocol === 'https' ? 443 : 80);
 
