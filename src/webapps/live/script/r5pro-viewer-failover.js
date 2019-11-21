@@ -58,8 +58,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   var iceServers = window.r5proIce;
   var protocol = window.location.protocol;
-  var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
+  var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
   function getSocketLocationFromProtocol (protocol) {
     return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
   }

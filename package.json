@@ -44,6 +44,6 @@
     "deploy:qa": "shipit staging buildAndDeploy",
     "deploy:feature": "shipit feature buildAndDeploy",
     "reap": "node red5pro-frontendfile.js",
-    "postdeploy:local": "cp -R /Users/toddanderson/Desktop/red5pro-server-develop.b2375-feature/WEB-INF /Users/toddanderson/Desktop/red5pro-server-develop.b2753-feature/webapps/live && cp -R /Users/toddanderson/Desktop/red5pro-server-develop.b2375-feature/WEB-INF-ROOT /Users/toddanderson/Desktop/red5pro-server-develop.b2753-feature/webapps/root/WEB-INF && cp -R /Users/toddanderson/Desktop/red5pro-server-develop.b2753-feature/streams/** /Users/toddanderson/Desktop/red5pro-server-develop.b2753-feature/webapps/live/streams && cp -R /Users/toddanderson/Desktop/red5pro-server-develop.b2753-feature/apps/** /Users/toddanderson/Desktop/red5pro-server-develop.b2753-feature/webapps/"
+    "postdeploy:local": "cp -R /Users/toddanderson/Desktop/red5pro-server-frontend-files/WEB-INF /Users/toddanderson/Desktop/red5pro-server-frenchie01.b2944-feature/webapps/live && cp -R /Users/toddanderson/Desktop/red5pro-server-frontend-files/WEB-INF-ROOT /Users/toddanderson/Desktop/red5pro-server-frenchie01.b2944-feature/webapps/root/WEB-INF && cp -R /Users/toddanderson/Desktop/red5pro-server-frontend-files/streams/** /Users/toddanderson/Desktop/red5pro-server-frenchie01.b2944-feature/webapps/live/streams && cp -R /Users/toddanderson/Desktop/red5pro-server-frontend-files/apps/** /Users/toddanderson/Desktop/red5pro-server-frenchie01.b2944-feature/webapps/"
   }
 }

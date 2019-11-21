@@ -33,8 +33,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var targetViewTech = window.r5proViewTech;
   var playbackOrder = targetViewTech ? [targetViewTech] : ['rtmp', 'hls'];
   var protocol = window.location.protocol;
-  var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
+  var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
 
   var baseConfiguration = {
     host: host,
@@ -113,6 +113,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   };
 
   var protocol = window.targetProtocol;
+  protocol = protocol.substring(0, protocol.lastIndexOf(':'));
   var doIncludePlaylists = window.requestPlaylists;
   var port = window.location.port ? window.location.port : (protocol === 'https' ? 443 : 80);
 

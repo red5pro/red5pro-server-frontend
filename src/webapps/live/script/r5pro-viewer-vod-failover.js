@@ -24,7 +24,7 @@ WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* global window, document, jQuery*/
-(function(window, document, $, promisify, red5pro) {
+(function(window, document, $, promisify, fetch, red5pro) {
   'use strict';
 
   red5pro.setLogLevel('debug');
@@ -37,7 +37,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var host = window.targetHost;
   var buffer = window.r5proBuffer;
   var protocol = window.location.protocol;
+  protocol = protocol.substring(0, protocol.lastIndexOf(':'));
   var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
+  var baseUrl = protocol + '://' + host + ':' + port + '/live';
+  var mediafilesServletURL = [baseUrl, 'mediafiles'].join('/');
+  var playlistServletURL = [baseUrl, 'playlists'].join('/');
 
   var baseConfiguration = {
     host: host,
@@ -142,8 +146,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   function useFLVFallback (streamName) {
     var container = document.getElementById('red5pro-subscriber')
-    if (container && container.parentNode) {
-      container.parentNode.removeChild(container);
+    var parent = container.parentNode;
+    if (container && parent) {
+      parent.removeChild(container);
     }
     var flashElement = generateFlashEmbedObject('red5pro-subscriber');
     var flashvars = document.createElement('param');
@@ -157,6 +162,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         'buffer=0.5&'+
                         'autosize=true';
     flashElement.appendChild(flashvars);
+    parent.appendChild(flashElement);
     showSubscriberImplStatus({
       getType: function() {
         return 'flv';
@@ -225,6 +231,73 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           useVideoJSFallback(streamData.urls.hls);
         }
        });
+  }
+
+  function getStreamData (name, url, type, format) {
+    var httpRegex = /^http/i;
+    var parseItem = function (item) {
+      var itemName = item.name;
+      var itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
+      return {
+        name: itemName,
+        url: itemUrl
+      };
+    }
+    var findDataInList = function (list, name) {
+      var data = {name: name, urls: {}};
+      var item, i = list.length;
+      while(--i > -1) {
+        item = parseItem(list[i]);
+        if (item.name === name) {
+          data.name = item.name;
+          data.urls[format] = item.url
+          return data;
+        }
+      }
+      return null;
+    }
+    return window.promisify(function (resolve, reject) {
+      window.r5pro_isStreamManager()
+              .then(function () {
+                window.r5pro_requestVODStreams('live', type)
+                  .then(function (list) {
+                    var data = findDataInList(list, name);
+                    if (data) {
+                      resolve(data);
+                      return true;
+                    }
+                    throw new Error('Could not locate on Stream Manager the VOD file by name ' + name);
+                })
+              .catch(function (error) {
+                reject(error.message || error);
+              });
+              return true
+            })
+            .catch(function() {
+              fetch(url)
+                .then(function (res) {
+                  if (res.headers.get("content-type") &&
+                    res.headers.get("content-type").toLowerCase().indexOf("application/json") >= 0) {
+                    return res.json();
+                  } else {
+                    throw new TypeError('Could not properly parse response.');
+                  }
+                })
+                .then(function (json) {
+                  if (json.errorMessage) {
+                    throw new Error(json.errorMessage);
+                  }
+                  var data = findDataInList(json[type], name);
+                  if (data) {
+                    resolve(data);
+                    return true;
+                  } else {
+                    throw new TypeError('Could not properly parse response.');
+                  }
+                })
+                .catch(reject);
+            });
+    });
   }
 
   function determineSubscriber (types) {
@@ -352,7 +425,21 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   if (window.streamData) {
     startSubscription(window.streamData);
   } else {
-    console.error('This VOD page needs to be opened from playback.jsp links.');
+    console.warn('This VOD page should be opened from playback.jsp links.');
+    var streamName = window.getParameterByName('stream');
+    var isHLS = streamName.match(/.m3u8/)
+    var url = isHLS ? playlistServletURL : mediafilesServletURL;
+    var type = isHLS ? 'playlists' : 'mediafiles';
+    var format = isHLS ? 'hls' : 'rtmp';
+
+    getStreamData(streamName, url, type, format)
+      .then(function (data) {
+        startSubscription(data);
+      })
+      .catch(function (error) {
+        console.error(error);
+        addEventLogToField(eventLogField, error);
+      });
   }
 
- }(window, document, jQuery.noConflict(), window.promisify, window.red5prosdk));
+ }(window, document, jQuery.noConflict(), window.promisify, window.fetch, window.red5prosdk));
