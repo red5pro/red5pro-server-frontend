@@ -86,7 +86,7 @@
           <p class="stream-manager-notification">USING STREAM MANAGER</p>
         <% } %>
         <div class="content-section-story">
-          <% if (names.size() <= 0) { %>
+          <% if (!is_stream_manager && names.size() <= 0) { %>
             <p class="no-streams-entry">No streams found</p>
             <p style="margin-top: 20px;">You can begin a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=<%= ip %>" target="_blank">Broadcast page</a>.</p>
             <p class="small-font-size">Once a Broadcast session is started, return to this page to see the stream name listed.</p>
