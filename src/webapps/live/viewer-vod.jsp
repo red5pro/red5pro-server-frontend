@@ -119,6 +119,7 @@
       </script>
       <script src="lib/red5pro/red5pro-sdk.min.js"></script>
       <script src="script/r5pro-utils.js"></script>
+      <script src="script/r5pro-sm-utils.js"></script>
       <script src="script/r5pro-autoplay-utils.js"></script>
       <script src="script/r5pro-viewer-vod-failover.js"></script>
       {{> footer }}
