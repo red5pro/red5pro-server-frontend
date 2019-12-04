@@ -76,6 +76,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   text-align: center;
 }
 
+.red5pro-media-container {
+  min-height: 100px;
+}
+
 .video-container {
   max-width: NONE;
 }

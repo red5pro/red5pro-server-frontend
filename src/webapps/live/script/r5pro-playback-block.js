@@ -194,6 +194,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         } else {
           this.getVideoElement().addEventListener('canplay', this.handleStreamPlayback);
         }
+      } else if (event.type === 'Subscribe.Metadata') {
+        if (event.data.streamingMode && event.data.streamingMode === 'Audio') {
+          // if audio only broadcast `canplay` may come in on the element before `Subscribe.Start`.
+          removeLoadingIcon(this.getVideoElement());
+        }
       }
     }
   }

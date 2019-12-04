@@ -217,6 +217,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     if (event.type !== 'Subscribe.Time.Update') {
       console.log(eventLog);
       addEventLog(eventLog);
+      if (event.type === 'Subscribe.Metadata') {
+        if (event.data.streamingMode && event.data.streamingMode === 'Audio') {
+          // If audio only broadcast, `canplay` event can come in on the video element before Subscribe.Start.
+          removeLoadingIcon();
+        }
+      }
     }
   }
 
