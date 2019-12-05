@@ -349,7 +349,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           .then(function (origin) {
             updateConfigurationsForStreamManager(origin);
             streamManagerInfo.classList.remove('hidden');
-            streamManagerInfo.innerText = 'Using Stream Manager Origin at: ' + origin.serverAddress + '.';
+            streamManagerInfo.innerText = 'Using Stream Manager Edge at: ' + origin.serverAddress + '.';
             fn();
           })
           .catch(function (error) {

@@ -382,7 +382,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               if ($streamManagerInfo && $streamManagerInfo.length > 0) {
                 var info = $streamManagerInfo.get(0);
                 info.classList.remove('hidden');
-                info.innerText = 'Using Stream Manager Origin at: ' + origin.serverAddress + '.';
+                info.innerText = 'Using Stream Manager Edge at: ' + origin.serverAddress + '.';
               }
             })
             .catch(function (error) {
