@@ -41,6 +41,26 @@
           </div>
       </div>
     </div>
+    <script>
+        (function (window, document) {
+          window.r5pro_scrollToContent = function () {
+            if (window.innerHeight > window.innerWidth) {
+              window.requestAnimationFrame(function () {
+                var section = document.getElementsByClassName('main-container');
+                if (section && section.length > 0) {
+                  section.item(0).scrollIntoView({behavior: "smooth"});
+                }
+              });
+            }
+          }
+
+          if (/comp|inter|loaded/.test(document.readyState)){
+            window.r5pro_scrollToContent();
+          } else {
+            document.addEventListener('DOMContentLoaded', window.r5pro_scrollToContent, false);
+          }
+        })(window, document);
+    </script>
     {{> footer }}
   </body>
 </html>

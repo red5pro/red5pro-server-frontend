@@ -65,6 +65,7 @@
         window.r5pro_registerIpChangeListener(handleLiveIpChange);
        }(this, document));
     </script>
+    <script src="script/r5pro-utils.js"></script>
     {{> footer }}
   </body>
 </html>

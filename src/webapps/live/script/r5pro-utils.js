@@ -23,8 +23,8 @@ NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM,
 WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/*global window, $ */
-(function (window, Promise, $) {
+/*global window, document, $ */
+(function (window, document, Promise, $) {
   'use strict';
 
   // http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
@@ -127,4 +127,20 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     clearInterval(bitrateInterval);
   }
 
-})(window, window.Promise, $);
+  window.r5pro_scrollToContent = function () {
+    if (window.innerHeight > window.innerWidth) {
+      window.requestAnimationFrame(function () {
+        var section = document.getElementsByClassName('main-container');
+        if (section && section.length > 0) {
+          section.item(0).scrollIntoView({behavior: "smooth"});
+        }
+      });
+    }
+  }
+
+  if (/comp|inter|loaded/.test(document.readyState)){
+    window.r5pro_scrollToContent();
+  } else {
+    document.addEventListener('DOMContentLoaded', window.r5pro_scrollToContent, false);
+  }
+})(window, document, window.Promise, $);
