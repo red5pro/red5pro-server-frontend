@@ -79,12 +79,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var frame = document.createElement('canvas');
     var video = document.createElement('video');
     var playButton = document.createElement('img');
+    var stopButton = document.createElement('button');
+    var stopButtonLabel = document.createTextNode('Stop & Close');
+    stopButton.appendChild(stopButtonLabel);
     videoContainer.appendChild(statsField);
     videoContainer.appendChild(videoHolder);
     frameHolder.appendChild(frame);
     frameHolder.appendChild(playButton);
     videoHolder.appendChild(frameHolder);
     videoHolder.appendChild(video);
+    videoHolder.appendChild(stopButton);
     statsField.classList.add('statistics-field');
     statsField.classList.add('hidden');
     videoContainer.classList.add('video-container');
@@ -101,6 +105,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     video.id = getVideoElementId(streamName);
     playButton.src = 'images/play_circle.svg';
     playButton.classList.add('stream-play-button');
+    stopButton.classList.add('ui-button');
+    stopButton.classList.add('stop-button');
+    stopButton.classList.add('hidden');
     return videoContainer;
   }
 
@@ -319,11 +326,21 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     } 
   }
 
+  PlaybackBlock.prototype.handleStopAndClose = function () {
+    this.stop();
+  }
+
   PlaybackBlock.prototype.setActive = function (isActive) {
+    var $el = $(this.getElement());
+    var $video = this.getVideoElement();
+    var $stopButton = $el.find('.stop-button');
     if (isActive) {
-      $(this.getElement()).find('.event-container').get(0).classList.remove('hidden');
+      $el.find('.event-container').get(0).classList.remove('hidden');
+      $stopButton.detach().insertAfter($video);
+      $stopButton.get(0).classList.remove('hidden');
     } else {
-      $(this.getElement()).find('.event-container').get(0).classList.add('hidden');
+      $el.find('.event-container').get(0).classList.add('hidden');
+      $stopButton.get(0).classList.add('hidden');
     }
   }
 
@@ -331,8 +348,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var $el = $(element);
     var $clearButton = $el.find('.event-clear-button');
     var $playButton = $el.find('.frame-holder');
+    var $stopButton = $el.find('.stop-button');
     $clearButton.on('click', this.handleClearLog.bind(this));
     $playButton.on('click', this.handleWatchToggle.bind(this));
+    $stopButton.on('click', this.handleStopAndClose.bind(this));
   }
 
   PlaybackBlock.prototype.create = function () {
