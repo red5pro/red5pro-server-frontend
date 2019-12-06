@@ -444,6 +444,18 @@ a.link:hover {
   padding: 8px;
   text-transform: uppercase;
 }
+
+.filter-container {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.filter-container_input {
+  margin-left: 10px;
+}
 /* /GENERIC */
 
 @media (min-width: 768px) {
