@@ -485,14 +485,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     try {
       context.clearRect(0, 0, frame.width, frame.height);
       frameHolder.classList.remove('hidden');
-      //    console.log(video.clientWidth, video.clientHeight, frame.clientWidth, frame.clientHeight);
-      //    var wPerc = frame.clientWidth / video.clientWidth;
-      //    var hPerc = frame.clientHeight / video.clientHeight;
-      context.drawImage(video, 
-        0, 0, video.clientWidth, video.clientHeight,
-        //      (video.clientWidth - frame.clientWidth) * 0.5, (video.clientHeight - frame.clientHeight) * 0.5,
-        0, 0,
-        frame.width, frame.height);
+      context.drawImage(video, 0, 0, video.clientWidth, video.clientHeight);
     } catch (e) {
       console.log(e.message);
     }
