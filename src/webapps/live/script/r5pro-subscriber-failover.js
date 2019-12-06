@@ -78,11 +78,33 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           playbackBlocks[i].stop();
         }
       }
+      playbackBlock.getElement().parentNode.classList.add('stream-menu-listing-active');
     },
-    onPlaybackBlockStop: function (playbackBlock) { // eslint-disable-line no-unused-vars
-      // console.log(playbackBlock);
+    onPlaybackBlockStop: function (playbackBlock) {
+      playbackBlock.getElement().parentNode.classList.add('stream-menu-listing-active');
     }
   }
+
+  // See r5pro-filter-input.js
+  var handleFilteredItems = function (items) {
+    var findPlaybackBlock = function (streamname) {
+      var index = playbackBlocks.length;
+      while (--index > -1) {
+        if (playbackBlocks[index].getStreamName() === streamname) {
+          return playbackBlocks[index];
+        }
+      }
+    }
+    var i = items.length;
+    var item;
+    while (--i > -1) {
+      item = findPlaybackBlock(items[i].getAttribute('data-streamname'));
+      if (item) {
+        item.stop();
+      }
+    }
+  }
+  window.r5pro_addFilterCallback(handleFilteredItems);
 
   function generatePlaybackBlocks () {
     var $listing = $('.stream-menu-listing');

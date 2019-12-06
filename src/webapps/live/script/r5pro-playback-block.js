@@ -84,11 +84,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     stopButton.appendChild(stopButtonLabel);
     videoContainer.appendChild(statsField);
     videoContainer.appendChild(videoHolder);
+    videoContainer.appendChild(stopButton);
     frameHolder.appendChild(frame);
     frameHolder.appendChild(playButton);
     videoHolder.appendChild(frameHolder);
     videoHolder.appendChild(video);
-    videoHolder.appendChild(stopButton);
     statsField.classList.add('statistics-field');
     statsField.classList.add('hidden');
     videoContainer.classList.add('video-container');
@@ -332,15 +332,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   PlaybackBlock.prototype.setActive = function (isActive) {
     var $el = $(this.getElement());
-    var $video = this.getVideoElement();
-    var $stopButton = $el.find('.stop-button');
     if (isActive) {
       $el.find('.event-container').get(0).classList.remove('hidden');
-      $stopButton.detach().insertAfter($video);
-      $stopButton.get(0).classList.remove('hidden');
+      $el.find('.stop-button').get(0).classList.remove('hidden');
     } else {
       $el.find('.event-container').get(0).classList.add('hidden');
-      $stopButton.get(0).classList.add('hidden');
+      $el.find('.stop-button').get(0).classList.add('hidden');
     }
   }
 
@@ -455,11 +452,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   PlaybackBlock.prototype.stop = function () {
     this.isHalted = true;
-    this.capture();
-    removeLoadingIcon(this.getVideoElement());
     if (this.client) {
       this.client.onPlaybackBlockStop(this);
     }
+    this.capture();
+    removeLoadingIcon(this.getVideoElement());
     if (this.subscriber) {
       this.subscriber.unsubscribe();
       this.subscriber = undefined;
@@ -493,7 +490,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   PlaybackBlock.prototype.expand = function () {
     var $el = $(this.getElement());
-    this.getElement().parentNode.classList.add('stream-menu-listing-active');
     $el.find('.video-container').get(0).classList.add('video-container-active');
     var subscriber = $el.find('.red5pro-subscriber').get(0);
     var frameHolder = $el.find('.frame-holder').get(0);
@@ -506,7 +502,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   PlaybackBlock.prototype.collapse = function () {
     var $el = $(this.getElement());
-    this.getElement().parentNode.classList.remove('stream-menu-listing-active');
     $el.find('.video-container').get(0).classList.remove('video-container-active');
     var subscriber = $el.find('.red5pro-subscriber').get(0);
     var frameHolder = $el.find('.frame-holder').get(0);
@@ -520,6 +515,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   PlaybackBlock.prototype.getElement = function () {
     return this.elementNode;
+  }
+
+  PlaybackBlock.prototype.getStreamName = function () {
+    return this.streamName;
   }
 
   PlaybackBlock.prototype.getVideoElement = function () {

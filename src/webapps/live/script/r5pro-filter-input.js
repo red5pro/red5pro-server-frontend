@@ -26,6 +26,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* global window, document */
 (function (window, document) {
   'use strict';
+  var filterCallbacks = [];
+  var filteredItems = [];
   var container = document.getElementsByClassName('filter-container')[0];
   var targetClassName = container.getAttribute('data-target');
   var target = document.getElementsByClassName(targetClassName)[0];
@@ -37,18 +39,31 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var children = target.childNodes;
   var input = document.getElementById('filter-input');
   var filterTarget = function () {
+    filteredItems.length = 0;
     var i = children.length;
     var child, name;
     while(--i > -1) {
       child = children.item(i);
-      name = child.getAttribute('data-streamName');
+      if (typeof child.getAttribute !== 'function') continue;
+      name = child.getAttribute('data-streamname');
       if (!name.match(input.value)) {
         child.classList.add('hidden');
+        filteredItems.push(child);
       } else {
         child.classList.remove('hidden');
       }
     }
+
+    i = filterCallbacks.length;
+    while (--i > -1) {
+      filterCallbacks[i](filteredItems);
+    }
   }
   input.addEventListener('change', filterTarget);
   input.addEventListener('input', filterTarget);
+
+  window.r5pro_addFilterCallback = function (cb) {
+    filterCallbacks.push(cb);
+  }
+
 })(window, document);

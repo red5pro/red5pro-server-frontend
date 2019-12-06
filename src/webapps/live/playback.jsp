@@ -98,10 +98,10 @@
     <script src="script/r5pro-utils.js"></script>
     <script src="script/r5pro-sm-utils.js"></script>
     <script src="script/r5pro-autoplay-utils.js"></script>
+    <script src="script/r5pro-filter-input.js"></script>
     <script src="script/r5pro-playback-block.js"></script>
     <script src="script/r5pro-playback-block-vod.js"></script>
     <script src="script/r5pro-playback-failover.js"></script>
-    <script src="script/r5pro-filter-input.js"></script>
     {{> footer }}
   </body>
 </html>
