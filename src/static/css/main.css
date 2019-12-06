@@ -217,6 +217,8 @@ a.link:hover {
   padding: 1em;
   border: 0;
   cursor: pointer;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0;
 }
 
 #ip-suggestions-table {
@@ -449,13 +451,10 @@ a.link:hover {
   display: flex;
   justify-content: flex-end;
   margin: 10px;
-  align-items: center;
   vertical-align: middle;
+  flex-direction: row;
 }
 
-.filter-container_input {
-  margin-left: 10px;
-}
 /* /GENERIC */
 
 @media (min-width: 768px) {
@@ -472,6 +471,9 @@ a.link:hover {
     flex-direction: column;
   }
   .broadcast-section {
+    flex-direction: column;
+  }
+  .filter-container {
     flex-direction: column;
   }
   #menu-section {

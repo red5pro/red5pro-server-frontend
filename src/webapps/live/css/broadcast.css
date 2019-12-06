@@ -55,6 +55,10 @@ display: inline-block;
 font-size: 14px;
 }
 
+#stream-name-field {
+  width: 110px;
+}
+
 #video-holder {
 line-height: 0px;
 }
@@ -88,6 +92,8 @@ color: #dbdbdb;
   width: 100%;
   font-size: 1em;
   padding: 1em;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0;
 }
 
 .button-enabled {
