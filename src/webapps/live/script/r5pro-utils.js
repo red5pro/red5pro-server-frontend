@@ -138,7 +138,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   }
 
-  if (/comp|inter|loaded/.test(document.readyState)){
+  if (/comp|inter|loaded/.test(document.readyState)) {
     window.r5pro_scrollToContent();
   } else {
     document.addEventListener('DOMContentLoaded', window.r5pro_scrollToContent, false);

@@ -91,8 +91,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
     }
   }
+  if (window.r5pro_addFilterCallback) {
+    window.r5pro_addFilterCallback(handleFilteredItems);
+  }
 
-  window.r5pro_addFilterCallback(handleFilteredItems);
   function generatePlaybackBlocks () {
     var $listing = $('.stream-menu-listing');
     if ($listing && $listing.length > 0) {
@@ -281,6 +283,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           showLoadError(error);
         } else {
           populateListing(data);
+          window.r5pro_initializeFilter();
         }
       });
     }

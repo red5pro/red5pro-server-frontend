@@ -68,7 +68,7 @@
         <div class="content-section-story">
           <p class="notify-callout">You can record a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=<%=ip%>" target="_blank">Broadcast page</a> and checking the <span class="bold">Enable Recording button.</span><br/><span class="small-font-size">After the Broadcast is started and stopped, the Video On Demand (VOD) recording will be available. Return to this page to see the stream name listed.</span></p>
           <hr class="top-padded-rule" style="margin-top: 0">
-          {{> filter-container target='stream-menu-content'}}
+          {{> filter-section-with-type target='stream-menu-content'}}
           <div class="stream-menu-content">
             <p class="no-streams-entry">Requesting files...</p>
           </div>

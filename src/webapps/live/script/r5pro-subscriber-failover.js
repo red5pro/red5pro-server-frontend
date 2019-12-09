@@ -104,7 +104,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
     }
   }
-  window.r5pro_addFilterCallback(handleFilteredItems);
+  if (window.r5pro_addFilterCallback) {
+    window.r5pro_addFilterCallback(handleFilteredItems);
+  }
 
   function generatePlaybackBlocks () {
     var $listing = $('.stream-menu-listing');
@@ -163,6 +165,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         }
       }
       generatePlaybackBlocks();
+      window.r5pro_initializeFilter();
     })
     .catch(function (error) { // eslint-disable-line no-unused-vars
       // console.log('Host is Stream Manager? (' + error + ')');
