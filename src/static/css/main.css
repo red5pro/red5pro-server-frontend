@@ -205,6 +205,22 @@ a.link:hover {
 .top-nudge {
   padding-top: 14px;
 }
+
+.ui-button {
+  color: #ffffff;
+  background-color: #3580A2;
+  text-align: center;
+  border-radius: 0px;
+  padding: 10px;
+  width: 100%;
+  font-size: 1em;
+  padding: 1em;
+  border: 0;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0;
+}
+
 #ip-suggestions-table {
   width: 100%;
   margin-bottom: 14px;
@@ -430,6 +446,25 @@ a.link:hover {
   padding: 8px;
   text-transform: uppercase;
 }
+
+.filter-section {
+  background-color: #eee;
+  margin: 10px;
+  padding: 10px 0;
+}
+
+.filter-container {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px;
+  vertical-align: middle;
+  flex-direction: row;
+}
+
+.filter-input, .filter-checkbox {
+  margin-left: 10px;
+}
+
 /* /GENERIC */
 
 @media (min-width: 768px) {
@@ -447,6 +482,12 @@ a.link:hover {
   }
   .broadcast-section {
     flex-direction: column;
+  }
+  .filter-container {
+    flex-direction: column;
+  }
+  .filter-input {
+    margin-left: 0px;
   }
   #menu-section {
     flex: 1;
