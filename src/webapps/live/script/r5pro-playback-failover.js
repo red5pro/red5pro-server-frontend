@@ -110,7 +110,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         var block = new R5PlaybackBlock(name, name, location, page);
         block.setVODData(streamData, (targetViewTech === 'rtmp'));
         block.setClient(playbackBlockClient);
-        $item.append(block.create().getElement());
+        $item.appendChild(block.create().getElement());
         block.init(Object.assign({}, baseConfiguration, {
           rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
           hls: Object.assign({}, baseConfiguration, hlsConfiguration)
