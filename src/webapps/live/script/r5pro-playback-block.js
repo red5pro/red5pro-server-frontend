@@ -309,7 +309,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   // eslint-disable-next-line no-unused-vars
   PlaybackBlock.prototype.handleBitrateReport = function (type, report, bitrate, packetsLastSent) {
     var video = this.getVideoElement();
-    this.updateStatisticsField('Bitrate: ' + Math.floor(bitrate) + '. ' + video.videoWidth + 'x' + video.videoHeight + '.');
+    this.updateStatisticsField('Bitrate: ' + (bitrate === 0 ? 'N/A' : Math.floor(bitrate)) + '. ' + video.videoWidth + 'x' + video.videoHeight + '.');
   }
 
   PlaybackBlock.prototype.handleExternalLink = function () {

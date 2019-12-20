@@ -283,7 +283,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   function onBitrateUpdate (bitrate, packets) {
     statisticsField.classList.remove('hidden');
-    statisticsField.innerText = 'Bitrate: ' + Math.floor(bitrate) + '.   Packets Sent: ' + packets + '.';
+    statisticsField.innerText = 'Bitrate: ' + (bitrate === 0 ? 'N/A' : Math.floor(bitrate)) + '.   Packets Sent: ' + packets + '.';
   }
 
   function hasEstablishedPublisher () {
