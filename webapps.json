@@ -17,6 +17,6 @@
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "feature/mobile_controls_toggle_show_RPRO-7066"
+    "branch": "feature/video_resize_event_RPRO-7157"
   }
 }
