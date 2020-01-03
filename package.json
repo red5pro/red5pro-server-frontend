@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "FrontEnd webapps distributed with the Red5 Pro Server",
   "author": "Infrared5 Inc.",
-  "license": "MIT",
+  "license": "LICENSE",
   "devDependencies": {
     "atob": "^2.1.2",
     "bluebird": "^3.7.0",

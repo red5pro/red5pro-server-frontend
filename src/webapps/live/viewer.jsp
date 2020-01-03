@@ -104,7 +104,7 @@
           <% } %>
           <div class="subscribe-section">
             <div class="video-container">
-              <div class="statistics-field hidden">Bitrate: 0. 0x0.</div>
+              <div class="statistics-field hidden">Bitrate: N/A. 0x0.</div>
               <div class="video-holder">
                 <video id="red5pro-subscriber"
                       controls="controls" autoplay="autoplay" playsinline

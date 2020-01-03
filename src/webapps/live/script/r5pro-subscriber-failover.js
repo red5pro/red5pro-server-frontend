@@ -119,7 +119,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         var location = $item.getAttribute('data-streamLocation');
         var block = new R5PlaybackBlock(name, name, location, page);
         block.setClient(playbackBlockClient);
-        $item.append(block.create().getElement());
+        $item.appendChild(block.create().getElement());
         block.init(Object.assign({}, baseConfiguration, {
           rtc: Object.assign({}, baseConfiguration, rtcConfiguration),
           rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
