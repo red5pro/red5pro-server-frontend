@@ -17,6 +17,6 @@
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "bug/orientation_layout_RPRO-7213"
+    "branch": "feature/new-frenchie-frontend"
   }
 }
