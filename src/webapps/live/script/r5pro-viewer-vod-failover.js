@@ -23,58 +23,59 @@ NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM,
 WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* global document, Promise, $ */
-(function(window, document, red5pro) {
+/* global window, document, jQuery*/
+(function(window, document, $, promisify, fetch, red5pro) {
   'use strict';
 
- red5pro.setLogLevel('debug');
-  var iceServers = window.r5proIce;
+  red5pro.setLogLevel('debug');
+
+  var eventLogField = document.getElementsByClassName('event-log-field')[0];
+  var statusField = document.getElementsByClassName('status-field')[0];
+
   var subscriber;
 
   var host = window.targetHost;
   var buffer = window.r5proBuffer;
   var protocol = window.location.protocol;
-  var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
-  function getSocketLocationFromProtocol (protocol) {
-    return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
-  }
-
-  var $flashTemplate = document.getElementById('flash-playback');
+  var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
+  var baseUrl = protocol + '://' + host + ':' + port + '/live';
+  var mediafilesServletURL = [baseUrl, 'mediafiles'].join('/');
+  var playlistServletURL = [baseUrl, 'playlists'].join('/');
 
   var baseConfiguration = {
     host: host,
     app: 'live',
-    buffer: isNaN(buffer) ? 2 : buffer,
-    embedWidth: '100%',
-    embedHeight: '100%',
-    rtcConfiguration: {
-      iceServers: iceServers,
-      iceCandidatePoolSize: 2,
-      bundlePolicy: 'max-bundle'
-    }
-  };
-  var rtcConfig = {
-    protocol: getSocketLocationFromProtocol(protocol).protocol,
-    port: getSocketLocationFromProtocol(protocol).port,
-    subscriptionId: 'subscriber-' + Math.floor(Math.random() * 0x10000).toString(16)
   };
   var rtmpConfig = {
     protocol: 'rtmp',
     port: 1935,
     mimeType: 'rtmp/flv',
-    width: '100%',
-    height: '100%',
+    width: '640',
+    height: '480',
+    embedWidth: '100%',
+    embedHeight: '480',
     backgroundColor: '#000000',
+    buffer: isNaN(buffer) ? 2 : buffer
   };
   var hlsConfig = {
     protocol: protocol,
-    port: port,
-    mimeType: 'application/x-mpegURL'
+    port: port
   };
 
   var targetViewTech = window.r5proViewTech;
-  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
+  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtmp', 'hls'];
+
+  var generateFlashEmbedObject = function (id) {
+    return $('<object type="application/x-shockwave-flash" id="' + id + '" name="' + id + '" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="480" class="red5pro-subscriber red5pro-media-background red5pro-media">' +
+              '<param name="quality" value="high">' +
+              '<param name="wmode" value="opaque">' +
+              '<param name="bgcolor" value="#000000">' +
+              '<param name="allowscriptaccess" value="always">' +
+              '<param name="allowfullscreen" value="true">' +
+              '<param name="allownetworking" value="all">' +
+            '</object>').get(0);
+  }
 
   function hasEstablishedSubscriber () {
     return typeof subscriber !== 'undefined';
@@ -94,28 +95,22 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   function showSubscriberImplStatus (subscriber) {
-    var statusField = document.getElementById('status-field');
     var type = subscriber ? subscriber.getType().toLowerCase() : undefined;
     switch (type) {
-      case 'rtc':
-        updateStatusField(statusField, 'Using WebRTC-based Playback!');
-        break;
       case 'rtmp':
-      case 'livertmp':
-      case 'rtmp - videojs':
-        updateStatusField(statusField, 'Failover to use Flash-based Playback.');
+        updateStatusField(statusField, 'Using Flash Playback');
         break;
       case 'hls':
-        updateStatusField(statusField, 'Failover to use HLS-based Playback.');
+        updateStatusField(statusField, 'Using HLS Playback');
         break;
       case 'mp4':
-        updateStatusField(statusField, 'Failover to MP4 playback in video element.');
+        updateStatusField(statusField, 'Using MP4 Playback');
         break;
       case 'flv':
-        updateStatusField(statusField, 'Attempting force of Flash embed for FLV playback.');
+        updateStatusField(statusField, 'Using Flash Playback');
         break;
       case 'videojs':
-        updateStatusField(statusField, 'Attempting force of HLS playback using VideoJS.');
+        updateStatusField(statusField, 'Using VideoJS Playback');
         break;
       default:
         updateStatusField(statusField, 'No suitable Subscriber found. WebRTC, Flash and HLS are not supported.');
@@ -127,32 +122,20 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var eventLog = '[Red5ProSubscriber] ' + event.type + '.';
     if (event.type !== 'Subscribe.Time.Update') {
       console.log(eventLog);
-      addEventLogToField(document.getElementById('event-log-field'), eventLog);
-    }
-    if (event.type === 'Subscribe.Metadata') {
-      var value = event.data.orientation; // eslint-disable-line no-unused-vars
-      if (subscriber.getType().toLowerCase() === 'hls' ||
-           subscriber.getType().toLowerCase() === 'rtc') {
-        var container = document.getElementById('video-holder');
-        var element = document.getElementById('red5pro-subscriber-video'); // eslint-disable-line no-unused-vars
-        if (container) {
-          // container.style.height = value % 180 != 0 ? element.offsetWidth + 'px' : element.offsetHeight + 'px';
-        }
-      }
+      addEventLogToField(eventLogField, eventLog);
     }
   }
 
-  function useMP4Fallback (src) {
-    /*
-    var vid = src.split('/');
-    var len = vid.length;
-    vid.splice(len - 1, 0, 'streams');
-    var loc = vid.join('/');
-    */
+  function useMP4Fallback (url) {
+    if (url.indexOf('streams/') === -1) {
+      var paths = url.split('/');
+      paths.splice(paths.length - 1, 0, 'streams');
+      url = paths.join('/');
+    }
     var element = document.getElementById('red5pro-subscriber');
     var source = document.createElement('source');
     source.type = 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"';
-    source.src = src;
+    source.src = url;
     element.appendChild(source);
     showSubscriberImplStatus({
       getType: function() {
@@ -161,20 +144,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     });
   }
 
-  function addPlayer(tmpl, container) {
-    var $el = document.importNode(tmpl.content, true);
-    container.appendChild($el);
-    return $el;
-  }
-
   function useFLVFallback (streamName) {
     var container = document.getElementById('red5pro-subscriber')
-    if (container && container.parentNode) {
-      container.parentNode.removeChild(container);
+    var parent = container.parentNode;
+    if (container && parent) {
+      parent.removeChild(container);
     }
-    addPlayer($flashTemplate, document.getElementById('video-holder'));
-    var flashObject = document.getElementById('red5pro-subscriber');
-      var flashvars = document.createElement('param');
+    var flashElement = generateFlashEmbedObject('red5pro-subscriber');
+    var flashvars = document.createElement('param');
       flashvars.name = 'flashvars';
       flashvars.value = 'stream='+streamName+'&'+
                         'app='+baseConfiguration.app+'&'+
@@ -184,7 +161,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         'backgroundColor=#000000&'+
                         'buffer=0.5&'+
                         'autosize=true';
-    flashObject.appendChild(flashvars);
+    flashElement.appendChild(flashvars);
+    parent.appendChild(flashElement);
     showSubscriberImplStatus({
       getType: function() {
         return 'flv';
@@ -255,15 +233,71 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
        });
   }
 
-  function promisify (fn) {
-    if (window.Promise) {
-      return new Promise(fn);
+  function getStreamData (name, url, type, format) {
+    var httpRegex = /^http/i;
+    var parseItem = function (item) {
+      var itemName = item.name;
+      var itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
+      return {
+        name: itemName,
+        url: itemUrl
+      };
     }
-    var d = new $.Deferred();
-    fn(d.resolve, d.reject);
-    var promise = d.promise();
-    promise.catch = promise.fail;
-    return promise;
+    var findDataInList = function (list, name) {
+      var data = {name: name, urls: {}};
+      var item, i = list.length;
+      while(--i > -1) {
+        item = parseItem(list[i]);
+        if (item.name === name) {
+          data.name = item.name;
+          data.urls[format] = item.url
+          return data;
+        }
+      }
+      return null;
+    }
+    return window.promisify(function (resolve, reject) {
+      window.r5pro_isStreamManager()
+              .then(function () {
+                window.r5pro_requestVODStreams('live', type)
+                  .then(function (list) {
+                    var data = findDataInList(list, name);
+                    if (data) {
+                      resolve(data);
+                      return true;
+                    }
+                    throw new Error('Could not locate on Stream Manager the VOD file by name ' + name);
+                })
+              .catch(function (error) {
+                reject(error.message || error);
+              });
+              return true
+            })
+            .catch(function() {
+              fetch(url)
+                .then(function (res) {
+                  if (res.headers.get("content-type") &&
+                    res.headers.get("content-type").toLowerCase().indexOf("application/json") >= 0) {
+                    return res.json();
+                  } else {
+                    throw new TypeError('Could not properly parse response.');
+                  }
+                })
+                .then(function (json) {
+                  if (json.errorMessage) {
+                    throw new Error(json.errorMessage);
+                  }
+                  var data = findDataInList(json[type], name);
+                  if (data) {
+                    resolve(data);
+                    return true;
+                  } else {
+                    throw new TypeError('Could not properly parse response.');
+                  }
+                })
+                .catch(reject);
+            });
+    });
   }
 
   function determineSubscriber (types) {
@@ -274,7 +308,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       subscriber.on('*', onSubscriberEvent);
 
       var typeConfig = {
-        rtc: rtcConfig,
         rtmp: rtmpConfig,
         hls: hlsConfig
       };
@@ -329,13 +362,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       switch (type) {
         case 'hls':
         case 'rtc':
-          resolve(subscriber);
-          break;
         case 'rtmp':
-        case 'livertmp':
-        case 'rtmp - videojs':
-          var holder = document.getElementById('video-holder');
-          holder.style.height = '405px';
           resolve(subscriber);
           break;
         default:
@@ -397,6 +424,22 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   if (window.streamData) {
     startSubscription(window.streamData);
+  } else {
+    console.warn('This VOD page should be opened from playback.jsp links.');
+    var streamName = window.getParameterByName('stream');
+    var isHLS = streamName.match(/.m3u8/)
+    var url = isHLS ? playlistServletURL : mediafilesServletURL;
+    var type = isHLS ? 'playlists' : 'mediafiles';
+    var format = isHLS ? 'hls' : 'rtmp';
+
+    getStreamData(streamName, url, type, format)
+      .then(function (data) {
+        startSubscription(data);
+      })
+      .catch(function (error) {
+        console.error(error);
+        addEventLogToField(eventLogField, error);
+      });
   }
 
- }(this, document, this.red5prosdk));
+ }(window, document, jQuery.noConflict(), window.promisify, window.fetch, window.red5prosdk));

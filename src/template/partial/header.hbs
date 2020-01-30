@@ -1,15 +1,8 @@
-<div class="header-bar clear-fix">
-  <div id="header-field" class="clear-fix">
-    <p class="left"><a class="red5pro-header-link" href="/">
-      {{#if logo_url}}
-        <img class="red5pro-logo-header" src="{{logo_url}}">
-      {{else}}
-        <img class="red5pro-logo-header" src="images/red5pro_logo.svg">
-      {{/if}}
-    </a></p>
+<div class="header-bar">
+  <div id="header-field">
+    {{> header_ip_field }}
   </div>
-  {{> header_ip_field }}
-</div>
-<div id="server-version-field" class="small-font-size">
-  <span class="black-text">Red5 Pro Server Version</span>&nbsp;&nbsp;<span class="red-text">{{server_version}}</span>
+  <div id="server-version-field" class="small-font-size">
+    <span class="black-text">Red5 Pro Server Version</span>&nbsp;&nbsp;<span class="red-text">{{server_version}}</span>
+  </div>
 </div>

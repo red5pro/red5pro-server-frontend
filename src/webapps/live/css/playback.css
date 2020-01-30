@@ -1,0 +1,308 @@
+/*
+Copyright © 2015 Infrared5, Inc. All rights reserved.
+
+The accompanying code comprising examples for use solely in conjunction with Red5 Pro (the "Example Code") 
+is  licensed  to  you  by  Infrared5  Inc.  in  consideration  of  your  agreement  to  the  following  
+license terms  and  conditions.  Access,  use,  modification,  or  redistribution  of  the  accompanying  
+code  constitutes your acceptance of the following license terms and conditions.
+
+Permission is hereby granted, free of charge, to you to use the Example Code and associated documentation 
+files (collectively, the "Software") without restriction, including without limitation the rights to use, 
+copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The Software shall be used solely in conjunction with Red5 Pro. Red5 Pro is licensed under a separate end 
+user  license  agreement  (the  "EULA"),  which  must  be  executed  with  Infrared5,  Inc.   
+An  example  of  the EULA can be found on our website at: https://account.red5pro.com/assets/LICENSE.txt.
+
+The above copyright notice and this license shall be included in all copies or portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,  INCLUDING  BUT  
+NOT  LIMITED  TO  THE  WARRANTIES  OF  MERCHANTABILITY, FITNESS  FOR  A  PARTICULAR  PURPOSE  AND  
+NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+object:focus {
+  outline:none;
+}
+
+.red5pro-media-element-button {
+  background-size: contain;
+}
+
+/*
+video:fullscreen {
+  object-fit: scale-down;
+}
+*/
+.video-js.vjs-fill {
+    width: 100%;
+    height: 100% !important;
+}
+
+.video-js .vjs-tech {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body.vjs-full-window {
+    padding: 0;
+    margin: 0;
+    height: 100% !important;
+}
+
+.vjs-full-window .video-js.vjs-fullscreen {
+    position: fixed;
+    overflow: hidden;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.video-js.vjs-fullscreen {
+    width: 100% !important;
+    height: 100% !important;
+    padding-top: 0 !important;
+}
+
+.no-streams-entry {
+  padding: 20px;
+  color: #db1f26;
+  font-size: 20px;
+  font-weight: 500;
+  text-transform: uppercase;
+  background-color: #dbdbdb;
+}
+
+.stream-menu-content {
+  /* This will align them in a row...
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: -10px;
+  */
+}
+
+.stream-menu-listing {
+  padding: 0;
+  margin: 10px;
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.stream-menu-listing-active {
+  max-width: NONE;
+}
+
+.playback-block-listing {
+  background: #dbdbdb;
+  padding: 20px 20px 20px 20px;
+}
+
+.stream-playback-button {
+  color: #ffffff;
+  background-color: #3580A2;
+  text-align: center;
+  border-radius: 0px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.button-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.stream-header {
+  margin: 0 0 20px 0;
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+  text-transform: NONE;
+  overflow: hidden;
+}
+
+.stream-rule {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #999999;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  max-width: 240px;
+}
+
+.event-rule {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #999999;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.stream-link {
+  width: 100%;
+  text-align: center;
+  word-break: break-all;  
+}
+
+.stream-container {
+  margin-top: 20px;
+  text-align: center;
+  background-color: rgb(239, 239, 239);
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+}
+
+.container-hidden {
+  width: 0px;
+  height: 0px;
+  visibility: hidden;
+  margin-top: 0px;
+}
+
+.container-padding {
+  padding: 10px 0 20px 0;
+}
+
+.download-link {
+  padding-top: 20px;
+}
+
+.video-container, .event-container {
+  flex: 1;
+}
+
+.video-container {
+  background-color: #999999;
+  height: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.video-container-active {
+  min-width: auto;
+  width: 100%;  
+  max-width: 640px;
+}
+
+.subscribe-section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.event-container {
+  height: 100%;
+  border: #3b3b3b solid 1px;
+  background-color: #fff;
+  margin-left: 0;
+  margin-top: 20px;
+  word-break: break-word;
+}
+
+.frame-holder {
+  width: 100%;
+  cursor: pointer;
+  position: relative;
+}
+
+.video-holder {
+  line-height: 0px;
+  position: relative;
+  background-color: #000;
+}
+
+.video-frame {
+  background-color: #000000;
+  width: 100%;
+}
+
+.stream-play-button {
+  width: 50px;
+  height: 50px;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+
+.status-field {
+  text-align: center;
+  padding: 10px;
+  color: #fff;
+  background-color: #999;
+}
+
+.stream-manager-info {
+  padding: 10px;
+  background-color: #dbdbdb;
+}
+
+.statistics-field {
+  text-align: center;
+  padding: 10px;
+  background-color: #3b3b3b;
+  color: #dbdbdb;
+}
+
+.video-holder, .red5pro-subscriber {
+  width: 100%;
+}
+
+.red5pro-media-control-bar {
+  min-height: 40px;
+}
+
+.event-log-field {
+  padding: 10px;
+  font-size: 14px;
+}
+
+.event-log-error {
+  color: #db1f26;
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.event-hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #dbdbdb;
+}
+
+.error-notification {
+  background-color: #db1f26;
+  color: #fff;
+  padding: 20px;
+}
+
+@media (max-width: 767px) {
+  .stream-menu-listing {
+    max-width: NONE;
+  }
+  .video-container-active {
+    min-width: auto;
+    width: 100%;
+  }
+}
+
+template {
+  display: none;
+}
+

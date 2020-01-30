@@ -5,85 +5,62 @@
   <head>
     {{> head_meta }}
     {{> resources }}
-    <title>Welcome to the Red5 Pro Server!</title>
-    <style>
-      #main-page-subcontent {
-          text-align: center;
-          position: relative;
-          width: 100%;
-          height: 340px;
-          overflow: hidden;
-        }
-
-        #tablet-container, #features-container {
-          position: absolute;
-        }
-
-        #tablet-container {
-          width: 520px;
-        }
-
-        #features-container {
-          margin-left: 20px;
-          margin-top: 120px;
-          width: 460px;
-        }
-
-        #main-page-tablet-img {
-          width: 100%;
-        }
-
-        #main-page-features-img {
-          width: 100%;
-        }
-    </style>
+    <title>Welcome to the Red5 Pro Server</title>
   </head>
   <body>
+    {{> top-bar }}
+    {{> navigation }}
     {{> header }}
-    <div class="container main-container clear-fix">
+    <div class="main-container">
       <div id="menu-section">
         {{> menu }}
       </div>
       <div id="content-section">
-        <div>
-          <div class="clear-fix">
-            <p class="left">
-                <a class="red5pro-header-link" href="/">
-                  <img class="red5pro-logo-page" src="images/red5pro_logo.svg">
-               </a>
-            </p>
-          </div>
-          <h2 class="tag-line">LIVE STREAMING FOR ANY SCREEN</h2>
-        </div>
-        <div id="main-page-subcontent" class="clear-fix">
-          <div id="tablet-container">
-            <img id="main-page-tablet-img" src="images/red5pro_features_tablet_container.png">
-          </div>
-          <div id="features-container">
-            <img id="main-page-features-img" src="images/red5pro_features.png">
-          </div>
-        </div>
-        <div class="content-section-story">
-          <h1 class="red-text">Welcome!</h1>
-          <h4>If you are seeing this page, then you have successfully downloaded and are running the Red5 Pro Server!</h4>
-          <p>Built on the open source <a class="link" href="https://github.com/Red5/red5-server" target="_blank">Red5 Server</a>, Red5 Pro allows you to build scalable live streaming and second screen applications.</p>
-          <div>
-            <h3><a class="link" href="/live">Live Streaming</a></h3>
-            <p>Add two way live audio, video and data streaming to your app with just a few lines of code using our SDKs (iOS and Android).</p>
-            <p><a class="link" href="/live">Visit the Live Streaming example shipped with the Red5 Pro Server</a></p>
-          </div>
-          <div>
-            <h3>Second Screen</h3>
-            <p>Create cross-platform second screen experiences similar to Google's ChromeCast. Enable instant control of digital signs, smart TVs and more through our easy to use SDKs.</p>
-            <p><a class="link" href="/secondscreen">Visit the Second Screen example shipped with the Red5 Pro Server</a></p>
+          <div id="subcontent-section">
+            <div id="subcontent-section-text">
+              <h1 class="red-text">Welcome!</h1>
+              <p class="heading-title">If you are seeing this page, then you have successfully downloaded and are running the <span class="no-break">Red5 Pro Server!</span></p>
+              <p class="heading-subtitle">Live video streaming solved.</p>
+              <p class="heading-subtitle">Broadcast video to millions in under 500 milliseconds.</p>
+            </div>
+            <div id="subcontent-section-image">
+              <img class="image-block" width="544" height="318" src="images/landing_stock.jpg" />
+            </div>
           </div>
           <hr class="top-padded-rule">
-          {{> applications }}
-          <hr class="top-padded-rule">
-          {{> additional_info }}
-        </div>
+          <div class="content-section-story">
+            <h2><a class="link" href="/live">Live Streaming</a></h2>
+            <p>Add live video, audio and data streaming to your app with just a few lines of code.</p>
+            <p><a class="link" href="/live/broadcast.jsp?host=<%= ip %>">Start a Broadcast Now!</a></p>
+            <hr class="top-padded-rule">
+            {{> web-applications }}
+            <hr class="top-padded-rule">
+            {{> mobile-applications }}
+            <hr class="top-padded-rule">
+            {{> additional_info }}
+          </div>
       </div>
     </div>
+    <script>
+        (function (window, document) {
+          window.r5pro_scrollToContent = function () {
+            if (window.innerHeight > window.innerWidth) {
+              window.requestAnimationFrame(function () {
+                var section = document.getElementsByClassName('main-container');
+                if (section && section.length > 0) {
+                  section.item(0).scrollIntoView({behavior: "smooth"});
+                }
+              });
+            }
+          }
+
+          if (/comp|inter|loaded/.test(document.readyState)){
+            window.r5pro_scrollToContent();
+          } else {
+            document.addEventListener('DOMContentLoaded', window.r5pro_scrollToContent, false);
+          }
+        })(window, document);
+    </script>
     {{> footer }}
   </body>
 </html>

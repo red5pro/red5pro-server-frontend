@@ -59,7 +59,7 @@ module.exports = function(srcDir, distDir, webappBuildScriptDir, gulp) {
     }
   });
 
-  gulp.task('copy-src', ['clean-build'], function(cb) {
+  gulp.task('copy-src', function(cb) {
     gulp.src([[webappsDir, '*'].join(path.sep), '!' + [webappsDir, 'tmp'].join(path.sep)])
         .pipe(gulp.dest(webappsDist))
         .on('end', cb);
@@ -71,13 +71,13 @@ module.exports = function(srcDir, distDir, webappBuildScriptDir, gulp) {
   var excludeFromWebappBuilds = function(filepath) {
     return webapps.indexOf(filepath.split('.js').shift()) > -1;
   };
-  var tasks = ['clean-build', 'copy-src'];
+  var tasks = ['clean-build'];
   var buildTasks = fs.readdirSync(webappBuildScriptDir).filter(excludeFromWebappBuilds);
   buildTasks.forEach(function(taskFile) {
     var builder = require([webappBuildScriptDir, taskFile].join(path.sep));
     tasks = tasks.concat(builder(srcDir, distDir, gulp, options)('copy-src'));
   });
 
-  gulp.task('build', tasks);
+  gulp.task('build', gulp.series(tasks));
 
 };

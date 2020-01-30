@@ -15,7 +15,9 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
 
   return function(initChain) {
 
-    gulp.task(generateTaskLabel, [initChain], function(cb) {
+    console.log('!!! init chain !!!')
+    console.log(initChain)
+    gulp.task(generateTaskLabel, gulp.series(initChain, function(cb) {
       gutil.log('Generating Webapps Page: ' + webappDirName);
       var buildPage = function(page, cb) {
         return function() {
@@ -27,24 +29,26 @@ module.exports = function(srcDir, distDir, gulp, templateOptions) {
       var buildBroadcaster = buildPage('broadcast.jsp', buildSubscriber);
       var buildPlayback = buildPage('playback.jsp', buildBroadcaster);
       var buildTwoWay = buildPage('twoway.jsp', buildPlayback);
-      Builder.generateIndexPage(buildTwoWay);
-    });
-    gulp.task(copyContentsTaskLabel, [generateTaskLabel], function(cb) {
+      var buildViewer = buildPage('viewer.jsp', buildTwoWay);
+      var buildViewerVOD = buildPage('viewer-vod.jsp', buildViewer);
+      Builder.generateIndexPage(buildViewerVOD);
+    }));
+    gulp.task(copyContentsTaskLabel, gulp.series(generateTaskLabel, function(cb) {
       Builder.copyWebappContents([
         'index.jsp',
         'broadcast.jsp',
         'subscribe.jsp',
         'playback.jsp',
-        'twoway.jsp'
+        'twoway.jsp',
+        'viewer.jsp',
+        'viewer-vod.jsp'
       ], cb);
-    });
-    gulp.task(copyStaticTaskLabel, [copyContentsTaskLabel], function(cb) {
+    }));
+    gulp.task(copyStaticTaskLabel, gulp.series(copyContentsTaskLabel, function(cb) {
       Builder.copyStatic([], cb);
-    });
+    }));
 
     return [
-      generateTaskLabel,
-      copyContentsTaskLabel,
       copyStaticTaskLabel
       /* Add any additional task names with properly dependency chain defined. */
     ];
