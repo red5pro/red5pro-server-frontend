@@ -23,8 +23,8 @@ NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM,
 WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* global window, document, navigator, Promise, $ */
-(function (window, document, red5prosdk) {
+/* global window, document, navigator*/
+(function (window, document, promisify, red5prosdk) {
   'use strict';
 
   red5prosdk.setLogLevel('debug');
@@ -63,6 +63,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var streamNameField = document.getElementById('stream-name-field');
   var enableRecordField = document.getElementById('enable-record-field');
   var statusField = document.getElementById('status-field');
+  var streamManagerInfo = document.getElementById('stream-manager-info');
   var statisticsField = document.getElementById('statistics-field');
   var eventLogField = document.getElementById('event-log-field');
   var clearLogButton = document.getElementById('clear-log-button');
@@ -74,6 +75,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   var publisher;
   var isPublishing = false;
+  var targetViewTech = window.r5proViewTech;
+  var publishOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp'];
 
   var forceQuality = {
     audio: true,
@@ -93,6 +96,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
     return bw;
   })();
+
   var baseConfiguration = {
     host: window.targetHost,
     app: 'live',
@@ -104,19 +108,29 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     bandwidth: desiredBandwidth,
     mediaConstraints: forceQuality
   };
-  var rtcConfig = {
+
+  var rtcConfig = Object.assign({}, baseConfiguration, {
     protocol: getSocketLocationFromProtocol(protocol).protocol,
     port: getSocketLocationFromProtocol(protocol).port,
     onGetUserMedia: function () {
-      return new Promise(function (resolve, reject) {
+      return promisify(function (resolve, reject) {
         if (publisher && publisher.getMediaStream()) {
           var stream = publisher.getMediaStream();
           stream.getTracks().forEach(function(track) {
             track.stop();
           });
         }
+        var stream;
         navigator.mediaDevices.getUserMedia(baseConfiguration.mediaConstraints)
-          .then(function (stream) {
+          .then(function (mediastream) {
+            stream = mediastream
+            return navigator.mediaDevices.enumerateDevices()
+          })
+          .then(function (devices) {
+            enableCameraSelect(devices);
+            stream.getVideoTracks().forEach(function (track) {
+              cameraSelect.value = track.getSettings().deviceId;
+            });
             resolve(stream);
           })
           .catch(function (error) {
@@ -124,20 +138,39 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           });
       });
     }
-  };
-  var rtmpConfig = {
+  });
+
+  var rtmpConfig = Object.assign({}, baseConfiguration, {
     protocol: 'rtmp',
     port: 1935,
     embedWidth: '100%',
-    embedHeight: 405,
+    embedHeight: 360,
     backgroundColor: '#000000',
     swf: 'lib/red5pro/red5pro-publisher.swf',
     swfobjectURL: 'lib/swfobject/swfobject.js',
     productInstallURL: 'lib/swfobject/playerProductInstall.swf'
-  };
+  });
 
-  var targetViewTech = window.r5proViewTech;
-  var publishOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp'];
+  function updateConfigurationsForStreamManager (serverJSON, publisher) {
+    var host = serverJSON.serverAddress;
+    var app = serverJSON.scope;
+    var isRTC = publisher.getType().toLowerCase() === 'rtc';
+    if (isRTC) {
+      publisher.overlayOptions({
+        host: window.targetHost,
+        app: 'streammanager',
+        connectionParams: {
+          host: host,
+          app: app
+        }
+      });
+    } else {
+      publisher.overlayOptions({
+        host: host,
+        app: app
+      });
+    }
+  }
 
   function getPublishMode () {
     return enableRecordField.checked ? 'record' : 'live';
@@ -156,7 +189,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   function showOrHideCameraSelect (thePublisher) {
     if (thePublisher && thePublisher.getType() === 'RTC') {
-      enableCameraSelect();
+      navigator.mediaDevices.enumerateDevices().then(enableCameraSelect);
       showCameraSelect();
     }
     else {
@@ -172,32 +205,26 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     cameraSelect.parentNode.classList.add('hidden');
   }
 
-  function enableCameraSelect () {
+  function enableCameraSelect (devices) {
     var currentValue = cameraSelect.value;
     while (cameraSelect.firstChild) {
       cameraSelect.removeChild(cameraSelect.firstChild);
     }
-    navigator.mediaDevices.enumerateDevices()
-      .then(function (devices) {
-        var videoCameras = devices.filter(function (item) {
-          return item.kind === 'videoinput';
-        });
-        var i, length = videoCameras.length;
-        var camera, option;
-        for (i = 0; i < length; i++) {
-          camera = videoCameras[i];
-          option = document.createElement('option');
-          option.value = camera.deviceId;
-          option.text = camera.label || 'camera ' + i;
-          cameraSelect.appendChild(option);
-          if (camera.deviceId === currentValue) {
-            cameraSelect.value = camera.deviceId;
-          }
-        }
-      })
-      .catch(function (error) {
-        console.log('Could not enumeration devices: ' + error);
-      });
+    var videoCameras = devices.filter(function (item) {
+      return item.kind === 'videoinput';
+    });
+    var i, length = videoCameras.length;
+    var camera, option;
+    for (i = 0; i < length; i++) {
+      camera = videoCameras[i];
+      option = document.createElement('option');
+      option.value = camera.deviceId;
+      option.text = camera.label || 'camera ' + i;
+      cameraSelect.appendChild(option);
+      if (camera.deviceId === currentValue) {
+        cameraSelect.value = camera.deviceId;
+      }
+    }
   }
 
   streamNameField.addEventListener('input', function () {
@@ -226,20 +253,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     if (isIdle && hasEstablishedPublisher()) {
       publish()
-        .then(function () {
-          updateStartStopButtonState({
-            enabled: true,
-            label: 'Stop Broadcast'
-          });
-          hideCameraSelect()
-        })
-        .catch(function (error) { // eslint-disable-line no-unused-vars
-          updateStartStopButtonState({
-            enabled: true,
-            label: 'Start Broadcast'
-          });
-          showOrHideCameraSelect(publisher);
-        });
     }
     else if (hasEstablishedPublisher()) {
       unpublish()
@@ -260,14 +273,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   });
 
-  clearLogButton.addEventListener('click', function () {
+  clearLogButton.addEventListener('click', clearLog);
+
+  function clearLog () {
     while (eventLogField.children.length > 1) {
       eventLogField.removeChild(eventLogField.lastChild);
     }
-  });
+  }
 
   function onBitrateUpdate (bitrate, packets) {
-    statisticsField.innerText = 'Bitrate: ' + Math.floor(bitrate) + '. Packets Sent: ' + packets + '.';
+    statisticsField.classList.remove('hidden');
+    statisticsField.innerText = 'Bitrate: ' + (bitrate === 0 ? 'N/A' : Math.floor(bitrate)) + '.   Packets Sent: ' + packets + '.';
   }
 
   function hasEstablishedPublisher () {
@@ -298,37 +314,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     return p;
   }
 
-  function addObjectLog (object, offset) {
-    offset = offset || 10;
-    var p;
-    var c = addEventLog('{');
-    c.style.paddingLeft = offset + 'px';
-    Object.keys(object).forEach(function(key) {
-      if (typeof object[key] === 'undefined') {
-        return;
-      }
-      if (object[key].toString() === '[object Object]') {
-        p = addEventLog(key + ': ');
-        p.style.paddingLeft = (offset+10) + 'px';
-        addObjectLog(object[key], offset + 10);
-      }
-      else {
-        p = addEventLog(key + ': ' + object[key]);
-        p.style.paddingLeft = (offset+10) + 'px';
-      }
-    });
-    c = addEventLog('}');
-    c.style.paddingLeft = offset + 'px';
-  }
-
   function showPublisherImplStatus (publisher) {
     var type = publisher ? publisher.getType().toLowerCase() : undefined;
     switch (type) {
       case 'rtc':
-        updateStatus('Using WebRTC-based Publisher!');
+        updateStatus('Using WebRTC Publisher');
         break;
       case 'rtmp':
-        updateStatus('Failover to use Flash-based Publisher.');
+        updateStatus('Using Flash Publisher.');
         break;
       default:
         updateStatus('No suitable Publisher found. WebRTC & Flash not supported.');
@@ -363,25 +356,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   }
 
-  function promisify (fn) {
-    if (window.Promise) {
-      return new Promise(fn);
-    }
-    var d = new $.Deferred();
-    fn(d.resolve, d.reject);
-    var promise = d.promise();
-    promise.catch = promise.fail;
-    return promise;
-  }
-
   function determinePublisher () {
     return promisify(function (resolve, reject) {
+
       var publisher = new red5prosdk.Red5ProPublisher();
       publisher.on('*', onPublisherEvent);
 
       var config = {
-        rtc: Object.assign({}, baseConfiguration, rtcConfig),
-        rtmp: Object.assign({}, baseConfiguration, rtmpConfig)
+        rtc: rtcConfig,
+        rtmp: rtmpConfig
       };
       console.log('[live]:: Configuration:\r\n' + JSON.stringify(config, null, 2));
 
@@ -404,39 +387,29 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   function publish () {
-    return promisify(function (resolve, reject) {
-
-      var mode = getPublishMode();
-      var streamName = getStreamName();
-      var isRTC = publisher.getType().toLowerCase() === 'rtc';
-      publisher.overlayOptions({
-        host: window.targetHost,
-        streamMode: mode,
-        streamName: streamName
-      });
-      console.log('[live]:: Publish options:\r\n' + JSON.stringify(publisher._options, null, 2));
-
-      showPublisherImplStatus(publisher);
-      addEventLog('[Red5ProPublisher] configuration ->');
-      addObjectLog(publisher.getOptions());
-      publisher.on('*', onPublisherEvent);
-      publisher.publish()
-        .then(function () {
-          isPublishing = true;
-          if (isRTC) {
-             window.trackBitrate(publisher.getPeerConnection(), onBitrateUpdate);
-             //             console.log('[live]:: Publish dimensions (' + view.view.videoWidth + ', ' + view.view.videoHeight + ').');
-          }
-          hideCameraSelect();
-          resolve();
-        })
-        .catch(function (error) {
-          isPublishing = false;
-          console.error('[live]:: Error in publish request: ' + error);
-          reject(error);
-        });
-
-    });
+    clearLog();
+    var fn = startPublisher;
+    window.r5pro_isStreamManager()
+      .then(function () {
+        window.r5pro_requestOrigin('live', getStreamName())
+          .then(function (origin) {
+            updateConfigurationsForStreamManager(origin, publisher);
+            streamManagerInfo.classList.remove('hidden');
+            streamManagerInfo.innerText = 'Using Stream Manager Origin at: ' + origin.serverAddress + '.';
+            fn();
+          })
+          .catch(function (error) {
+            var jsonError = typeof error === 'string' ? error : error.message;
+            console.error('[live]:: Error in publish request: ' + jsonError);
+            updateStatus(jsonError);
+            updateStartStopButtonState({
+              enabled: true,
+              label: 'Start Broadcast'
+            });
+            showOrHideCameraSelect(null);
+          });
+      })
+      .catch(fn);
   }
 
   function unpublish () {
@@ -474,6 +447,52 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   }
 
+  function startPublisher () {
+
+    var onSuccess = function () {
+      updateStartStopButtonState({
+        enabled: true,
+        label: 'Stop Broadcast'
+      });
+      hideCameraSelect()
+    };
+    var onFailure = function () {
+      updateStartStopButtonState({
+        enabled: true,
+        label: 'Start Broadcast'
+      });
+      showOrHideCameraSelect(publisher);
+    };
+
+    var mode = getPublishMode();
+    var streamName = getStreamName();
+    var isRTC = publisher.getType().toLowerCase() === 'rtc';
+    publisher.overlayOptions({
+      streamMode: mode,
+      streamName: streamName
+    });
+    console.log('[live]:: Publish options:\r\n' + JSON.stringify(publisher.getOptions(), null, 2));
+
+    showPublisherImplStatus(publisher);
+    publisher.on('*', onPublisherEvent);
+    publisher.publish()
+      .then(function () {
+        isPublishing = true;
+        if (isRTC) {
+           window.trackBitrate(publisher.getPeerConnection(), onBitrateUpdate);
+           //             console.log('[live]:: Publish dimensions (' + view.view.videoWidth + ', ' + view.view.videoHeight + ').');
+        }
+        hideCameraSelect();
+        onSuccess();
+      })
+      .catch(function (error) {
+        isPublishing = false;
+        console.error('[live]:: Error in publish request: ' + error);
+        onFailure();
+      });
+
+  }
+
   function restart() {
 
     determinePublisher()
@@ -486,14 +505,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       });
 
   }
+
+  // Kick off.
   restart();
 
   function handleBroadcastIpChange (value) {
     window.targetHost = value;
     baseConfiguration.host = window.targetHost;
   }
+
   window.r5pro_registerIpChangeListener(handleBroadcastIpChange);
-   var shuttingDown = false;
+
+  var shuttingDown = false;
   function shutdown () {
     if (shuttingDown) return;
     shuttingDown = true;
@@ -512,4 +535,4 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-})(this, document, window.red5prosdk);
+})(window, document, window.promisify, window.red5prosdk);

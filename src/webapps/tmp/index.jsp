@@ -11,21 +11,21 @@
   </head>
   <body>
     {{> header }}
-    <div class="container main-container clear-fix">
+  <body>
+    {{> top-bar }}
+    {{> navigation }}
+    {{> header }}
+    <div class="main-container">
       <div id="menu-section">
         {{> menu }}
       </div>
       <div id="content-section">
-        <div>
-          <div class="clear-fix">
-            <p class="left">
-                <a class="red5pro-header-link" href="/">
-                  <img class="red5pro-logo-page" src="images/red5pro_logo.svg">
-               </a>
-            </p>
+        <div id="subcontent-section">
+          <div id="subcontent-section-text">
+            <h1 class="red-text">@webapp@</h1>
           </div>
-          <h2 class="tag-line">@webapp@!</h2>
         </div>
+        <hr class="top-padded-rule">
         <div class="content-section-story">
           <p>Content Here</p>
           <hr class="top-padded-rule">
@@ -35,7 +35,9 @@
             <strong>&lt; menu here. You can modify that in </strong><em>/src/template/partial/menu.hbs</em>.
           </p>
           <hr class="top-padded-rule">
-          {{> applications }}
+          {{> web-applications }}
+          <hr class="top-padded-rule">
+          {{> mobile-applications }}
           <hr class="top-padded-rule">
           {{> additional_info }}
         </div>

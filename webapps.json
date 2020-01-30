@@ -1,4 +1,8 @@
 {
+  "r5pro-inspector": {
+    "repositoryUrl": "git@github.com:infrared5/automation.git",
+    "branch": "master"
+  },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
     "branch": "master"
@@ -9,10 +13,10 @@
   },
   "r5pro-bandwidth-detection": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-plugin-bandwidth-detection.git",
-    "branch": "master"
+    "branch": "develop"
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "master"
+    "branch": "develop"
   }
 }

@@ -23,10 +23,38 @@ NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM,
 WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-(function (window) {
+/*global window, document, $ */
+(function (window, document, Promise, $) {
   'use strict';
 
+  // http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+  window.getParameterByName = function (name, url) { // eslint-disable-line no-unused-vars
+    if (!url) {
+      url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
+
+  // If Promise or the Promise polyfill fails (thanks IE!), use jQuery.
+  window.promisify = function(fn) {
+    if (window.Promise) {
+      return new window.Promise(fn);
+    }
+    var d = new $.Deferred();
+    fn(d.resolve, d.reject);
+    var promise = d.promise();
+    promise.catch = promise.fail;
+    return promise;
+  }
+
   var bitrateInterval = 0;
+  var vRegex = /VideoStream/;
+  var aRegex = /AudioStream/;
 
   // Based on https://github.com/webrtc/samples/blob/gh-pages/src/content/peerconnection/bandwidth/js/main.js
   window.trackBitrate = function (connection, cb, resolutionCb) {
@@ -46,7 +74,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               (report.type === 'ssrc' && report.bytesSent)) {
             bytes = report.bytesSent;
             packets = report.packetsSent;
-            if ((report.mediaType === 'video' || report.id.match(/VideoStream/))) {
+            if ((report.mediaType === 'video' || report.id.match(vRegex))) {
               if (lastOutboundVideoResult && lastOutboundVideoResult.get(report.id)) {
                 // calculate bitrate
                 var bitrate = 8 * (bytes - lastOutboundVideoResult.get(report.id).bytesSent) /
@@ -64,7 +92,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               (report.type === 'ssrc' && report.bytesReceived)) {
             bytes = report.bytesReceived;
             packets = report.packetsReceived;
-            if ((report.mediaType === 'video' || report.id.match(/VideoStream/))) {
+            if ((report.mediaType === 'video' || report.id.match(vRegex))) {
               if (lastInboundVideoResult && lastInboundVideoResult.get(report.id)) {
                 // calculate bitrate
                 bitrate = 8 * (bytes - lastInboundVideoResult.get(report.id).bytesReceived) /
@@ -74,7 +102,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               }
               lastInboundVideoResult = res;
             }
-            else if ((report.mediaType === 'audio' || report.id.match(/AudioStream/))) {
+            else if ((report.mediaType === 'audio' || report.id.match(aRegex))) {
               if (lastInboundAudioResult && lastInboundAudioResult.get(report.id)) {
                 // calculate bitrate
                 bitrate = 8 * (bytes - lastInboundAudioResult.get(report.id).bytesReceived) /
@@ -85,8 +113,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               lastInboundAudioResult = res;
             }
           }
-          else if (resolutionCb && report.type === 'track' && report.kind === 'video') {
-            resolutionCb(report.frameWidth, report.frameHeight);
+          else if (resolutionCb && report.type === 'track') {
+            var fw = 0;
+            var fh = 0;
+            if (report.kind === 'video' ||
+                (report.frameWidth || report.frameHeight)) {
+              fw = report.frameWidth;
+              fh = report.frameHeight;
+              if (fw > 0 || fh > 0) {
+                resolutionCb(fw, fh);
+              }
+            }
           }
         });
       });
@@ -97,4 +134,20 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     clearInterval(bitrateInterval);
   }
 
-})(this);
+  window.r5pro_scrollToContent = function () {
+    if (window.innerHeight > window.innerWidth) {
+      window.requestAnimationFrame(function () {
+        var section = document.getElementsByClassName('main-container');
+        if (section && section.length > 0) {
+          section.item(0).scrollIntoView({behavior: "smooth"});
+        }
+      });
+    }
+  }
+
+  if (/comp|inter|loaded/.test(document.readyState)) {
+    window.r5pro_scrollToContent();
+  } else {
+    document.addEventListener('DOMContentLoaded', window.r5pro_scrollToContent, false);
+  }
+})(window, document, window.Promise, $);

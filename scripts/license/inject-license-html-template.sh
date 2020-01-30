@@ -12,7 +12,12 @@ STRING="{{> license}}"
 # check to see if already has license...
 echo "Traversing ${SRC}..."
 while IFS= read -r -d '' file; do
-        if grep -q "$STRING" "$file"; then
+        f=$(basename $file)
+        if [ "$f" == "sdp.jsp" ]; then
+                echo "skipping $file"
+        elif [ "$f" == "streams.jsp" ]; then
+                echo "skipping $file"
+        elif grep -q "$STRING" "$file"; then
                 echo "$file"
                 echo "Already has license..."
         else
