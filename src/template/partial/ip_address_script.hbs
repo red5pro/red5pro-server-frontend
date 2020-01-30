@@ -25,10 +25,10 @@
   var ipOverlay = document.getElementById('ip-overlay');
   var ipAddressOverlay = document.getElementById('ip-address-overlay');
   var ipOverlayButton = document.getElementById('ip-overlay-button');
-  var ipIncorrectButton = document.getElementById('ip-incorrect-button');
   var ipOverlayIpIncorrectButton = document.getElementById('ip-overlay-ip-incorrect-button');
   var githubLink = document.getElementById('header-github-link');
   var ipAddressInput = document.getElementById('ip-address-input-field');
+  var ipAddressCloseButton = document.getElementById('ip-overlay-close');
   var ipAddressInputSubmit = document.getElementById('ip-address-input-submit');
   var ipAddressErrorField = document.getElementById('ip-input-error-field');
   var ipSuggestionsTable = document.getElementById('ip-suggestions-table');
@@ -214,11 +214,10 @@
     return false;
   };
   ipOverlayButton.addEventListener('click', toggleOverlay);
-  ipOverlayButton.addEventListener('mouseover', showOverlay);
   ipOverlay.addEventListener('mousedown', handleOverlayClose);
   ipOverlay.addEventListener('touchstart', handleOverlayClose);
+  ipAddressCloseButton.addEventListener('click', handleOverlayClose);
 
-  ipIncorrectButton.addEventListener('click', toggleIpAddressOverlay);
   ipAddressInput.addEventListener('keyup', function(event) {
     if(event.keyCode === 13) {
       handleIpAddressInputSubmit(event);
