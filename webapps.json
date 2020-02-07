@@ -1,15 +1,16 @@
 {
   "r5pro-inspector": {
     "repositoryUrl": "git@github.com:infrared5/automation.git",
-    "branch": "feature/frenchie_inspector_usage_RPRO-7207"
+    "branch": "develop"
   },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
     "branch": "develop"
+
   },
   "r5pro-api": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-api.git",
-    "branch": "develop"
+    "branch": "master"
   },
   "r5pro-bandwidth-detection": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-plugin-bandwidth-detection.git",
@@ -17,6 +18,6 @@
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "bug/conference-fail-state_RPRO-7235"
+    "branch": "develop"
   }
 }

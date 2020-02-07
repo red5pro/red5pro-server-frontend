@@ -205,10 +205,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
                   retry();
                 }
               }
-            
               init();
             });
-            
+
             // SmartMenus mobile menu toggle button
             (function($) {
               var $mainMenuState = $('#main-menu-state');
@@ -252,6 +251,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
        console.log('%c [streamName] ' + '%c : The unique stream name to broadcast with. Required, no default.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
        console.log('%c [verbose] ' + '%c    : Flag to enable verbose logging in Dev Console. Optional.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
        console.log('%c [view] ' + '%c       : Target broadcast tech (`rtc` or `rtmp`). Optional.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
+       console.log('%c [audio] ' + '%c       : Flag to use audio in broadcast. Default: `true`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
+       console.log('%c [cameraWidth] ' + '%c  : Camera width of broadcast. Default: `640`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
+       console.log('%c [cameraHeight] ' + '%c  : Camera height of broadcast. Default: `480`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
        console.log('');
        console.log('%c [ EXAMPLE ] ' + '%c   : ' + '%c proxy-publisher.html?host=myred5proserver.com&protocol=https&port=43&app=live&streamName=mystream&verbose=1  ', 'background: #222; color: #ebefd0',  'background: #fff; color: #222', 'background: #d0efd2; color: #222');
        console.log('');
@@ -331,13 +333,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var smPort = isSecure ? '' : '5080';
         var wsProtocol = isSecure ? 'wss' : 'ws';
         var wsPort = isSecure ? 443 : 5080;
+        var audioParam = getParameterByName('audio');
+        var audioFlag = audioParam ? (audioParam === 'false' ? false : true) : true;
+        var cameraWidth = getParameterByName('cameraWidth') ? parseInt(getParameterByName('cameraWidth'), 10) : 640;
+        var cameraHeight = getParameterByName('cameraHeight') ? parseInt(getParameterByName('cameraHeight'), 10) : 480;
 
         var rtcConfig = {
           host: host,
           streamName: streamName,
           app: 'streammanager',
           protocol: wsProtocol,
-          port: wsPort
+          port: wsPort,
+          mediaConstraints: {
+            audio: audioFlag,
+            video: {
+              width: { exact: cameraWidth },
+              height: { exact: cameraHeight }
+            }
+          }
         };
         var rtmpConfig = {
           host: host,
@@ -417,4 +430,4 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
       })(window, window.red5prosdk);
     </script>
   </body>
-</html
+</html>

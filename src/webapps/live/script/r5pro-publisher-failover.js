@@ -120,8 +120,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             track.stop();
           });
         }
+        var stream;
         navigator.mediaDevices.getUserMedia(baseConfiguration.mediaConstraints)
-          .then(function (stream) {
+          .then(function (mediastream) {
+            stream = mediastream
+            return navigator.mediaDevices.enumerateDevices()
+          })
+          .then(function (devices) {
+            enableCameraSelect(devices);
             stream.getVideoTracks().forEach(function (track) {
               cameraSelect.value = track.getSettings().deviceId;
             });
@@ -183,7 +189,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   function showOrHideCameraSelect (thePublisher) {
     if (thePublisher && thePublisher.getType() === 'RTC') {
-      enableCameraSelect();
+      navigator.mediaDevices.enumerateDevices().then(enableCameraSelect);
       showCameraSelect();
     }
     else {
@@ -199,32 +205,26 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     cameraSelect.parentNode.classList.add('hidden');
   }
 
-  function enableCameraSelect () {
+  function enableCameraSelect (devices) {
     var currentValue = cameraSelect.value;
     while (cameraSelect.firstChild) {
       cameraSelect.removeChild(cameraSelect.firstChild);
     }
-    navigator.mediaDevices.enumerateDevices()
-      .then(function (devices) {
-        var videoCameras = devices.filter(function (item) {
-          return item.kind === 'videoinput';
-        });
-        var i, length = videoCameras.length;
-        var camera, option;
-        for (i = 0; i < length; i++) {
-          camera = videoCameras[i];
-          option = document.createElement('option');
-          option.value = camera.deviceId;
-          option.text = camera.label || 'camera ' + i;
-          cameraSelect.appendChild(option);
-          if (camera.deviceId === currentValue) {
-            cameraSelect.value = camera.deviceId;
-          }
-        }
-      })
-      .catch(function (error) {
-        console.log('Could not enumeration devices: ' + error);
-      });
+    var videoCameras = devices.filter(function (item) {
+      return item.kind === 'videoinput';
+    });
+    var i, length = videoCameras.length;
+    var camera, option;
+    for (i = 0; i < length; i++) {
+      camera = videoCameras[i];
+      option = document.createElement('option');
+      option.value = camera.deviceId;
+      option.text = camera.label || 'camera ' + i;
+      cameraSelect.appendChild(option);
+      if (camera.deviceId === currentValue) {
+        cameraSelect.value = camera.deviceId;
+      }
+    }
   }
 
   streamNameField.addEventListener('input', function () {
