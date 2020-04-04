@@ -20,7 +20,7 @@
     "gulp-replace": "^0.5.4",
     "gulp-util": "^3.0.6",
     "gulp-zip": "^3.0.2",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.3",
     "mkdirp": "^0.5.1",
     "nconf": "^0.8.2",
     "open": "^6.4.0",
