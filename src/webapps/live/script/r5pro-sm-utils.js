@@ -29,7 +29,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   // see /template/partial/stream_manager_script.hbs
   var isStreamManager = window.jsp_isStreamManager;
-  var apiEndpoint = '/streammanager/api/3.1'
+  var apiEndpoint = '/streammanager/api/4.0'
   var smEndpoint = apiEndpoint + '/admin/debug/cloudcontroller';
 
   var streamManagerRequest = function (url) {
