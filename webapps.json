@@ -5,7 +5,7 @@
   },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
-    "branch": "feature/terraform_service"
+    "branch": "feature/jettyws"
 
   },
   "r5pro-api": {
