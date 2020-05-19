@@ -5,7 +5,7 @@
   },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
-    "branch": "feature/jettyws"
+    "branch": "feature/controller7.0.0rc1"
 
   },
   "r5pro-api": {
