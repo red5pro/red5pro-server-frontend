@@ -137,7 +137,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       $p.text(packets);
     } else {
     $parent.append('<span>Bitrate: </span><span class="bold bitrate">' + bitrate + '</span>' +
-                    '<span>. Packets Last: </span><span class="bold packets">' + packets + '</span>' + 
+                    '<span>. Packets Received: </span><span class="bold packets">' + packets + '</span>' + 
                     '<span>.</span>');
     }
   }
