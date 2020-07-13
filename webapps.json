@@ -5,7 +5,7 @@
   },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
-    "branch": "bug/RPRO-7609"
+    "branch": "hotfix/threading"
 
   },
   "r5pro-api": {
