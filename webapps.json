@@ -10,7 +10,7 @@
   },
   "r5pro-api": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-api.git",
-    "branch": "master"
+    "branch": "bug/rpro6503"
   },
   "r5pro-bandwidth-detection": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-plugin-bandwidth-detection.git",
@@ -18,6 +18,6 @@
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "develop"
+    "branch": "feature/greatdane01"
   }
 }
