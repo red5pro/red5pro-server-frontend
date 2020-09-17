@@ -12,7 +12,9 @@
   Integer videoHeightMin = 480;
   Integer videoHeightMax = 480;
 
-  if (request.getParameter("view") != null) {
+  if (request.getParameter("view") != null &&
+    (request.getParameter("view") == "rtc" ||
+    request.getParameter("view") == "rtmp")) {
     tech = request.getParameter("view");
   }
 
