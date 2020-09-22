@@ -11,6 +11,7 @@
   Integer videoWidthMax = 640;
   Integer videoHeightMin = 480;
   Integer videoHeightMax = 480;
+  Integer signalSocketOnly = 0;
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
@@ -48,6 +49,10 @@
   if (request.getParameter("videoHeightMax") != null) {
     videoHeightMax = Integer.parseInt(request.getParameter("videoHeightMax"));
   }
+  if (request.getParameter("dc") != null) {
+    signalSocketOnly =  Integer.parseInt(request.getParameter("dc"));
+  }
+
 
 %>
 <!doctype html>
@@ -162,6 +167,7 @@
       assignIfDefined(<%=videoWidthMax%>, 'r5proVideoWidthMax');
       assignIfDefined(<%=videoHeightMin%>, 'r5proVideoHeightMin');
       assignIfDefined(<%=videoHeightMax%>, 'r5proVideoHeightMax');
+      assignIfDefined(<%=signalSocketOnly%>, 'r5proSignalSocketOnly');
 
       window.targetHost = '<%=ip%>';
       window.r5proIce = window.determineIceServers('<%=ice%>');

@@ -261,6 +261,7 @@ There are several Query Parameters you can add to the URL to modify settings whe
 | `videoHeightMax` | Integer | Request Maximum Video Height (Publisher only) | `288` |
 | `framerateMin` | Integer | Request Minimum Framerate (Publisher only) | `8` |
 | `framerateMax` | Integer | Request Maximum Framerate (Publisher only) | `24` |
+| `dc` | Integer | Request to switch over the RTCDataChannel after signalling complete | `0` |
 
 > The publisher-only min/max values are desired settings mostly for WebRTC. See [https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia).
 

@@ -252,6 +252,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
        console.log('%c [streamName] ' + '%c : The unique stream name to subscribe to. Required, no default.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
        console.log('%c [verbose] ' + '%c    : Flag to enable verbose logging in Dev Console. Optional.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
        console.log('%c [view] ' + '%c       : Target broadcast tech (`rtc` or `rtmp`). Optional.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
+       console.log('%c [dc] ' + '%c       : Request to switch from socket to RTCDataChannel after signalling is complete. Optional.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
        console.log('');
        console.log('%c [ EXAMPLE ] ' + '%c   : ' + '%c proxy-subscriber.html?host=myred5proserver.com&protocol=https&port=43&app=live&streamName=mystream&verbose=1  ', 'background: #222; color: #ebefd0',  'background: #fff; color: #222', 'background: #d0efd2; color: #222');
        console.log('');
@@ -331,13 +332,19 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var smPort = isSecure ? '' : '5080';
         var wsProtocol = isSecure ? 'wss' : 'ws';
         var wsPort = isSecure ? 443 : 5080;
+        var switchToDC = false;
+        if (getParameterByName('dc')) {
+          var dc = getParameterByName('dc')
+          switchToDC = dc === '1' || dc === 'true'
+        }
 
         var rtcConfig = {
           host: host,
           streamName: streamName,
           app: 'streammanager',
           protocol: wsProtocol,
-          port: wsPort
+          port: wsPort,
+          signalingSocketOnly: switchToDC
         };
         var rtmpConfig = {
           host: host,
