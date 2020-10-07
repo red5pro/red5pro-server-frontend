@@ -18,6 +18,6 @@
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "feature/rtc_data_channel_RPRO-6314"
+    "branch": "feature/rtc_data_channel_VP8"
   }
 }
