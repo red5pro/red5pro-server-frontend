@@ -33,7 +33,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var host = window.targetHost;
   var buffer = window.r5proBuffer;
   var targetViewTech = window.r5proViewTech;
-  var signalSocketOnly = !!window.r5proSignalSocketOnly || false;
+  var signalSocketOnly = !!window.r5proSignalSocketOnly || true;
   var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
   var protocol = window.location.protocol;
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));

@@ -339,7 +339,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var audioFlag = audioParam ? (audioParam === 'false' ? false : true) : true;
         var cameraWidth = getParameterByName('cameraWidth') ? parseInt(getParameterByName('cameraWidth'), 10) : 640;
         var cameraHeight = getParameterByName('cameraHeight') ? parseInt(getParameterByName('cameraHeight'), 10) : 480;
-        var switchToDC = false;
+        var switchToDC = true;
         if (getParameterByName('dc')) {
           var dc = getParameterByName('dc')
           switchToDC = dc === '1' || dc === 'true'

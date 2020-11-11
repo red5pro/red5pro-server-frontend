@@ -53,7 +53,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   };
   var iceServers = window.r5proIce;
-  var signalSocketOnly = !!window.r5proSignalSocketOnly || false;
+  var signalSocketOnly = !!window.r5proSignalSocketOnly || true;
 
   var protocol = window.location.protocol;
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));

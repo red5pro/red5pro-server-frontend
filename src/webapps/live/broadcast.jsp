@@ -11,7 +11,7 @@
   Integer videoWidthMax = 640;
   Integer videoHeightMin = 480;
   Integer videoHeightMax = 480;
-  Integer signalSocketOnly = 0;
+  Integer signalSocketOnly = 1;
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
@@ -50,7 +50,7 @@
     videoHeightMax = Integer.parseInt(request.getParameter("videoHeightMax"));
   }
   if (request.getParameter("dc") != null) {
-    signalSocketOnly =  Integer.parseInt(request.getParameter("dc"));
+    signalSocketOnly =  Integer.parseInt(request.getParameter("dc")) == 0 ? 0 : 1;
   }
 
 
