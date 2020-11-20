@@ -337,6 +337,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           var dc = getParameterByName('dc')
           switchToDC = dc === '1' || dc === 'true'
         }
+        var switchDelay = getParameterByName('delay') ? parseInt(getParameterByName('delay'), 10) : NaN
 
         var rtcConfig = {
           host: host,
@@ -344,7 +345,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           app: 'streammanager',
           protocol: wsProtocol,
           port: wsPort,
-          signalingSocketOnly: switchToDC
+          signalingSocketOnly: switchToDC,
+          socketSwitchDelay: !isNaN(switchDelay) || 1000
         };
         var rtmpConfig = {
           host: host,
