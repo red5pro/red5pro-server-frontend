@@ -346,7 +346,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           protocol: wsProtocol,
           port: wsPort,
           signalingSocketOnly: switchToDC,
-          socketSwitchDelay: !isNaN(switchDelay) || 1000
+          socketSwitchDelay: !isNaN(switchDelay) ? switchDelay : 1000
         };
         var rtmpConfig = {
           host: host,
