@@ -27,9 +27,73 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 (function (window, document, $, Hls, R5PlaybackBlock) {
   'use strict';
 
+  //  var originalCreate = R5PlaybackBlock.prototype.create;
   var originalStart = R5PlaybackBlock.prototype.start;
   var originalStop = R5PlaybackBlock.prototype.stop;
   var originalHandleStartError = R5PlaybackBlock.prototype.handleStartError;
+
+  function getVideoElementId (streamName) {
+    return ['red5pro-subscriber', streamName.split('.').join('-')].join('-');
+  }
+
+  function generateVideoSection (streamName) {
+    var videoContainer = document.createElement('div');
+    var statsField = document.createElement('div');
+    var videoHolder = document.createElement('div');
+    var frameHolder = document.createElement('div');
+    var frame = document.createElement('canvas');
+    var video = document.createElement('video');
+    var playButton = document.createElement('img');
+    var stopButton = document.createElement('button');
+    var stopButtonLabel = document.createTextNode('Stop & Close');
+    stopButton.appendChild(stopButtonLabel);
+    videoContainer.appendChild(statsField);
+    videoContainer.appendChild(videoHolder);
+    videoContainer.appendChild(stopButton);
+    frameHolder.appendChild(frame);
+    frameHolder.appendChild(playButton);
+    videoHolder.appendChild(frameHolder);
+    videoHolder.appendChild(video);
+    statsField.classList.add('statistics-field');
+    statsField.classList.add('hidden');
+    videoContainer.classList.add('video-container');
+    videoHolder.classList.add('video-holder');
+    frameHolder.classList.add('frame-holder');
+    frame.classList.add('video-frame');
+    video.classList.add('red5pro-subscriber');
+    video.classList.add('red5pro-media');
+    video.classList.add('red5pro-media-background');
+    video.classList.add('hidden');
+    video.controls = true;
+    video.autoplay = true;
+    video.setAttribute('playsinline', 'playsinline');
+    video.id = getVideoElementId(streamName);
+    playButton.src = 'images/play_circle.svg';
+    playButton.classList.add('stream-play-button');
+    stopButton.classList.add('ui-button');
+    stopButton.classList.add('stop-button');
+    stopButton.classList.add('hidden');
+    return videoContainer;
+  }
+
+  function generateBroadcastSection (streamName)  {
+    var parent = document.createElement('div');
+    var videoSection = generateVideoSection(streamName);
+    parent.appendChild(videoSection);
+    parent.classList.add('subscribe-section');
+    return parent;
+  }
+
+  function generateFlashLink (url) {
+    var container = document.createElement('p')
+    var link = document.createElement('a')
+    var linkText = document.createTextNode(url)
+    link.href = url
+    link.target = '_blank'
+    link.appendChild(linkText)
+    container.appendChild(link)
+    return container
+  }
 
   var generateFlashEmbedObject = function (id) {
     return $('<object type="application/x-shockwave-flash" id="' + id + '" name="' + id + '" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="480" class="red5pro-subscriber red5pro-media-background red5pro-media">' +
@@ -165,6 +229,48 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         video.pause();
       }
     }
+  }
+
+  R5PlaybackBlock.prototype.create = function () {
+    var urls = Object.keys(this.streamData.urls)
+    console.log('KEYS: ' + urls)
+    var div = document.createElement('div');
+    var title = document.createElement('h2');
+    var rule = document.createElement('hr');
+    var linkParent = document.createElement('p');
+    var link = document.createElement('a');
+    var titleText = document.createTextNode(this.title);
+    var linkText = document.createTextNode(this.streamLocation);
+    title.appendChild(titleText);
+    link.appendChild(linkText);
+    linkParent.appendChild(link);
+    div.appendChild(title);
+    if (urls.length === 1 && urls[0] === 'rtmp') {
+      // skip adding playback
+    } else {
+      var broadcastSection = generateBroadcastSection(this.streamName);
+      div.appendChild(broadcastSection);
+      div.appendChild(rule);
+      div.appendChild(linkParent);
+    }
+    if (this.streamData.urls && this.streamData.urls.hasOwnProperty('rtmp')) {
+      var ruleDupe = rule.cloneNode()
+      var flashLink = generateFlashLink(this.streamData.urls.rtmp)
+      div.append(ruleDupe)
+      div.append(flashLink)
+    }
+    div.classList.add('playback-block-listing');
+    title.classList.add('stream-header');
+    rule.classList.add('stream-rule');
+    link.href = this.externalLink;
+    link.target = '_blank';
+    link.classList.add('link');
+    link.classList.add('red-text');
+    linkParent.classList.add('stream-link');
+    link.addEventListener('click', this.handleExternalLink.bind(this));
+    this.elementNode = div;
+    this.addUIDelegates(this.elementNode);
+    return this;
   }
 
   R5PlaybackBlock.prototype.start = function (configuration, playbackOrder) {
