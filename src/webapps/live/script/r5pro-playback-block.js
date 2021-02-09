@@ -169,6 +169,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     this.isHalted = false;
     this.configuration = undefined;
     this.playbackOrder = undefined;
+    this.canPlayMP4 = false;
     this.requiresStreamManagerCheck = false;
     this.client = undefined;
     this.handleStartError = this.handleStartError.bind(this);
@@ -330,9 +331,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     this.stop();
   }
 
-  PlaybackBlock.prototype.setActive = function (isActive) {
+  PlaybackBlock.prototype.setActive = function (isActive, isVOD) {
     var $el = $(this.getElement());
-    if (isActive) {
+    if (isActive && !!isVOD) {
       $el.find('.event-container').get(0).classList.remove('hidden');
       $el.find('.stop-button').get(0).classList.remove('hidden');
     } else {
@@ -418,7 +419,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     if (this.client) {
       this.client.onPlaybackBlockStart(this);
     }
-    this.setActive(true);
+    this.setActive(true, this.isVOD);
     new red5pro.Red5ProSubscriber()
       .setPlaybackOrder(playbackOrder)
       .init(configuration)
@@ -466,7 +467,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     try {
       window.untrackBitrate(this.handleBitrateReport);
     } catch (e) { /* nada */ }
-    this.setActive(false);
+    this.setActive(false, this.isVOD);
     this.collapse();
     this.clearEventLog();
     this.updateStatisticsField('');

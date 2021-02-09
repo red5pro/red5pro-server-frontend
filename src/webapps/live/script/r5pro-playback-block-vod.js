@@ -24,7 +24,7 @@ WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* global window, document, jQuery */
-(function (window, document, $, videojs, R5PlaybackBlock) {
+(function (window, document, $, Hls, R5PlaybackBlock) {
   'use strict';
 
   var originalStart = R5PlaybackBlock.prototype.start;
@@ -54,10 +54,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   var isMP4File = function (data) {
-    if (data.urls && data.urls.hasOwnProperty('rtmp')) {
-      return data.urls.rtmp.indexOf('mp4') !== -1;
-    }
-    return false;
+    return data.urls && data.urls.hasOwnProperty('mp4')
   }
 
   R5PlaybackBlock.prototype.startFlashEmbedPlayback = function () {
@@ -91,30 +88,44 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   }
 
-  R5PlaybackBlock.prototype.startVideoJSPlayback = function (url) {
-    console.log('[' + this.streamName + '] :: Defaulting to VideoJS Playback.');
+  R5PlaybackBlock.prototype.startHlsJSPlayback = function (url) {
+    console.log('[' + this.streamName + '] :: Defaulting to Hls.js Playback.');
     var video = this.getVideoElement();
     var parent = video.parentNode;
     var videoElementClone = video.cloneNode(true);
     video.classList.add('video-js');
-    var source = document.createElement('source');
-    source.type = 'application/x-mpegURL';
-    source.src = url.indexOf('.m3u8') === -1 ? url + '.m3u8' : url;
-    video.appendChild(source);
+    // var source = document.createElement('source');
+    // source.type = 'application/x-mpegURL';
+    // source.src = url.indexOf('.m3u8') === -1 ? url + '.m3u8' : url;
+    // video.appendChild(source);
+    var videoSrc = url.indexOf('.m3u8') === -1 ? url + '.m3u8' : url;
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoSrc;
+    } else if (Hls.isSupported()) {
+      var hls = new Hls();
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
+    }
+    /*
     new videojs(video, {
-      techOrder: ['html5', 'flash']
+      techOrder: ['html5']
     }, function () {
       // success.
     });
+    */
     this.updateStatusFieldWithType('videojs');
     this.setActive(true);
     this.subscriber = {
       unsubscribe: function () {
+        video.stop()
+        parent.appendChild(videoElementClone);
+        /*
         var player = videojs.getPlayer(video);
         if (player) {
           player.dispose();
           parent.appendChild(videoElementClone);
         }
+        */
       }
     }
   }
@@ -159,14 +170,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   R5PlaybackBlock.prototype.start = function (configuration, playbackOrder) {
     console.log('[playback, ' + this.streamName + '] stream data: ' + JSON.stringify(this.streamData, null, 2));
     // Force MP4 Playback.
-    if (!this.forceFlashPlayback && isMP4File(this.streamData)) {
+    if (this.canPlayMP4 && isMP4File(this.streamData)) {
       try {
         this.expand();
         this.isHalted = false;
         if (this.client) {
           this.client.onPlaybackBlockStart(this);
         }
-        this.startMP4Playback(this.streamData.urls.rtmp)
+        this.startMP4Playback(this.streamData.urls.mp4)
       } catch (error) {
           console.error(error);
           this.handleStartError(error);
@@ -197,7 +208,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         if (this.client) {
           this.client.onPlaybackBlockStart(this);
         }
-        this.startVideoJSPlayback(this.streamData.urls.hls);
+        this.startHlsJSPlayback(this.streamData.urls.hls);
       } catch (error) {
         console.error(error);
         this.handleStartError(error);
@@ -227,9 +238,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   }
 
-  R5PlaybackBlock.prototype.setVODData = function (data, forceFlashPlayback) {
+  R5PlaybackBlock.prototype.setVODData = function (data, forceFlashPlayback, canPlayMP4) {
+    this.isVOD = true;
     this.streamData = data;
-    this.forceFlashPlayback = forceFlashPlayback;
+    this.forceFlashPlayback = !!forceFlashPlayback;
+    this.canPlayMP4 = !!canPlayMP4;
   }
 
-})(window, document, jQuery.noConflict(), window.videojs, window.R5PlaybackBlock);
+})(window, document, jQuery.noConflict(), window.Hls, window.R5PlaybackBlock);
