@@ -84,6 +84,34 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     return parent;
   }
 
+  function generateLinks (urls, linkOut, cb) {
+    var keys = Object.keys(urls)
+    keys = keys.filter(function (k) {
+      return k !== 'rtmp' && k !== 'flv'
+    })
+    var i, length = keys.length
+    var links = []
+    for (i = 0; i < length; i++) {
+      var url = urls[keys[i]]
+      var linkParse = linkOut.split('&stream=')
+      var streamEnd = url.substr(url.lastIndexOf('/') + 1, url.length)
+      var href = [linkParse[0], streamEnd].join('&stream=')
+      var linkParent = document.createElement('p');
+      var link = document.createElement('a');
+      var linkText = document.createTextNode(url);
+      link.appendChild(linkText);
+      linkParent.appendChild(link);
+      link.href = href;
+      link.target = '_blank';
+      link.classList.add('link');
+      link.classList.add('red-text');
+      linkParent.classList.add('stream-link');
+      link.addEventListener('click', cb);
+      links.push(linkParent)
+    }
+    return links
+  }
+
   function generateFlashLink (url) {
     var container = document.createElement('div')
     var flvSpan = document.createElement('p')
@@ -113,17 +141,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     return container
   }
 
-  var generateFlashEmbedObject = function (id) {
-    return $('<object type="application/x-shockwave-flash" id="' + id + '" name="' + id + '" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="480" class="red5pro-subscriber red5pro-media-background red5pro-media">' +
-              '<param name="quality" value="high">' +
-              '<param name="wmode" value="opaque">' +
-              '<param name="bgcolor" value="#000000">' +
-              '<param name="allowscriptaccess" value="always">' +
-              '<param name="allowfullscreen" value="true">' +
-              '<param name="allownetworking" value="all">' +
-            '</object>').get(0);
-  }
-
   var isHLSFile = function (data) {
     return (data.urls && data.urls.hasOwnProperty('hls'));
   }
@@ -137,37 +154,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   var isMP4File = function (data) {
     return data.urls && data.urls.hasOwnProperty('mp4')
-  }
-
-  R5PlaybackBlock.prototype.startFlashEmbedPlayback = function () {
-    console.log('[' + this.streamName + '] :: Defaulting to Flash Embed Playback.');
-    var video = this.getVideoElement();
-    var parent = video.parentNode;
-    parent.removeChild(video);
-    var flashElement = generateFlashEmbedObject(this.getVideoElementId(this.streamName));
-    var flashvars = document.createElement('param');
-    flashvars.name = 'flashvars';
-    flashvars.value = 'stream='+this.streamName+'&'+
-                      'app='+this.configuration.rtmp.app+'&'+
-                      'host='+this.configuration.rtmp.host+'&'+
-                      'muted=false&'+
-                      'autoplay=true&'+
-                      'backgroundColor=#000000&'+
-                      'buffer=0.5&'+
-                      'autosize=true';
-    flashElement.appendChild(flashvars);
-    parent.appendChild(flashElement);
-    this.updateStatusFieldWithType('rtmp');
-    this.setActive(true);
-    this.subscriber = {
-      unsubscribe: function () {
-        try {
-          flashElement.stop();
-        } catch (e) {
-          console.log(e.message);
-        }
-      }
-    }
   }
 
   R5PlaybackBlock.prototype.startHlsJSPlayback = function (url) {
@@ -237,17 +223,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   R5PlaybackBlock.prototype.create = function () {
     var urls = Object.keys(this.streamData.urls)
-    console.log('KEYS: ' + urls)
     var div = document.createElement('div');
     var title = document.createElement('h2');
     var rule = document.createElement('hr');
-    var linkParent = document.createElement('p');
-    var link = document.createElement('a');
     var titleText = document.createTextNode(this.title);
-    var linkText = document.createTextNode(this.streamLocation);
     title.appendChild(titleText);
-    link.appendChild(linkText);
-    linkParent.appendChild(link);
     div.appendChild(title);
     if (urls.length === 1 && urls[0] === 'rtmp') {
       // skip adding playback
@@ -255,7 +235,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       var broadcastSection = generateBroadcastSection(this.streamName);
       div.appendChild(broadcastSection);
       div.appendChild(rule);
-      div.appendChild(linkParent);
+      var links = generateLinks(this.streamData.urls, this.externalLink, this.handleExternalLink.bind(this));
+      for (var i = 0; i < links.length; i++) {
+        div.appendChild(links[i]);
+      }
     }
     if (this.streamData.urls && this.streamData.urls.hasOwnProperty('rtmp')) {
       var ruleDupe = rule.cloneNode()
@@ -267,12 +250,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     div.classList.add('playback-block-listing');
     title.classList.add('stream-header');
     rule.classList.add('stream-rule');
-    link.href = this.externalLink;
-    link.target = '_blank';
-    link.classList.add('link');
-    link.classList.add('red-text');
-    linkParent.classList.add('stream-link');
-    link.addEventListener('click', this.handleExternalLink.bind(this));
     this.elementNode = div;
     this.addUIDelegates(this.elementNode);
     return this;
