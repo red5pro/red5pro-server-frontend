@@ -222,6 +222,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   PlaybackBlock.prototype.clearEventLog = function () {
     var element = $(this.getElement()).find('.event-log').get(0);
+    if (!element) return
     while (element.children.length > 0) {
       element.removeChild(element.lastChild);
     }
@@ -333,12 +334,22 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   PlaybackBlock.prototype.setActive = function (isActive, isVOD) {
     var $el = $(this.getElement());
+    var $ev = $el.find('.event-container').get(0)
+    var $btn = $el.find('.stop-button').get(0)
     if (isActive && !!isVOD) {
-      $el.find('.event-container').get(0).classList.remove('hidden');
-      $el.find('.stop-button').get(0).classList.remove('hidden');
+      if ($ev) {
+        $ev.classList.remove('hidden');
+      }
+      if ($btn) {
+        $btn.classList.remove('hidden');
+      }
     } else {
-      $el.find('.event-container').get(0).classList.add('hidden');
-      $el.find('.stop-button').get(0).classList.add('hidden');
+      if ($ev) {
+        $ev.classList.add('hidden');
+      }
+      if ($btn) {
+        $btn.classList.add('hidden');
+      }
     }
   }
 
@@ -478,6 +489,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var $el = $(this.getElement());
     var frameHolder = $el.find('.frame-holder').get(0);
     var frame = $el.find('.video-frame').get(0);
+    if (!frame) return
     var video = this.getVideoElement();
     var context = frame.getContext('2d');
     try {
@@ -503,7 +515,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   PlaybackBlock.prototype.collapse = function () {
     var $el = $(this.getElement());
-    $el.find('.video-container').get(0).classList.remove('video-container-active');
+    var $vid = $el.find('.video-container').get(0);
+    if ($vid) {
+      $vid.classList.remove('video-container-active');
+    }
     var subscriber = $el.find('.red5pro-subscriber').get(0);
     var frameHolder = $el.find('.frame-holder').get(0);
     if (subscriber) subscriber.classList.add('hidden');

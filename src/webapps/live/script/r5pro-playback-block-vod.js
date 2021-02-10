@@ -23,8 +23,8 @@ NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM,
 WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* global window, document, jQuery */
-(function (window, document, $, Hls, R5PlaybackBlock) {
+/* global window, document, navigator, jQuery */
+(function (window, document, navigator, $, videojs, R5PlaybackBlock) {
   'use strict';
 
   //  var originalCreate = R5PlaybackBlock.prototype.create;
@@ -85,13 +85,31 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   function generateFlashLink (url) {
-    var container = document.createElement('p')
-    var link = document.createElement('a')
-    var linkText = document.createTextNode(url)
-    link.href = url
-    link.target = '_blank'
+    var container = document.createElement('div')
+    var flvSpan = document.createElement('p')
+    var flvText = document.createTextNode('FLV available:')
+    flvSpan.appendChild(flvText)
+    var urlContainer = document.createElement('p')
+    var urlSpan = document.createElement('span')
+    urlSpan.innerText = url + '\u00A0\u00A0|\u00A0\u00A0'
+    var link = document.createElement('span')
+    var linkText = document.createTextNode('Copy to Clipboard')
+    link.classList.add('link');
+    link.classList.add('red-text');
+    link.classList.add('copy-clipboard')
+    container.classList.add('stream-link')
     link.appendChild(linkText)
-    container.appendChild(link)
+    urlContainer.appendChild(urlSpan)
+    urlContainer.appendChild(link)
+    container.appendChild(flvSpan)
+    container.appendChild(urlContainer)
+    link.addEventListener('click', function () {
+      navigator.clipboard.writeText(url).then(function() {
+        console.log('Async: Copying to clipboard was successful!');
+      }, function(err) {
+        console.error('Async: Could not copy text: ', err);
+      });
+    })
     return container
   }
 
@@ -158,38 +176,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var parent = video.parentNode;
     var videoElementClone = video.cloneNode(true);
     video.classList.add('video-js');
-    // var source = document.createElement('source');
-    // source.type = 'application/x-mpegURL';
-    // source.src = url.indexOf('.m3u8') === -1 ? url + '.m3u8' : url;
-    // video.appendChild(source);
-    var videoSrc = url.indexOf('.m3u8') === -1 ? url + '.m3u8' : url;
-    if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = videoSrc;
-    } else if (Hls.isSupported()) {
-      var hls = new Hls();
-      hls.loadSource(videoSrc);
-      hls.attachMedia(video);
-    }
-    /*
+    var source = document.createElement('source');
+    source.type = 'application/x-mpegURL';
+    source.src = url.indexOf('.m3u8') === -1 ? url + '.m3u8' : url;
+    video.appendChild(source);
     new videojs(video, {
       techOrder: ['html5']
     }, function () {
       // success.
     });
-    */
     this.updateStatusFieldWithType('videojs');
     this.setActive(true);
     this.subscriber = {
       unsubscribe: function () {
-        video.stop()
-        parent.appendChild(videoElementClone);
-        /*
         var player = videojs.getPlayer(video);
         if (player) {
           player.dispose();
           parent.appendChild(videoElementClone);
         }
-        */
       }
     }
   }
@@ -256,6 +260,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     if (this.streamData.urls && this.streamData.urls.hasOwnProperty('rtmp')) {
       var ruleDupe = rule.cloneNode()
       var flashLink = generateFlashLink(this.streamData.urls.rtmp)
+      ruleDupe.classList.add('stream-rule');
       div.append(ruleDupe)
       div.append(flashLink)
     }
@@ -351,4 +356,4 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     this.canPlayMP4 = !!canPlayMP4;
   }
 
-})(window, document, jQuery.noConflict(), window.Hls, window.R5PlaybackBlock);
+})(window, document, navigator, jQuery.noConflict(), window.videojs, window.R5PlaybackBlock);

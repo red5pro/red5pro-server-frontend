@@ -34,7 +34,8 @@
     {{> head_meta }}
     {{> resources }}
     <title>Video On Demand Playback with the Red5 Pro Server</title>
-    <script src="//cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <link href="//unpkg.com/video.js@7.0.0/dist/video-js.css" rel="stylesheet">
+    <script src="//unpkg.com/video.js@7.0.0/dist/video.min.js"></script>
     <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet"></script>
