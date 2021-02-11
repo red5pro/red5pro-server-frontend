@@ -141,7 +141,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var port = window.location.port ? window.location.port : (protocol === 'https' ? 443 : 80);
 
   var httpRegex = /^http/i;
-  var baseUrl = protocol + '://' + host + ':' + port + '/live';
+  var baseUrl = protocol + '://' + host + (port === 443 ? "" : ":" + port) + '/live';
   var mediafilesServletURL = [baseUrl, 'mediafiles'].join('/');
   var playlistServletURL = [baseUrl, 'playlists'].join('/');
   var store = {}; // name: {name:string, url:string, formats:[hls|flv]}
@@ -149,8 +149,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var canPlayMP4Natively = el.canPlayType('video/mp4').length > 0
 
   var parseItem = function (item) {
+    var url = item.url
     var itemName = item.name; // item.name.substring(0, item.name.lastIndexOf('.'));
-    var itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
+    var itemExtension = item.name.substr(item.name.lastIndexOf('.') + 1, item.name.length)
+    if (itemExtension.match(/(flv|mp4)/)) {
+      url = 'streams/' + item.url
+    }
+    var itemUrl = httpRegex.test(item.url) ? url : [baseUrl, url].join('/');
     return {
       name: itemName,
       url: itemUrl
