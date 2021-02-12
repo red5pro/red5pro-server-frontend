@@ -140,7 +140,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var doIncludePlaylists = window.requestPlaylists;
   var port = window.location.port ? window.location.port : (protocol === 'https' ? 443 : 80);
 
-  var httpRegex = /^http/i;
+  var httpRegex = /^http(s)/i;
+  var streamsRegex = /^streams\//;
   var baseUrl = protocol + '://' + host + (port === 443 ? "" : ":" + port) + '/live';
   var mediafilesServletURL = [baseUrl, 'mediafiles'].join('/');
   var playlistServletURL = [baseUrl, 'playlists'].join('/');
@@ -150,12 +151,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   var parseItem = function (item) {
     var url = item.url
+    var itemUrl = url
     var itemName = item.name; // item.name.substring(0, item.name.lastIndexOf('.'));
     var itemExtension = item.name.substr(item.name.lastIndexOf('.') + 1, item.name.length)
-    if (itemExtension.match(/(flv|mp4)/)) {
-      url = 'streams/' + item.url
+    if (!!url.match(httpRegex)) {
+      itemUrl
+    } else if (!!url.match(streamsRegex)) {
+      itemUrl = [baseUrl, url].join('/')
+    } else if (!!itemExtension.match(/(flv|mp4)/)) {
+      itemUrl = [baseUrl, 'streams', url].join('/')
+    } else {
+      itemUrl = [baseUrl, url].join('/')
     }
-    var itemUrl = httpRegex.test(item.url) ? url : [baseUrl, url].join('/');
     return {
       name: itemName,
       url: itemUrl
