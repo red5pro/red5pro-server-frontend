@@ -31,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var host = window.targetHost;
   var buffer = window.r5proBuffer;
   var targetViewTech = window.r5proViewTech;
-  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtmp', 'hls'];
+  var playbackOrder = targetViewTech ? [targetViewTech] : ['hls']; // Flash is dead. Long live Flash!
   var protocol = window.location.protocol;
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
   var port = window.location.port ? window.location.port : (protocol === 'http' ? 80 : 443);
@@ -91,6 +91,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
     }
   }
+
   if (window.r5pro_addFilterCallback) {
     window.r5pro_addFilterCallback(handleFilteredItems);
   }
@@ -108,7 +109,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         var dataString = decodeURIComponent(data);
         var streamData = JSON.parse(dataString);
         var block = new R5PlaybackBlock(name, name, location, page);
-        block.setVODData(streamData, (targetViewTech === 'rtmp'));
+        block.setVODData(streamData, false, canPlayMP4Natively);
         block.setClient(playbackBlockClient);
         $item.appendChild(block.create().getElement());
         block.init(Object.assign({}, baseConfiguration, {
@@ -139,15 +140,29 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var doIncludePlaylists = window.requestPlaylists;
   var port = window.location.port ? window.location.port : (protocol === 'https' ? 443 : 80);
 
-  var httpRegex = /^http/i;
-  var baseUrl = protocol + '://' + host + ':' + port + '/live';
+  var httpRegex = /^http(s)/i;
+  var streamsRegex = /^streams\//;
+  var baseUrl = protocol + '://' + host + (port === 443 ? "" : ":" + port) + '/live';
   var mediafilesServletURL = [baseUrl, 'mediafiles'].join('/');
   var playlistServletURL = [baseUrl, 'playlists'].join('/');
   var store = {}; // name: {name:string, url:string, formats:[hls|flv]}
+  var el = document.createElement('video')
+  var canPlayMP4Natively = el.canPlayType('video/mp4').length > 0
 
   var parseItem = function (item) {
+    var url = item.url
+    var itemUrl = url
     var itemName = item.name; // item.name.substring(0, item.name.lastIndexOf('.'));
-    var itemUrl = httpRegex.test(item.url) ? item.url : [baseUrl, item.url].join('/');
+    var itemExtension = item.name.substr(item.name.lastIndexOf('.') + 1, item.name.length)
+    if (!!url.match(httpRegex)) {
+      itemUrl
+    } else if (!!url.match(streamsRegex)) {
+      itemUrl = [baseUrl, url].join('/')
+    } else if (!!itemExtension.match(/(flv|mp4)/)) {
+      itemUrl = [baseUrl, 'streams', url].join('/')
+    } else {
+      itemUrl = [baseUrl, url].join('/')
+    }
     return {
       name: itemName,
       url: itemUrl
@@ -157,15 +172,20 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var getItemList = function (data, url, listProperty, formatType, cb) {
     var respondWithList = function (list) {
       var i, item, length = list.length;
+      var extIndex, extension, filename;
       for (i = 0; i < length; i++) {
         item = parseItem(list[i]);
-        if (!data.hasOwnProperty(item.name)) {
-          data[item.name] = {
-            name: item.name,
+        extIndex = item.name.lastIndexOf('.')
+        extension = item.name.substr(extIndex+1, item.name.length)
+        filename = item.name.substr(0, extIndex)
+        formatType = (formatType === 'rtmp' && extension != 'flv') ? extension : formatType
+        if (!data.hasOwnProperty(filename)) {
+          data[filename] = {
+            name: filename,
             urls: {}
           };
         }
-        data[item.name].urls[formatType] = item.url;
+        data[filename].urls[formatType] = item.url;
       }
       cb(null, data);
     };
@@ -227,14 +247,22 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var getStreamListItem = function (item) {
       var json = encodeURIComponent(JSON.stringify(item));
       var streamName = item.name;
-      var urls = item.urls;
-      var type = item.name.split('.')[1] === 'm3u8' ? 'hls' : 'rtmp';
-      var baseUrl = protocol + "://" + host + (port === 443 ? "" : ":" + port);
-      var streamLocation =  urls[type];
-      var pageLocation = baseUrl + "/live/viewer-vod.jsp?host=" + host + "&stream=" + streamName;
-      if (targetViewTech) {
-        pageLocation += '&view=' + targetViewTech;
+      var extension;
+      var urlMap = item.urls;
+      var streamLocation;
+      if (urlMap.hasOwnProperty('hls')) {
+        extension = '.m3u8'
+        streamLocation = urlMap['hls']
+      } else if (urlMap.hasOwnProperty('mp4')) {
+        extension = '.mp4'
+        streamLocation = urlMap['mp4']
+      } else if (urlMap.hasOwnProperty('rtmp')) {
+        // TODO: We only have an FLV. Can't play in Flash...
+        extension = '.flv'
+        streamLocation = urlMap['rtmp']
       }
+      var baseUrl = protocol + "://" + host + (port === 443 ? "" : ":" + port);
+      var pageLocation = baseUrl + "/live/viewer-vod.jsp?host=" + host + "&stream=" + streamName + extension;
       var listing = "<div class=\"stream-menu-listing\"" +
         "data-streamName=\"" + streamName + "\" " +
         "data-streamLocation=\"" + streamLocation + "\" " +

@@ -12,7 +12,7 @@
   String protocol = request.getScheme();
   String ice = null;
   String tech = null;
-  String playlistFlag = "0";
+  String playlistFlag = "1";
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
@@ -34,10 +34,8 @@
     {{> head_meta }}
     {{> resources }}
     <title>Video On Demand Playback with the Red5 Pro Server</title>
-    <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
-    <script src="//unpkg.com/video.js/dist/video.js"></script>
-    <script src="//unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
-    <script src="//unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
+    <link href="//unpkg.com/video.js@7.0.0/dist/video-js.css" rel="stylesheet">
+    <script src="//unpkg.com/video.js@7.0.0/dist/video.min.js"></script>
     <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet"></script>
@@ -67,8 +65,9 @@
         <% } %>
         <div class="content-section-story">
           <p class="notify-callout">You can record a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=<%=ip%>" target="_blank">Broadcast page</a> and checking the <span class="bold">Enable Recording button.</span><br/><span class="small-font-size">After the Broadcast is started and stopped, the Video On Demand (VOD) recording will be available. Return to this page to see the stream name listed.</span></p>
+          <p class="small-font-size"><strong>Note:</strong> Due to the sunsetting of Flash Player in browsers, playback of FLV files is now limited to copying links for the Flash-based files in order to playback videos in your preferred supported software (e.g., <span><a href="https://www.videolan.org/vlc/" target="_blank" class="link">VLC</a></span>).</p>
           <hr class="top-padded-rule" style="margin-top: 0">
-          {{> filter-section-with-type target='stream-menu-content'}}
+          {{> filter-section target='stream-menu-content'}}
           <div class="stream-menu-content">
             <p class="no-streams-entry">Requesting files...</p>
           </div>
