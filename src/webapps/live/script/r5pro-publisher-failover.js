@@ -53,7 +53,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   };
   var iceServers = window.r5proIce;
-  var signalSocketOnly = !!window.r5proSignalSocketOnly || true;
+  var signalSocketOnly = !!window.r5proSignalSocketOnly;
 
   var protocol = window.location.protocol;
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
@@ -534,7 +534,5 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   window.publisherLog = function (message) {
     console.log('[RTMP PUBLISHER]:: ' + message);
   };
-
-
 
 })(window, document, window.promisify, window.red5prosdk);
