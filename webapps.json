@@ -5,7 +5,7 @@
   },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
-    "branch": "feature/auto-greatdane04"
+    "branch": "develop"
 
   },
   "r5pro-api": {
@@ -18,6 +18,6 @@
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "feature/greatdane06"
+    "branch": "feature/greatdane06_SDK_7.3.0-RC8"
   }
 }
