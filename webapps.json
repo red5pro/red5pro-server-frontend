@@ -6,11 +6,10 @@
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
     "branch": "develop"
-
   },
   "r5pro-api": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-api.git",
-    "branch": "feature/greatdane-api"
+    "branch": "develop"
   },
   "r5pro-bandwidth-detection": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-plugin-bandwidth-detection.git",
@@ -18,6 +17,6 @@
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "feature/greatdane06"
+    "branch": "develop"
   }
 }
