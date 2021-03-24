@@ -65,7 +65,7 @@
         <% } %>
         <div class="content-section-story">
           <p class="notify-callout">You can record a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=<%=ip%>" target="_blank">Broadcast page</a> and checking the <span class="bold">Enable Recording button.</span><br/><span class="small-font-size">After the Broadcast is started and stopped, the Video On Demand (VOD) recording will be available. Return to this page to see the stream name listed.</span></p>
-          <p class="small-font-size"><strong>Note:</strong> Due to the sunsetting of Flash Player in browsers, playback of FLV files is now limited to copying links for the Flash-based files in order to playback videos in your preferred supported software (e.g., <span><a href="https://www.videolan.org/vlc/" target="_blank" class="link">VLC</a></span>).</p>
+          <p class="small-font-size"><strong>Note:</strong> Due to the sunsetting of Flash Player in browsers, playback of FLV files is now limited to copying links for the Flash-based files in order to playback videos in your preferred supported software (e.g., <span><a href="https://www.videolan.org/vlc/" target="_blank" class="link">VLC</a></span>). Note that the "Copy to Clipboard" function below requires a secure page.</p>
           <hr class="top-padded-rule" style="margin-top: 0">
           {{> filter-section target='stream-menu-content'}}
           <div class="stream-menu-content">
