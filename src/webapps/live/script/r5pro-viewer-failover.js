@@ -64,6 +64,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     return protocol === 'http' ? {protocol: 'ws', port: 5080} : {protocol: 'wss', port: 443};
   }
   var targetViewTech = window.r5proViewTech;
+  var signalSocketOnly = !(window.r5proSignalSocketOnly === 0);
   var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
 
   var baseConfiguration = {
@@ -78,7 +79,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       iceServers: iceServers,
       iceCandidatePoolSize: 2,
       bundlePolicy: 'max-bundle'
-    }
+    },
+    signalingSocketOnly: signalSocketOnly
   };
   var rtmpConfig = {
     protocol: 'rtmp',
@@ -137,7 +139,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       $p.text(packets);
     } else {
     $parent.append('<span>Bitrate: </span><span class="bold bitrate">' + bitrate + '</span>' +
-                    '<span>. Packets Last: </span><span class="bold packets">' + packets + '</span>' + 
+                    '<span>. Packets Received: </span><span class="bold packets">' + packets + '</span>' + 
                     '<span>.</span>');
     }
   }

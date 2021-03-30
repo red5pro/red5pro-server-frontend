@@ -117,31 +117,34 @@
   // Determine if is a Stream Manager host.
   String stream_manager_message = "";
   Boolean is_stream_manager = false;
-  String stream_manager_token = "";
-  FileReader reader = null;
-  Pattern pattern = Pattern.compile("(rest\\.administratorToken=)(.*)");
-  try {
-    String path = "." + File.separator + "webapps" + File.separator + "streammanager" + File.separator + "WEB-INF" + File.separator + "red5-web.properties";
-    File file = new File(path);
-    reader = new FileReader(new File(file.getCanonicalPath()));
-    BufferedReader br = new BufferedReader(reader);
-    String st; 
-    while ((st = br.readLine()) != null) {
-      Matcher matcher = pattern.matcher(st);
-      if (matcher.find()) {
-        is_stream_manager = !matcher.group(2).equals("");
-        stream_manager_token = matcher.group(2);
-        break;
+  // Putting sm recognition behind a flag.
+  if(request.getParameter("sm") != null && request.getParameter("sm").equals("true")) {
+    String stream_manager_token = "";
+    FileReader reader = null;
+    Pattern pattern = Pattern.compile("(rest\\.administratorToken=)(.*)");
+    try {
+      String path = "." + File.separator + "webapps" + File.separator + "streammanager" + File.separator + "WEB-INF" + File.separator + "red5-web.properties";
+      File file = new File(path);
+      reader = new FileReader(new File(file.getCanonicalPath()));
+      BufferedReader br = new BufferedReader(reader);
+      String st; 
+      while ((st = br.readLine()) != null) {
+        Matcher matcher = pattern.matcher(st);
+        if (matcher.find()) {
+          is_stream_manager = !matcher.group(2).equals("");
+          stream_manager_token = matcher.group(2);
+          break;
+        }
       }
-    }
-  } catch (Exception e) {
-     // not a stream manager, assuming wrong filepath.
-  } finally {
-    if(reader != null) {
-      try {
-        reader.close();
-      } catch (IOException e) {
-        // 
+    } catch (Exception e) {
+       // not a stream manager, assuming wrong filepath.
+    } finally {
+      if(reader != null) {
+        try {
+          reader.close();
+        } catch (IOException e) {
+          // 
+        }
       }
     }
   }

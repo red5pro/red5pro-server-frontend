@@ -14,6 +14,7 @@
   String buffer = "0.5";
   Integer audioBandwidth = -1;
   Integer videoBandwidth = -1;
+  Integer signalSocketOnly = 1;
 
   if (request.getParameter("buffer") != null) {
     buffer = request.getParameter("buffer");
@@ -32,6 +33,9 @@
 
   if (request.getParameter("videoBW") != null) {
     videoBandwidth = Integer.parseInt(request.getParameter("videoBW"));
+  }
+  if (request.getParameter("dc") != null) {
+    signalSocketOnly =  Integer.parseInt(request.getParameter("dc")) == 0 ? 0 : 1;
   }
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
@@ -117,6 +121,7 @@
       assignIfDefined("<%=tech%>", 'r5proViewTech');
       assignIfDefined(<%=audioBandwidth%>, 'r5proAudioBandwidth');
       assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
+      assignIfDefined(<%=signalSocketOnly%>, 'r5proSignalSocketOnly');
 
       window.targetHost = "<%=ip%>";
       window.r5proIce = window.determineIceServers('<%=ice%>');
