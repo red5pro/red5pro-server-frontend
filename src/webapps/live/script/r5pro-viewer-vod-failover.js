@@ -66,17 +66,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var targetViewTech = window.r5proViewTech;
   var playbackOrder = targetViewTech ? [targetViewTech] : ['rtmp', 'hls'];
 
-  var generateFlashEmbedObject = function (id) {
-    return $('<object type="application/x-shockwave-flash" id="' + id + '" name="' + id + '" align="middle" data="lib/red5pro/red5pro-subscriber.swf" width="100%" height="480" class="red5pro-subscriber red5pro-media-background red5pro-media">' +
-              '<param name="quality" value="high">' +
-              '<param name="wmode" value="opaque">' +
-              '<param name="bgcolor" value="#000000">' +
-              '<param name="allowscriptaccess" value="always">' +
-              '<param name="allowfullscreen" value="true">' +
-              '<param name="allownetworking" value="all">' +
-            '</object>').get(0);
-  }
-
   function hasEstablishedSubscriber () {
     return typeof subscriber !== 'undefined';
   }
@@ -97,17 +86,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   function showSubscriberImplStatus (subscriber) {
     var type = subscriber ? subscriber.getType().toLowerCase() : undefined;
     switch (type) {
-      case 'rtmp':
-        updateStatusField(statusField, 'Using Flash Playback');
-        break;
       case 'hls':
         updateStatusField(statusField, 'Using HLS Playback');
         break;
       case 'mp4':
         updateStatusField(statusField, 'Using MP4 Playback');
-        break;
-      case 'flv':
-        updateStatusField(statusField, 'Using Flash Playback');
         break;
       case 'videojs':
         updateStatusField(statusField, 'Using VideoJS Playback');
@@ -144,32 +127,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     });
   }
 
-  function useFLVFallback (streamName) {
-    var container = document.getElementById('red5pro-subscriber')
-    var parent = container.parentNode;
-    if (container && parent) {
-      parent.removeChild(container);
-    }
-    var flashElement = generateFlashEmbedObject('red5pro-subscriber');
-    var flashvars = document.createElement('param');
-      flashvars.name = 'flashvars';
-      flashvars.value = 'stream='+streamName+'&'+
-                        'app='+baseConfiguration.app+'&'+
-                        'host='+baseConfiguration.host+'&'+
-                        'muted=false&'+
-                        'autoplay=true&'+
-                        'backgroundColor=#000000&'+
-                        'buffer=0.5&'+
-                        'autosize=true';
-    flashElement.appendChild(flashvars);
-    parent.appendChild(flashElement);
-    showSubscriberImplStatus({
-      getType: function() {
-        return 'flv';
-      }
-    });
-  }
-
   function useVideoJSFallback (url) {
     var videoElement = document.getElementById('red5pro-subscriber');
     videoElement.classList.add('video-js');
@@ -178,7 +135,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     source.src = url;
     videoElement.appendChild(source);
     new window.videojs(videoElement, {
-      techOrder: ['html5', 'flash']
+      techOrder: ['html5']
     }, function () {
       // success.
     });
@@ -223,11 +180,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           if (streamData.urls.rtmp.indexOf('mp4') !== -1) {
             useMP4Fallback(streamData.urls.rtmp)
           }
-          else {
-            useFLVFallback(streamData.name)
-          }
-        }
-        else if (streamData.urls && streamData.urls.hls) {
+        } else if (streamData.urls && streamData.urls.mp4) {
+          useMP4Fallback(streamData.urls.mp4);
+        } else if (streamData.urls && streamData.urls.hls) {
           useVideoJSFallback(streamData.urls.hls);
         }
        });

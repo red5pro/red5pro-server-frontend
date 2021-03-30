@@ -64,8 +64,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         <tr><td class="p-name">port</td><td>port number that Stream Maager is served on</td><td><code>window.location.port</code></td></tr>
         <tr><td class="p-name">app</td><td>webapp name to stream to on the server</td><td><code>live</code></td></tr>
         <tr><td class="p-name">streamName</td><td>The unique stream name to broadcast with or subscribe to</td><td><strong><em>None. Required</em></strong></td></tr>
-        <tr><td class="p-name">verbose</td><td>Flag to enable verbose logging in Dev Console</td><td><em>None. optional</em></td></tr>
-        <tr><td class="p-name">view</td><td>Target broadcast tech (<code>rtc</code> or <code>rtmp</code>)</td><td><em>None. Optional</em></td></tr>
+        <tr><td class="p-name">verbose</td><td>Flag to enable verbose logging in Dev Console</td><td><em>true. optional</em></td></tr>
+        <tr><td class="p-name">view</td><td>Target broadcast tech (<code>rtc</code> or <code>rtmp</code>)</td><td><em>true. optional</em></td></tr>
+        <tr><td class="p-name">audio</td><td>Flag to use audio in broadcast</td><td><em>true. Optional</em></td></tr>
+        <tr><td class="p-name">cameraWidth</td><td>Camera width of broadcast</td><td><em>640. Optional</em></td></tr>
+        <tr><td class="p-name">cameraHeight</td><td>Camera height of broadcast</td><td><em>480. Optional</em></td></tr>
+        <tr><td class="p-name">dc</td><td>Request to switch from socket to RTCDataChannel after signalling is complete</td><td><em>false. optional</em></td></tr>
       </tbody>
     </table>
     <h2>Example</h2>

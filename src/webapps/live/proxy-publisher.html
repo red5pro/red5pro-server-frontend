@@ -254,6 +254,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
        console.log('%c [audio] ' + '%c       : Flag to use audio in broadcast. Default: `true`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
        console.log('%c [cameraWidth] ' + '%c  : Camera width of broadcast. Default: `640`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
        console.log('%c [cameraHeight] ' + '%c  : Camera height of broadcast. Default: `480`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
+       console.log('%c [dc] ' + '%c       : Request to switch from socket to RTCDataChannel after signalling is complete. Optional.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
        console.log('');
        console.log('%c [ EXAMPLE ] ' + '%c   : ' + '%c proxy-publisher.html?host=myred5proserver.com&protocol=https&port=43&app=live&streamName=mystream&verbose=1  ', 'background: #222; color: #ebefd0',  'background: #fff; color: #222', 'background: #d0efd2; color: #222');
        console.log('');
@@ -337,6 +338,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var audioFlag = audioParam ? (audioParam === 'false' ? false : true) : true;
         var cameraWidth = getParameterByName('cameraWidth') ? parseInt(getParameterByName('cameraWidth'), 10) : 640;
         var cameraHeight = getParameterByName('cameraHeight') ? parseInt(getParameterByName('cameraHeight'), 10) : 480;
+        var switchToDC = true;
+        if (getParameterByName('dc')) {
+          var dc = getParameterByName('dc')
+          switchToDC = dc === '1' || dc === 'true'
+        }
+        var switchDelay = getParameterByName('delay') ? parseInt(getParameterByName('delay'), 10) : NaN
 
         var rtcConfig = {
           host: host,
@@ -344,6 +351,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           app: 'streammanager',
           protocol: wsProtocol,
           port: wsPort,
+          signalingSocketOnly: switchToDC,
           mediaConstraints: {
             audio: audioFlag,
             video: {
@@ -351,6 +359,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
               height: { exact: cameraHeight }
             }
           }
+          socketSwitchDelay: !isNaN(switchDelay) || 1000
         };
         var rtmpConfig = {
           host: host,
