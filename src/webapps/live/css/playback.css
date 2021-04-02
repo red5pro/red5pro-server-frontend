@@ -153,6 +153,11 @@ body.vjs-full-window {
   word-break: break-all;  
 }
 
+.copy-clipboard {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .stream-container {
   margin-top: 20px;
   text-align: center;
