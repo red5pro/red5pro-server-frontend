@@ -1,0 +1,460 @@
+/*
+Copyright © 2015 Infrared5, Inc. All rights reserved.
+
+The accompanying code comprising examples for use solely in conjunction with Red5 Pro (the "Example Code") 
+is  licensed  to  you  by  Infrared5  Inc.  in  consideration  of  your  agreement  to  the  following  
+license terms  and  conditions.  Access,  use,  modification,  or  redistribution  of  the  accompanying  
+code  constitutes your acceptance of the following license terms and conditions.
+
+Permission is hereby granted, free of charge, to you to use the Example Code and associated documentation 
+files (collectively, the "Software") without restriction, including without limitation the rights to use, 
+copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The Software shall be used solely in conjunction with Red5 Pro. Red5 Pro is licensed under a separate end 
+user  license  agreement  (the  "EULA"),  which  must  be  executed  with  Infrared5,  Inc.   
+An  example  of  the EULA can be found on our website at: https://account.red5pro.com/assets/LICENSE.txt.
+
+The above copyright notice and this license shall be included in all copies or portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,  INCLUDING  BUT  
+NOT  LIMITED  TO  THE  WARRANTIES  OF  MERCHANTABILITY, FITNESS  FOR  A  PARTICULAR  PURPOSE  AND  
+NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+@font-face {
+  font-family: 'Lato';
+  src: url('../fonts/Lato-Regular.ttf'), url('https://fonts.googleapis.com/css?family=Lato:400,700');
+  src: url('../fonts/fontawesome-webfont.eot?v=4.0.3');
+  src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.0.3') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff?v=4.0.3') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.0.3') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.0.3#fontawesomeregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lato Bold';
+  src: url('../fonts/Lato-Bold.ttf'), url('https://fonts.googleapis.com/css?family=Lato:400,700');
+  font-weight: normal;
+  font-style: normal;
+}
+
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+  font-family: 'Lato', 'Times New Roman';
+  margin: 0;
+  padding: 0;
+  line-height: 1.5rem;
+  font-size: 16px;
+  font-weight: 400;
+  color: #3b3b3b;
+}
+
+p {
+  margin: 0 0 10px;
+}
+
+h1 {
+  font-weight: 500;
+  line-height: 1.5em;
+  color: #3b3b3b;
+  text-transform: uppercase;
+}
+
+h2 {
+  font-weight: 400;
+  line-height: 1.5em;
+  color: #3b3b3b;
+  text-transform: uppercase;
+}
+
+h3 {
+  font-weight: 400;
+  line-height: 1.5em;
+  color: #db1f26;
+  text-transform: uppercase;
+}
+
+input[type="text"] {
+  height: 1.5rem;
+  font-size: 1rem;
+  padding-left: 0.8rem;
+  -webkit-appearance: textfield;
+  background-color: #fff;
+}
+
+.form-button {
+  height: 1.5rem;
+  font-size: 0.8rem;
+}
+
+.warning {
+  display: block;
+  background-color: #db1f26;
+  color: #fff;
+  padding: 16px;
+}
+
+hr.top-padded-rule {
+  margin-top: 40px;
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #dbdbdb;
+}
+
+.left {
+  float: left;
+}
+
+.black-text {
+  color: #3b3b3b;
+}
+
+.red-text {
+  color: #db1f26;
+}
+
+.white-text {
+  color: #ffffff;
+}
+
+.blue-text {
+  color: #3580A2;
+}
+
+.small-font-size {
+  font-size: 14px;
+}
+
+.medium-font-size {
+  font-size: 16px;
+}
+
+.clear-fix {
+  overflow: auto;
+  zoom: 1;
+}
+
+.clear-fix:after {
+    clear: both;
+}
+
+.clear-fix:before, .clear-fix:after {
+    display: table;
+    content: " ";
+}
+
+a.link {
+  color: #db1f26;
+  text-decoration: none;
+}
+
+a.link:hover {
+  text-decoration: underline;
+}
+
+/* HEADER */
+
+.header-bar {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 20px 40px 10px 40px;
+  border-bottom: 1px solid #dbdbdb;
+  border-top: 3px solid #db1F26;
+  overflow: auto;
+}
+
+#ip-overlay {
+  position: absolute;
+  width: 260px;
+  right: 20px;
+  top: 140px;
+  background-color: #dbdbdb;
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+  box-shadow: 3px 3px 5px #3b3b3b;
+  padding: 20px;
+  z-index: 1000;
+  font-size: 14px;
+}
+
+#ip-address-overlay {
+  position: absolute;
+  width: 260px;
+  right: 20px;
+  top: 140px;
+  background-color: #dbdbdb;
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+  box-shadow: 3px 3px 5px #3b3b3b;
+  padding: 20px;
+  z-index: 1001;
+  font-size: 14px;
+}
+
+.overlay-close-button {
+  text-align: right;
+  margin-top:-14px;
+}
+.top-nudge {
+  padding-top: 14px;
+}
+#ip-suggestions-table {
+  width: 100%;
+  margin-bottom: 14px;
+}
+#ip-suggestions-table tr td {
+  border: 1px solid #aaa;
+  padding: 6px;
+  margin: 0;
+}
+/* /HEADER */
+
+/* FOOTER */
+
+.footer {
+  background-color: #dbdbdb;
+  border-top: 1px solid;
+  border-color: #999999;
+  text-align: center;
+  padding-top: 20px;
+}
+
+.red5pro-logo-footer {
+  width: 100px;
+  margin: -5px 0px -3px -5px;
+}
+
+.red5pro-header.registration-mark {
+  font-size: 1rem;
+  vertical-align: text-top;
+}
+
+.footer-copyright {
+  background-color: #3b3b3b;
+  margin-top: 20px;
+  border-top: 3px solid #db1f26;
+  padding: 20px;
+}
+
+.footer-copyright-text {
+  color: #dbdbdb;
+  font-size: 14px;
+}
+
+#footer-email {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#footer-email-lead {
+  padding-left: 32px;
+}
+
+#footer-email-lead:before {
+    content: "";
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    margin-left: -48px;
+    margin-top: -6px;
+    opacity: 0.4;
+    background: url('../images/email.png') no-repeat;
+    background-size: 32px 32px;
+}
+/* /FOOTER */
+
+.email-header {
+  font-weight: 300;
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+/* MENU */
+
+/*
+#menu-section {
+  display: block;
+  position: relative;
+  float: left;
+  width: 25%;
+}
+*/
+.menu-content {
+  background-color: #dbdbdb;
+  border-radius: 4px;
+}
+
+.menu-listing {
+  list-style: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 10px 0;
+  border-radius: 5px;
+}
+
+.menu-listing li {
+  position: relative;
+  display: block;
+  line-height: 1.5;
+}
+
+.menu-listing li a {
+  display: block;
+  padding: 5px 20px;
+  z-index: 1;
+  position: relative;
+  text-decoration: none;
+}
+
+.menu-listing li a.menu-active {
+  border-right: 1px solid;
+}
+
+.menu-listing li a:hover {
+  text-decoration: underline;
+  color: #db1f26;
+  background-color: #fff;
+  border-right: 1px solid;
+}
+
+.menu-sublisting {
+  padding: 0;
+}
+
+.menu-sublisting li a {
+  padding-left: 40px;
+}
+
+.menu-listing-internal {
+  font-weight: bold;  
+}
+
+.menu-listing-external {
+  font-weight: bold;
+}
+
+.menu-listing-nested {
+  font-weight: normal;
+}
+
+/* /MENU */
+
+.main-container {
+  display: flex;
+  flex-direction: row;
+  margin: 20px 40px 0 40px;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+#menu-section {
+  order: 1;
+  flex: 2;
+  background-color: #dbdbdb;
+  border-radius: 4px;
+  max-width: 260px;
+  height: 100%;
+  padding-bottom: 10px;
+}
+
+#content-section {
+  order: 2;
+  flex: 3;
+  margin-left: 40px;
+  max-width: 900px;
+}
+
+#subcontent-section {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+#subcontent-section-text {
+  flex: 2;
+  min-width: 200px;
+  align-self: flex-start;
+}
+
+#subscontent-section-image {
+  flex: 3;
+}
+
+/* GENERIC */
+
+.no-break {
+  white-space: nowrap;
+}
+
+.hidden {
+  display: none!important;
+}
+.unhide {
+  display: block;
+}
+
+.image-block {
+  vertical-align: middle;
+  display: inline-block;
+  height: auto;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.heading-title {
+  line-height: 1.5em;
+}
+
+.heading-subtitle {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.broadcast-section {
+  display: flex;
+}
+/* /GENERIC */
+
+@media (min-width: 768px) {
+  #header-field {
+    float: left;
+  }
+  #server-version-field {
+    float: right;
+  }
+}
+
+@media (max-width: 767px) {
+  .main-container {
+    flex-direction: column;
+  }
+  .broadcast-section {
+    flex-direction: column;
+  }
+  #menu-section {
+    flex: 1;
+    width: 100%;
+    max-width: 768px;
+  }
+  #content-section {
+    flex: 1;
+    margin-left: 0;
+    margin-top: 20px;
+  }
+  .image-block {
+    margin-top: 20px;
+    width: 100%;
+  }
+  .email-header {
+    font-size: 18px;
+   }
+}
