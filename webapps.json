@@ -5,12 +5,11 @@
   },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
-    "branch": "develop"
-
+    "branch": "jdk8-auto"
   },
   "r5pro-api": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-api.git",
-    "branch": "master"
+    "branch": "jdk8-api"
   },
   "r5pro-bandwidth-detection": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-plugin-bandwidth-detection.git",
