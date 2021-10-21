@@ -239,29 +239,25 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
     </div>
     <div id="prompt" class="in-progress">Connecting...</div>
     <script>
-      (function() {
-       console.log('------- USAGE --------');
-       console.log('');
-       console.log('This page is designed to establish a broadcast session over the Stream Manager Proxy of a Red5 Pro Server. You can provide query params in the URL in order to configure the session to your server deployment.');
-       console.log('The following query params are available:');
-       console.log('%c [host] ' + '%c       : hostname or IP. Default: `window.location.hostname`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [protocol] ' + '%c   : protocol which Stream Manager is served over (`http` or `https`). Default: `window.location.protocol`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [port] ' + '%c       : port number that Stream Maager is served on. Default: `window.location.port`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [app] ' + '%c        : webapp name to stream to on the server. Default: `live`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [streamName] ' + '%c : The unique stream name to broadcast with. Required, no default.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [verbose] ' + '%c    : Flag to enable verbose logging in Dev Console. Optional.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [view] ' + '%c       : Target broadcast tech (`rtc` or `rtmp`). Optional.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [audio] ' + '%c       : Flag to use audio in broadcast. Default: `true`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [cameraWidth] ' + '%c  : Camera width of broadcast. Default: `640`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [cameraHeight] ' + '%c  : Camera height of broadcast. Default: `480`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [dc] ' + '%c       : Request to switch from socket to RTCDataChannel after signalling is complete. Optional.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('');
-       console.log('%c [ EXAMPLE ] ' + '%c   : ' + '%c proxy-publisher.html?host=myred5proserver.com&protocol=https&port=43&app=live&streamName=mystream&verbose=1  ', 'background: #222; color: #ebefd0',  'background: #fff; color: #222', 'background: #d0efd2; color: #222');
-       console.log('');
-       console.log('----------------------');
-       console.log('%cIf this page is served from the `live` webapp of the Stream Manager Server, the only param you are required to provide is `streamName`.', 'padding: 4px; line-height: 20px; background: #222; color: #ebefd0');
-       console.log('----------------------');
-      })();
+    (function() {
+     console.log('------- USAGE --------');
+     console.log('');
+     console.log('This page is designed to establish a basic broadcast session using query params. You can provide query params in the URL in order to configure the session to your server deployment.');
+     console.log('The following query params are available:');
+     console.log('%c [host] ' + '%c       : hostname or IP. Default: `window.location.hostname`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
+     console.log('%c [protocol] ' + '%c   : protocol which Stream Manager is served over (`http` or `https`). Default: `window.location.protocol`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
+     console.log('%c [port] ' + '%c       : port number that Server is served on. Default: `window.location.port`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
+     console.log('%c [app] ' + '%c        : webapp name to stream to on the server. Default: `live`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
+     console.log('%c [streamName] ' + '%c : The unique stream name to broadcast with. Required, no default.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
+     console.log('%c [verbose] ' + '%c    : Flag to enable verbose logging in Dev Console. Optional.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
+     console.log('%c [view] ' + '%c       : Target broadcast tech (`rtc` or `rtmp`). Optional.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
+     console.log('');
+     console.log('%c [ EXAMPLE ] ' + '%c   : ' + '%c basic-publisher.html?host=myred5proserver.com&protocol=https&port=43&app=live&streamName=mystream&verbose=1  ', 'background: #222; color: #ebefd0',  'background: #fff; color: #222', 'background: #d0efd2; color: #222');
+     console.log('');
+     console.log('----------------------');
+     console.log('%cIf this page is served from the `live` webapp of the Red5 Pro Server, the only param you are required to provide is `streamName`.', 'padding: 4px; line-height: 20px; background: #222; color: #ebefd0');
+     console.log('----------------------');
+    })();
     </script>
     <script src="lib/es6/es6-fetch.js"></script>
     <script src="lib/es6/es6-promise.min.js"></script>
@@ -289,37 +285,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         else {
           red5prosdk.setLogLevel('error');
         }
-
-        // Request the origin server from Stream Manager.
-        function requestOrigin (protocol, port, host, app, streamName, isSecure) {
-          var portURI = (port.length > 0 ? ':' + port : '');
-          var baseUrl = isSecure ? (protocol + '://' + host) : (protocol + '://' + host + portURI);
-          var url = baseUrl + '/streammanager/api/4.0/event/' + app + '/' + streamName + '?action=broadcast';
-            return new Promise(function (resolve, reject) {
-              fetch(url)
-                .then(function (res) {
-                  if (res.headers.get("content-type") &&
-                    res.headers.get("content-type").toLowerCase().indexOf("application/json") >= 0) {
-                      return res.json();
-                  }
-                  else {
-                    throw new TypeError('Could not properly parse response.');
-                  }
-                })
-                .then(function (json) {
-                  if (json.errorMessage) {
-                    throw new Error(json.errorMessage);
-                  } else {
-                    resolve(json.serverAddress);
-                  }
-                })
-                .catch(function (error) {
-                  var jsonError = typeof error === 'string' ? error : JSON.stringify(error, null, 2)
-                  console.error('[PublisherStreamManagerProxyTest] :: Error - Could not request Origin IP from Stream Manager. ' + jsonError)
-                  reject(error);
-                });
-            });
-          }
 
         // Configuration params.
         var protocol = getParameterByName('protocol') || window.location.protocol;
@@ -355,7 +320,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var rtcConfig = {
           host: host,
           streamName: streamName,
-          app: 'streammanager',
+          app: 'live',
           protocol: wsProtocol,
           port: wsPort,
           signalingSocketOnly: switchToDC,
