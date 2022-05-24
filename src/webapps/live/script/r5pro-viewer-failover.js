@@ -201,6 +201,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     switch (type) {
       case 'rtc':
         updateStatus('Using WebRTC Playback');
+		window.subscriber = subscriber;
         break;
       case 'rtmp':
         updateStatus('Using Flash Playback');
