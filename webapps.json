@@ -7,7 +7,7 @@
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
     "branch": "develop"
   },
-  "r5pro-api": {
+    "r5pro-api": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-api.git",
     "branch": "master"
   },
