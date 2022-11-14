@@ -7,10 +7,6 @@
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
     "branch": "master"
   },
-  "r5pro-api": {
-    "repositoryUrl": "git@github.com:infrared5/red5pro-api.git",
-    "branch": "master"
-  },
   "r5pro-bandwidth-detection": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-plugin-bandwidth-detection.git",
     "branch": "master"
