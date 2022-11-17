@@ -5,7 +5,7 @@
   },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
-    "branch": "epic/GERMANREX"
+    "branch": "DEV-25-terraform-service-fix"
   },
     "r5pro-api": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-api.git",
