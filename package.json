@@ -10,7 +10,7 @@
     "chalk": "^1.1.1",
     "chokidar": "^3.2.1",
     "colors": "^1.4.0",
-    "decode-uri-component": "^0.2.0",
+    "decode-uri-component": "^0.2.1",
     "del": "^1.2.1",
     "eslint": "^6.5.1",
     "gulp": "^4.0.2",
