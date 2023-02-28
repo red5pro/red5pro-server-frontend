@@ -178,8 +178,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           if (message === 'Publish.Start') {
             prompt.classList.remove('in-progress');
             prompt.classList.add('success');
-          }
-          else if (message === 'Publish.Fail' || message === 'Connect.Failure') {
+ 		  } else if (message === 'Publish.Available') {
+			window.publisher = publisher;
+          } else if (message === 'Publish.Fail' || message === 'Connect.Failure') {
             prompt.classList.remove('in-progress');
             prompt.classList.add('failure');
             inFailedState = true;
