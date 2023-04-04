@@ -238,6 +238,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var streamName = getParameterByName('streamName');
         var groupName = getParameterByName('groupName');
         var accessToken = getParameterByName('smtoken') || 'xyz123';
+        var authToken = getParameterByName('authtoken');
         var isSecure = protocol === 'https';
         var smProtocol = protocol;
         var smPort = isSecure ? '' : '5080';
@@ -265,6 +266,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           app: app,
           streamName: streamName,
         };
+        
+        if (authToken) {
+          rtcConfig.connectionParams = {
+            token: authToken
+          }
+        }
 
         var subscriber;
         var failover;
