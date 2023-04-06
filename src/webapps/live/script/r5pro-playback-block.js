@@ -170,6 +170,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     this.configuration = undefined;
     this.playbackOrder = undefined;
     this.canPlayMP4 = false;
+    this.whipwhep = true;
     this.requiresStreamManagerCheck = false;
     this.client = undefined;
     this.handleStartError = this.handleStartError.bind(this);
@@ -393,10 +394,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     return this;
   }
 
-  PlaybackBlock.prototype.init = function (configuration, playbackOrder, checkStreamManager) {
+  PlaybackBlock.prototype.init = function (configuration, playbackOrder, whipwhep, checkStreamManager) {
     checkStreamManager = checkStreamManager || false;
     this.configuration = configuration;
     this.playbackOrder = playbackOrder;
+    this.whipwhep = whipwhep || true;
     this.requiresStreamManagerCheck = checkStreamManager;
     this.assignStreamAttributesToPlaybackConfigurations(this.streamName, getVideoElementId(this.streamName));
     if (checkStreamManager) {
@@ -431,9 +433,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       this.client.onPlaybackBlockStart(this);
     }
     this.setActive(true, this.isVOD);
-    new red5pro.Red5ProSubscriber()
-      .setPlaybackOrder(playbackOrder)
-      .init(configuration)
+    var subscriber = !this.whipwhep ? new red5pro.Red5ProSubscriber().setPlaybackOrder(playbackOrder) : new red5pro.WHEPClient();
+    var subscriberConfig = !this.whipwhep ? configuration : configuration.rtc ? configuration.rtc : configuration; 
+    subscriber
+      .init(subscriberConfig)
       .then(function (subscriber) {
         addLoadingIcon(self.getVideoElement());
         self.subscriber = subscriber;
