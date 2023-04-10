@@ -255,7 +255,23 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           .catch(function (error) {
             console.error(error)
             displayPrompt('Publish.Fail')
+            shutdown()
           })
+
+        const shutdown = async () => {
+          if (publisher) {
+            try {
+              await publisher.unpublish()
+              publisher.off('*', onPublisherEvent)
+            } catch (e) {
+              console.error(e)
+            } finally {
+              publisher = null
+            }
+          }
+        }
+        window.addEventListener('pagehide', shutdown)
+        window.addEventListener('beforeunload', shutdown)
       })(window, window.red5prosdk)
     </script>
   </body>
