@@ -210,10 +210,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         if (event.subscriber.getType().toLowerCase() === 'rtmp') {
           removeLoadingIcon(this.getVideoElement())
         } else {
-          this.getVideoElement().addEventListener(
-            'canplay',
-            this.handleStreamPlayback
-          )
+          if (this.getVideoElement().readyState >= 2 || this.whipwhep) {
+            removeLoadingIcon(this.getVideoElement())
+          } else {
+            this.getVideoElement().addEventListener(
+              'canplay',
+              this.handleStreamPlayback
+            )
+          }
         }
       } else if (event.type === 'Subscribe.Metadata') {
         if (event.data.streamingMode && event.data.streamingMode === 'Audio') {
