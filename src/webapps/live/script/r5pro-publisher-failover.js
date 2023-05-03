@@ -111,6 +111,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     mediaConstraints: forceQuality,
     signalingSocketOnly: signalSocketOnly,
     enableChannelSignaling: whipwhep && signalSocketOnly,
+    trickleIce: true,
   }
 
   var rtcConfig = Object.assign({}, baseConfiguration, {
