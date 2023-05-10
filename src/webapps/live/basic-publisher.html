@@ -246,7 +246,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           ? new red5prosdk.WHIPClient()
           : new red5prosdk.RTCPublisher()
         publisher
-          .init(rtmpConfig)
+          .init(rtcConfig)
           .then(function (publisherImpl) {
             publisher = publisherImpl
             publisher.on('*', onPublisherEvent)
