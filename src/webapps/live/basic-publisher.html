@@ -104,13 +104,25 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         )
         console.log(
           '%c [verbose] ' +
-            '%c    : Flag to enable verbose logging in Dev Console. Optional.',
+            '%c    : Flag to enable verbose logging in Dev Console. Optional. 0 or 1.',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
+          '%c [audio] ' +
+            '%c   : Flag to include audio in the broadcast. Optional. 0 or 1.',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
+          '%c [video] ' +
+            '%c   : Flag to include video in the broadcast. Optional. 0 or 1.',
           'background: #222; color: #ebefd0',
           'background: #fff; color: #222'
         )
         console.log(
           '%c [whipwhep] ' +
-            '%c   : Flag to prefer WHIP client and not use a websocket for ICE negotiation. Optional.',
+            '%c   : Flag to prefer WHIP client and not use a websocket for ICE negotiation. Optional. 0 or 1.',
           'background: #222; color: #ebefd0',
           'background: #fff; color: #222'
         )
@@ -178,13 +190,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var app = getParameterByName('app') || 'live'
         var order = getParameterByName('view') || ['rtc', 'rtmp']
         var streamName = getParameterByName('streamName')
-        var preferWhipWhep = getParameterByName('whipwhep') === '1'
-        var enableDataChannel = getParameterByName('dc') === '1'
+        var preferWhipWhep = getParameterByName('whipwhep') !== '0'
+        var enableDataChannel = getParameterByName('dc') !== '0'
         var videoWidth = getParameterByName('vw') || 640
         var videoHeight = getParameterByName('vh') || 480
         var frameRate = getParameterByName('fr') || 24
         var bandwidthAudio = getParameterByName('bwA') || 56
         var bandwidthVideo = getParameterByName('bwV') || 750
+        var allowAudio = getParameterByName('audio') !== '0'
+        var allowVideo = getParameterByName('video') !== '0'
 
         var rtcConfig = {
           host: host,
@@ -197,12 +211,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
             audio: parseInt(bandwidthAudio, 10),
           },
           mediaConstraints: {
-            video: {
+            video: allowVideo && {
               width: { exact: parseInt(videoWidth, 10) },
               height: { exact: parseInt(videoHeight, 10) },
               frameRate: { exact: parseInt(frameRate, 10) },
             },
-            audio: true,
+            audio: allowAudio,
           },
           signalingSocketOnly: enableDataChannel,
           enableChannelSignaling: enableDataChannel,
