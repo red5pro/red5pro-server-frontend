@@ -1,11 +1,12 @@
 'use strict';
 
+// var path = require('path');
 var gutil = require('gulp-util');
 var WebAppBuilder = require('./WebAppBuilder');
 
 module.exports = function(srcDir, distDir, gulp, templateOptions) {
 
-  var webappDirName = 'template';
+  var webappDirName = 'api';
   var generateTaskLabel = ['generate-webapp', webappDirName].join('-');
   var copyContentsTaskLabel = ['copy-contents-webapp', webappDirName].join('-');
   var copyStaticTaskLabel = ['copy-static-webapp', webappDirName].join('-');
