@@ -896,8 +896,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
 
             // Establish a subscriber session.
             if (!preferWhipWhep) {
-              failover = new Red5ProSubscriber()
-              failover.setPlaybackOrder(order).init({
+              var sub = new Red5ProSubscriber()
+              failover = sub.setPlaybackOrder(order).init({
                 rtc: rtcConfig,
                 hls: hlsConfig,
               })
