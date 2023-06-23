@@ -34,6 +34,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var buffer = window.r5proBuffer;
   var targetViewTech = window.r5proViewTech;
   var signalSocketOnly = !(window.r5proSignalSocketOnly === 0);
+  var whipwhep = window.r5proWhipWhep === 1;
   var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls'];
   var protocol = window.location.protocol;
   protocol = protocol.substring(0, protocol.lastIndexOf(':'));
@@ -54,7 +55,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       iceCandidatePoolSize: 2,
       bundlePolicy: 'max-bundle'
     },
-    signalingSocketOnly: signalSocketOnly
+    signalingSocketOnly: signalSocketOnly,
+    enableChannelSignaling: whipwhep && signalSocketOnly
   };
   var rtmpConfiguration = {
     protocol: 'rtmp',
@@ -120,13 +122,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         var page = $item.getAttribute('data-pageLocation');
         var location = $item.getAttribute('data-streamLocation');
         var block = new R5PlaybackBlock(name, name, location, page);
-        block.setClient(playbackBlockClient);
-        $item.appendChild(block.create().getElement());
-        block.init(Object.assign({}, baseConfiguration, {
+        var subConfig = Object.assign({}, baseConfiguration, {
           rtc: Object.assign({}, baseConfiguration, rtcConfiguration),
           rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
           hls: Object.assign({}, baseConfiguration, hlsConfiguration)
-        }), playbackOrder, true);
+        })
+        block.setClient(playbackBlockClient);
+        $item.appendChild(block.create().getElement());
+        block.init(subConfig, playbackOrder, whipwhep, true);
         playbackBlocks.push(block);
       }
     }

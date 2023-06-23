@@ -15,6 +15,7 @@
   Integer audioBandwidth = -1;
   Integer videoBandwidth = -1;
   Integer signalSocketOnly = 1;
+  Integer whipwhep = 1;
 
   if (request.getParameter("buffer") != null) {
     buffer = request.getParameter("buffer");
@@ -36,6 +37,9 @@
   }
   if (request.getParameter("dc") != null) {
     signalSocketOnly =  Integer.parseInt(request.getParameter("dc")) == 0 ? 0 : 1;
+  }
+  if (request.getParameter("whipwhep") != null) {
+    whipwhep =  Integer.parseInt(request.getParameter("whipwhep")) == 0 ? 0 : 1;
   }
 
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
@@ -114,7 +118,7 @@
     <script src="script/r5pro-ice-utils.js"></script>
     <script>
       function assignIfDefined (value, prop) {
-        if (value && value !== 'null') {
+        if (value !== 'null') {
           window[prop] = value;
         }
       }
@@ -122,6 +126,7 @@
       assignIfDefined(<%=audioBandwidth%>, 'r5proAudioBandwidth');
       assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
       assignIfDefined(<%=signalSocketOnly%>, 'r5proSignalSocketOnly');
+      assignIfDefined(<%=whipwhep%>, 'r5proWhipWhep');
 
       window.targetHost = "<%=ip%>";
       window.r5proIce = window.determineIceServers('<%=ice%>');

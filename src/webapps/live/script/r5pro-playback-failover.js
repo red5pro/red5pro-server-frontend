@@ -109,13 +109,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         var dataString = decodeURIComponent(data);
         var streamData = JSON.parse(dataString);
         var block = new R5PlaybackBlock(name, name, location, page);
+        var subConfig = Object.assign({}, baseConfiguration, {
+          rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
+          hls: Object.assign({}, baseConfiguration, hlsConfiguration)
+        })
         block.setVODData(streamData, false, canPlayMP4Natively);
         block.setClient(playbackBlockClient);
         $item.appendChild(block.create().getElement());
-        block.init(Object.assign({}, baseConfiguration, {
-          rtmp: Object.assign({}, baseConfiguration, rtmpConfiguration),
-          hls: Object.assign({}, baseConfiguration, hlsConfiguration)
-        }), playbackOrder, false);
+        block.init(subConfig, playbackOrder, false, false);
         playbackBlocks.push(block);
       }
     }
