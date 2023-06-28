@@ -932,8 +932,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
             // Establish a broadcast session.
             const { WHIPClient, RTCPublisher } = red5prosdk
             publisher = preferWhipWhep ? new WHIPClient() : new RTCPublisher()
+            publisher.on('*', onPublisherEvent)
             publisher
-              .on('*', onPublisherEvent)
               .init(rtmpConfig)
               .then(function (publisherImpl) {
                 publisher.publish()
