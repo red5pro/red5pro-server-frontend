@@ -30,6 +30,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
     <script src="https://webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet" />
+    <link href="css/modal.css" rel="stylesheet" />
     <link
       href="//fonts.googleapis.com/css?family=Lato:400,700"
       rel="stylesheet"
@@ -52,6 +53,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
       #wrapper {
         width: 100%;
         height: 480px;
+      }
+      .red5pro-media-control-bar {
+        min-height: 40px !important;
       }
     </style>
   </head>
@@ -741,6 +745,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
 
         // Request Edge server from Stream Manager.
         function requestEdge(protocol, port, host, app, streamName, isSecure) {
+          if (preferWhipWhep) {
+            return new Promise(function (resolve, reject) {
+              resolve(host)
+            })
+          }
           var portURI = port.length > 0 ? ':' + port : ''
           var baseUrl = isSecure
             ? protocol + '://' + host

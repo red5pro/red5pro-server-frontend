@@ -30,6 +30,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
     <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet" />
+    <link href="css/modal.css" rel="stylesheet" />
     <link
       href="//fonts.googleapis.com/css?family=Lato:400,700"
       rel="stylesheet"
@@ -771,6 +772,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           streamName,
           isSecure
         ) {
+          if (preferWhipWhep) {
+            return new Promise(function (resolve, reject) {
+              resolve(host)
+            })
+          }
+
           var portURI = port.length > 0 ? ':' + port : ''
           var baseUrl = isSecure
             ? protocol + '://' + host
@@ -837,13 +844,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var wsPort = isSecure ? 443 : 5080
         var audioParam = getParameterByName('audio')
         var audioFlag = audioParam
-          ? audioParam === 'false'
+          ? audioParam === '0' || audioParam === 'false'
             ? false
             : true
           : true
         var videoParam = getParameterByName('video')
         var videoFlag = videoParam
-          ? videoParam === 'false'
+          ? videoParam === '0' || videoParam === 'false'
             ? false
             : true
           : true
@@ -934,7 +941,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
             publisher = preferWhipWhep ? new WHIPClient() : new RTCPublisher()
             publisher.on('*', onPublisherEvent)
             publisher
-              .init(rtmpConfig)
+              .init(rtcConfig)
               .then(function (publisherImpl) {
                 publisher.publish()
               })
