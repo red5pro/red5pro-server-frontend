@@ -689,6 +689,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           'background: #fff; color: #222'
         )
         console.log(
+          '%c [video] ' +
+            '%c       : Flag to use video in broadcast. Default: `true`',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
           '%c [cameraWidth] ' +
             '%c  : Camera width of broadcast. Default: `640`',
           'background: #222; color: #ebefd0',
@@ -835,6 +841,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
             ? false
             : true
           : true
+        var videoParam = getParameterByName('video')
+        var videoFlag = videoParam
+          ? videoParam === 'false'
+            ? false
+            : true
+          : true
         var cameraWidth = getParameterByName('cameraWidth')
           ? parseInt(getParameterByName('cameraWidth'), 10)
           : 640
@@ -858,17 +870,19 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var rtcConfig = {
           host: host,
           streamName: streamName,
-          app: 'streammanager',
+          app: preferWhipWhep ? app : 'streammanager',
           protocol: wsProtocol,
           port: wsPort,
           signalingSocketOnly: switchToDC,
           enableChannelSignaling: switchToDC,
           mediaConstraints: {
             audio: audioFlag,
-            video: {
-              width: { exact: cameraWidth },
-              height: { exact: cameraHeight },
-            },
+            video: videoFlag
+              ? {
+                  width: { exact: cameraWidth },
+                  height: { exact: cameraHeight },
+                }
+              : false,
           },
           socketSwitchDelay: !isNaN(switchDelay) || 1000,
         }
