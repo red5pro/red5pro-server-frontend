@@ -842,6 +842,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var smPort = isSecure ? '' : '5080'
         var wsProtocol = isSecure ? 'wss' : 'ws'
         var wsPort = isSecure ? 443 : 5080
+        var bandwidthAudio = getParameterByName('bwA') || 56
+        var bandwidthVideo = getParameterByName('bwV') || 750
         var audioParam = getParameterByName('audio')
         var audioFlag = audioParam
           ? audioParam === '0' || audioParam === 'false'
@@ -882,6 +884,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           port: wsPort,
           signalingSocketOnly: switchToDC,
           enableChannelSignaling: switchToDC,
+          bandwidth: {
+            video: parseInt(bandwidthVideo, 10),
+            audio: parseInt(bandwidthAudio, 10),
+          },
           mediaConstraints: {
             audio: audioFlag,
             video: videoFlag
