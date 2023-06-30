@@ -842,6 +842,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var smPort = isSecure ? '' : '5080'
         var wsProtocol = isSecure ? 'wss' : 'ws'
         var wsPort = isSecure ? 443 : 5080
+        var frameRate = getParameterByName('fr') || 24
         var bandwidthAudio = getParameterByName('bwA') || 56
         var bandwidthVideo = getParameterByName('bwV') || 750
         var audioParam = getParameterByName('audio')
@@ -894,6 +895,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
               ? {
                   width: { exact: cameraWidth },
                   height: { exact: cameraHeight },
+                  frameRate: { exact: parseInt(frameRate, 10) },
                 }
               : false,
           },
