@@ -348,16 +348,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     bitrate,
     packetsLastSent
   ) {
-    var video = this.getVideoElement()
-    this.updateStatisticsField(
-      'Bitrate: ' +
-        (bitrate === 0 ? 'N/A' : Math.floor(bitrate)) +
-        '. ' +
-        video.videoWidth +
-        'x' +
-        video.videoHeight +
-        '.'
-    )
+    if (type === 'video') {
+      var video = this.getVideoElement()
+      this.updateStatisticsField(
+        'Bitrate: ' +
+          (bitrate === 0 ? 'N/A' : Math.floor(bitrate)) +
+          '. ' +
+          video.videoWidth +
+          'x' +
+          video.videoHeight +
+          '.'
+      )
+    }
   }
 
   PlaybackBlock.prototype.handleExternalLink = function () {}
