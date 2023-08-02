@@ -7,6 +7,7 @@
     {{> head_meta }}
     {{> resources }}
     <title>Red5Pro Video Bandwidth Detection</title>
+    <script src="https://unpkg.com/red5pro-webrtc-sdk@latest/red5pro-sdk.min.js"></script>
     <style>
       .form {
         background-color: #dbdbdb;
@@ -165,7 +166,6 @@
         </div>
       </div>
     </div>
-    <script src="lib/red5pro/red5pro-sdk.min.js"></script>
     <script src="script/util.js"></script>
     <script src="script/video-bandwidth.js"></script>
   </body>
