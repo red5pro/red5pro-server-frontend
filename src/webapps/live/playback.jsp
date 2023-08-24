@@ -1,6 +1,5 @@
 {{> jsp_header }}
 <%@ page import="org.springframework.context.ApplicationContext,
-          com.red5pro.server.secondscreen.net.NetworkUtil,
           org.springframework.web.context.WebApplicationContext,
           com.infrared5.red5pro.live.LiveStreamListService,
           java.util.Map.Entry,

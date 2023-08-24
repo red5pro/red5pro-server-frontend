@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8"%>
 <%@ page import="java.net.Inet4Address,java.net.URLConnection"%>
-<%@ page import="com.red5pro.server.secondscreen.net.NetworkUtil"%>
+<%@ page import="com.red5pro.server.util.NetworkManager"%>
 <%@ page import="java.io.*,java.util.Map,java.util.ArrayList,java.util.regex.*,java.net.URL,java.nio.charset.Charset"%>
 <%
   String cookieStr = "";
@@ -12,7 +12,7 @@
   String ip = null;
   String hostname = request.getServerName();
   String scheme = request.getScheme();
-  String localIp = NetworkUtil.getLocalIpAddress();
+  String localIp = NetworkUtil.getLocalAddress();
   boolean ipExists = false;
   boolean isSecure = scheme == "https";
   String kvUrlParams = "";
@@ -127,7 +127,7 @@
       File file = new File(path);
       reader = new FileReader(new File(file.getCanonicalPath()));
       BufferedReader br = new BufferedReader(reader);
-      String st; 
+      String st;
       while ((st = br.readLine()) != null) {
         Matcher matcher = pattern.matcher(st);
         if (matcher.find()) {
@@ -143,7 +143,7 @@
         try {
           reader.close();
         } catch (IOException e) {
-          // 
+          //
         }
       }
     }
