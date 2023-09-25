@@ -9,6 +9,14 @@
   </div>
   <div class="footer-copyright">
     <p><img src="css/assets/Red5Pro_logo_white_red.svg" class="brand-icon" alt="Red5 Pro" /></p>
-    <p><span class="footer-copyright-text">Copyright 2015 - 2019  &copy; Red5 Pro</span></p>
+    <p><span class="footer-copyright-text">Copyright 2015 - <span class="footer-copyright-text_end">2019</span>  &copy; Red5 Pro</span></p>
   </div>
+  <script>
+    (() => {
+      const footerDate = document.querySelector('.footer-copyright-text_end')
+      if (footerDate) {
+        footerDate.textContent = new Date().getFullYear()
+      }
+    })()
+  </script>
 </div>
