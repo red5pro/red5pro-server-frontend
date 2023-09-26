@@ -38,7 +38,7 @@
     </property>
   </bean>
 
-  <bean id="red5.scopeResolver" class="org.red5.server.scope.ScopeResolver">
+  <bean id="red5.scopeResolver" class="com.red5pro.override.scope.ProScopeResolver">
     <property name="globalScope" ref="global.scope" />
   </bean>
   
