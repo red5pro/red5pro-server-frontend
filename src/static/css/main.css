@@ -294,7 +294,7 @@ h2 {
 h3 {
   font-weight: 400;
   line-height: 1.5em;
-  color: #db1f26;
+  color: var(--color-red5);
   text-transform: uppercase;
 }
 
@@ -313,7 +313,7 @@ input[type='text'] {
 
 .warning {
   display: block;
-  background-color: #db1f26;
+  background-color: var(--color-red5);
   color: #fff;
   padding: 16px;
 }
@@ -335,7 +335,7 @@ hr.top-padded-rule {
 }
 
 .red-text {
-  color: #db1f26;
+  color: var(--color-red5);
 }
 
 .white-text {
@@ -385,8 +385,6 @@ a.link:hover {
   background-color: #ffffff;
   padding: 20px 40px 10px 40px;
   border-bottom: 1px solid #dbdbdb;
-  border-top: 3px solid #db1f26;
-  overflow: auto;
 }
 
 #ip-overlay {
