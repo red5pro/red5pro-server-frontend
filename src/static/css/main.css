@@ -382,7 +382,7 @@ a.link:hover {
 
 .header-bar {
   width: 100%;
-  background-color: #ffffff;
+  background-color: #dbdbdb;
   padding: 20px 40px 10px 40px;
   border-bottom: 1px solid #dbdbdb;
 }
@@ -520,7 +520,7 @@ a.link:hover {
 }
 */
 .menu-content {
-  background-color: #dbdbdb;
+  /* background-color: #dbdbdb; */
   border-radius: 4px;
 }
 
@@ -544,6 +544,7 @@ a.link:hover {
   z-index: 1;
   position: relative;
   text-decoration: none;
+  color: #fff;
 }
 
 .menu-listing li a.menu-active {
@@ -552,9 +553,27 @@ a.link:hover {
 
 .menu-listing li a:hover {
   text-decoration: underline;
-  color: #db1f26;
-  background-color: #fff;
+  text-decoration-style: dotted;
+  color: #fff;
   border-right: 1px solid;
+}
+
+.menu-listing-button {
+  border: 1px solid #fff;
+  border-radius: 50px;
+  padding: 9px 15px !important;
+  text-align: center;
+  color: #fff;
+}
+
+.menu-listing-button a {
+  text-decoration: none;
+  color: #fff;
+}
+.menu-listing-button a:hover {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  color: #fff;
 }
 
 .menu-sublisting {
@@ -566,11 +585,11 @@ a.link:hover {
 }
 
 .menu-listing-internal {
-  font-weight: bold;
+  font-weight: 400;
 }
 
 .menu-listing-external {
-  font-weight: bold;
+  font-weight: 400;
 }
 
 .menu-listing-nested {
@@ -582,15 +601,16 @@ a.link:hover {
 .main-container {
   display: flex;
   flex-direction: row;
-  margin: 20px 40px 0 40px;
+  padding: 20px 40px 0 40px;
   justify-content: center;
-  margin-bottom: 40px;
+  padding-bottom: 40px;
+  background-color: #0c0c0c;
+  color: #fff;
 }
 
 #menu-section {
   order: 1;
   flex: 2;
-  background-color: #dbdbdb;
   border-radius: 4px;
   max-width: 260px;
   height: 100%;

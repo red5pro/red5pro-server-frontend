@@ -9,7 +9,6 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> navigation }}
     {{> header }}
     <div class="main-container">
       <div id="menu-section">
@@ -18,13 +17,10 @@
       <div id="content-section">
           <div id="subcontent-section">
             <div id="subcontent-section-text">
-              <h1 class="red-text">Welcome!</h1>
+              <h1>Welcome!</h1>
               <p class="heading-title">If you are seeing this page, then you have successfully downloaded and are running the <span class="no-break">Red5 Pro Server!</span></p>
-              <p class="heading-subtitle">Live video streaming solved.</p>
-              <p class="heading-subtitle">Broadcast video to millions in under 500 milliseconds.</p>
-            </div>
-            <div id="subcontent-section-image">
-              <img class="image-block" width="544" height="318" src="images/landing_stock.jpg" />
+              <p class="heading-title">We live in a fast-moving world where real-time experience delivery has become the norm.</p>
+              <p class="heading-title">With Red5 TrueTime Solutions™, deliver interactive, sub-250 millisecond latency to millions and go beyond the expected. This is faster than humans can perceive; it’s video at the speed of thought.</p>
             </div>
           </div>
           <hr class="top-padded-rule">

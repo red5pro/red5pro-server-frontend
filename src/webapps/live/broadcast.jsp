@@ -91,9 +91,6 @@
               </ol>
             </p>
           </div>
-          <div id="subcontent-section-image">
-            <img class="image-block" width="380" id="live-page-img" src="images/red5pro_live_broadcast.png">
-          </div>
         </div>
         <hr class="top-padded-rule">
         <div class="content-section-story">
