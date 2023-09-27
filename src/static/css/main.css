@@ -282,6 +282,7 @@ h1 {
   line-height: 1.5em;
   /* color: #3b3b3b; */
   text-transform: uppercase;
+  margin-bottom: 40px !important;
 }
 
 h2 {
@@ -289,6 +290,7 @@ h2 {
   line-height: 1.5em;
   /* color: #3b3b3b; */
   text-transform: uppercase;
+  margin-bottom: 20px !important;
 }
 
 h3 {
@@ -649,6 +651,10 @@ a.link:hover {
   flex-wrap: wrap;
   column-gap: 20px;
   row-gap: 20px;
+}
+
+.content-section_card_download_link > a {
+  color: var(--color-red5);
 }
 
 .content-section_card_graphic {
