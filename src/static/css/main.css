@@ -280,14 +280,14 @@ p {
 h1 {
   font-weight: 500;
   line-height: 1.5em;
-  color: #3b3b3b;
+  /* color: #3b3b3b; */
   text-transform: uppercase;
 }
 
 h2 {
   font-weight: 400;
   line-height: 1.5em;
-  color: #3b3b3b;
+  /* color: #3b3b3b; */
   text-transform: uppercase;
 }
 
@@ -559,21 +559,24 @@ a.link:hover {
 }
 
 .menu-listing-button {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.menu-listing-button a {
   border: 1px solid #fff;
   border-radius: 50px;
   padding: 9px 15px !important;
   text-align: center;
   color: #fff;
-}
-
-.menu-listing-button a {
   text-decoration: none;
   color: #fff;
 }
 .menu-listing-button a:hover {
   text-decoration: underline;
   text-decoration-style: dotted;
-  color: #fff;
+  background-color: #fff;
+  color: #0c0c0c !important;
 }
 
 .menu-sublisting {
@@ -628,6 +631,7 @@ a.link:hover {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
+  margin-top: 60px;
 }
 
 #subcontent-section-text {
@@ -638,6 +642,55 @@ a.link:hover {
 
 #subscontent-section-image {
   flex: 3;
+}
+
+.content-section-story {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 20px;
+  row-gap: 20px;
+}
+
+.content-section_card_graphic {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.content-section_card_title {
+  margin-bottom: 20px;
+}
+
+.content-section-story > .content-section_card {
+  width: 45%;
+  padding: 16px;
+  border: 1px solid #ddd;
+}
+
+.content-section_card_tray {
+  margin-top: 40px;
+}
+
+.content-section_card_link {
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+  font-size: 0.8rem;
+}
+
+.card-link {
+  text-decoration: none;
+  color: #fff;
+}
+
+.card-link:hover {
+  color: #ccc;
+}
+
+.card-link_page {
+  text-decoration: underline!important;
+  text-decoration-style: dotted!important;
 }
 
 /* GENERIC */
