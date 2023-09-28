@@ -744,9 +744,11 @@ a.link:hover {
 }
 
 .filter-section {
-  background-color: #eee;
-  margin: 10px;
-  padding: 10px 0;
+  /* background-color: #eee; */
+  /* margin: 10px; */
+  /* padding: 10px 0; */
+  border-bottom: 1px solid rgb(64, 64, 64);
+  margin-bottom: 20px;
 }
 
 .filter-container {

@@ -130,7 +130,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         length = listing.length
       for (i; i < length; i++) {
         const streamName = listing[i]
-        const streamLocation = `/live/${streamName}`
+        const streamLocation = `${window.location.origin}/live/${streamName}`
         const pageLocation = `/live/viewer.jsp?host=${host}&stream=${streamName}`
         if (targetViewTech != null) {
           pageLocation += '&view=' + targetViewTech

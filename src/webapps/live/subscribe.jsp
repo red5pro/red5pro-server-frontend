@@ -94,8 +94,8 @@
         <div class="subscribe-section">
           {{> filter-section target='stream-menu-content'}}
           <div class="stream-menu-content">
-            <p class="no-streams-entry">No streams found</p>
-            <p style="margin-top: 20px;">You can begin a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=<%= ip %>" target="_blank">Broadcast page</a>.</p>
+            <h2 class="red-text">No streams found</h2>
+            <p style="margin-top: 20px;">You can begin a Broadcast session by visiting the <a class="broadcast-link card-link card-link_page" href="broadcast.jsp?host=<%= ip %>" target="_blank">Broadcast page</a>.</p>
             <p class="small-font-size">Once a Broadcast session is started, return to this page to see the stream name listed.</p>
           </div>
         </div>
