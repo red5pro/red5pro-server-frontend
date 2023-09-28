@@ -42,7 +42,6 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> navigation }}
     {{> header }}
     <div class="main-container">
       <div id="menu-section">
@@ -51,11 +50,8 @@
       <div id="content-section">
         <div id="subcontent-section">
           <div id="subcontent-section-text">
-            <h1 class="red-text">Video on Demand For Any Screen</h1>
+            <h1>Video on Demand For Any Screen</h1>
             <p class="heading-title">Below you will find the list of recorded streams to playback.
-          </div>
-          <div id="subcontent-section-image">
-            <img class="image-block" width="424" src="images/red5pro_live_streaming.png">
           </div>
         </div>
         <hr class="top-padded-rule">
@@ -71,9 +67,7 @@
             <p class="no-streams-entry">Requesting files...</p>
           </div>
         </div>
-        <hr class="top-padded-rule" />
         {{> web-applications }}
-        <hr class="top-padded-rule">
         {{> mobile-applications }}
         <hr class="top-padded-rule" />
         {{> additional_info }}

@@ -306,6 +306,7 @@ input[type='text'] {
   padding-left: 0.8rem;
   -webkit-appearance: textfield;
   background-color: #fff;
+  border: none;
 }
 
 .form-button {
