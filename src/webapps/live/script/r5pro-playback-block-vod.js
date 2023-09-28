@@ -166,7 +166,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   R5PlaybackBlock.prototype.startHlsJSPlayback = function (url) {
     console.log('[' + this.streamName + '] :: Defaulting to HLS.js Playback.')
     var video = this.getVideoElement()
-    var hls = new Hls()
+    var hls = new Hls({ debug: true, backBufferLength: 0 })
     hls.loadSource(url.indexOf('.m3u8') === -1 ? url + '.m3u8' : url)
     hls.attachMedia(video)
     this.updateStatusFieldWithType('videojs')
