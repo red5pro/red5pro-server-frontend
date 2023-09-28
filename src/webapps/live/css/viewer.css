@@ -97,6 +97,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 .subscribe-section {
   margin: 10px 20px;
   flex-direction: row;
+  justify-content: center;
 }
 
 .subviewer-title {

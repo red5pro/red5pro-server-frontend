@@ -427,18 +427,21 @@ a.link:hover {
 }
 
 .ui-button {
-  color: #ffffff;
-  background-color: #3580a2;
-  text-align: center;
-  border-radius: 0px;
-  padding: 10px;
-  width: 100%;
-  font-size: 1em;
-  padding: 1em;
-  border: 0;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  text-transform: unset;
   cursor: pointer;
-  -webkit-appearance: none;
-  -webkit-border-radius: 0;
+  transition: 0.3s;
+  border-radius: 0.25rem;
+}
+
+.ui-button:hover {
+  color: #212529;
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
 }
 
 #ip-suggestions-table {
@@ -750,6 +753,7 @@ a.link:hover {
   /* padding: 10px 0; */
   border-bottom: 1px solid rgb(64, 64, 64);
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .filter-container {

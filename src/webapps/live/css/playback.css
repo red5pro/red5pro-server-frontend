@@ -46,7 +46,7 @@ video:fullscreen {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: fit-content!important;
 }
 
 body.vjs-full-window {
@@ -160,6 +160,14 @@ body.vjs-full-window {
   word-break: break-all;
 }
 
+.stream-link > a {
+  color: #dbdbdb;
+}
+
+.stream-link > a:hover {
+  color: #fff;
+}
+
 .copy-clipboard {
   text-decoration: underline;
   cursor: pointer;
@@ -210,6 +218,7 @@ body.vjs-full-window {
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
+  width: 100%;
 }
 
 .event-container {
