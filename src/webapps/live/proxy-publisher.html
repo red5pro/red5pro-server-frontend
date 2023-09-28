@@ -579,8 +579,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           host: host,
           streamName: streamName,
           app: preferWhipWhep ? app : 'streammanager',
-          protocol: 'wss', // wsProtocol,
-          port: 443, // wsPort,
+          protocol: wsProtocol,
+          port: wsPort,
           signalingSocketOnly: switchToDC,
           enableChannelSignaling: switchToDC,
           mediaConstraints: {
