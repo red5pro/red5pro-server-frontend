@@ -28,6 +28,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width" />
     <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/modal.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet" />
     <link
@@ -54,518 +57,232 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         height: 480px;
       }
     </style>
+    <style type="text/css">
+      /* Top Bar CSS */
+
+      @media only screen and (min-width: 1024px) {
+        #top-bar-content {
+          float: none;
+          text-align: right;
+        }
+      }
+      @media only screen and (max-width: 1023px) {
+        #top-bar-content {
+          float: none;
+          text-align: center;
+        }
+      }
+
+      .Header {
+        padding: 24px 0px;
+        background-color: #0c0c0c;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        left: 0;
+        right: 0;
+        top: 0;
+      }
+
+      .HeaderMenuAside {
+        list-style: none;
+        margin: 0px;
+        padding: 0px;
+        display: flex;
+        flex-direction: row;
+        row-gap: 20px;
+        column-gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .HeaderMenuAside li a {
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: 500;
+        text-decoration: none;
+        color: #fff !important;
+        font-family: 'IBM Plex Mono';
+        text-transform: uppercase;
+        padding: 0 !important;
+      }
+
+      .HeaderMenuAside li:last-child a {
+        border: 1px solid #fff;
+        border-radius: 50px;
+        padding: 9px 15px !important;
+      }
+
+      .HeaderMenuAside li:last-child a:hover {
+        background-color: #fff;
+        color: #0c0c0c !important;
+      }
+
+      .primary-navigation {
+        color: var(--primary-nav--color-text);
+        font-size: var(--primary-nav--font-size);
+        line-height: 1.15;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+
+      .primary-navigation a:hover {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+      }
+    </style>
   </head>
   <body>
-    <div id="top-bar-wrap" class="clr">
-      <div id="top-bar" class="clr bar-container has-no-content">
-        <div id="top-bar-inner" class="clr">
-          <div id="top-bar-content" class="clr top-bar-right">
-            <div id="top-bar-nav" class="navigation clr">
-              <ul
-                id="menu-top-menu"
-                class="top-bar-menu dropdown-menu sf-menu sf-js-enabled"
-                style="touch-action: pan-y"
+    <header id="masthead" class="Header">
+      <div class="container">
+        <div class="d-flex justify-content-between headerWrapp">
+          <div class="Logo">
+            <a href="https://www.red5.net">
+              <!--<img src="/assets/images/RED5Logo.svg" alt=""> -->
+
+              <!-- 				<svg version="1.0" height="30px" width="100px"  id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 83 22" style="enable-background:new 0 0 83 22;" xml:space="preserve">
+      <style type="text/css">
+        .st0{fill:#DB1F26;}
+        .st1{fill:#FFFFFF;}
+      </style>
+      <g>
+        <g>
+          <polygon class="st0" points="12.3,10.9 12.3,6.6 16.8,6.6 16.8,3.8 2,3.8 2,11.6 6.4,11.6 6.4,15.9 2,15.9 2,18.7 16.8,18.7
+            16.8,10.9 		"/>
+        </g>
+      </g>
+      <g>
+        <path class="st1" d="M27.5,13.3V19h-2.7V4.5h4.4c1,0,1.8,0.1,2.5,0.3c0.7,0.2,1.3,0.5,1.7,0.9C34,6,34.3,6.5,34.5,7
+          c0.2,0.5,0.3,1.1,0.3,1.7c0,0.5-0.1,0.9-0.2,1.4s-0.4,0.8-0.6,1.2c-0.3,0.4-0.6,0.7-1,0.9s-0.8,0.5-1.4,0.6
+          c0.3,0.2,0.6,0.5,0.9,0.8l3.6,5.3h-2.4c-0.2,0-0.4,0-0.6-0.1c-0.2-0.1-0.3-0.2-0.4-0.4l-3-4.6c-0.1-0.2-0.2-0.3-0.4-0.4
+          s-0.3-0.1-0.6-0.1H27.5z M27.5,11.4h1.7c0.5,0,0.9-0.1,1.3-0.2c0.4-0.1,0.7-0.3,0.9-0.5c0.2-0.2,0.4-0.5,0.5-0.8
+          c0.1-0.3,0.2-0.6,0.2-1c0-0.7-0.2-1.3-0.7-1.7c-0.5-0.4-1.2-0.6-2.2-0.6h-1.7V11.4z"/>
+        <path class="st1" d="M48.6,4.5v2.1h-6.4v4h5.1v2.1h-5.1v4.1h6.4V19h-9.1V4.5H48.6z"/>
+        <path class="st1" d="M65.3,11.7c0,1.1-0.2,2-0.5,2.9c-0.4,0.9-0.8,1.6-1.5,2.3c-0.6,0.6-1.4,1.1-2.3,1.5c-0.9,0.4-1.9,0.5-3,0.5
+          h-5.5V4.5H58c1.1,0,2.1,0.2,3,0.5c0.9,0.4,1.7,0.9,2.3,1.5c0.6,0.6,1.1,1.4,1.5,2.3C65.2,9.7,65.3,10.7,65.3,11.7z M62.6,11.7
+          c0-0.8-0.1-1.5-0.3-2.1C62.1,9,61.8,8.4,61.4,8c-0.4-0.4-0.9-0.8-1.4-1S58.7,6.6,58,6.6h-2.8v10.2H58c0.7,0,1.3-0.1,1.9-0.4
+          s1-0.6,1.4-1c0.4-0.4,0.7-1,0.9-1.6C62.5,13.2,62.6,12.5,62.6,11.7z"/>
+        <path class="st1" d="M77.5,5.5c0,0.4-0.1,0.6-0.3,0.9c-0.2,0.2-0.6,0.3-1.1,0.3h-4l-0.5,3c0.7-0.1,1.2-0.2,1.8-0.2
+          c0.8,0,1.4,0.1,2,0.3c0.6,0.2,1.1,0.5,1.5,0.9c0.4,0.4,0.7,0.9,0.9,1.4c0.2,0.5,0.3,1.1,0.3,1.7c0,0.8-0.1,1.5-0.4,2.1
+          c-0.3,0.6-0.6,1.2-1.1,1.6c-0.5,0.5-1,0.8-1.7,1c-0.7,0.2-1.4,0.4-2.1,0.4c-0.5,0-0.9,0-1.3-0.1c-0.4-0.1-0.8-0.2-1.1-0.4
+          c-0.4-0.2-0.7-0.3-1-0.5c-0.3-0.2-0.6-0.4-0.8-0.6l0.8-1c0.2-0.2,0.4-0.3,0.6-0.3c0.2,0,0.3,0.1,0.5,0.2c0.2,0.1,0.4,0.2,0.6,0.3
+          s0.5,0.2,0.8,0.3c0.3,0.1,0.7,0.2,1.1,0.2c0.5,0,0.9-0.1,1.2-0.2s0.6-0.4,0.9-0.6c0.2-0.3,0.4-0.6,0.5-0.9c0.1-0.4,0.2-0.8,0.2-1.2
+          c0-0.8-0.2-1.4-0.7-1.8s-1.1-0.7-2-0.7c-0.7,0-1.4,0.1-2.1,0.4l-1.5-0.4l1.2-7h7.1V5.5z"/>
+      </g>
+      </svg> -->
+              <svg
+                version="1.0"
+                height="30px"
+                width="100px"
+                id="Layer_1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                viewBox="0 0 83 22"
+                style="enable-background: new 0 0 83 22"
+                xml:space="preserve"
               >
-                <li
-                  id="menu-item-801"
-                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-801"
-                >
-                  <a
-                    href="https://account.red5pro.com/register"
-                    class="menu-link"
-                    >Sign Up</a
-                  >
-                </li>
-                <li
-                  id="menu-item-802"
-                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-802"
-                >
-                  <a href="https://account.red5pro.com/login" class="menu-link"
-                    >Log In</a
-                  >
-                </li>
-                <li
-                  id="menu-item-3017"
-                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3017"
-                >
-                  <a
-                    href="https://red5pro.com/contact-information/"
-                    class="menu-link"
-                    >Contact Us</a
-                  >
-                </li>
-                <li
-                  id="menu-item-2150"
-                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2150"
-                >
-                  <a
-                    href="https://calendly.com/red5-pro/15-minute-phone-call"
-                    class="menu-link"
-                    >Let’s Talk!</a
-                  >
-                </li>
-              </ul>
-            </div>
+                <style type="text/css">
+                  .st0 {
+                    fill: #db1f26;
+                  }
+                  .st1 {
+                    fill: #ffffff;
+                  }
+                </style>
+                <g>
+                  <g>
+                    <polygon
+                      class="st0"
+                      points="12.3,10.9 12.3,6.6 16.8,6.6 16.8,3.8 2,3.8 2,11.6 6.4,11.6 6.4,15.9 2,15.9 2,18.7 16.8,18.7
+            16.8,10.9 		"
+                    ></polygon>
+                  </g>
+                </g>
+                <g>
+                  <path
+                    class="st1"
+                    d="M27.5,13.3V19h-2.7V4.5h4.4c1,0,1.8,0.1,2.5,0.3c0.7,0.2,1.3,0.5,1.7,0.9C34,6,34.3,6.5,34.5,7
+          c0.2,0.5,0.3,1.1,0.3,1.7c0,0.5-0.1,0.9-0.2,1.4s-0.4,0.8-0.6,1.2c-0.3,0.4-0.6,0.7-1,0.9s-0.8,0.5-1.4,0.6
+          c0.3,0.2,0.6,0.5,0.9,0.8l3.6,5.3h-2.4c-0.2,0-0.4,0-0.6-0.1c-0.2-0.1-0.3-0.2-0.4-0.4l-3-4.6c-0.1-0.2-0.2-0.3-0.4-0.4
+          s-0.3-0.1-0.6-0.1H27.5z M27.5,11.4h1.7c0.5,0,0.9-0.1,1.3-0.2c0.4-0.1,0.7-0.3,0.9-0.5c0.2-0.2,0.4-0.5,0.5-0.8
+          c0.1-0.3,0.2-0.6,0.2-1c0-0.7-0.2-1.3-0.7-1.7c-0.5-0.4-1.2-0.6-2.2-0.6h-1.7V11.4z"
+                  ></path>
+                  <path
+                    class="st1"
+                    d="M48.6,4.5v2.1h-6.4v4h5.1v2.1h-5.1v4.1h6.4V19h-9.1V4.5H48.6z"
+                  ></path>
+                  <path
+                    class="st1"
+                    d="M65.3,11.7c0,1.1-0.2,2-0.5,2.9c-0.4,0.9-0.8,1.6-1.5,2.3c-0.6,0.6-1.4,1.1-2.3,1.5c-0.9,0.4-1.9,0.5-3,0.5
+          h-5.5V4.5H58c1.1,0,2.1,0.2,3,0.5c0.9,0.4,1.7,0.9,2.3,1.5c0.6,0.6,1.1,1.4,1.5,2.3C65.2,9.7,65.3,10.7,65.3,11.7z M62.6,11.7
+          c0-0.8-0.1-1.5-0.3-2.1C62.1,9,61.8,8.4,61.4,8c-0.4-0.4-0.9-0.8-1.4-1S58.7,6.6,58,6.6h-2.8v10.2H58c0.7,0,1.3-0.1,1.9-0.4
+          s1-0.6,1.4-1c0.4-0.4,0.7-1,0.9-1.6C62.5,13.2,62.6,12.5,62.6,11.7z"
+                  ></path>
+                  <path
+                    class="st1"
+                    d="M77.5,5.5c0,0.4-0.1,0.6-0.3,0.9c-0.2,0.2-0.6,0.3-1.1,0.3h-4l-0.5,3c0.7-0.1,1.2-0.2,1.8-0.2
+          c0.8,0,1.4,0.1,2,0.3c0.6,0.2,1.1,0.5,1.5,0.9c0.4,0.4,0.7,0.9,0.9,1.4c0.2,0.5,0.3,1.1,0.3,1.7c0,0.8-0.1,1.5-0.4,2.1
+          c-0.3,0.6-0.6,1.2-1.1,1.6c-0.5,0.5-1,0.8-1.7,1c-0.7,0.2-1.4,0.4-2.1,0.4c-0.5,0-0.9,0-1.3-0.1c-0.4-0.1-0.8-0.2-1.1-0.4
+          c-0.4-0.2-0.7-0.3-1-0.5c-0.3-0.2-0.6-0.4-0.8-0.6l0.8-1c0.2-0.2,0.4-0.3,0.6-0.3c0.2,0,0.3,0.1,0.5,0.2c0.2,0.1,0.4,0.2,0.6,0.3
+          s0.5,0.2,0.8,0.3c0.3,0.1,0.7,0.2,1.1,0.2c0.5,0,0.9-0.1,1.2-0.2s0.6-0.4,0.9-0.6c0.2-0.3,0.4-0.6,0.5-0.9c0.1-0.4,0.2-0.8,0.2-1.2
+          c0-0.8-0.2-1.4-0.7-1.8s-1.1-0.7-2-0.7c-0.7,0-1.4,0.1-2.1,0.4l-1.5-0.4l1.2-7h7.1V5.5z"
+                  ></path>
+                </g>
+              </svg>
+            </a>
           </div>
-          <!-- #top-bar-content -->
+          <div class="HeaderLinks text-end">
+            <nav
+              id="site-navigation"
+              class="primary-navigation"
+              aria-label="Primary menu"
+            >
+              <div class="primary-menu-container">
+                <ul id="primary-menu-list" class="HeaderMenuAside">
+                  <li
+                    id="menu-item-468"
+                    class="menu-item menu-item-type-post_type menu-item-object-page menu-item-468"
+                  >
+                    <a href="https://www.red5.net/pricing-anually/">Pricing</a>
+                  </li>
+                  <li
+                    id="menu-item-12330"
+                    class="menu-item menu-item-type-post_type menu-item-object-page menu-item-12330"
+                  >
+                    <a href="https://www.red5.net/developer-zone/">DOCS</a>
+                  </li>
+                  <li
+                    id="menu-item-581"
+                    class="menu-item menu-item-type-custom menu-item-object-custom menu-item-581"
+                  >
+                    <a href="https://account.red5.net">Login</a>
+                  </li>
+                  <li
+                    id="menu-item-12204"
+                    class="menu-item menu-item-type-custom menu-item-object-custom menu-item-12204"
+                  >
+                    <a href="https://account.red5.net/register">SIGN UP</a>
+                  </li>
+                  <li
+                    id="menu-item-90"
+                    class="book_a_demo menu-item menu-item-type-custom menu-item-object-custom menu-item-90"
+                  >
+                    <a
+                      href="https://calendly.com/red5-pro/15-minute-chat"
+                      target="_blank"
+                      >TALK TO US</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </nav>
+            <!-- #site-navigation -->
+          </div>
         </div>
-        <!-- #top-bar-inner -->
       </div>
-      <!-- #top-bar -->
-    </div>
-    <script src="lib/smartmenus-1.1.0/libs/jquery/jquery.js"></script>
-    <link rel="stylesheet" href="lib/smartmenus-1.1.0/css/sm-core-css.css" />
-    <link
-      rel="stylesheet"
-      href="lib/smartmenus-1.1.0/css/sm-clean/sm-clean.css"
-    />
-    <!-- navigation bar -->
-    <nav class="main-nav" role="navigation">
-      <!-- Mobile menu toggle button (hamburger/x icon) -->
-      <input id="main-menu-state" type="checkbox" />
-      <label class="main-menu-btn" for="main-menu-state">
-        <span class="main-menu-btn-icon"></span> Toggle main menu visibility
-      </label>
-
-      <div
-        class="nav-brand"
-        href="https://www.red5pro.com"
-        data-elementor-open-lightbox=""
-      >
-        <a href="https://www.red5pro.com">
-          <img
-            alt="Red5 Pro"
-            class="brand-icon"
-            src="css/assets/Red5Pro_logo_white_red.svg"
-          />
-          <noscript
-            ><img
-              alt="Red5 Pro"
-              data-src="css/assets/Red5Pro_logo_white_red.svg"
-              class="brand-icon"
-              src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-          /></noscript>
-          <noscript
-            ><img
-              src="css/assets/Red5Pro_logo_white_red.svg"
-              class="brand-icon"
-              alt="Red5 Pro"
-          /></noscript>
-        </a>
-      </div>
-
-      <!-- Sample menu definition -->
-      <ul
-        id="main-menu"
-        class="sm sm-clean"
-        data-smartmenus-id="15729809764360535"
-      >
-        <li>
-          <a
-            href="#"
-            class="has-submenu"
-            id="sm-15729809764360535-1"
-            aria-haspopup="true"
-            aria-controls="sm-15729809764360535-2"
-            aria-expanded="false"
-            >Product<span class="sub-arrow"></span
-          ></a>
-          <ul
-            id="sm-15729809764360535-2"
-            role="group"
-            aria-hidden="true"
-            aria-labelledby="sm-15729809764360535-1"
-            aria-expanded="false"
-          >
-            <li>
-              <a
-                href="#"
-                class="has-submenu"
-                id="sm-15729809764360535-3"
-                aria-haspopup="true"
-                aria-controls="sm-15729809764360535-4"
-                aria-expanded="false"
-                >Red5 Pro<span class="sub-arrow"></span
-              ></a>
-              <ul
-                id="sm-15729809764360535-4"
-                role="group"
-                aria-hidden="true"
-                aria-labelledby="sm-15729809764360535-3"
-                aria-expanded="false"
-              >
-                <li>
-                  <a href="https://www.red5pro.com/red5-pro-server/">Server</a>
-                </li>
-                <li>
-                  <a href="https://www.red5pro.com/red5pro-mobile-sdks/"
-                    >SDKs</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="https://www.red5pro.com/product-professional-services/"
-                    >Professional Services</a
-                  >
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a
-                href="#"
-                class="has-submenu"
-                id="sm-15729809764360535-5"
-                aria-haspopup="true"
-                aria-controls="sm-15729809764360535-6"
-                aria-expanded="false"
-                >Open Source<span class="sub-arrow"></span
-              ></a>
-              <ul
-                id="sm-15729809764360535-6"
-                role="group"
-                aria-hidden="true"
-                aria-labelledby="sm-15729809764360535-5"
-                aria-expanded="false"
-              >
-                <li>
-                  <a href="https://www.red5pro.com/open-source/">Overview</a>
-                </li>
-                <li><a href="https://github.com/red5pro">Github Repos</a></li>
-                <li>
-                  <a href="https://www.red5pro.com/red5-media-server/"
-                    >Media Server</a
-                  >
-                </li>
-                <li>
-                  <a href="https://www.red5pro.com/red5-rtmp-client/"
-                    >RTMP Client</a
-                  >
-                </li>
-                <li>
-                  <a href="https://github.com/infrared5/react-native-red5pro"
-                    >React Native Library</a
-                  >
-                </li>
-                <li>
-                  <a href="https://www.red5pro.com/open-source-cordova/"
-                    >Cordova Plugin For Red5 Pro</a
-                  >
-                </li>
-                <li>
-                  <a href="https://www.red5pro.com/open-source-xamarin/"
-                    >Xamarin Plugin for Red5 Pro</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/red5pro?utf8=%E2%9C%93&amp;q=bees&amp;type=&amp;language="
-                    >Load Testing Tools</a
-                  >
-                </li>
-                <li>
-                  <a href="https://www.red5pro.com/open-source-other-libraries/"
-                    >Other Libraries</a
-                  >
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a
-            href="https://www.red5pro.com/pricing"
-            class="has-submenu"
-            id="sm-15729809764360535-7"
-            aria-haspopup="true"
-            aria-controls="sm-15729809764360535-8"
-            aria-expanded="false"
-            >Red5 Pro License Pricing<span class="sub-arrow"></span
-          ></a>
-          <ul
-            id="sm-15729809764360535-8"
-            role="group"
-            aria-hidden="true"
-            aria-labelledby="sm-15729809764360535-7"
-            aria-expanded="false"
-          >
-            <li>
-              <a href="https://www.red5pro.com/pricing/">Plan Overview</a>
-            </li>
-            <li>
-              <a href="https://www.red5pro.com/developer-pro/"
-                >Red5 Pro Developer License</a
-              >
-            </li>
-            <li>
-              <a href="https://www.red5pro.com/start-up-pro/"
-                >Red5 Pro Start Up Pro License</a
-              >
-            </li>
-            <li>
-              <a href="https://www.red5pro.com/growth-pro/"
-                >Red5 Pro Growth Pro License</a
-              >
-            </li>
-            <li>
-              <a href="https://www.red5pro.com/enterprise/"
-                >Red5 Pro Enterprise License</a
-              >
-            </li>
-            <li>
-              <a href="https://www.red5pro.com/mobile-sdk/"
-                >Red5 Pro Mobile SDK</a
-              >
-            </li>
-            <li>
-              <a href="https://www.red5pro.com/professional-services/"
-                >Red5 Pro and Professional Services</a
-              >
-            </li>
-            <li>
-              <a href="https://www.red5pro.com/pricing-comparison/"
-                >Red5 Pro License Pricing Comparison</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="has-submenu"
-            id="sm-15729809764360535-9"
-            aria-haspopup="true"
-            aria-controls="sm-15729809764360535-10"
-            aria-expanded="false"
-            >Resources<span class="sub-arrow"></span
-          ></a>
-          <ul
-            id="sm-15729809764360535-10"
-            role="group"
-            aria-hidden="true"
-            aria-labelledby="sm-15729809764360535-9"
-            aria-expanded="false"
-          >
-            <li><a href="https://www.red5pro.com/webinars/">Webinars</a></li>
-            <li>
-              <a href="https://www.red5pro.com/white-papers/">White Papers</a>
-            </li>
-            <li><a href="https://blog.red5pro.com/">Blog</a></li>
-          </ul>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="has-submenu"
-            id="sm-15729809764360535-11"
-            aria-haspopup="true"
-            aria-controls="sm-15729809764360535-12"
-            aria-expanded="false"
-            >Developer Zone<span class="sub-arrow"></span
-          ></a>
-          <ul
-            id="sm-15729809764360535-12"
-            role="group"
-            aria-hidden="true"
-            aria-labelledby="sm-15729809764360535-11"
-            aria-expanded="false"
-          >
-            <li>
-              <a href="https://www.red5pro.com/developer-zone/">Overview</a>
-            </li>
-            <li>
-              <a
-                href="#"
-                class="has-submenu"
-                id="sm-15729809764360535-13"
-                aria-haspopup="true"
-                aria-controls="sm-15729809764360535-14"
-                aria-expanded="false"
-                >Github Links<span class="sub-arrow"></span
-              ></a>
-              <ul
-                id="sm-15729809764360535-14"
-                role="group"
-                aria-hidden="true"
-                aria-labelledby="sm-15729809764360535-13"
-                aria-expanded="false"
-              >
-                <li><a href="https://github.com/Red5">Red5</a></li>
-                <li><a href="https://github.com/red5pro">Red5 Pro</a></li>
-              </ul>
-            </li>
-            <li><a href="https://qa-site.red5pro.com/docs">Introduction</a></li>
-            <li>
-              <a href="https://qa-site.red5pro.com/docs/#quick-start-guides"
-                >Quick Start Guides</a
-              >
-            </li>
-            <li>
-              <a href="https://qa-site.red5pro.com/docs/streaming/"
-                >Streaming SDKs</a
-              >
-            </li>
-            <li>
-              <a href="https://qa-site.red5pro.com/docs/server/"
-                >Red5 Pro Server</a
-              >
-            </li>
-            <li>
-              <a href="https://qa-site.red5pro.com/docs/developerseries/"
-                >Developer Series</a
-              >
-            </li>
-            <li>
-              <a href="https://qa-site.red5pro.com/docs/serverside-guide/"
-                >Server-Side Guide</a
-              >
-            </li>
-            <li>
-              <a href="https://qa-site.red5pro.com/docs/autoscale/"
-                >Autoscaling + Stream Manager</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="has-submenu"
-            id="sm-15729809764360535-15"
-            aria-haspopup="true"
-            aria-controls="sm-15729809764360535-16"
-            aria-expanded="false"
-            >Customers &amp; Industries<span class="sub-arrow"></span
-          ></a>
-          <ul
-            id="sm-15729809764360535-16"
-            role="group"
-            aria-hidden="true"
-            aria-labelledby="sm-15729809764360535-15"
-            aria-expanded="false"
-          >
-            <li>
-              <a href="https://www.red5pro.com/whos-using-red5-pro/"
-                >Who’s Using Red5 Pro</a
-              >
-            </li>
-            <li>
-              <a
-                href="#"
-                class="has-submenu"
-                id="sm-15729809764360535-17"
-                aria-haspopup="true"
-                aria-controls="sm-15729809764360535-18"
-                aria-expanded="false"
-                >Industries<span class="sub-arrow"></span
-              ></a>
-              <ul
-                id="sm-15729809764360535-18"
-                role="group"
-                aria-hidden="true"
-                aria-labelledby="sm-15729809764360535-17"
-                aria-expanded="false"
-              >
-                <li>
-                  <a
-                    href="https://www.red5pro.com/live-auction-video-streaming/"
-                    >Live Auction Video Streaming</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="https://www.red5pro.com/government-iot-and-surveillance-video-streaming/"
-                    >Government – IoT and Surveillance</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="https://www.red5pro.com/video-games-and-esports-video-streaming/"
-                    >Video Games and eSports</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="https://www.red5pro.com/social-media-video-streaming/"
-                    >Social Media Video Streaming</a
-                  >
-                </li>
-                <li>
-                  <a href="https://www.red5pro.com/broadcast-video-streaming/"
-                    >Broadcast Video Streaming</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="https://www.red5pro.com/online-gambling-video-streaming/"
-                    >Online Gambling Video Streaming</a
-                  >
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a
-                href="#"
-                class="has-submenu"
-                id="sm-15729809764360535-19"
-                aria-haspopup="true"
-                aria-controls="sm-15729809764360535-20"
-                aria-expanded="false"
-                >Case Studies<span class="sub-arrow"></span
-              ></a>
-              <ul
-                id="sm-15729809764360535-20"
-                role="group"
-                aria-hidden="true"
-                aria-labelledby="sm-15729809764360535-19"
-                aria-expanded="false"
-              >
-                <li><a href="https://www.red5pro.com/novetta/">Novetta</a></li>
-                <li>
-                  <a href="https://www.red5pro.com/singular-live/"
-                    >Singular.Live</a
-                  >
-                </li>
-                <li>
-                  <a href="https://www.red5pro.com/invaluable/">Invaluable</a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="has-submenu"
-            id="sm-15729809764360535-21"
-            aria-haspopup="true"
-            aria-controls="sm-15729809764360535-22"
-            aria-expanded="false"
-            >Help<span class="sub-arrow"></span
-          ></a>
-          <ul
-            id="sm-15729809764360535-22"
-            role="group"
-            aria-hidden="true"
-            aria-labelledby="sm-15729809764360535-21"
-            aria-expanded="false"
-          >
-            <li><a href="https://red5pro.zendesk.com/hc/en-us">FAQs</a></li>
-            <li>
-              <a href="https://red5pro.zendesk.com/hc/en-us/requests/new"
-                >Ticket Submissions</a
-              >
-            </li>
-            <li>
-              <a href="https://calendly.com/red5-pro/15-minute-phone-call"
-                >Talk to Sales</a
-              >
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
+    </header>
     <link rel="stylesheet" href="css/sm-proxy.css" type="text/css" />
-    <script src="lib/smartmenus-1.1.0/jquery.smartmenus.js"></script>
     <script>
       // SmartMenus init
       $(function () {
@@ -765,6 +482,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           streamName,
           isSecure
         ) {
+          if (preferWhipWhep) {
+            return Promise.resolve(host)
+          }
           var portURI = port.length > 0 ? ':' + port : ''
           var baseUrl = isSecure
             ? protocol + '://' + host
@@ -859,8 +579,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           host: host,
           streamName: streamName,
           app: preferWhipWhep ? app : 'streammanager',
-          protocol: wsProtocol,
-          port: wsPort,
+          protocol: 'wss', // wsProtocol,
+          port: 443, // wsPort,
           signalingSocketOnly: switchToDC,
           enableChannelSignaling: switchToDC,
           mediaConstraints: {
