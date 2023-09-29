@@ -1,7 +1,7 @@
 {
   "r5pro-inspector": {
     "repositoryUrl": "git@github.com:infrared5/automation.git",
-    "branch": "master"
+    "branch": "epic/KOMONDOR"
   },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
