@@ -10,8 +10,12 @@
     <script src="https://unpkg.com/red5pro-webrtc-sdk@latest/red5pro-sdk.min.js"></script>
     <style>
       .form {
-        background-color: #dbdbdb;
         padding: 20px;
+        border: 1px solid rgb(64, 64,64);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        row-gap: 10px;
       }
       .form-entry, .results-entry {
         display: flex;
@@ -27,11 +31,12 @@
         width: 50%;
         margin-right: 10px;
         text-align: right;
-        color: #3b3b3b;
+      }
+      .form--submit {
+        text-align: center;
       }
       .results-container {
         margin-top: 20px;
-        background-color: #eee;
         padding: 20px;
       }
       .results-title {
@@ -44,17 +49,22 @@
         margin-top: 20px;
       }
       .ui-button {
-        color: #ffffff;
-        background-color: #3580A2;
-        text-align: center;
-        border-radius: 0px;
-        padding: 10px;
-        width: 100%;
-        margin-top: 20px;
-        width: 100%;
-        font-size: 1em;
-        padding: 1em;
-      }
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  text-transform: unset;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0.25rem;
+}
+
+.ui-button:hover {
+  color: #212529;
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
+}
       .progress-container {
         width: 100%;
         height: 16px;
@@ -88,7 +98,6 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> navigation }}
     {{> header }}
     <div class="main-container">
       <div id="menu-section">
@@ -97,10 +106,10 @@
       <div id="content-section">
         <div id="subcontent-section">
           <div id="subcontent-section-text">
-            <h1 class="red-text">RED5 PRO VIDEO BANDWIDTH DETECTION</h1>
+            <h1>RED5 PRO VIDEO BANDWIDTH DETECTION</h1>
           </div>
         </div>
-        <div class="content-section-story">
+        <div>
           <form class="form" action="javascript:" method="post">
             <div class="form-entry form--red5pro">
               <label for="form--red5pro-input">Red5 Pro Server:</label>
@@ -157,13 +166,16 @@
               </div>
             </div>
           </div>
+        </div>
+        <hr class="top-padded-rule">
+        <div class="content-section-story" style="margin-top: 20px;">
           <hr class="top-padded-rule">
           {{> web-applications }}
           <hr class="top-padded-rule">
           {{> mobile-applications }}
-          <hr class="top-padded-rule">
-          {{> additional_info }}
         </div>
+        <hr class="top-padded-rule">
+        {{> additional_info }}
       </div>
     </div>
     <script src="script/util.js"></script>
