@@ -72,12 +72,11 @@ body.vjs-full-window {
 }
 
 .no-streams-entry {
-  padding: 20px;
-  color: #db1f26;
-  font-size: 20px;
-  font-weight: 500;
+  color: var(--color-red5);
+  /* font-size: 20px;
+  font-weight: 500; */
   text-transform: uppercase;
-  background-color: #dbdbdb;
+  width: 100%;
 }
 
 .stream-menu-content {

@@ -206,8 +206,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           }
         } else {
           menuContent.innerHTML =
-            '<p class="no-streams-entry">No streams found</p>' +
-            '<p style="margin-top: 20px;">You can begin a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=' +
+            '<h2 class="no-streams-entry">No streams found</h2>' +
+            '<p>You can begin a Broadcast session by visiting the <a class="card-link card-link_page" href="broadcast.jsp?host=' +
             host +
             '" target="_blank">Broadcast page</a>.</p>'
         }
