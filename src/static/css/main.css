@@ -373,12 +373,14 @@ hr.top-padded-rule {
 }
 
 a.link {
-  color: #db1f26;
+  color: var(--color-red5);
   text-decoration: none;
 }
 
 a.link:hover {
   text-decoration: underline;
+  text-decoration-style: dotted;
+  color: var(--color-red5);
 }
 
 /* HEADER */
