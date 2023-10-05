@@ -5,10 +5,10 @@
   },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
-    "branch": "epic/KOMONDOR"
+    "branch": "epic/KOMONDOR_redesign"
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "epic/KOMONDOR"
+    "branch": "epic/KOMONDOR_redesign"
   }
 }
