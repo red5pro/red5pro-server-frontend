@@ -1,26 +1,26 @@
 /*
 Copyright © 2015 Infrared5, Inc. All rights reserved.
 
-The accompanying code comprising examples for use solely in conjunction with Red5 Pro (the "Example Code") 
-is  licensed  to  you  by  Infrared5  Inc.  in  consideration  of  your  agreement  to  the  following  
-license terms  and  conditions.  Access,  use,  modification,  or  redistribution  of  the  accompanying  
+The accompanying code comprising examples for use solely in conjunction with Red5 Pro (the "Example Code")
+is  licensed  to  you  by  Infrared5  Inc.  in  consideration  of  your  agreement  to  the  following
+license terms  and  conditions.  Access,  use,  modification,  or  redistribution  of  the  accompanying
 code  constitutes your acceptance of the following license terms and conditions.
 
-Permission is hereby granted, free of charge, to you to use the Example Code and associated documentation 
-files (collectively, the "Software") without restriction, including without limitation the rights to use, 
-copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+Permission is hereby granted, free of charge, to you to use the Example Code and associated documentation
+files (collectively, the "Software") without restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
 persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The Software shall be used solely in conjunction with Red5 Pro. Red5 Pro is licensed under a separate end 
-user  license  agreement  (the  "EULA"),  which  must  be  executed  with  Infrared5,  Inc.   
+The Software shall be used solely in conjunction with Red5 Pro. Red5 Pro is licensed under a separate end
+user  license  agreement  (the  "EULA"),  which  must  be  executed  with  Infrared5,  Inc.
 An  example  of  the EULA can be found on our website at: https://account.red5pro.com/assets/LICENSE.txt.
 
 The above copyright notice and this license shall be included in all copies or portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,  INCLUDING  BUT  
-NOT  LIMITED  TO  THE  WARRANTIES  OF  MERCHANTABILITY, FITNESS  FOR  A  PARTICULAR  PURPOSE  AND  
-NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,  INCLUDING  BUT
+NOT  LIMITED  TO  THE  WARRANTIES  OF  MERCHANTABILITY, FITNESS  FOR  A  PARTICULAR  PURPOSE  AND
+NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 object:focus {
@@ -46,7 +46,7 @@ video:fullscreen {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: fit-content!important;
 }
 
 body.vjs-full-window {
@@ -72,12 +72,11 @@ body.vjs-full-window {
 }
 
 .no-streams-entry {
-  padding: 20px;
-  color: #db1f26;
-  font-size: 20px;
-  font-weight: 500;
+  color: var(--color-red5);
+  /* font-size: 20px;
+  font-weight: 500; */
   text-transform: uppercase;
-  background-color: #dbdbdb;
+  width: 100%;
 }
 
 .stream-menu-content {
@@ -101,8 +100,14 @@ body.vjs-full-window {
 }
 
 .playback-block-listing {
-  background: #dbdbdb;
+  /* background: #dbdbdb; */
   padding: 20px 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  border: 1px solid #dbdbdb;
 }
 
 .stream-playback-button {
@@ -129,6 +134,7 @@ body.vjs-full-window {
 }
 
 .stream-rule {
+  width: 100%;
   display: block;
   height: 1px;
   border: 0;
@@ -150,12 +156,21 @@ body.vjs-full-window {
 .stream-link {
   width: 100%;
   text-align: center;
-  word-break: break-all;  
+  word-break: break-all;
+}
+
+.stream-link > a {
+  color: #dbdbdb;
+}
+
+.stream-link > a:hover {
+  color: #fff;
 }
 
 .copy-clipboard {
   text-decoration: underline;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .stream-container {
@@ -186,15 +201,16 @@ body.vjs-full-window {
 }
 
 .video-container {
-  background-color: #999999;
   height: 100%;
   max-width: 360px;
   margin: 0 auto;
+  box-sizing: border-box;
+  border: 1px solid rgb(64, 64, 64);
 }
 
 .video-container-active {
   min-width: auto;
-  width: 100%;  
+  width: 100%;
   max-width: 640px;
 }
 
@@ -202,6 +218,7 @@ body.vjs-full-window {
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
+  width: 100%;
 }
 
 .event-container {
@@ -258,8 +275,10 @@ body.vjs-full-window {
 .statistics-field {
   text-align: center;
   padding: 10px;
-  background-color: #3b3b3b;
-  color: #dbdbdb;
+  background-color: #dbdbdb;
+  color: #000;
+  width: 100%;
+  border-top: 1px solid #212529;
 }
 
 .video-holder, .red5pro-subscriber {
