@@ -12,6 +12,13 @@ LICENSE=$(realpath scripts/license/LICENSE.css)
 # check to see if already has license...
 echo "Traversing ${SRC}..."
 while IFS= read -r -d '' file; do
+        f=$(basename $file)
+        if [ "$f" == "bootstrap.min.css" ]; then
+                echo "skipping $file"
+        fi
+        if [ "$f" == "style.css" ]; then
+                echo "skipping $file"
+        fi
         if grep -q "$STRING" "$file"; then
                 echo "$file"
                 echo "Already has license..."

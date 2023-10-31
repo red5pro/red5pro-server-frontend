@@ -593,10 +593,11 @@ a.link:hover {
 
 .menu-sublisting li a {
   padding-left: 40px;
+  cursor: pointer;
 }
 
 .menu-listing-internal {
-  font-weight: 400;
+  font-weight: 600;
 }
 
 .menu-listing-external {
