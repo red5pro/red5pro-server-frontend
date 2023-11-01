@@ -624,7 +624,7 @@ a.link:hover {
   order: 1;
   flex: 2;
   border-radius: 4px;
-  max-width: 260px;
+  max-width: 270px;
   height: 100%;
   padding-bottom: 10px;
 }
@@ -662,6 +662,10 @@ a.link:hover {
 
 .content-section_card_download_link > a {
   color: var(--color-red5);
+}
+
+.content-section_card_download_link > a:hover {
+  color: var(--color-gray);
 }
 
 .content-section_card_graphic {
