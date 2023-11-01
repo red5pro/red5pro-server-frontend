@@ -19,11 +19,12 @@ var webappTaskDirectory = [process.cwd(), 'scripts', 'task', 'webapp'].join(
 )
 var buildFile = [webappTaskDirectory, 'build.template.js'].join(path.sep)
 
-// TODO: REMOVE TRUE
-module.exports = function (manifest, truetimeOnly = true) {
-  var keys = Object.keys(manifest)
-  var webapps = keys.map(function (key) {
-    if (key === 'truetime') return undefined
+const TRUETIME_KEY = 'truetime'
+
+module.exports = function (manifest) {
+  const keys = Object.keys(manifest)
+  let webapps = keys.map((key) => {
+    if (key === TRUETIME_KEY) return undefined
     return Object.assign(manifest[key], {
       name: key,
       workspace: ['', 'tmp', key].join(path.sep),
@@ -31,21 +32,17 @@ module.exports = function (manifest, truetimeOnly = true) {
   })
   webapps = webapps.filter((w) => w !== undefined)
 
-  if (manifest.truetime && truetimeOnly) {
+  // Include nested TrueTime webapps.
+  if (keys.indexOf(TRUETIME_KEY) !== -1) {
     let ttapps = Object.keys(manifest.truetime).map((key) => {
+      const conf = manifest.truetime[key]
       return {
-        ...manifest.truetime[key],
+        ...conf,
         name: key,
-        workspace: ['', 'tmp', 'truetime', key].join(path.sep),
+        workspace: ['', 'tmp', conf.parent || TRUETIME_KEY, key].join(path.sep),
       }
     })
-    return {
-      generate: () => {
-        console.log('TRUE TIME APPS', ttapps)
-        buildWebapps.all(ttapps).then(() => menuBuilder.update(ttapps))
-        // .then(() => moveWebapps.all(webapps, srcDirectory, libDirectory))
-      },
-    }
+    webapps = webapps.concat(ttapps)
   }
 
   return {
