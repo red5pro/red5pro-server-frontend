@@ -52,7 +52,7 @@ var webapp = function (config) {
               JSON.stringify(configObjectOrArray, null, 2)
           )
         )
-        const configs = configArray.map((c) => {
+        const configs = configObjectOrArray.map((c) => {
           return { ...config, ...c }
         })
         return Promise.each(configs, (c) => {
