@@ -50,7 +50,7 @@
           <div class="content-section_card">
             <h2 class="content-section_card_title"><a class="card-link" href="webinar/">TrueTime Studio&#8482; for Webinars</a></h2>
             <p>Create the perfect presentation tool with TrueTime Studio&#8482; for Webinars. Highlight speakers, team-teach, take questions from attendees, and add in pre-recorded video.</p>
-            <p class="content-section_card_message content-section_card_em">In order to start using the TrueTime Studio&#8482; for Webinars, you will first need to configure your server to include the Conference API webapp.</p>
+            <p class="content-section_card_message content-section_card_em">In order to start using the TrueTime Studio&#8482; for Webinars, the deployment requires to be in an autoscaled environment with a Stream Manager and the Conference API webapp included.</p>
             <div class="content-section_card_tray">
               <p class="content-section_card_link"><a class="card-link" href="webinar/">Try out TrueTime Studio&#8482; - Webinar&nbsp;&nbsp;<img decoding="async" loading="lazy" src="images/white-arrow.svg" data-src="" alt="" width="16" height="16"></a></p>
             </div>
@@ -58,7 +58,7 @@
           <div class="content-section_card">
             <h2 class="content-section_card_title"><a class="card-link" href="watchparty/">TrueTime WatchParty&#8482; for Fans</a></h2>
             <p>TrueTime WatchParty&#8482; for Fans brings people together, no matter how far apart they are. And synchronized, real-time live streaming means no one misses a beat (or a wager).</p>
-            <p class="content-section_card_message content-section_card_em">In order to start using the TrueTime WatchParty&#8482; for Fans, you will first need to configure your server to include the Conference API webapp.</p>
+            <p class="content-section_card_message content-section_card_em">In order to start using the TrueTime WatchParty&#8482; for Fans, the deployment requires to be in an autoscaled environment with a Stream Manager and the Conference API webapp included.</p>
             <div class="content-section_card_tray">
               <p class="content-section_card_link"><a class="card-link" href="watchparty/">Try out TrueTime WatchParty&#8482; - Fans&nbsp;&nbsp;<img decoding="async" loading="lazy" src="images/white-arrow.svg" data-src="" alt="" width="16" height="16"></a></p>
             </div>
