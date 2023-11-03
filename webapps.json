@@ -25,7 +25,7 @@
     "studio": {
       "parent": "truetime",
       "repositoryUrl": "git@github.com:red5pro/truetime-watchparty.git",
-      "branch": "feature/truetime_RED5DEV-1025"
+      "branch": "feature/frontend_build_RED5DEV-1025"
     }
   }
 }
