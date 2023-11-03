@@ -37,7 +37,9 @@ var updateMenuListing = function (regex, menuListItems) {
 
 module.exports = {
   update: async (webapps) => {
-    const items = webapps.filter((config) => config.title.length > 0)
+    const items = webapps.filter(
+      (config) => config.title && config.title.length > 0
+    )
     const menu = items.filter((config) => !config.parent)
     const trueTimeMenu = items.filter(
       (config) => config.parent && config.parent === 'truetime'

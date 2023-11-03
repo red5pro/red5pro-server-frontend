@@ -53,7 +53,13 @@ var webapp = function (config) {
           )
         )
         const configs = configObjectOrArray.map((c) => {
-          return { ...config, ...c }
+          const newConfig = { ...config, ...c }
+          log(
+            chalk.blue(
+              'Updated configuration: ' + JSON.stringify(newConfig, null, 2)
+            )
+          )
+          return newConfig
         })
         return Promise.each(configs, (c) => {
           return webappOps.buildWebapp({
