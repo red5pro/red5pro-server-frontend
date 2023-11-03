@@ -56,11 +56,18 @@ var webapp = function (config) {
           const newConfig = { ...config, ...c }
           log(
             chalk.blue(
-              'Updated configuration: ' + JSON.stringify(newConfig, null, 2)
+              'Updated Child configuration: ' +
+                JSON.stringify(newConfig, null, 2)
             )
           )
           return newConfig
         })
+        config = Object.assign(config, { children: configs })
+        log(
+          chalk.blue(
+            'Updated configuration: ' + JSON.stringify(config, null, 2)
+          )
+        )
         return Promise.each(configs, (c) => {
           return webappOps.buildWebapp({
             cwd: c.workspace,

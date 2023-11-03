@@ -52,7 +52,14 @@ var webapp = function (config, srcDirectory, libDirectory) {
 var all = function (webapps, srcDirectory) {
   log(chalk.yellow('Moving built webapps...'))
   return Promise.each(webapps, function (config) {
-    return webapp(config, srcDirectory)
+    const children = config.children || undefined
+    if (children) {
+      return Promise.each(children, (c) => {
+        return webapp(c, srcDirectory)
+      })
+    } else {
+      return webapp(config, srcDirectory)
+    }
   })
 }
 
