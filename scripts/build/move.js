@@ -10,6 +10,7 @@ var log = require([__dirname, 'log'].join(path.sep))
 
 var move = function (options) {
   return new Promise(function (resolve, reject) {
+    console.log('Moving Conf', JSON.stringify(options, null, 2))
     var outDir = chalk.magenta(options.outDir)
     var toDir = chalk.magenta(options.toDir)
     log(chalk.white('Moving ' + outDir + ' to ' + toDir + '...'))
@@ -31,6 +32,7 @@ var move = function (options) {
 }
 
 var webapp = function (config, srcDirectory, libDirectory) {
+  console.log('Incoming Conf', JSON.stringify(config, null, 2))
   const parentDir = config.parent || undefined
   const webappPath = parentDir
     ? [parentDir, config.webappName].join(path.sep)
