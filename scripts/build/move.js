@@ -41,7 +41,7 @@ var webapp = function (config, srcDirectory, libDirectory) {
   return move({
     cwd: config.workspace,
     name: config.name,
-    outDir: config.webappOutput,
+    outDir: config.webappOutput || config.webappName,
     toDir: toDir,
     toLibDir: libDirectory,
   })
