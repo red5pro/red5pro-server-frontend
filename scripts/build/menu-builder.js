@@ -38,7 +38,7 @@ var updateMenuListing = function (regex, menuListItems) {
 module.exports = {
   update: async (webapps) => {
     const folded = webapps.map((config) => {
-      config.children ? config.children : config
+      return config.children ? config.children : config
     })
     const flattened = folded.flat()
     const items = flattened.filter(
