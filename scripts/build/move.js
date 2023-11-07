@@ -33,11 +33,7 @@ var move = function (options) {
 
 var webapp = function (config, srcDirectory, libDirectory) {
   console.log('Incoming Conf', JSON.stringify(config, null, 2))
-  const parentDir = config.parent || undefined
-  const webappPath = parentDir
-    ? [parentDir, config.webappName].join(path.sep)
-    : config.webappName
-  var toDir = [srcDirectory, 'webapps', webappPath].join(path.sep)
+  var toDir = [srcDirectory, 'webapps', config.webappName].join(path.sep)
   log(chalk.yellow('Removing previous webapp build at ' + toDir + '...'))
   del.sync(toDir, { force: true })
   return move({

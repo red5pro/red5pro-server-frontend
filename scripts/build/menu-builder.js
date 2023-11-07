@@ -10,7 +10,7 @@ var menuListItemTemplate =
   '<li><a class="menu-listing-internal" href="/$webappName/">$title</a></li>'
 var insertLineRegex = '<!-- webapps -->'
 const ttMenuListItemTemplate =
-  '<li><a class="menu-listing-nested" href="/truetime/$webappName/">$title&nbsp;<img decoding="async" loading="lazy" src="images/white-arrow.svg" data-src="" alt="" width="12" height="12"></a></li>'
+  '<li><a class="menu-listing-nested" href="/$webappName/">$title&nbsp;<img decoding="async" loading="lazy" src="images/white-arrow.svg" data-src="" alt="" width="12" height="12"></a></li>'
 const insertTrueTimeRegex = '<!-- truetime apps -->'
 
 var updateMenuListing = function (regex, menuListItems) {

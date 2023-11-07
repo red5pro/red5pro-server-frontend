@@ -24,26 +24,12 @@ const TRUETIME_KEY = 'truetime'
 module.exports = function (manifest) {
   const keys = Object.keys(manifest)
   let webapps = keys.map((key) => {
-    if (key === TRUETIME_KEY) return undefined
     return Object.assign(manifest[key], {
       name: key,
       workspace: ['', 'tmp', key].join(path.sep),
     })
   })
   webapps = webapps.filter((w) => w !== undefined)
-
-  // Include nested TrueTime webapps.
-  if (keys.indexOf(TRUETIME_KEY) !== -1) {
-    let ttapps = Object.keys(manifest.truetime).map((key) => {
-      const conf = manifest.truetime[key]
-      return {
-        ...conf,
-        name: key,
-        workspace: ['', 'tmp', conf.parent || TRUETIME_KEY, key].join(path.sep),
-      }
-    })
-    webapps = webapps.concat(ttapps)
-  }
 
   return {
     generate: function () {
