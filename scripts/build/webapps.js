@@ -67,7 +67,8 @@ module.exports = function (manifest) {
           return frontEndBuilder.generate(process.cwd(), buildDirectory)
         })
         .then(function () {
-          return cleanWebapps.all(webapps)
+          // return cleanWebapps.all(webapps)
+          return true
         })
         .then(function () {
           log(chalk.blue('Build complete.'))
