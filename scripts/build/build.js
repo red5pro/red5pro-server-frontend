@@ -53,7 +53,12 @@ var webapp = function (config) {
           )
         )
         const configs = configObjectOrArray.map((c) => {
-          const newConfig = { ...config, ...c }
+          const newConfig = {
+            ...config,
+            ...c,
+            name: c.webappName,
+            workspace: config.workspace + path.sep + c.webappName,
+          }
           log(
             chalk.blue(
               'Updated Child configuration: ' +
