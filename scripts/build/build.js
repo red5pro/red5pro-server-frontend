@@ -57,7 +57,6 @@ var webapp = function (config) {
             ...config,
             ...c,
             name: c.webappName,
-            workspace: config.workspace + path.sep + c.webappName,
           }
           log(
             chalk.blue(
