@@ -332,7 +332,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var type = publisher ? publisher.getType().toLowerCase() : undefined
     switch (type) {
       case 'rtc':
-        updateStatus(`Using ${whipwhep ? 'WHEP' : 'WebRTC'} Publisher`)
+        updateStatus(`Using ${whipwhep ? 'WHIP' : 'WebRTC'} Publisher`)
         break
       case 'rtmp':
         updateStatus('Using Flash Publisher.')
