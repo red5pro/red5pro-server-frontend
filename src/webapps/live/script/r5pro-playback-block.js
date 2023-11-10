@@ -81,12 +81,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var frame = document.createElement('canvas')
     var video = document.createElement('video')
     var playButton = document.createElement('img')
-    var stopButton = document.createElement('button')
-    var stopButtonLabel = document.createTextNode('Stop & Close')
-    stopButton.appendChild(stopButtonLabel)
     videoContainer.appendChild(statsField)
     videoContainer.appendChild(videoHolder)
-    videoContainer.appendChild(stopButton)
     frameHolder.appendChild(frame)
     frameHolder.appendChild(playButton)
     videoHolder.appendChild(frameHolder)
@@ -107,9 +103,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     video.id = getVideoElementId(streamName)
     playButton.src = 'images/play_circle.svg'
     playButton.classList.add('stream-play-button')
-    stopButton.classList.add('ui-button')
-    stopButton.classList.add('stop-button')
-    stopButton.classList.add('hidden')
     return videoContainer
   }
 
@@ -151,9 +144,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   function generateBroadcastSection(streamName) {
     var parent = document.createElement('div')
+    var stopButton = document.createElement('button')
+    var stopButtonLabel = document.createTextNode('Stop & Close')
+    stopButton.appendChild(stopButtonLabel)
+    stopButton.classList.add('ui-button')
+    stopButton.classList.add('stop-button')
+    stopButton.classList.add('hidden')
     var videoSection = generateVideoSection(streamName)
     var eventSection = generateEventSection()
     parent.appendChild(videoSection)
+    parent.appendChild(stopButton)
     parent.appendChild(eventSection)
     eventSection.classList.add('hidden') // Only shown when viewing.
     parent.classList.add('subscribe-section')
@@ -230,11 +230,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   PlaybackBlock.prototype.addEventLog = function (log, optionalClass) {
     var element = $(this.getElement()).find('.event-log').get(0)
-    var p = document.createElement('p')
-    var t = document.createTextNode(log)
-    p.appendChild(t)
-    if (optionalClass) p.classList.add(optionalClass)
-    element.appendChild(p)
+    if (element) {
+      var p = document.createElement('p')
+      var t = document.createTextNode(log)
+      p.appendChild(t)
+      if (optionalClass) p.classList.add(optionalClass)
+      element.append(p)
+    }
   }
 
   PlaybackBlock.prototype.clearEventLog = function () {
@@ -428,8 +430,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     rule.classList.add('stream-rule')
     link.href = this.externalLink
     link.target = '_blank'
-    link.classList.add('link')
-    link.classList.add('red-text')
     linkParent.classList.add('stream-link')
     link.addEventListener('click', this.handleExternalLink.bind(this))
     this.elementNode = div

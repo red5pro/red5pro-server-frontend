@@ -8,7 +8,7 @@
   String host = ip;
   String protocol = request.getScheme();
   Integer port = request.getServerPort();
-  port = port == -1 ? (protocol == "https" ? 443 : 80) : port;
+  port = port == -1 ? (protocol == "https" ? 443 : 5080) : port;
   String tech=null;
   String ice=null;
   String buffer = "0.5";
@@ -42,6 +42,7 @@
     whipwhep =  Integer.parseInt(request.getParameter("whipwhep")) == 0 ? 0 : 1;
   }
 
+  /*
   ApplicationContext appCtx = (ApplicationContext) application.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
   LiveStreamListService service = (LiveStreamListService)appCtx.getBean("streams");
   List<String> names = service.getLiveStreams();
@@ -58,6 +59,7 @@
       ret.append("<div class=\"stream-menu-listing\" data-streamName=\"" + streamName + "\" data-streamLocation=\"" + streamLocation + "\" data-pageLocation=\"" + pageLocation + "\"></div>\r\n");
     }
   }
+  */
 %>
 <!doctype html>
 {{> license}}
@@ -73,7 +75,6 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> navigation }}
     {{> header }}
     <div class="main-container">
       <div id="menu-section">
@@ -82,33 +83,27 @@
       <div id="content-section">
         <div id="subcontent-section">
           <div id="subcontent-section-text">
-            <h1 class="red-text">Live Subscribing For Any Screen</h1>
+            <h1>Live Playback For Any Screen</h1>
             <p class="heading-title">Below you will find the list of current live streams to subscribe to.
-          </div>
-          <div id="subcontent-section-image">
-            <img class="image-block" width="424" src="images/red5pro_live_streaming.png">
           </div>
         </div>
         <hr class="top-padded-rule">
         <% if (is_stream_manager) { %>
           <p class="stream-manager-notification">USING STREAM MANAGER</p>
         <% } %>
-        <div class="content-section-story">
+        <div class="subscribe-section">
           {{> filter-section target='stream-menu-content'}}
-          <% if (!is_stream_manager && names.size() <= 0) { %>
-            <p class="no-streams-entry">No streams found</p>
-            <p style="margin-top: 20px;">You can begin a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=<%= ip %>" target="_blank">Broadcast page</a>.</p>
+          <div class="stream-menu-content">
+            <h2 class="red-text">No streams found</h2>
+            <p style="margin-top: 20px;">You can begin a Broadcast session by visiting the <a class="broadcast-link card-link card-link_page" href="broadcast.jsp?host=<%= ip %>" target="_blank">Broadcast page</a>.</p>
             <p class="small-font-size">Once a Broadcast session is started, return to this page to see the stream name listed.</p>
-          <% } else { %>
-            <div class="stream-menu-content">
-              <%=ret.toString()%>
-            </div>
-          <% } %>
+          </div>
         </div>
         <hr class="top-padded-rule" />
-        {{> web-applications }}
-        <hr class="top-padded-rule">
-        {{> mobile-applications }}
+        <div class="content-section-story">
+          {{> web-applications }}
+          {{> mobile-applications }}
+        </div>
         <hr class="top-padded-rule" />
         {{> additional_info }}
       </div>

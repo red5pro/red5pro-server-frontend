@@ -13,7 +13,6 @@
     {{> header }}
   <body>
     {{> top-bar }}
-    {{> navigation }}
     {{> header }}
     <div class="main-container">
       <div id="menu-section">
@@ -22,11 +21,11 @@
       <div id="content-section">
         <div id="subcontent-section">
           <div id="subcontent-section-text">
-            <h1 class="red-text">@webapp@</h1>
+            <h1>@webapp@</h1>
           </div>
         </div>
         <hr class="top-padded-rule">
-        <div class="content-section-story">
+        <div class="app-content">
           <p>Content Here</p>
           <hr class="top-padded-rule">
           <p>
@@ -34,13 +33,14 @@
             <br>
             <strong>&lt; menu here. You can modify that in </strong><em>/src/template/partial/menu.hbs</em>.
           </p>
-          <hr class="top-padded-rule">
-          {{> web-applications }}
-          <hr class="top-padded-rule">
-          {{> mobile-applications }}
-          <hr class="top-padded-rule">
-          {{> additional_info }}
         </div>
+        <hr class="top-padded-rule">
+        <div class="content-section-story">
+          {{> web-applications }}
+          {{> mobile-applications }}
+        </div>
+        <hr class="top-padded-rule">
+        {{> additional_info }}
       </div>
     </div>
     {{> footer }}

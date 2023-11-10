@@ -164,11 +164,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       $parent.append(
         '<span>Bitrate: </span><span class="bold bitrate">' +
           bitrate +
-          '</span>' +
-          '<span>. Packets Received: </span><span class="bold packets">' +
+          '</span><br/>' +
+          '<span>Packets Received: </span><span class="bold packets">' +
           packets +
           '</span>' +
-          '<span>.</span>'
+          '<span></span>'
       )
     }
   }

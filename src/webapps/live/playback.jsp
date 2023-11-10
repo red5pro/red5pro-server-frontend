@@ -1,6 +1,5 @@
 {{> jsp_header }}
 <%@ page import="org.springframework.context.ApplicationContext,
-          com.red5pro.server.secondscreen.net.NetworkUtil,
           org.springframework.web.context.WebApplicationContext,
           com.infrared5.red5pro.live.LiveStreamListService,
           java.util.Map.Entry,
@@ -34,8 +33,7 @@
     {{> head_meta }}
     {{> resources }}
     <title>Video On Demand Playback with the Red5 Pro Server</title>
-    <link href="//unpkg.com/video.js@7.0.0/dist/video-js.css" rel="stylesheet">
-    <script src="//unpkg.com/video.js@7.0.0/dist/video.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
     <link href="lib/red5pro/red5pro-media.css" rel="stylesheet"></script>
@@ -43,7 +41,6 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> navigation }}
     {{> header }}
     <div class="main-container">
       <div id="menu-section">
@@ -52,30 +49,26 @@
       <div id="content-section">
         <div id="subcontent-section">
           <div id="subcontent-section-text">
-            <h1 class="red-text">Video on Demand For Any Screen</h1>
-            <p class="heading-title">Below you will find the list of recorded streams to playback.
-          </div>
-          <div id="subcontent-section-image">
-            <img class="image-block" width="424" src="images/red5pro_live_streaming.png">
+            <h1>Video on Demand For Any Screen</h1>
+            <p class="heading-title">Below you will find the list of recorded streams to playback.</p>
+            <p class="notify-callout">You can record a Broadcast session by visiting the <a class="card-link card-link_page" href="broadcast.jsp?host=<%=ip%>" target="_blank">Broadcast page</a> and checking the <span class="bold">Enable Recording</span> button.<br/><span class="small-font-size">After the Broadcast is started and stopped, the Video On Demand (VOD) recording will be available. Return to this page to see the stream name listed.</span></p>
+            <p class="small-font-size"><strong>Note:</strong> Due to the sunsetting of Flash Player in browsers, playback of FLV files is now limited to copying links for the Flash-based files in order to playback videos in your preferred supported software (e.g., <span><a href="https://www.videolan.org/vlc/" target="_blank" class="link">VLC</a></span>). Note that the "Copy to Clipboard" function below requires a secure page.</p>
           </div>
         </div>
         <hr class="top-padded-rule">
         <% if (is_stream_manager) { %>
-          <p class="stream-manager-notification">USING STREAM MANAGER</p>
+          <p class="stream-manager-notification">USIN STREAM MANAGER</p>
         <% } %>
-        <div class="content-section-story">
-          <p class="notify-callout">You can record a Broadcast session by visiting the <a class="broadcast-link link" href="broadcast.jsp?host=<%=ip%>" target="_blank">Broadcast page</a> and checking the <span class="bold">Enable Recording button.</span><br/><span class="small-font-size">After the Broadcast is started and stopped, the Video On Demand (VOD) recording will be available. Return to this page to see the stream name listed.</span></p>
-          <p class="small-font-size"><strong>Note:</strong> Due to the sunsetting of Flash Player in browsers, playback of FLV files is now limited to copying links for the Flash-based files in order to playback videos in your preferred supported software (e.g., <span><a href="https://www.videolan.org/vlc/" target="_blank" class="link">VLC</a></span>). Note that the "Copy to Clipboard" function below requires a secure page.</p>
-          <hr class="top-padded-rule" style="margin-top: 0">
+        <div class="subscribe-section">
           {{> filter-section target='stream-menu-content'}}
           <div class="stream-menu-content">
             <p class="no-streams-entry">Requesting files...</p>
           </div>
         </div>
-        <hr class="top-padded-rule" />
-        {{> web-applications }}
-        <hr class="top-padded-rule">
-        {{> mobile-applications }}
+        <div class="content-section-story">
+          {{> web-applications }}
+          {{> mobile-applications }}
+        </div>
         <hr class="top-padded-rule" />
         {{> additional_info }}
       </div>
