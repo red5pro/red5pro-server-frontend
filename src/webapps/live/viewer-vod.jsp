@@ -40,8 +40,7 @@
       {{> head_meta }}
       {{> resources }}
       <title>VOD Playback of <%= stream %></title>
-      <link href="//unpkg.com/video.js@7.0.0/dist/video-js.css" rel="stylesheet">
-      <script src="//unpkg.com/video.js@7.0.0/dist/video.min.js"></script>
+      <script src="//cdn.jsdelivr.net/npm/hls.js@latest"></script>
       <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
       <script src="lib/screenfull/screenfull.min.js"></script>
       <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
@@ -50,12 +49,11 @@
     </head>
     <body>
       {{> top-bar }}
-      {{> navigation }}
       {{> header }}
       <div id="viewer-section">
-        <div id="subviewer-section">
-          <div id="subviewer-section-text">
-            <h1 class="red-text subviewer-title">VOD Subscribing to <span style="text-transform: none;"><%=stream%></span></h1>
+        <div id="subcontent-section" style="margin-top: 20px!important;">
+          <div id="subcontent-section-text">
+            <h1 style="text-align:center;color:#fff">VOD Subscribing to: <span style="text-transform: none;color:#dbdbdb;"><%=stream%></span></h1>
           </div>
         </div>
         <div class="content-section-story">
@@ -72,7 +70,7 @@
               </div>
             </div>
           </div>
-          <div class="event-container">
+          <div class="event-container hidden">
             <div class="status-field status-message"></div>
             <div class="stream-manager-info status-message hidden"></div>
             <div class="event-log-field">

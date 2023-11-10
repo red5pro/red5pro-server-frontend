@@ -98,12 +98,11 @@
     </head>
     <body>
       {{> top-bar }}
-      {{> navigation }}
       {{> header }}
       <div id="viewer-section">
-        <div id="subviewer-section">
-          <div id="subviewer-section-text">
-            <h1 class="red-text subviewer-title">Live Subscribing to <span style="text-transform: none;"><%=stream%></span></h1>
+        <div id="subcontent-section" style="margin-top: 20px!important;">
+          <div id="subcontent-section-text">
+            <h1 style="text-align:center;color:#fff">Live Subscribing to: <span style="text-transform: none;color:#dbdbdb;"><%=stream%></span></h1>
           </div>
         </div>
         <div class="content-section-story">
@@ -112,37 +111,39 @@
             <p class="stream-manager-notification">USING STREAM MANAGER</p>
           <% } %>
           <div class="subscribe-section">
-            <div class="video-container">
-              <div class="statistics-field hidden">Bitrate: N/A. 0x0.</div>
-              <div class="video-holder">
-                <video id="red5pro-subscriber"
+            <div>
+              <div class="video-container">
+                <div class="statistics-field hidden">Bitrate: N/A. 0x0.</div>
+                <div class="video-holder">
+                  <video id="red5pro-subscriber"
                       controls="controls" autoplay="autoplay" playsinline
                       class="red5pro-subscriber red5pro-media red5pro-media-background">
-                </video>
-                <img src="images/loading.svg" class="stream-play-button loading-icon">
+                  </video>
+                  <img src="images/loading.svg" class="stream-play-button loading-icon">
+                </div>
               </div>
               <div id="show-hide-reports-btn" class="hidden">Show Live Reports</div>
             </div>
             <div id="report-container" class="reports-container hidden">
               <div class="report-field">
-                <div id="video-report_stats" class="statistics-field"></div>
                 <div class="report-field_header">Video</div>
+                <div id="video-report_stats" class="statistics-field"></div>
                 <div id="video-report" class="report"></div>
               </div>
               <div class="report-field">
-                <div id="audio-report_stats" class="statistics-field"></div>
                 <div class="report-field_header">Audio</div>
+                <div id="audio-report_stats" class="statistics-field"></div>
                 <div id="audio-report" class="report"></div>
               </div>
             </div>
           </div>
-          <div class="event-container">
+          <div class="event-container hidden">
             <div class="status-field status-message"></div>
             <div class="stream-manager-info status-message hidden"></div>
             <div class="event-log-field">
               <div class="event-header">
                 <span>Event Log:</span>
-                <button id="clear-log-button" class="event-clear-button">clear</button>
+                <button id="clear-log-button" class="event-clear-button" display="none">clear</button>
               </div>
               <hr class="event-rule">
               <div class="event-log">
