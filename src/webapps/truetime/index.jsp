@@ -32,6 +32,7 @@
         <div class="content-section-story">
           <div class="content-section_card">
             <h2 class="content-section_card_title"><a class="card-link" href="datasync/">TrueTime DataSync&#8482;</a></h2>
+            <p><a class="link" target="_blank" href="https://github.com/red5pro/truetime-datasync">Get the Code!</a></p>
             <p>Create immersive sports and entertainment experiences with TrueTime DataSync&#8482; for Fans. Live, frame-accurate overlays provide stats, trajectories, lyrics, and more right along with the video content.</p>
             <p class="content-section_card_message">With TrueTime DataSync&#8482; for Surveillance, superimpose telemetry data, weather conditions, and even predictive models with frame-level accuracy on live camera feeds.</p>
             <div class="content-section_card_tray">
@@ -40,6 +41,7 @@
           </div>
           <div class="content-section_card">
             <h2 class="content-section_card_title"><a class="card-link" href="multiview/index.html?vod=false&embed=true&debug=true">TrueTime MultiView&#8482;</a></h2>
+            <p><a class="link" target="_blank" href="https://github.com/red5pro/truetime-multiview">Get the Code!</a></p>
             <p>With TrueTime MultiView&#8482; for Fans, there are no limits. Take control of your display with multiple camera views, angles, and timelines, both in venue and at home.</p>
             <p class="content-section_card_message">With TrueTime MultiView&#8482; for Production, create custom displays of live streams. Switch between feeds, rely on full synchronization, and enjoy sub-400ms latency with our WebRTC tools.</p>
             Managing incoming feeds couldn't be easier or faster with TrueTime MultiView&#8482; for Surveillance. Bespoke displays give you ultimate control, while WebRTC streams provide reliable uptime and minimal latency.</p>
@@ -49,6 +51,7 @@
           </div>
           <div class="content-section_card">
             <h2 class="content-section_card_title"><a class="card-link" href="webinar/">TrueTime Studio&#8482; for Webinars</a></h2>
+            <p><a class="link" target="_blank" href="https://github.com/red5pro/truetime-watchparty">Get the Code!</a></p>
             <p>Create the perfect presentation tool with TrueTime Studio&#8482; for Webinars. Highlight speakers, team-teach, take questions from attendees, and add in pre-recorded video.</p>
             <p class="content-section_card_message content-section_card_em">In order to start using the TrueTime Studio&#8482; for Webinars, the deployment requires to be in an autoscaled environment with a Stream Manager and the Conference API webapp included.</p>
             <div class="content-section_card_tray">
@@ -57,6 +60,7 @@
           </div>
           <div class="content-section_card">
             <h2 class="content-section_card_title"><a class="card-link" href="watchparty/">TrueTime WatchParty&#8482; for Fans</a></h2>
+            <p><a class="link" target="_blank" href="https://github.com/red5pro/truetime-watchparty">Get the Code!</a></p>
             <p>TrueTime WatchParty&#8482; for Fans brings people together, no matter how far apart they are. And synchronized, real-time live streaming means no one misses a beat (or a wager).</p>
             <p class="content-section_card_message content-section_card_em">In order to start using the TrueTime WatchParty&#8482; for Fans, the deployment requires to be in an autoscaled environment with a Stream Manager and the Conference API webapp included.</p>
             <div class="content-section_card_tray">
