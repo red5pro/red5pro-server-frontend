@@ -1,7 +1,7 @@
 {{> jsp_header }}
 <%@ page import="java.io.*,java.util.regex.*,java.nio.charset.Charset"%>
 <%
-  // error msg 
+  // error msg
   String errMessage = null;
   // check for license file in root dir
   File keyFile = new File(System.getenv("RED5_HOME"), "LICENSE.KEY");
@@ -71,16 +71,15 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> navigation }}
     {{> header }}
-    <div class="container main-container">
+    <div class="main-container">
       <div id="menu-section">
         {{> menu }}
       </div>
       <div id="content-section">
-        <div class="subcontent-section">
+        <div id="subcontent-section">
           <div>
-            <h1 class="red-text">Red5 Pro License Check</h1>
+            <h1>Red5 Pro License Check</h1>
           <% if (keyFileExists) { %>
             <p class="bold">Your Red5 Pro Server is licensed.</p>
           <% } else { %>
@@ -99,7 +98,7 @@
             </div>
           <% } %>
             <hr class="top-padded-rule">
-            <p>If you are experiencing issues, <a class="link" href="https://red5pro.zendesk.com/?origin=webapps" target="_blank">please contact support.</a></p>
+            <p>If you are experiencing issues, <a class="card-link card-link_page" href="https://red5pro.zendesk.com/?origin=webapps" target="_blank">please contact support.</a></p>
           </div>
         </div>
       </div>

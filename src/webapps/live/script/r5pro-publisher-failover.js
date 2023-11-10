@@ -34,8 +34,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var qFramerateMax = window.r5proFramerateMax || 24
   var qVideoWidthMin = window.r5proVideoWidthMin || 640
   var qVideoWidthMax = window.r5proVideoWidthMax || 640
-  var qVideoHeightMin = window.r5proVideoHeightMin || 480
-  var qVideoHeightMax = window.r5proVideoHeightMax || 480
+  var qVideoHeightMin = window.r5proVideoHeightMin || 360
+  var qVideoHeightMax = window.r5proVideoHeightMax || 360
   var qAudioBW = window.r5proAudioBandwidth || 56
   var qVideoBW = window.r5proVideoBandwidth || 750
   var forceVideo = {
@@ -70,11 +70,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   var streamManagerInfo = document.getElementById('stream-manager-info')
   var statisticsField = document.getElementById('statistics-field')
   var eventLogField = document.getElementById('event-log-field')
+  var eventContainer = document.getElementById('event-container')
   var clearLogButton = document.getElementById('clear-log-button')
+  var logToggleButton = document.getElementById('log-toggle-button')
   var startStopButton = document.getElementById('start-stop-button')
   var cameraSelect = document.getElementById('camera-select-field')
   cameraSelect.addEventListener('change', function () {
     onCameraSelect(cameraSelect.value, true)
+  })
+
+  logToggleButton.addEventListener('click', function () {
+    eventContainer.classList.toggle('hidden')
   })
 
   var publisher
@@ -199,6 +205,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     cameraSelect.parentNode.classList.add('hidden')
   }
 
+  function showSettings() {
+    document.querySelector('#video-form').classList.remove('hidden')
+  }
+  function hideSettings() {
+    document.querySelector('#video-form').classList.add('hidden')
+  }
+
   function enableCameraSelect(devices) {
     var currentValue = cameraSelect.value
     while (cameraSelect.firstChild) {
@@ -253,6 +266,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             label: 'Start Broadcast',
           })
           showOrHideCameraSelect(publisher)
+          showSettings()
         })
         .catch(function (error) {
           // eslint-disable-line no-unused-vars
@@ -261,6 +275,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             label: 'Start Broadcast',
           })
           showOrHideCameraSelect(publisher)
+          showSettings()
         })
     }
   })
@@ -303,9 +318,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
 
   function addEventLog(eventLog) {
+    var hr = document.createElement('hr')
+    hr.classList.add('event-hr')
     var p = document.createElement('p')
     var text = document.createTextNode(eventLog)
     p.appendChild(text)
+    eventLogField.appendChild(hr)
     eventLogField.appendChild(p)
     return p
   }
@@ -314,7 +332,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var type = publisher ? publisher.getType().toLowerCase() : undefined
     switch (type) {
       case 'rtc':
-        updateStatus('Using WebRTC Publisher')
+        updateStatus(`Using ${whipwhep ? 'WHIP' : 'WebRTC'} Publisher`)
         break
       case 'rtmp':
         updateStatus('Using Flash Publisher.')
@@ -446,6 +464,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         label: 'Stop Broadcast',
       })
       hideCameraSelect()
+      hideSettings()
     }
     var onFailure = function () {
       updateStartStopButtonState({
@@ -453,6 +472,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         label: 'Start Broadcast',
       })
       showOrHideCameraSelect(publisher)
+      showSettings()
     }
 
     var mode = getPublishMode()
