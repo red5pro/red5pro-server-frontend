@@ -31,22 +31,22 @@
         <hr class="top-padded-rule">
         <div class="content-section-story">
           <div class="content-section_card">
-            <h2 class="content-section_card_title"><a class="card-link" href="/truetime-datasync/index.html?info=true">TrueTime DataSync&#8482;</a></h2>
+            <h2 class="content-section_card_title"><a class="card-link" href="/truetime-datasync/index.html?intro=true">TrueTime DataSync&#8482;</a></h2>
             <p><a class="link" target="_blank" href="https://github.com/red5pro/truetime-datasync">Get the Code!</a></p>
             <p>Create immersive sports and entertainment experiences with TrueTime DataSync&#8482; for Fans. Live, frame-accurate overlays provide stats, trajectories, lyrics, and more right along with the video content.</p>
             <p class="content-section_card_message">With TrueTime DataSync&#8482; for Surveillance, superimpose telemetry data, weather conditions, and even predictive models with frame-level accuracy on live camera feeds.</p>
             <div class="content-section_card_tray">
-              <p class="content-section_card_link"><a class="card-link" href="/truetime-datasync/index.html?info=true">Try out TrueTime DataSync&#8482;&nbsp;&nbsp;<img decoding="async" loading="lazy" src="images/white-arrow.svg" data-src="" alt="" width="16" height="16"></a></p>
+              <p class="content-section_card_link"><a class="card-link" href="/truetime-datasync/index.html?intro=true">Try out TrueTime DataSync&#8482;&nbsp;&nbsp;<img decoding="async" loading="lazy" src="images/white-arrow.svg" data-src="" alt="" width="16" height="16"></a></p>
             </div>
           </div>
           <div class="content-section_card">
-            <h2 class="content-section_card_title"><a class="card-link" href="/truetime-multiview/index.html?info=true&vod=false&embed=true&debug=true">TrueTime MultiView&#8482;</a></h2>
+            <h2 class="content-section_card_title"><a class="card-link" href="/truetime-multiview/index.html?intro=true&vod=false&embed=true&debug=true">TrueTime MultiView&#8482;</a></h2>
             <p><a class="link" target="_blank" href="https://github.com/red5pro/truetime-multiview">Get the Code!</a></p>
             <p>With TrueTime MultiView&#8482; for Fans, there are no limits. Take control of your display with multiple camera views, angles, and timelines, both in venue and at home.</p>
             <p class="content-section_card_message">With TrueTime MultiView&#8482; for Production, create custom displays of live streams. Switch between feeds, rely on full synchronization, and enjoy sub-400ms latency with our WebRTC tools.</p>
             Managing incoming feeds couldn't be easier or faster with TrueTime MultiView&#8482; for Surveillance. Bespoke displays give you ultimate control, while WebRTC streams provide reliable uptime and minimal latency.</p>
             <div class="content-section_card_tray">
-              <p class="content-section_card_link"><a class="card-link" href="/truetime-multiview/index.html?info=true&vod=false&embed=true&debug=true">Try out TrueTime MultiView&#8482;&nbsp;&nbsp;<img decoding="async" loading="lazy" src="images/white-arrow.svg" data-src="" alt="" width="16" height="16"></a></p>
+              <p class="content-section_card_link"><a class="card-link" href="/truetime-multiview/index.html?intro=true&vod=false&embed=true&debug=true">Try out TrueTime MultiView&#8482;&nbsp;&nbsp;<img decoding="async" loading="lazy" src="images/white-arrow.svg" data-src="" alt="" width="16" height="16"></a></p>
             </div>
           </div>
           <div class="content-section_card">
