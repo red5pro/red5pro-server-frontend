@@ -198,7 +198,7 @@
     return true;
   };
   var handleIpAddressInputSubmit = function(event) {
-    var value = ipAddressInput.value;
+    var value = encodeURIComponent(ipAddressInput.value);
     event.stopPropagation();
     event.preventDefault();
     ipAddressErrorField.classList.add('hidden');
