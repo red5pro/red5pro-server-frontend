@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8"%>
 <%@ page import="java.net.Inet4Address,java.net.URLConnection"%>
 <%@ page import="com.red5pro.server.util.NetworkManager"%>
-<%@ page import="java.io.*,java.util.Map,java.util.ArrayList,java.util.regex.*,java.net.URL,java.nio.charset.Charset"%>
+<%@ page import="java.io.*,java.net.URLEncoder,java.util.Map,java.util.ArrayList,java.util.regex.*,java.net.URL,java.nio.charset.Charset"%>
 <%
   String cookieStr = "";
   String cookieName = "storedIpAddress";
@@ -20,7 +20,7 @@
   Map<String, String[]> parameters = request.getParameterMap();
   for(String parameter : parameters.keySet()) {
     if (!parameter.equals("")) {
-      kvUrlParams += parameter + "=" + request.getParameter(parameter) + delimiter;
+      kvUrlParams += parameter + "=" + URLEncoder.encode(request.getParameter(parameter), "UTF-8") + delimiter;
     }
   }
 
@@ -29,7 +29,7 @@
 
   // First check if provided as a query parameter...
   if(request.getParameter("host") != null) {
-    ip = request.getParameter("host");
+    ip = URLEncoder.encode(request.getParameter("host"), "UTF-8");
     host_success = "[Address Resolver] Host provided as query parameter.";
     // ip = addressPattern.matcher(ip).find() ? ip : null;
   }
