@@ -188,10 +188,9 @@
       event.stopPropagation();
       hideIpAddressOverlay();
       if(event.target.hasOwnProperty('innerText')) {
-        value = event.target.innerText;
-      }
-      else {
-        value = event.target.textContent;
+        value = encodeURIComponent(event.target.innerText);
+      } else {
+        value = encodeURIComponent(event.target.textContent);
       }
       updateAndStoreUserEnteredIpAddress(value);
       return false;
@@ -199,7 +198,7 @@
     return true;
   };
   var handleIpAddressInputSubmit = function(event) {
-    var value = ipAddressInput.value;
+    var value = encodeURIComponent(ipAddressInput.value);
     event.stopPropagation();
     event.preventDefault();
     ipAddressErrorField.classList.add('hidden');
