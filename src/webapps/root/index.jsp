@@ -9,19 +9,19 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> header }}
-    <div class="main-container">
+    <div class="main-container container">
       <div id="menu-section">
         {{> menu }}
       </div>
       <div id="content-section">
         <div id="subcontent-section">
           <div id="subcontent-section-text">
-            <h1>Welcome!</h1>
+            <h1>Welcome!?</h1>
             <p class="heading-title">If you are seeing this page, then you have successfully downloaded and are running the <span class="no-break">Red5 Pro Server!</span></p>
             <p class="heading-title">We live in a fast-moving world where real-time experience delivery has become the norm.</p>
             <p class="heading-title">With Red5 TrueTime Solutions™, deliver interactive, sub-250 millisecond latency to millions and go beyond the expected. This is faster than humans can perceive; it’s video at the speed of thought.</p>
           </div>
+          {{> header }}
         </div>
         <hr class="top-padded-rule">
         <div class="content-section-story">
@@ -30,7 +30,7 @@
             <h2 class="content-section_card_title"><a class="card-link" href="/live">Live Streaming</a></h2>
             <p class="content-section_card_message">Add live video, audio and data streaming to your app with just a few lines of code.</p>
             <div class="content-section_card_tray">
-              <p class="content-section_card_link"><a class="card-link" href="/live/broadcast.jsp?host=<%= ip %>">Start a Broadcast Now&nbsp;<img decoding="async" loading="lazy" src="images/white-arrow.svg" data-src="" alt="" width="12" height="12"></a></a></p>
+              <p class="content-section_card_link"><a class="card-link" href="/live/broadcast.jsp?host=<%= ip %>">Start a Broadcast Now&nbsp;<img decoding="async" loading="lazy" src="images/arrow_left.svg" data-src="" alt="" width="12" height="12"></a></a></p>
             </div>
           </div>
           {{> web-applications }}

@@ -9,8 +9,7 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> header }}
-    <div class="main-container">
+    <div class="main-container container">
       <div id="menu-section">
         {{> menu }}
       </div>
@@ -21,6 +20,7 @@
             <p class="heading-title">We live in a fast-moving world where real-time experience delivery has become the norm.</p>
             <p class="heading-title">With Red5 TrueTime Solutions™, deliver interactive, sub-250 millisecond latency to millions and go beyond the expected. This is faster than humans can perceive; it’s video at the speed of thought.</p>
           </div>
+          {{> header }}
         </div>
         <hr class="top-padded-rule">
         <div class="content-section-story">
@@ -58,7 +58,16 @@
             elements[index].href = ['broadcast.jsp?host', value].join('=');
           }
         }
-        window.r5pro_registerIpChangeListener(handleLiveIpChange);
+        let timeout
+        const setupListener = () => {
+          clearTimeout(timeout);
+          if (window.r5pro_registerIpChangeListener) {
+            window.r5pro_registerIpChangeListener(handleLiveIpChange);
+          } else {
+            timeout = setTimeout(setupListener, 100);
+          }
+        }
+        timeout = setTimeout(setupListener, 100);
        }(this, document));
     </script>
     <script src="script/r5pro-utils.js"></script>

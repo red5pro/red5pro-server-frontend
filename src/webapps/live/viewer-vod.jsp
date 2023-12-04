@@ -10,15 +10,15 @@
     String tech=null;
 
     if (request.getParameter("app") != null) {
-      app = request.getParameter("app");
+      app = URLEncoder.encode(request.getParameter("app"), "UTF-8");
     }
 
     if (request.getParameter("host") != null) {
-      host = request.getParameter("host");
+      host = URLEncoder.encode(request.getParameter("host"), "UTF-8");
     }
 
     if (request.getParameter("stream") != null) {
-      stream = request.getParameter("stream");
+      stream = URLEncoder.encode(request.getParameter("stream"), "UTF-8");
     }
 
     if (request.getParameter("buffer") != null) {
