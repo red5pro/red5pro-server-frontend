@@ -1,7 +1,7 @@
 {
   "r5pro-inspector": {
     "repositoryUrl": "git@github.com:infrared5/automation.git",
-    "branch": "develop"
+    "branch": "feature/truetime_RED5DEV-1025"
   },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",

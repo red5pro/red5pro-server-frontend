@@ -572,6 +572,10 @@ a.link:hover {
   border-radius: 4px;
 }
 
+.menu-hr {
+  margin: 0.5rem 0;
+}
+
 .menu-listing {
   list-style: none;
   margin-top: 0px;
