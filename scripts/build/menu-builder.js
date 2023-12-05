@@ -7,7 +7,7 @@ var Promise = require('bluebird')
 
 var log = require([__dirname, 'log'].join(path.sep))
 var menuListItemTemplate =
-  '<li><a class="menu-listing-internal" href="/$webappName/">$title</a></li>'
+  '<hr><li><a class="menu-listing-internal" href="/$webappName/">$title</a></li>'
 var insertLineRegex = '<!-- webapps -->'
 const ttMenuListItemTemplate =
   '<li><a class="menu-listing-nested" href="/$webappName/?intro=true">$title&nbsp;<img decoding="async" loading="lazy" src="images/arrow_left.svg" data-src="" alt="" width="12" height="12"></a></li>'

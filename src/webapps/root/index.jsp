@@ -16,7 +16,7 @@
       <div id="content-section">
         <div id="subcontent-section">
           <div id="subcontent-section-text">
-            <h1>Red5 Pro Server!</h1>
+            <h1>Red5 Pro Server</h1>
             <p class="heading-title">With Red5 TrueTime Solutions™, deliver interactive, sub-250 millisecond latency to millions and go beyond the expected. This is faster than humans can perceive; it’s video at the speed of thought.</p>
           </div>
           {{> header }}
@@ -25,7 +25,7 @@
         <div class="content-section-story">
           <div class="content-section_card">
             <p class="content-section_card_graphic"><img decoding="async" loading="lazy" src="images/live.svg" data-src="" alt="" width="104" height="84"></p>
-            <h2 class="content-section_card_title"><a class="card-link" href="/live">Live Streaming</a></h2>
+            <h3 class="content-section_card_title"><a class="card-link" href="/live">Live Streaming</a></h2>
             <p class="content-section_card_message">Add live video, audio and data streaming to your app with just a few lines of code.</p>
             <div class="content-section_card_tray">
               <p class="content-section_card_link"><a class="card-link" href="/live/broadcast.jsp?host=<%= ip %>">Start a Broadcast Now&nbsp;<img decoding="async" loading="lazy" src="images/arrow_left.svg" data-src="" alt="" width="12" height="12"></a></a></p>
@@ -34,7 +34,6 @@
           {{> web-applications }}
           {{> mobile-applications }}
         </div>
-        <hr class="top-padded-rule">
         {{> additional_info }}
       </div>
     </div>
@@ -58,6 +57,6 @@
           }
         })(window, document);
     </script>
-    {{> footer }}
+    <!-- {{> footer }} -->
   </body>
 </html>

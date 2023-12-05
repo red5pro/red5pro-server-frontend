@@ -728,16 +728,17 @@ a.link:hover {
 
 .content-section_card_graphic {
   width: 100%;
-  text-align: center;
   margin-bottom: 40px;
 }
 
 .content-section_card_title {
   margin-bottom: 20px;
+  font-weight: 400;
+  font-family: 'Clash Grotesk';
 }
 
 .content-section-story > .content-section_card {
-  width: 45%;
+  width: 30%;
   padding: 16px;
   border: 1px solid #ddd;
 }
@@ -766,6 +767,15 @@ a.link:hover {
 .card-link_page {
   text-decoration: underline!important;
   text-decoration-style: dotted!important;
+}
+
+.additional-info {
+  margin-top: 40px;
+  font-family: 'Clash Grotesk';
+  font-size: 1em;
+  font-weight: 400;
+  color: var(--color-lightgray);
+  line-height: 24px;
 }
 
 /* GENERIC */
