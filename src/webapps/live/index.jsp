@@ -6,6 +6,11 @@
     {{> head_meta }}
     {{> resources }}
     <title>Live Streaming with the Red5 Pro Server</title>
+    <style>
+      .content-section_card {
+        width: 45%!important;
+      }
+    </style>
   </head>
   <body>
     {{> top-bar }}
@@ -27,23 +32,24 @@
           <div class="content-section_card">
             <h2 class="content-section_card_title"><a class="card-link" href="broadcast.jsp?host=<%= ip %>">Publish a Stream</a></h2>
             <p>We have provided an easy way for you to start a Red5 Pro Broadcast session.</p>
-            <p class="content-section_card_message">The <a class="card-link card-link_page" href="broadcast-link broadcast.jsp?host=<%= ip %>">Broadcast page</a> provides a means to stream video and audio. Once you have started a Broadcast, invite a friend to Subscribe using a web browser or any device with a <a href="https://github.com/red5pro?utf8=✓&q=streaming&type=&language=" target="_blank" class="card-link card-link_page" style="margin-left: 0!important">native application</a> integrated with the Red5 Pro SDKs!</p>
-            <div class="content-section_card_tray">
-              <p class="content-section_card_link"><a class="card-link" href="broadcast.jsp?host=<%= ip %>">Start a Broadcast now!&nbsp;<img decoding="async" loading="lazy" src="images/white-arrow.svg" data-src="" alt="" width="16" height="16"></a></p>
+            <div class="content-section_card_info">
+              <p class="content-section_card_message">The <a class="card-link card-link_page" href="broadcast-link broadcast.jsp?host=<%= ip %>">Broadcast page</a> provides a means to stream video and audio. Once you have started a Broadcast, invite a friend to Subscribe using a web browser or any device with a <a href="https://github.com/red5pro?utf8=✓&q=streaming&type=&language=" target="_blank" class="card-link card-link_page" style="margin-left: 0!important">native application</a> integrated with the Red5 Pro SDKs!</p>
+              <div class="content-section_card_tray">
+                <p class="content-section_card_link"><a class="card-link" href="broadcast.jsp?host=<%= ip %>">Start a Broadcast now!&nbsp;</a></p>
+              </div>
             </div>
           </div>
           <div class="content-section_card">
             <h2 class="content-section_card_title"><a class="card-link" href="subscribe.jsp?host=<%= ip %>">Subscribe to a Stream</a></h2>
             <p>We have provided an easy way to Subscribe to a Red5 Pro Broadcast session.</p>
-            <p class="content-section_card_message"></p>The <a class="card-link card-link_page" href="subscribe.jsp?host=<%= ip %>">Subscribe page</a> provides a list of Broadcast stream names. Select the desired stream to subscribe to and start watching!</p>
-            <div class="content-section_card_tray">
-              <p class="content-section_card_link"><a class="card-link" href="subscribe.jsp?host=<%= ip %>">Start Subscribing Now!&nbsp;</a><img decoding="async" loading="lazy" src="images/white-arrow.svg" data-src="" alt="" width="16" height="16"></p>
+            <div class="content-section_card_info">
+              <p class="content-section_card_message">The <a class="card-link card-link_page" href="subscribe.jsp?host=<%= ip %>">Subscribe page</a> provides a list of Broadcast stream names. Select the desired stream to subscribe to and start watching!</p>
+              <div class="content-section_card_tray">
+                <p class="content-section_card_link"><a class="card-link" href="subscribe.jsp?host=<%= ip %>">Start Subscribing Now!&nbsp;</a></p>
+              </div>
             </div>
           </div>
-          {{> web-applications }}
-          {{> mobile-applications }}
         </div>
-        <hr class="top-padded-rule" />
         {{> additional_info }}
       </div>
     </div>
@@ -71,6 +77,6 @@
        }(this, document));
     </script>
     <script src="script/r5pro-utils.js"></script>
-    {{> footer }}
+    <!-- {{> footer }} -->
   </body>
 </html>

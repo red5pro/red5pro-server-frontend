@@ -290,7 +290,6 @@ h2 {
   font-weight: 400;
   line-height: 1.5em;
   /* color: #3b3b3b; */
-  text-transform: uppercase;
   margin-bottom: 20px !important;
 }
 
@@ -298,7 +297,6 @@ h3 {
   font-weight: 400;
   line-height: 1.5em;
   color: var(--color-red5);
-  text-transform: uppercase;
 }
 
 input[type='text'] {
@@ -320,11 +318,15 @@ input[type='text'] {
   background-color: #1b1b1b;
 }
 
-.form-button a:hover {
+.form-button:hover {
   text-decoration: underline;
   text-decoration-style: dotted;
   background-color: #fff;
   color: #0c0c0c !important;
+}
+
+.license-info {
+  margin-top: 20px;
 }
 
 .warning {
@@ -718,6 +720,12 @@ a.link:hover {
   row-gap: 20px;
 }
 
+.content-section_card {
+  font-family: 'Clash Grotesk';
+  display: flex;
+  flex-direction: column;
+}
+
 .content-section_card_download_link > a {
   color: var(--color-red5);
 }
@@ -738,26 +746,37 @@ a.link:hover {
 }
 
 .content-section-story > .content-section_card {
-  width: 30%;
+  width: 45%;
   padding: 16px;
-  border: 1px solid #ddd;
 }
 
-.content-section_card_tray {
-  margin-top: 40px;
+.content-section-story > .content-section_card.content-section_card_small {
+  width: 30%;
+}
+
+.content-section_card_info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 2;
+}
+
+.content-section_card_message {
+  color: var(--color-lightgray);
+  font-weight: 400;
+  font-size: 1em;
 }
 
 .content-section_card_link {
-  text-transform: uppercase;
   display: flex;
   flex-direction: row;
   column-gap: 10px;
-  font-size: 0.8rem;
 }
 
 .card-link {
   text-decoration: none;
-  color: #fff;
+  font-weight: 400;
+  color: var(--global--color-white);
 }
 
 .card-link:hover {
@@ -798,7 +817,7 @@ a.link:hover {
 }
 
 .bold {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .heading-title {
@@ -853,6 +872,12 @@ a.link:hover {
   }
   #server-version-field {
     float: right;
+  }
+}
+
+@media (max-width: 995px) {
+  .content-section-story > .content-section_card {
+    width: 45%;
   }
 }
 

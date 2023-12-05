@@ -23,12 +23,14 @@
         </div>
         <hr class="top-padded-rule">
         <div class="content-section-story">
-          <div class="content-section_card">
+          <div class="content-section_card content-section_card_small">
             <p class="content-section_card_graphic"><img decoding="async" loading="lazy" src="images/live.svg" data-src="" alt="" width="104" height="84"></p>
             <h3 class="content-section_card_title"><a class="card-link" href="/live">Live Streaming</a></h2>
-            <p class="content-section_card_message">Add live video, audio and data streaming to your app with just a few lines of code.</p>
-            <div class="content-section_card_tray">
-              <p class="content-section_card_link"><a class="card-link" href="/live/broadcast.jsp?host=<%= ip %>">Start a Broadcast Now&nbsp;<img decoding="async" loading="lazy" src="images/arrow_left.svg" data-src="" alt="" width="12" height="12"></a></a></p>
+            <div class="content-section_card_info">
+              <p class="content-section_card_message">Add live video, audio and data streaming to your app with just a few lines of code.</p>
+              <div class="content-section_card_tray">
+                <p class="content-section_card_link"><a class="card-link" href="/live/broadcast.jsp?host=<%= ip %>">Start a Broadcast Now</a></p>
+              </div>
             </div>
           </div>
           {{> web-applications }}
