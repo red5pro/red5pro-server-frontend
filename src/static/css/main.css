@@ -265,7 +265,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 body {
   margin: 0;
-  font-family: 'Clash Grotesk';
+  font-family: 'Clash Grotesk'!important;
   font-size: 1rem;
   color: var(--color-offwhite);
   background-color: var(--color-black)!important;
@@ -279,11 +279,11 @@ p {
 }
 
 h1 {
-  font-weight: 500;
+  font-weight: 400!important;
   line-height: 1.5em;
   /* color: #3b3b3b; */
-  text-transform: uppercase;
-  margin-bottom: 40px !important;
+  /* text-transform: uppercase; */
+  margin-bottom: 20px !important;
 }
 
 h2 {
@@ -405,6 +405,9 @@ a.link:hover {
   padding: 10px 30px 10px 30px;
   font-family: 'Clash Grotesk';
   font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
 }
 
 .header-link:hover {
@@ -569,9 +572,9 @@ a.link:hover {
 
 .menu-listing {
   list-style: none;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding: 10px 0;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding: 0px;
   border-radius: 5px;
 }
 
@@ -644,7 +647,7 @@ a.link:hover {
 }
 
 .menu-listing-internal {
-  font-weight: 400;
+  font-weight: 500;
   color: var(--global--color-white);
 }
 
@@ -670,6 +673,7 @@ a.link:hover {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  padding-top: 40px;
   padding-bottom: 40px;
   background-color: #0c0c0c;
   color: #fff;
@@ -695,7 +699,6 @@ a.link:hover {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  margin-top: 60px;
 }
 
 #subcontent-section-text {
