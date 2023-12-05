@@ -265,7 +265,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 body {
   margin: 0;
-  font-family: 'Clash Grotesk';
+  font-family: 'Clash Grotesk'!important;
   font-size: 1rem;
   color: var(--color-offwhite);
   background-color: var(--color-black)!important;
@@ -279,18 +279,17 @@ p {
 }
 
 h1 {
-  font-weight: 500;
+  font-weight: 400!important;
   line-height: 1.5em;
   /* color: #3b3b3b; */
-  text-transform: uppercase;
-  margin-bottom: 40px !important;
+  /* text-transform: uppercase; */
+  margin-bottom: 20px !important;
 }
 
 h2 {
   font-weight: 400;
   line-height: 1.5em;
   /* color: #3b3b3b; */
-  text-transform: uppercase;
   margin-bottom: 20px !important;
 }
 
@@ -298,7 +297,6 @@ h3 {
   font-weight: 400;
   line-height: 1.5em;
   color: var(--color-red5);
-  text-transform: uppercase;
 }
 
 input[type='text'] {
@@ -320,11 +318,15 @@ input[type='text'] {
   background-color: #1b1b1b;
 }
 
-.form-button a:hover {
+.form-button:hover {
   text-decoration: underline;
   text-decoration-style: dotted;
   background-color: #fff;
   color: #0c0c0c !important;
+}
+
+.license-info {
+  margin-top: 20px;
 }
 
 .warning {
@@ -405,6 +407,9 @@ a.link:hover {
   padding: 10px 30px 10px 30px;
   font-family: 'Clash Grotesk';
   font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
 }
 
 .header-link:hover {
@@ -569,9 +574,9 @@ a.link:hover {
 
 .menu-listing {
   list-style: none;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding: 10px 0;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding: 0px;
   border-radius: 5px;
 }
 
@@ -601,7 +606,21 @@ a.link:hover {
   border-right: 1px solid;
 }
 
-.menu-listing-button {
+.menu-listing-button > a {
+  display: block;
+  padding: 5px 0px;
+  z-index: 1;
+  position: relative;
+  text-decoration: none;
+  color: var(--color-lightgray)!important;
+}
+
+.menu-listing-button > a:hover {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+/* .menu-listing-button {
   margin-top: 20px;
 }
 
@@ -619,26 +638,35 @@ a.link:hover {
   text-decoration-style: dotted;
   background-color: #fff;
   color: #0c0c0c !important;
-}
+} */
 
 .menu-sublisting {
   padding: 0;
 }
 
 .menu-sublisting li a {
-  padding-left: 40px;
+  /* padding-left: 40px; */
 }
 
 .menu-listing-internal {
-  font-weight: 400;
+  font-weight: 500;
+  color: var(--global--color-white);
 }
 
 .menu-listing-external {
   font-weight: 400;
+  color: var(--global--color-white);
 }
 
 .menu-listing-nested {
   font-weight: normal;
+  color: var(--color-lightgray)!important;
+}
+
+.welcome-menu-listing {
+  font-family: "IBM Plex Mono", sans-serif;
+  color: var(--color-lightgray)!important;
+  text-transform: uppercase;
 }
 
 /* /MENU */
@@ -647,6 +675,7 @@ a.link:hover {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  padding-top: 40px;
   padding-bottom: 40px;
   background-color: #0c0c0c;
   color: #fff;
@@ -656,7 +685,7 @@ a.link:hover {
   order: 1;
   flex: 2;
   border-radius: 4px;
-  max-width: 260px;
+  max-width: 270px;
   height: 100%;
   padding-bottom: 10px;
 }
@@ -672,7 +701,6 @@ a.link:hover {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  margin-top: 60px;
 }
 
 #subcontent-section-text {
@@ -692,41 +720,63 @@ a.link:hover {
   row-gap: 20px;
 }
 
+.content-section_card {
+  font-family: 'Clash Grotesk';
+  display: flex;
+  flex-direction: column;
+}
+
 .content-section_card_download_link > a {
   color: var(--color-red5);
 }
 
+.content-section_card_download_link > a:hover {
+  color: var(--color-gray);
+}
+
 .content-section_card_graphic {
   width: 100%;
-  text-align: center;
   margin-bottom: 40px;
 }
 
 .content-section_card_title {
   margin-bottom: 20px;
+  font-weight: 400;
+  font-family: 'Clash Grotesk';
 }
 
 .content-section-story > .content-section_card {
   width: 45%;
   padding: 16px;
-  border: 1px solid #ddd;
 }
 
-.content-section_card_tray {
-  margin-top: 40px;
+.content-section-story > .content-section_card.content-section_card_small {
+  width: 30%;
+}
+
+.content-section_card_info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 2;
+}
+
+.content-section_card_message {
+  color: var(--color-lightgray);
+  font-weight: 400;
+  font-size: 1em;
 }
 
 .content-section_card_link {
-  text-transform: uppercase;
   display: flex;
   flex-direction: row;
   column-gap: 10px;
-  font-size: 0.8rem;
 }
 
 .card-link {
   text-decoration: none;
-  color: #fff;
+  font-weight: 400;
+  color: var(--global--color-white);
 }
 
 .card-link:hover {
@@ -736,6 +786,15 @@ a.link:hover {
 .card-link_page {
   text-decoration: underline!important;
   text-decoration-style: dotted!important;
+}
+
+.additional-info {
+  margin-top: 40px;
+  font-family: 'Clash Grotesk';
+  font-size: 1em;
+  font-weight: 400;
+  color: var(--color-lightgray);
+  line-height: 24px;
 }
 
 /* GENERIC */
@@ -758,7 +817,7 @@ a.link:hover {
 }
 
 .bold {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .heading-title {
@@ -813,6 +872,12 @@ a.link:hover {
   }
   #server-version-field {
     float: right;
+  }
+}
+
+@media (max-width: 995px) {
+  .content-section-story > .content-section_card {
+    width: 45%;
   }
 }
 
