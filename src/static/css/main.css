@@ -883,6 +883,9 @@ a.link:hover {
   .content-section-story > .content-section_card {
     width: 45%;
   }
+  .content-section-story > .content-section_card.content-section_card_small {
+    width: 45%;
+  }
 }
 
 @media (max-width: 767px) {
