@@ -73,8 +73,7 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> header }}
-    <div class="main-container">
+    <div class="main-container container">
       <div id="menu-section">
         {{> menu }}
       </div>
@@ -82,6 +81,8 @@
         <div id="subcontent-section">
           <div id="subcontent-section-text">
             <h1>Live Broadcast For Any Screen</h1>
+            {{> header }}
+            <hr class="top-padded-rule">
             <p class="heading-title">To start a Broadcast:
               <ol>
                 <li>Allow browser access to device(s)</li>
@@ -93,7 +94,6 @@
             <p>Select <span class="bold">Enable Recording</span> to save your broadcast for Video on Demand playback!<br/><span class="small-font-size">To view the current Video On Demand (VOD) files on your server, visit the <a class="card-link card-link_page" href="playback.jsp" target="_blank">Playback</a> page.</span></p>
           </div>
         </div>
-        <hr class="top-padded-rule">
         <% if (is_stream_manager) { %>
           <p class="stream-manager-notification">USING STREAM MANAGER</p>
           <hr class="top-padded-rule" style="margin-top: 0">
@@ -141,12 +141,6 @@
             </div>
           </div>
         </div>
-        <hr class="top-padded-rule" />
-        <div class="content-section-story">
-          {{> web-applications }}
-          {{> mobile-applications }}
-        </div>
-        <hr class="top-padded-rule" />
         {{> additional_info }}
       </div>
     </div>
@@ -178,6 +172,6 @@
     <script src="script/r5pro-utils.js"></script>
     <script src="script/r5pro-sm-utils.js"></script>
     <script src="script/r5pro-publisher-failover.js"></script>
-    {{> footer }}
+    <!-- {{> footer }} -->
    </body>
 </html>

@@ -1,53 +1,65 @@
-'use strict';
+'use strict'
 
-var path = require('path');
-var del = require('del');
-var chalk = require('chalk');
-var exec = require('child_process').exec;
-var Promise = require('bluebird');
+var path = require('path')
+var del = require('del')
+var chalk = require('chalk')
+var exec = require('child_process').exec
+var Promise = require('bluebird')
 
-var log = require([__dirname, 'log'].join(path.sep));
+var log = require([__dirname, 'log'].join(path.sep))
 
-var move = function(options) {
-  return new Promise(function(resolve, reject) {
-    var outDir = chalk.magenta(options.outDir);
-    var toDir = chalk.magenta(options.toDir);
-    log(chalk.white('Moving ' + outDir + ' to ' + toDir + '...'));
-    var child = exec(['mv', options.outDir, options.toDir].join(' '), options, function(err) {
-      if(err) {
-        reject(err);
+var move = function (options) {
+  return new Promise(function (resolve, reject) {
+    console.log('Moving Conf', JSON.stringify(options, null, 2))
+    var outDir = chalk.magenta(options.outDir)
+    var toDir = chalk.magenta(options.toDir)
+    log(chalk.white('Moving ' + outDir + ' to ' + toDir + '...'))
+    var child = exec(
+      ['mv', options.outDir, options.toDir].join(' '),
+      options,
+      function (err) {
+        if (err) {
+          reject(err)
+        } else {
+          resolve({
+            child: child,
+          })
+        }
       }
-      else {
-        resolve({
-          child: child
-        });
-      }
-    });
-    child.stdout.pipe(process.stdout);
-  });
-};
+    )
+    child.stdout.pipe(process.stdout)
+  })
+}
 
-var webapp = function(config, srcDirectory, libDirectory) {
-  var toDir = [srcDirectory, 'webapps', config.webappName].join(path.sep);
-  log(chalk.yellow('Removing previous webapp build at ' + toDir + '...'));
-  del.sync(toDir, {force: true});
+var webapp = function (config, srcDirectory, libDirectory) {
+  console.log('Incoming Conf', JSON.stringify(config, null, 2))
+  var toDir = [srcDirectory, 'webapps', config.webappName].join(path.sep)
+  log(chalk.yellow('Removing previous webapp build at ' + toDir + '...'))
+  del.sync(toDir, { force: true })
   return move({
     cwd: config.workspace,
     name: config.name,
-    outDir: config.webappOutput,
+    outDir: config.webappOutput || config.webappName,
     toDir: toDir,
-    toLibDir: libDirectory
-  });
-};
+    toLibDir: libDirectory,
+  })
+}
 
-var all = function(webapps, srcDirectory) {
-  log(chalk.yellow('Moving built webapps...'));
-  return Promise.each(webapps, function(config) {
-    return webapp(config, srcDirectory);
-  });
-};
+var all = function (webapps, srcDirectory) {
+  log(chalk.yellow('Moving built webapps...'))
+  return Promise.each(webapps, function (config) {
+    const children = config.children || undefined
+    if (children) {
+      return Promise.each(children, (c) => {
+        return webapp(c, srcDirectory)
+      })
+    } else {
+      return webapp(config, srcDirectory)
+    }
+  })
+}
 
 module.exports = {
   webapp: webapp,
-  all: all
-};
+  all: all,
+}
