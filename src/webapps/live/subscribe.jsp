@@ -75,7 +75,7 @@
   </head>
   <body>
     {{> top-bar }}
-    <div class="main-container">
+    <div class="main-container container">
       <div id="menu-section">
         {{> menu }}
       </div>
