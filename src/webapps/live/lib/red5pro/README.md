@@ -1,5 +1,5 @@
 <h3 align="center">
-  <img src="assets/red5pro_logo.png" alt="Red5 Pro Logo" />
+  <img src="assets/Red5_Truetime_black.png" alt="Red5 Pro Logo" height="65" />
 </h3>
 <p align="center">
   <a href="PUBLISHER_README.md">publisher</a> &bull;
