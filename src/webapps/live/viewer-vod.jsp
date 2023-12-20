@@ -10,15 +10,15 @@
     String tech=null;
 
     if (request.getParameter("app") != null) {
-      app = request.getParameter("app");
+      app = URLEncoder.encode(request.getParameter("app"), "UTF-8");
     }
 
     if (request.getParameter("host") != null) {
-      host = request.getParameter("host");
+      host = URLEncoder.encode(request.getParameter("host"), "UTF-8");
     }
 
     if (request.getParameter("stream") != null) {
-      stream = request.getParameter("stream");
+      stream = URLEncoder.encode(request.getParameter("stream"), "UTF-8");
     }
 
     if (request.getParameter("buffer") != null) {
@@ -49,8 +49,10 @@
     </head>
     <body>
       {{> top-bar }}
-      {{> header }}
-      <div id="viewer-section">
+      <div class="container">
+        {{> header }}
+      </div>
+      <div id="viewer-section container">
         <div id="subcontent-section" style="margin-top: 20px!important;">
           <div id="subcontent-section-text">
             <h1 style="text-align:center;color:#fff">VOD Subscribing to: <span style="text-transform: none;color:#dbdbdb;"><%=stream%></span></h1>
@@ -118,6 +120,6 @@
       <script src="script/r5pro-sm-utils.js"></script>
       <script src="script/r5pro-autoplay-utils.js"></script>
       <script src="script/r5pro-viewer-vod-failover.js"></script>
-      {{> footer }}
+      <!-- {{> footer }} -->
     </body>
 </html>

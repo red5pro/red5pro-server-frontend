@@ -1,3 +1,7 @@
+<h3 align="center">
+  <img src="assets/Red5_Truetime_black.png" alt="Red5 Pro Logo" height="65" />
+</h3>
+
 # Red5 Pro Server Front-End
 
 This project is the front-end facing default **webapps** pages distributed with the Red5 Pro Server.

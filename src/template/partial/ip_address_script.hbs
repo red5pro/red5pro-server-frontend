@@ -64,7 +64,7 @@
     isValid = isValid && value !== undefined;
     isValid = isValid && value !== "null";
     isValid = isValid && value !== "undefined";
-    return isValid ? value : null;
+    return isValid ? value : window.location.hostname;
   };
   var fillInIpSuggestions = function(currentIp) {
     var items = [];
@@ -73,7 +73,7 @@
       if(value !== null && currentIp !== value) {
       items.push('<tr>' +
           '<td>' +
-            '<a class="red-text ip-suggestion-link" href="#">' +
+            '<a class="red-text ip-suggestion-link header-link" href="#">' +
               value +
             '</a>' +
           '</td>' +
