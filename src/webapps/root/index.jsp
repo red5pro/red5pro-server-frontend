@@ -16,7 +16,7 @@
       <div id="content-section">
         <div id="subcontent-section">
           <div id="subcontent-section-text">
-            <h1>Red5 Pro Server?</h1>
+            <h1>Red5 Pro Server</h1>
             <p class="heading-title">With Red5 TrueTime Solutions™, deliver interactive, sub-250 millisecond latency to millions and go beyond the expected. This is faster than humans can perceive; it’s video at the speed of thought.</p>
           </div>
           {{> header }}
