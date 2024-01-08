@@ -9,7 +9,7 @@
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "epic/NORWEGIAN"
+    "branch": "bug/so_color_RED5DEV-1088"
   },
   "truetime": {
     "datasync": {
