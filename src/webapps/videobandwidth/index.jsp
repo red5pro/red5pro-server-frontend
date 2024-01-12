@@ -98,18 +98,18 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> header }}
-    <div class="main-container">
+    <div class="main-container container">
       <div id="menu-section">
         {{> menu }}
       </div>
       <div id="content-section">
         <div id="subcontent-section">
           <div id="subcontent-section-text">
-            <h1>RED5 PRO VIDEO BANDWIDTH DETECTION</h1>
+            <h1>Video Bandwidth Detection</h1>
           </div>
         </div>
-        <div>
+        {{> header }}
+        <div style="margin-top: 20px">
           <form class="form" action="javascript:" method="post">
             <div class="form-entry form--red5pro">
               <label for="form--red5pro-input">Red5 Pro Server:</label>
@@ -167,14 +167,6 @@
             </div>
           </div>
         </div>
-        <hr class="top-padded-rule">
-        <div class="content-section-story" style="margin-top: 20px;">
-          <hr class="top-padded-rule">
-          {{> web-applications }}
-          <hr class="top-padded-rule">
-          {{> mobile-applications }}
-        </div>
-        <hr class="top-padded-rule">
         {{> additional_info }}
       </div>
     </div>

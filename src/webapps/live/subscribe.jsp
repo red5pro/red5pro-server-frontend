@@ -75,8 +75,7 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> header }}
-    <div class="main-container">
+    <div class="main-container container">
       <div id="menu-section">
         {{> menu }}
       </div>
@@ -87,7 +86,7 @@
             <p class="heading-title">Below you will find the list of current live streams to subscribe to.
           </div>
         </div>
-        <hr class="top-padded-rule">
+        {{> header }}
         <% if (is_stream_manager) { %>
           <p class="stream-manager-notification">USING STREAM MANAGER</p>
         <% } %>
@@ -95,16 +94,11 @@
           {{> filter-section target='stream-menu-content'}}
           <div class="stream-menu-content">
             <h2 class="red-text">No streams found</h2>
+            <hr class="top-padded-rule">
             <p style="margin-top: 20px;">You can begin a Broadcast session by visiting the <a class="broadcast-link card-link card-link_page" href="broadcast.jsp?host=<%= ip %>" target="_blank">Broadcast page</a>.</p>
-            <p class="small-font-size">Once a Broadcast session is started, return to this page to see the stream name listed.</p>
+            <p class="heading-title small-font-size">Once a Broadcast session is started, return to this page to see the stream name listed.</p>
           </div>
         </div>
-        <hr class="top-padded-rule" />
-        <div class="content-section-story">
-          {{> web-applications }}
-          {{> mobile-applications }}
-        </div>
-        <hr class="top-padded-rule" />
         {{> additional_info }}
       </div>
     </div>
@@ -134,6 +128,6 @@
     <script src="script/r5pro-filter-input.js"></script>
     <script src="script/r5pro-playback-block.js"></script>
     <script src="script/r5pro-subscriber-failover.js"></script>
-    {{> footer }}
+    <!-- {{> footer }} -->
   </body>
 </html>
