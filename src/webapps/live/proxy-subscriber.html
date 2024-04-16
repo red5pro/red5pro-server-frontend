@@ -639,8 +639,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         }
         window.addEventListener('pagehide', shutdown)
         window.addEventListener('beforeunload', shutdown)
-        window.subscriberLog = function (message) {
-          console.log('[RTMPSubscriber] :: ' + message)
+        window.subscriberLog = (message) => {
+          console.log('[Subscriber] :: ' + message)
         }
 
         start()
