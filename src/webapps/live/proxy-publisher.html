@@ -443,7 +443,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         console.log(
           '%c [ EXAMPLE ] ' +
             '%c   : ' +
-            '%c proxy-publisher.html?host=myred5proserver.com&protocol=https&port=43&app=live&streamName=mystream&verbose=1  ',
+            '%c proxy-publisher.html?host=myred5proserver.com&protocol=https&port=443&app=live&streamName=mystream&verbose=1  ',
           'background: #222; color: #ebefd0',
           'background: #fff; color: #222',
           'background: #d0efd2; color: #222'
@@ -495,7 +495,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var app = getParameterByName('app') || 'live'
         var streamManagerAPI = getParameterByName('api') || 'v1'
         var nodeGroup = getParameterByName('nodeGroup') || 'default'
-        var streamName = getParameterByName('streamName') || 'stream1'
+        var streamName = getParameterByName('streamName')
         var isSecure = protocol === 'https'
         var smProtocol = protocol
         var smPort = isSecure ? '' : '5080'
