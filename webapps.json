@@ -5,10 +5,27 @@
   },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
-    "branch": "epic/MANX"
+    "branch": "epic/RAGDOLL"
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "epic/MANX"
+    "branch": "epic/RAGDOLL"
+  },
+  "truetime": {
+    "datasync": {
+      "parent": "truetime",
+      "repositoryUrl": "git@github.com:red5pro/truetime-datasync.git",
+      "branch": "main"
+    },
+    "multiview": {
+      "parent": "truetime",
+      "repositoryUrl": "git@github.com:red5pro/truetime-multiview.git",
+      "branch": "main"
+    },
+    "studio": {
+      "parent": "truetime",
+      "repositoryUrl": "git@github.com:red5pro/truetime-watchparty.git",
+      "branch": "epic/watchparty-studio"
+    }
   }
 }

@@ -41,8 +41,7 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> header }}
-    <div class="main-container">
+    <div class="main-container container">
       <div id="menu-section">
         {{> menu }}
       </div>
@@ -50,12 +49,13 @@
         <div id="subcontent-section">
           <div id="subcontent-section-text">
             <h1>Video on Demand For Any Screen</h1>
+            {{> header }}
+            <hr class="top-padded-rule">
             <p class="heading-title">Below you will find the list of recorded streams to playback.</p>
             <p class="notify-callout">You can record a Broadcast session by visiting the <a class="card-link card-link_page" href="broadcast.jsp?host=<%=ip%>" target="_blank">Broadcast page</a> and checking the <span class="bold">Enable Recording</span> button.<br/><span class="small-font-size">After the Broadcast is started and stopped, the Video On Demand (VOD) recording will be available. Return to this page to see the stream name listed.</span></p>
             <p class="small-font-size"><strong>Note:</strong> Due to the sunsetting of Flash Player in browsers, playback of FLV files is now limited to copying links for the Flash-based files in order to playback videos in your preferred supported software (e.g., <span><a href="https://www.videolan.org/vlc/" target="_blank" class="link">VLC</a></span>). Note that the "Copy to Clipboard" function below requires a secure page.</p>
           </div>
         </div>
-        <hr class="top-padded-rule">
         <% if (is_stream_manager) { %>
           <p class="stream-manager-notification">USIN STREAM MANAGER</p>
         <% } %>
