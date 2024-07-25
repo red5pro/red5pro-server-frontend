@@ -5,11 +5,11 @@
   },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
-    "branch": "epic/RAGDOLL"
+    "branch": "epic/SIAMESE"
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "hotfix/h264_sdp_RED5DEV-1247"
+    "branch": "epic/SIAMESE"
   },
   "truetime": {
     "datasync": {
