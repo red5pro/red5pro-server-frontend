@@ -9,7 +9,7 @@
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "epic/ERKETU"
+    "branch": "feature/AUTO-370"
   },
   "truetime": {
     "datasync": {
