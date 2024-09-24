@@ -9,7 +9,7 @@
   },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "epic/LAB"
+    "branch": "feature/so_remove_RED5DEV-1303"
   },
   "truetime": {
     "datasync": {
