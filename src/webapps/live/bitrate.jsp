@@ -4,10 +4,7 @@
 					com.red5pro.override.ProStream,
 					org.springframework.web.context.WebApplicationContext,
 					com.infrared5.red5pro.live.Red5ProLive,					
-					com.google.gson.*"%>
-					
-					
-<% 
+					com.google.gson.*"%><% 
 
 	String path = "live";
 
@@ -28,6 +25,7 @@
 	ProStream stream = (ProStream) app.getStream(path, name);
 	if(stream!=null){
 		double bitrate  = stream.getAverageVideoBitrate();
+		ret.addProperty("kilobitrate", bitrate/1024);
 		ret.addProperty("bitrate", bitrate);
 		ret.addProperty("byterate",bitrate/8.0 );
 	}
