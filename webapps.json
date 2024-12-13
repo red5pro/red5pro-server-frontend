@@ -1,8 +1,4 @@
 {
-  "r5pro-inspector": {
-    "repositoryUrl": "git@github.com:infrared5/automation.git",
-    "branch": "develop"
-  },
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
     "branch": "epic/MASTIFF"
