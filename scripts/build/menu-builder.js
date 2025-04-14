@@ -1,41 +1,65 @@
-'use strict';
+'use strict'
 
-var path = require('path');
-var chalk = require('chalk');
-var fileReplace = require('replace');
-var Promise = require('bluebird');
+var path = require('path')
+var chalk = require('chalk')
+var fileReplace = require('replace')
+var Promise = require('bluebird')
 
-var log = require([__dirname, 'log'].join(path.sep));
-var menuListItemTemplate = '<li><a class="red-text menu-listing-internal" href="/$webappName">$title</a></li>';
-var insertLineRegex = '<!-- webapps -->';
+var log = require([__dirname, 'log'].join(path.sep))
+var menuListItemTemplate =
+  '<hr class="menu-hr"><li><a class="menu-listing-internal" href="/$webappName/">$title</a></li>'
+var insertLineRegex = '<!-- webapps -->'
+const ttMenuListItemTemplate =
+  '<li><a class="menu-listing-nested" href="/$webappName/?intro=true">$title&nbsp;<img decoding="async" loading="lazy" src="images/arrow_left.svg" data-src="" alt="" width="12" height="12"></a></li>'
+const insertTrueTimeRegex = '<!-- truetime apps -->'
 
-var updateMenuListing = function(menuListItems) {
-  log(chalk.yellow('Updating menu listing.'));
-  return new Promise(function(resolve, reject) {
+var updateMenuListing = function (regex, menuListItems) {
+  log(chalk.yellow('Updating menu listing.'))
+  return new Promise(function (resolve, reject) {
     try {
-        fileReplace({
-          regex: insertLineRegex,
-          replacement: menuListItems.join(''),
-          paths: [[process.cwd(), 'src', 'template', 'partial', 'menu.hbs'].join(path.sep)],
-          recursive: false,
-          silent: false
-        });
-        resolve();
-      }
-      catch(e) {
-        reject(e)
-      }
-  });
-};
+      fileReplace({
+        regex,
+        replacement: menuListItems.join(''),
+        paths: [
+          [process.cwd(), 'src', 'template', 'partial', 'menu.hbs'].join(
+            path.sep
+          ),
+        ],
+        recursive: false,
+        silent: false,
+      })
+      resolve()
+    } catch (e) {
+      reject(e)
+    }
+  })
+}
 
 module.exports = {
-  update: function(webapps) {
-    var items = webapps.filter(function (config) { return config.title.length > 0 });
-    var menuListing = items.map(function(config) {
+  update: async (webapps) => {
+    const folded = webapps.map((config) => {
+      return config.children ? config.children : config
+    })
+    const flattened = folded.flat()
+    const items = flattened.filter(
+      (config) => config.title && config.title.length > 0
+    )
+    const menu = items.filter((config) => !config.parent)
+    const trueTimeMenu = items.filter(
+      (config) => config.parent && config.parent === 'truetime'
+    )
+    const trueTimeMenuListing = trueTimeMenu.map((config) => {
+      return ttMenuListItemTemplate
+        .replace('$webappName', config.webappName)
+        .replace('$title', config.title)
+    })
+    const menuListing = menu.map((config) => {
       return menuListItemTemplate
-              .replace('$webappName', config.webappName)
-              .replace('$title', config.title)
-    });
-    return updateMenuListing(menuListing);
-  }
-};
+        .replace('$webappName', config.webappName)
+        .replace('$title', config.title)
+    })
+    await updateMenuListing(insertLineRegex, menuListing)
+    await updateMenuListing(insertTrueTimeRegex, trueTimeMenuListing)
+    return true
+  },
+}

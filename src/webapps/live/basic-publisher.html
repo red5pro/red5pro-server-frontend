@@ -1,48 +1,48 @@
-<!doctype html>
+<!DOCTYPE html>
 <!-- Copyright © 2015 Infrared5, Inc. All rights reserved.
 
-The accompanying code comprising examples for use solely in conjunction with Red5 Pro (the "Example Code") 
-is  licensed  to  you  by  Infrared5  Inc.  in  consideration  of  your  agreement  to  the  following  
-license terms  and  conditions.  Access,  use,  modification,  or  redistribution  of  the  accompanying  
+The accompanying code comprising examples for use solely in conjunction with Red5 Pro (the "Example Code")
+is  licensed  to  you  by  Infrared5  Inc.  in  consideration  of  your  agreement  to  the  following
+license terms  and  conditions.  Access,  use,  modification,  or  redistribution  of  the  accompanying
 code  constitutes your acceptance of the following license terms and conditions.
 
-Permission is hereby granted, free of charge, to you to use the Example Code and associated documentation 
-files (collectively, the "Software") without restriction, including without limitation the rights to use, 
-copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+Permission is hereby granted, free of charge, to you to use the Example Code and associated documentation
+files (collectively, the "Software") without restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
 persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The Software shall be used solely in conjunction with Red5 Pro. Red5 Pro is licensed under a separate end 
-user  license  agreement  (the  "EULA"),  which  must  be  executed  with  Infrared5,  Inc.   
-An  example  of  the EULA can be found on our website at: https://account.red5pro.com/assets/LICENSE.txt.
+The Software shall be used solely in conjunction with Red5 Pro. Red5 Pro is licensed under a separate end
+user  license  agreement  (the  "EULA"),  which  must  be  executed  with  Infrared5,  Inc.
+An  example  of  the EULA can be found on our website at: https://account.red5.net/assets/LICENSE.txt.
 
 The above copyright notice and this license shall be included in all copies or portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,  INCLUDING  BUT  
-NOT  LIMITED  TO  THE  WARRANTIES  OF  MERCHANTABILITY, FITNESS  FOR  A  PARTICULAR  PURPOSE  AND  
-NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,  INCLUDING  BUT
+NOT  LIMITED  TO  THE  WARRANTIES  OF  MERCHANTABILITY, FITNESS  FOR  A  PARTICULAR  PURPOSE  AND
+NONINFRINGEMENT.   IN  NO  EVENT  SHALL INFRARED5, INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN  AN  ACTION  OF  CONTRACT,  TORT  OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
-<html lang=en>
+<html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width" />
     <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
     <script src="lib/screenfull/screenfull.min.js"></script>
-    <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
+    <link href="lib/red5pro/red5pro-media.css" rel="stylesheet" />
     <style>
       #prompt {
         text-align: center;
         padding: 10px;
       }
       .in-progress {
-        background-color: rgba(0, 0, 255, .2);
+        background-color: rgba(0, 0, 255, 0.2);
       }
       .success {
-        background-color: rgba(0, 255, 0, .2);
+        background-color: rgba(0, 255, 0, 0.2);
       }
       .failure {
-        background-color: rgba(255, 0, 0, .2);
+        background-color: rgba(255, 0, 0, 0.2);
       }
       #wrapper {
         width: 100%;
@@ -52,74 +52,153 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
   </head>
   <body>
     <div id="wrapper">
-      <video id="red5pro-publisher" width="640" height="480"
-             controls autoplay muted playsinline
-             class="red5pro-media red5pro-media-background">
-     </video>
+      <video
+        id="red5pro-publisher"
+        width="640"
+        height="480"
+        controls
+        autoplay
+        muted
+        playsinline
+        class="red5pro-media red5pro-media-background"
+      ></video>
     </div>
     <div id="prompt" class="in-progress">Connecting...</div>
     <script>
-      (function() {
-       console.log('------- USAGE --------');
-       console.log('');
-       console.log('This page is designed to establish a basic broadcast session using query params. You can provide query params in the URL in order to configure the session to your server deployment.');
-       console.log('The following query params are available:');
-       console.log('%c [host] ' + '%c       : hostname or IP. Default: `window.location.hostname`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [protocol] ' + '%c   : protocol which Stream Manager is served over (`http` or `https`). Default: `window.location.protocol`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [port] ' + '%c       : port number that Stream Maager is served on. Default: `window.location.port`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [app] ' + '%c        : webapp name to stream to on the server. Default: `live`', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [streamName] ' + '%c : The unique stream name to broadcast with. Required, no default.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [verbose] ' + '%c    : Flag to enable verbose logging in Dev Console. Optional.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('%c [view] ' + '%c       : Target broadcast tech (`rtc` or `rtmp`). Optional.', 'background: #222; color: #ebefd0', 'background: #fff; color: #222');
-       console.log('');
-       console.log('%c [ EXAMPLE ] ' + '%c   : ' + '%c basic-publisher.html?host=myred5proserver.com&protocol=https&port=43&app=live&streamName=mystream&verbose=1  ', 'background: #222; color: #ebefd0',  'background: #fff; color: #222', 'background: #d0efd2; color: #222');
-       console.log('');
-       console.log('----------------------');
-       console.log('%cIf this page is served from the `live` webapp of the Red5 Pro Server, the only param you are required to provide is `streamName`.', 'padding: 4px; line-height: 20px; background: #222; color: #ebefd0');
-       console.log('----------------------');
-      })();
+      ;(function () {
+        console.log('------- USAGE --------')
+        console.log('')
+        console.log(
+          'This page is designed to establish a basic broadcast session using query params. You can provide query params in the URL in order to configure the session to your server deployment.'
+        )
+        console.log('The following query params are available:')
+        console.log(
+          '%c [host] ' +
+            '%c       : hostname or IP. Default: `window.location.hostname`',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
+          '%c [protocol] ' +
+            '%c   : protocol which Stream Manager is served over (`http` or `https`). Default: `window.location.protocol`',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
+          '%c [port] ' +
+            '%c       : port number that Stream Maager is served on. Default: `window.location.port`',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
+          '%c [app] ' +
+            '%c        : webapp name to stream to on the server. Default: `live`',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
+          '%c [streamName] ' +
+            '%c : The unique stream name to broadcast with. Required, no default.',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
+          '%c [verbose] ' +
+            '%c    : Flag to enable verbose logging in Dev Console. Optional. 0 or 1.',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
+          '%c [audio] ' +
+            '%c   : Flag to include audio in the broadcast. Optional. 0 or 1.',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
+          '%c [video] ' +
+            '%c   : Flag to include video in the broadcast. Optional. 0 or 1.',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
+          '%c [whipwhep] ' +
+            '%c   : Flag to prefer WHIP client and not use a websocket for ICE negotiation. Optional. 0 or 1.',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
+          '%c [dc] ' +
+            '%c         : Flag to switch to DataChannel for communication. Optional.',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log('')
+        console.log(
+          '%c [ EXAMPLE ] ' +
+            '%c   : ' +
+            '%c basic-publisher.html?host=myred5proserver.com&protocol=https&port=43&app=live&streamName=mystream&verbose=1  ',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222',
+          'background: #d0efd2; color: #222'
+        )
+        console.log('')
+        console.log('----------------------')
+        console.log(
+          '%cIf this page is served from the `live` webapp of the Red5 Pro Server, the only param you are required to provide is `streamName`.',
+          'padding: 4px; line-height: 20px; background: #222; color: #ebefd0'
+        )
+        console.log('----------------------')
+      })()
     </script>
     <script src="lib/es6/es6-fetch.js"></script>
     <script src="lib/es6/es6-promise.min.js"></script>
     <script src="lib/red5pro/red5pro-sdk.min.js"></script>
+    <script src="script/basic-publisher.js"></script>
     <script>
-      (function (window, red5prosdk) {
-
-       // Easy access/parse query params.
-        function getParameterByName(name, url) { // eslint-disable-line no-unused-vars
+      ;(function (window, red5prosdk) {
+        // Easy access/parse query params.
+        function getParameterByName(name, url) {
+          // eslint-disable-line no-unused-vars
           if (!url) {
-            url = window.location.href;
+            url = window.location.href
           }
-          name = name.replace(/[\[\]]/g, "\\$&");
-          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-              results = regex.exec(url);
-          if (!results) return null;
-          if (!results[2]) return '';
-          return decodeURIComponent(results[2].replace(/\+/g, " "));
+          name = name.replace(/[\[\]]/g, '\\$&')
+          var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url)
+          if (!results) return null
+          if (!results[2]) return ''
+          return decodeURIComponent(results[2].replace(/\+/g, ' '))
         }
 
         // Set console log level.
         if (getParameterByName('verbose') === '1') {
-          red5prosdk.setLogLevel('debug');
-        }
-        else {
-          red5prosdk.setLogLevel('error');
+          red5prosdk.setLogLevel('debug')
+        } else {
+          red5prosdk.setLogLevel('error')
         }
 
         // Configuration params.
-        var protocol = getParameterByName('protocol') || window.location.protocol;
-        protocol = (protocol.indexOf(':') !== -1) ? protocol.substring(0, protocol.lastIndexOf(':')) : protocol;
-        var isSecure = protocol === 'https';
-        var port = getParameterByName('port') || (isSecure ? 443 : 5080);
-        var host = getParameterByName('host') || window.location.hostname;
-        var app = getParameterByName('app') || 'live';
-        var order = getParameterByName('view') || ['rtc', 'rtmp'];
-        var streamName = getParameterByName('streamName');
-        var videoWidth = getParameterByName('vw') || 640;
-        var videoHeight = getParameterByName('vh') || 480;
-        var frameRate = getParameterByName('fr') || 24;
-        var bandwidthAudio = getParameterByName('bwA') || 56;
-        var bandwidthVideo = getParameterByName('bwV') || 750;
+        var protocol =
+          getParameterByName('protocol') || window.location.protocol
+        protocol =
+          protocol.indexOf(':') !== -1
+            ? protocol.substring(0, protocol.lastIndexOf(':'))
+            : protocol
+        var isSecure = protocol === 'https'
+        var port = getParameterByName('port') || (isSecure ? 443 : 5080)
+        var host = getParameterByName('host') || window.location.hostname
+        var app = getParameterByName('app') || 'live'
+        var order = getParameterByName('view') || ['rtc', 'rtmp']
+        var streamName = getParameterByName('streamName')
+        var preferWhipWhep = getParameterByName('whipwhep') !== '0'
+        var enableDataChannel = getParameterByName('dc') !== '0'
+        var videoWidth = getParameterByName('vw') || 640
+        var videoHeight = getParameterByName('vh') || 480
+        var frameRate = getParameterByName('fr') || 24
+        var bandwidthAudio = getParameterByName('bwA') || 56
+        var bandwidthVideo = getParameterByName('bwV') || 750
+        var allowAudio = getParameterByName('audio') !== '0'
+        var allowVideo = getParameterByName('video') !== '0'
 
         var rtcConfig = {
           host: host,
@@ -129,84 +208,85 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           port: port,
           bandwidth: {
             video: parseInt(bandwidthVideo, 10),
-            audio: parseInt(bandwidthAudio, 10)
+            audio: parseInt(bandwidthAudio, 10),
           },
           mediaConstraints: {
-            video: { 
+            video: allowVideo && {
               width: { exact: parseInt(videoWidth, 10) },
               height: { exact: parseInt(videoHeight, 10) },
-              frameRate: { exact: parseInt(frameRate, 10) }
+              frameRate: { exact: parseInt(frameRate, 10) },
             },
-            audio: true
-          }
-        };
-        var rtmpConfig = {
-          host: host,
-          app: app,
-          streamName: streamName,
-          width: 640,
-          height: 480,
-          embedWidth: "100%",
-          embedHeight: 480,
-          backgroundColor: '#000000',
-          mediaConstraints: {
-            video: { 
-              width: { exact: videoWidth },
-              height: { exact: videoHeight }
-            },
-            audio: true
-          }
-        };
+            audio: allowAudio,
+          },
+          signalingSocketOnly: enableDataChannel,
+          enableChannelSignaling: enableDataChannel,
+        }
 
-        var publisher;
-        var failover;
-        var inFailedState = false;
+        var publisher
+        var inFailedState = false
 
         // Handle events from publisher.
-        function onPublisherEvent (event) {
-          console.log('[index.js] : Publisher Event - ' + event.type + '.');
-          displayPrompt(event.type);
+        function onPublisherEvent(event) {
+          console.log('[index.js] : Publisher Event - ' + event.type + '.')
+          displayPrompt(event.type)
         }
 
         // Update UI prompt display based on message.
-        function displayPrompt (message) {
+        function displayPrompt(message) {
           if (inFailedState) {
-            return;
+            return
           }
-          var prompt = document.getElementById('prompt');
-          prompt.innerText = message;
+          var prompt = document.getElementById('prompt')
+          prompt.innerText = message
           if (message === 'Publish.Start') {
-            prompt.classList.remove('in-progress');
-            prompt.classList.add('success');
-          }
-          else if (message === 'Publish.Fail' || message === 'Connect.Failure') {
-            prompt.classList.remove('in-progress');
-            prompt.classList.add('failure');
-            inFailedState = true;
+            prompt.classList.remove('in-progress')
+            prompt.classList.add('success')
+          } else if (message === 'Publish.Available') {
+            window.publisher = publisher
+          } else if (
+            message === 'Publish.Fail' ||
+            message === 'Connect.Failure'
+          ) {
+            prompt.classList.remove('in-progress')
+            prompt.classList.add('failure')
+            inFailedState = true
           }
         }
 
-        console.log('[rtc] : ' + JSON.stringify(rtcConfig, null, 2));
-        console.log('[rtmp] : ' + JSON.stringify(rtmpConfig, null, 2));
+        console.log('[rtc] : ' + JSON.stringify(rtcConfig, null, 2))
 
         // Establish a broadcast session.
-        failover = new red5prosdk.Red5ProPublisher()
-        failover.setPublishOrder(order)
-          .init({
-            rtmp: rtmpConfig,
-            rtc: rtcConfig
-          })
+        publisher = preferWhipWhep
+          ? new red5prosdk.WHIPClient()
+          : new red5prosdk.RTCPublisher()
+        publisher
+          .init(rtcConfig)
           .then(function (publisherImpl) {
-            publisher = publisherImpl;
-            publisher.on('*', onPublisherEvent);
-            publisher.publish();
+            publisher = publisherImpl
+            publisher.on('*', onPublisherEvent)
+            publisher.publish()
           })
           .catch(function (error) {
-            console.error(error);
-            displayPrompt('Publish.Fail');
-          });
+            console.error(error)
+            displayPrompt('Publish.Fail')
+            shutdown()
+          })
 
-      })(window, window.red5prosdk);
+        const shutdown = async () => {
+          if (publisher) {
+            try {
+              await publisher.unpublish()
+              publisher.off('*', onPublisherEvent)
+            } catch (e) {
+              console.error(e)
+            } finally {
+              publisher = null
+            }
+          }
+        }
+        window.addEventListener('pagehide', shutdown)
+        window.addEventListener('beforeunload', shutdown)
+      })(window, window.red5prosdk)
     </script>
   </body>
 </html>

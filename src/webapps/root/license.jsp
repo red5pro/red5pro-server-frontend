@@ -1,7 +1,7 @@
 {{> jsp_header }}
 <%@ page import="java.io.*,java.util.regex.*,java.nio.charset.Charset"%>
 <%
-  // error msg 
+  // error msg
   String errMessage = null;
   // check for license file in root dir
   File keyFile = new File(System.getenv("RED5_HOME"), "LICENSE.KEY");
@@ -71,39 +71,37 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> navigation }}
-    {{> header }}
-    <div class="container main-container">
+    <div class="main-container container">
       <div id="menu-section">
         {{> menu }}
       </div>
       <div id="content-section">
-        <div class="subcontent-section">
+        <div>
           <div>
-            <h1 class="red-text">Red5 Pro License Check</h1>
-          <% if (keyFileExists) { %>
-            <p class="bold">Your Red5 Pro Server is licensed.</p>
-          <% } else { %>
-            <hr class="top-padded-rule">
-            <p class="bold">If you are seeing this form, then your Red5 Pro Server is not yet licensed.</p>
-            <p>Enter your license key and click submit</p>
-            <div>
-              <form>
-                <input type="text" id="licenseKey" name="licenseKey" maxlength="19" />
-                <button class="form-button">Submit</button>
-              </form>
-              <% if (errMessage != null) { %>
-                <br />
-                <p class="warning"><%= errMessage %></p>
-              <% } %>
-            </div>
-          <% } %>
-            <hr class="top-padded-rule">
-            <p>If you are experiencing issues, <a class="link" href="https://red5pro.zendesk.com/?origin=webapps" target="_blank">please contact support.</a></p>
+            <h1>Red5 Pro License Check</h1>
+            <% if (keyFileExists) { %>
+              <p class="bold">Your Red5 Pro Server is licensed.</p>
+              {{> header }}
+            <% } else { %>
+              {{> header }}
+              <div class="license-info">
+                <p class="bold">If you are seeing this form, then your Red5 Pro Server is not yet licensed.</p>
+                <p>Enter your license key and click submit</p>
+                <div>
+                  <form style="display: flex; flex-direction: row; align-items: center;">
+                    <input type="text" id="licenseKey" name="licenseKey" maxlength="19" />
+                    <button class="form-button">Submit</button>
+                  </form>
+                    <br />
+                    <p class="warning"><%= errMessage %></p>
+                </div>
+              </div>
+            <% } %>
+            <p class="additional-info">If you are experiencing issues, <a class="card-link card-link_page" href="https://red5pro.zendesk.com/?origin=webapps" target="_blank">please contact support.</a></p>
           </div>
         </div>
       </div>
     </div>
-    {{> footer }}
+    <!-- {{> footer }} -->
   </body>
 </html>

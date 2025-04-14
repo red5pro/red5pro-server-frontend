@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8"%>
 <%@ page import="java.net.Inet4Address,java.net.URLConnection"%>
-<%@ page import="com.red5pro.server.secondscreen.net.NetworkUtil"%>
-<%@ page import="java.io.*,java.util.Map,java.util.ArrayList,java.util.regex.*,java.net.URL,java.nio.charset.Charset"%>
+<%@ page import="com.red5pro.server.util.NetworkManager"%>
+<%@ page import="java.io.*,java.net.URLEncoder,java.util.Map,java.util.ArrayList,java.util.regex.*,java.net.URL,java.nio.charset.Charset"%>
 <%
   String cookieStr = "";
   String cookieName = "storedIpAddress";
@@ -12,7 +12,7 @@
   String ip = null;
   String hostname = request.getServerName();
   String scheme = request.getScheme();
-  String localIp = NetworkUtil.getLocalIpAddress();
+  String localIp = NetworkManager.getLocalAddress();
   boolean ipExists = false;
   boolean isSecure = scheme == "https";
   String kvUrlParams = "";
@@ -20,7 +20,7 @@
   Map<String, String[]> parameters = request.getParameterMap();
   for(String parameter : parameters.keySet()) {
     if (!parameter.equals("")) {
-      kvUrlParams += parameter + "=" + request.getParameter(parameter) + delimiter;
+      kvUrlParams += parameter + "=" + URLEncoder.encode(request.getParameter(parameter), "UTF-8") + delimiter;
     }
   }
 
@@ -29,7 +29,7 @@
 
   // First check if provided as a query parameter...
   if(request.getParameter("host") != null) {
-    ip = request.getParameter("host");
+    ip = URLEncoder.encode(request.getParameter("host"), "UTF-8");
     host_success = "[Address Resolver] Host provided as query parameter.";
     // ip = addressPattern.matcher(ip).find() ? ip : null;
   }
@@ -57,8 +57,8 @@
     ip = localIp;
 
     if(ip == null) {// && addressPattern.matcher(ip).find()) {
-      // The IP returned from NetworkUtils is valid...
-      host_success = "[Address Resolver] Host provided from NetworkUtils.";
+      // The IP returned from NetworkManager is valid...
+      host_success = "[Address Resolver] Host provided from NetworkManager.";
     }
     else {
 
@@ -127,7 +127,7 @@
       File file = new File(path);
       reader = new FileReader(new File(file.getCanonicalPath()));
       BufferedReader br = new BufferedReader(reader);
-      String st; 
+      String st;
       while ((st = br.readLine()) != null) {
         Matcher matcher = pattern.matcher(st);
         if (matcher.find()) {
@@ -143,7 +143,7 @@
         try {
           reader.close();
         } catch (IOException e) {
-          // 
+          //
         }
       }
     }

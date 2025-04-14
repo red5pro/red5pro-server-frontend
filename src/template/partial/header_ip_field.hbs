@@ -3,30 +3,29 @@
 <div id="ip-field">
   <% if (ipExists) { %>
     <p>
-      <span class="black-text">Your streaming host address is:</span>&nbsp;&nbsp;<span id="ip-address-field" class="red-text medium-font-size"><%= ip %></span>
+      <span>Your streaming host address</span>
       <br/>
-      <span>
-        <a id="ip-overlay-button" class="blue-text small-font-size" href="#">Why would I need to know the host address?</a>
-      </span>
+      <span id="ip-address-field" class="ip-address-field medium-font-size"><%= ip %></span>&nbsp;&nbsp;
+      <span id="ip-overlay-button"><img src="images/copy_icon.svg" /></span>
     </p>
   <% } else { %>
-    <p><span class="black-text">Could not determine host address.</span></p>
+    <p><span>Could not determine host address.</span></p>
   <% } %>
 </div>
 
 <!-- Overlay explaining what the IP Address is used for. -->
 <div id="ip-overlay" class="hidden">
-  <p class="overlay-close-button"><a href="#" class="red-text">Close</a></p>
+  <p class="overlay-close-button"><a href="#" class="header-link red-text">Close</a></p>
   <p>This host address needs to be provided to applications integrating with the Red5 Pro SDKs.</p>
-  <p>If using the example projects from our <a id="header-github-link" class="link" href="https://github.com/red5pro?utf8=%E2%9C%93&q=streaming&type=&language=" target="_blank">Github</a>, you will enter this IP into the <strong>Host</strong> input field of the Settings menu.</p>
+  <p>If using the example projects from our <a id="header-github-link" class="link header-link" href="https://github.com/red5pro?utf8=%E2%9C%93&q=streaming&type=&language=" target="_blank">Github</a>, you will enter this IP into the <strong>Host</strong> input field of the Settings menu.</p>
   <hr>
-  <p class="top-nudge"><a id="ip-overlay-ip-incorrect-button" href="#" class="red-text">Not the correct host address?</a></p>
+  <p class="top-nudge"><a id="ip-overlay-ip-incorrect-button" href="#" class="header-link red-text">Not the correct host address?</a></p>
 </div>
 
 <!-- Overlay to allow User to update IP Address to be used. -->
 <div id="ip-address-overlay" class="hidden">
-  <p class="overlay-close-button"><a id="ip-overlay-close" href="#" class="red-text">Close</a></p>
-  <p class="bold">Do you think the server IP address above is incorrect?</p>
+  <p class="overlay-close-button"><a id="ip-overlay-close" href="#" class="header-link red-text">Close</a></p>
+  <p>Do you think the server IP address above is incorrect?</p>
   <div>
     <p>Select from the following suggestions:</p>
     <table id="ip-suggestions-table">
@@ -34,9 +33,9 @@
     </table>
   </div>
   <hr>
-  <p class="black-text"> Or enter in the correct address below:</p>
+  <p> Or enter in the correct address below:</p>
   <p id="ip-input-error-field" class="hidden red-text">Invalid IP address.</p>
-  <form style="display:flex;justify-content: space-evenly;">
+  <form style="display:flex;justify-content: space-evenly;column-gap:10px;padding:10px;box-sizing: border-box;flex-direction: column;row-gap: 10px;">
     <input id="ip-address-input-field" style="flex: 2;" type="text">
     <button id="ip-address-input-submit" class="form-button">submit</button>
   </form>

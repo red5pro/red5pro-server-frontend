@@ -13,9 +13,10 @@
 
 This document describes how to use the Red5 Pro WebRTC SDK to start a broadcast session.
 
-> Grab the lastest Red5 Pro WebRTC SDK [here](https://account.red5pro.com/download).
+> Grab the lastest Red5 Pro WebRTC SDK [here](https://account.red5.net/download).
 
 * [Requirements](#requirements)
+* [WHIP](#whip)
 * [WebRTC](#webrtc)
   * [Configuration Parameters](#webrtc-configuration-parameters)
   * [Example](#webrtc-example)
@@ -27,7 +28,39 @@ The **Red5 Pro WebRTC SDK** is intended to communicate with a [Red5 Pro Server](
 
 As such, you will need a distribution of the [Red5 Pro Server](https://www.red5pro.com/) running locally or accessible from the web, such as [Amazon Web Services](https://www.red5pro.com/docs/server/awsinstall/).
 
-> **[Click here to start using the Red5 Pro Server today!](https://account.red5pro.com/login)**
+> **[Click here to start using the Red5 Pro Server today!](https://account.red5.net/login)**
+
+# WHIP
+
+As of release `11.0.0`, the Red5 Pro WebRTC SDK supports [WHIP](https://www.ietf.org/archive/id/draft-ietf-wish-whip-01.html) to ingest/broadcast of streams!
+
+Creating a `WHIPClient` for publishing is very similar to `RTCPublisher` (as described later in [this document](#webrtc)), but allows for connection to go through HTTP/S instead of relying on a WebSocket.
+
+If you know the endpoint you are targeting and do not need any additional customization in the broadcast stream, establishing a WHIP broadcast is as simple as:
+
+```js
+const whipEndpoint = 'https://yourred5pro.com/live/whip/endpoint/stream1'
+const publisher = new WHIPClient(
+  whipEndpoint,
+  document.querySelector('#red5pro-publisher')
+)
+publisher.on('*', (event) => console.log(event))
+```
+
+However, if you want more control over the configuration of a broadcast stream, establish a `WHIPClient` similar to how you would have established an `RTCPublisher` in previous releases to `11.0.0`:
+
+```js
+const config = {
+  host: 'yourred5pro.com',
+  streamName: 'stream1',
+  ...more,
+}
+const publisher = await new WHIPClient().init(config)
+publisher.on('*', (event) => console.log(event))
+await publisher.publish()
+```
+
+> Read more from our [WHIP/WHEP documentation](WHIP_WHEP_README.md).
 
 # WebRTC
 
@@ -290,7 +323,7 @@ Be aware that overriding `onGetUserMedia` you are losing the logic from the Red5
 
 # Lifecycle Events
 
-This section describes the events dispatched from the Publisher of the Red5 Pro HTML SDK.
+This section describes the events dispatched from the Publisher of the Red5 Pro WebRTC SDK.
 
 * [Listening to Publisher Events](#listening-to-publisher-events)
 * [Common Events](#common-events)
@@ -328,7 +361,7 @@ The following sections of this document describe the event types that can also b
 
 ## Common Events
 
-The following events are common across all Publisher implementations from the Red5 Pro HTML SDK. They can be accessed from the global `red5prosdk` object from the `PublisherEventTypes` attribute.
+The following events are common across all Publisher implementations from the Red5 Pro WebRTC SDK. They can be accessed from the global `red5prosdk` object from the `PublisherEventTypes` attribute.
 
 | Access | Name | Meaning |
 | :--- | :---: | :--- |
@@ -364,4 +397,6 @@ The following events are specific to the `RTCPublisher` implementation and acces
 | DATA_CHANNEL_CLOSE | 'WebRTC.DataChannel.Close' | When the underlying `RTCDataChannel` is closed when `signalingSocketOnly` configuration is used. |
 | DATA_CHANNEL_ERROR | 'WebRTC.DataChannel.Error' | When an error has occurred within the underlying `RTCDataChannel` when `signalingSocketOnly` configuration is used. |
 | DATA_CHANNEL_MESSAGE | 'WebRTC.DataChannel.Message' | When a message has been delivered over the underlying `RTCDataChannel` when `signalingSocketOnly` configuration is used. |
+| UNSUPPORTED_FEATURE | 'WebRTC.Unsupported.Feature' | Notification that a feature attempting to use in WebRTC is not supported or available in the current browser that the SDK is being employed. e.g., [Insertable Streams](#insertable-streams). |
+| TRANSFORM_ERROR | 'WebRTC.Transform.Error' | An error has occurred while trying to apply transform to a media track. See [Insertable Streams](#insertable-streams)|
 

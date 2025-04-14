@@ -12,6 +12,7 @@
   Integer videoHeightMin = 480;
   Integer videoHeightMax = 480;
   Integer signalSocketOnly = 1;
+  Integer whipwhep = 1;
 
   if (request.getParameter("view") != null) {
     tech = request.getParameter("view");
@@ -52,6 +53,9 @@
   if (request.getParameter("dc") != null) {
     signalSocketOnly =  Integer.parseInt(request.getParameter("dc")) == 0 ? 0 : 1;
   }
+  if (request.getParameter("whipwhep") != null) {
+    whipwhep =  Integer.parseInt(request.getParameter("whipwhep")) == 0 ? 0 : 1;
+  }
 
 
 %>
@@ -69,17 +73,17 @@
   </head>
   <body>
     {{> top-bar }}
-    {{> navigation }}
-    {{> header }}
-    <div class="main-container">
+    <div class="main-container container">
       <div id="menu-section">
         {{> menu }}
       </div>
       <div id="content-section">
         <div id="subcontent-section">
           <div id="subcontent-section-text">
-            <h1 class="red-text">Live Broadcast For Any Screen</h1>
-            <p class="heading-title">To start a Broadcast: 
+            <h1>Live Broadcast For Any Screen</h1>
+            {{> header }}
+            <hr class="top-padded-rule">
+            <p class="heading-title">To start a Broadcast:
               <ol>
                 <li>Allow browser access to device(s)</li>
                 <li>Provide a <span class="bold">Stream Name</span></li>
@@ -87,66 +91,57 @@
                 <li>Click <span class="bold">Start Broadcast</span></li>
               </ol>
             </p>
-          </div>
-          <div id="subcontent-section-image">
-            <img class="image-block" width="380" id="live-page-img" src="images/red5pro_live_broadcast.png">
+            <p>Select <span class="bold">Enable Recording</span> to save your broadcast for Video on Demand playback!<br/><span class="small-font-size">To view the current Video On Demand (VOD) files on your server, visit the <a class="card-link card-link_page" href="playback.jsp" target="_blank">Playback</a> page.</span></p>
           </div>
         </div>
-        <hr class="top-padded-rule">
-        <div class="content-section-story">
-          <% if (is_stream_manager) { %>
-            <p class="stream-manager-notification">USING STREAM MANAGER</p>
-          <% } %>
-          <p class="notify-callout">Select <span class="bold">Enable Recording</span> to save your broadcast for Video on Demand playback!<br/><span class="small-font-size">To view the current Video On Demand (VOD) files on your server, visit the <a class="link" href="playback.jsp" target="_blank">Playback</a> page.</span></p>
+        <% if (is_stream_manager) { %>
+          <p class="stream-manager-notification">USING STREAM MANAGER</p>
           <hr class="top-padded-rule" style="margin-top: 0">
-          <div class="broadcast-section">
-            <div id="video-container">
-              <div id="video-form">
-                <p class="video-form-item">
-                  <label for="stream-name-field">Stream Name:</label>
-                  <input name="stream-name-field" id="stream-name-field"></input>
-                </p>
-                <p class="video-form-item">
-                  <label for="enable-record-field">Enable Recording:</label>
-                  <input type="checkbox" name="enable-record-field" id="enable-record-field"></input>
-                </p>
-                <p class="video-form-item hidden">
-                  <label for="camera-select">Select Camera:</label>
-                  <select name="camera-select" id="camera-select-field"></select>
-                </p>
-              </div>
-              <div id="statistics-field" class="statistics-field hidden"></div>
-              <div id="video-holder">
-                <video id="red5pro-publisher"
-                        controls muted autoplay playsinline
-                        class="video-element">
-                </video>
-              </div>
-              <div>
-                <button id="start-stop-button" class="start-stop-button button-disabled">Start Broadcast</button>
-              </div>
+        <% } %>
+        <div class="broadcast-section">
+          <div id="video-container">
+            <div class="status-message">
+              <p id="status-field"></p>
+              <button id="log-toggle-button">Logs</button>
             </div>
-            <div id="event-container">
-              <div id="status-field" class="status-message"></div>
-              <div id="stream-manager-info" class="status-message hidden">Using Stream Manager Proxy.</div>
-              <div id="event-log-field" class="event-log-field">
-                <div>
-                  <div class="event-header">
-                    <span>Event Log:</span>
-                    <button id="clear-log-button">clear</button>
-                  </div>
-                  <hr class="event-hr">
+            <div id="stream-manager-info" class="status-message hidden">Using Stream Manager Proxy.</div>
+            <div id="statistics-field" class="statistics-field hidden"></div>
+            <div id="video-holder">
+              <video id="red5pro-publisher"
+                      muted autoplay playsinline
+                      class="video-element">
+              </video>
+            </div>
+            <div id="video-form">
+              <p class="video-form-item hidden">
+                <label for="camera-select">Select Camera:</label>
+                <select name="camera-select" id="camera-select-field"></select>
+              </p>
+              <p class="video-form-item">
+                <label for="stream-name-field">Stream Name:</label>
+                <input name="stream-name-field" id="stream-name-field" style="min-width: 200px"></input>
+              </p>
+              <p class="video-form-item">
+                <label for="enable-record-field">Enable Recording:</label>
+                <input type="checkbox" name="enable-record-field" id="enable-record-field"></input>
+              </p>
+            </div>
+            <div>
+              <button id="start-stop-button" class="start-stop-button button-disabled">Start Broadcast</button>
+            </div>
+          </div>
+          <div id="event-container" class="hidden">
+            <div id="event-log-field" class="event-log-field">
+              <div>
+                <div class="event-header">
+                  <p>Event Log</p>
+                  <button id="clear-log-button" class="hidden">clear</button>
                 </div>
               </div>
             </div>
           </div>
-          <hr class="top-padded-rule" />
-          {{> web-applications }}
-          <hr class="top-padded-rule">
-          {{> mobile-applications }}
-          <hr class="top-padded-rule" />
-          {{> additional_info }}
         </div>
+        {{> additional_info }}
       </div>
     </div>
     {{> es6-script-includes }}
@@ -154,7 +149,7 @@
     <script src="script/r5pro-ice-utils.js"></script>
     <script>
       function assignIfDefined (value, prop) {
-        if (value && value !== 'null') {
+        if (value !== 'null') {
           window[prop] = value;
         }
       }
@@ -168,6 +163,7 @@
       assignIfDefined(<%=videoHeightMin%>, 'r5proVideoHeightMin');
       assignIfDefined(<%=videoHeightMax%>, 'r5proVideoHeightMax');
       assignIfDefined(<%=signalSocketOnly%>, 'r5proSignalSocketOnly');
+      assignIfDefined(<%=whipwhep%>, 'r5proWhipWhep');
 
       window.targetHost = '<%=ip%>';
       window.r5proIce = window.determineIceServers('<%=ice%>');
@@ -176,6 +172,6 @@
     <script src="script/r5pro-utils.js"></script>
     <script src="script/r5pro-sm-utils.js"></script>
     <script src="script/r5pro-publisher-failover.js"></script>
-    {{> footer }}
+    <!-- {{> footer }} -->
    </body>
 </html>

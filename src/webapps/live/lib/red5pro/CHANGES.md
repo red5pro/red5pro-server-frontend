@@ -1,6 +1,55 @@
 # Changes
 
-## 8.1.0-beta.0
+## 12.0.0
+
+- Fix for safari VOD/HLS playback and playhead time. (Todd Anderson)
+- Fix for connectionParams tacked on WHIP/WHEP calls. (Todd Anderson)
+- Fix for Firefox issue with Bundle order (Todd Anderson)
+
+    > The issue was that the offer provided by the server has a BUNDLE order of 0 1
+    > 2. When the WHEP client set that as their remote SDP and generated an offer,
+    > the BUNDLE order changed to 2 1 0 in the answer SDP. This would cause
+    > subscription issues and non-existant candidates.
+
+    > Solution was the munge in the incoming offer BUNDLE line order to that of the
+    > answer.
+
+- Using host query param when Location provided to WHIP/WHEP clients. (Todd Anderson)
+- Fix for live seek fullURL switching. (Todd Anderson)
+- Endpoint header recognition in whip/whep and event bubble. (Todd Anderson)
+
+## 11.0.0
+
+- Introducing WHIP/WHEP for ingest and egress of WebRTC streams, respectively. (Todd Anderson)
+
+## 10.9.3
+
+- SDK update and switch to live seek config. (Todd Anderson)
+- Adding support for live vod on unpublish to continue scrubbing. (Todd Anderson)
+- adding in some error management for hls vod. (Todd Anderson)
+- hls endpoint for SM support on live vod. (Todd Anderson)
+- better cleanup on stop of seekable media. (bustardcelly)
+- using Hls.js fallback for Safari and seek feature. (bustardcelly)
+- Allow playback on scrub when unpublish (bustardcelly)
+
+    > If the live stream becomes unpublished, but the video has been scrubbed to VOD time segment, then we want to allow for playback until the end of the live stream termination.
+
+## 10.6.0
+
+- Adding doNotSwitch to subscriber offer. (Todd Anderson)
+- Fix for stereo subscribers with Chrome (Paul Gregoire)
+
+## 10.0.0
+
+- update to MUTE API post schema. (Todd Anderson)
+- adding Mute API to RTCSubscriber. (Todd Anderson)
+- introduction of RTCConferenceParticipant. (bustardcelly)
+
+## 9.1.2
+
+- Fix for `detachView` bug in WebRTC subscriber. (bustardcelly)
+
+## 9.1.0
 
 - Added `sendLog` API for `RTCPublisher` and `RTCSubscriber` to send log-level messages to server. (bustardcelly)
 

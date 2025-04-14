@@ -10,15 +10,15 @@
     String tech=null;
 
     if (request.getParameter("app") != null) {
-      app = request.getParameter("app");
+      app = URLEncoder.encode(request.getParameter("app"), "UTF-8");
     }
 
     if (request.getParameter("host") != null) {
-      host = request.getParameter("host");
+      host = URLEncoder.encode(request.getParameter("host"), "UTF-8");
     }
 
     if (request.getParameter("stream") != null) {
-      stream = request.getParameter("stream");
+      stream = URLEncoder.encode(request.getParameter("stream"), "UTF-8");
     }
 
     if (request.getParameter("buffer") != null) {
@@ -40,8 +40,7 @@
       {{> head_meta }}
       {{> resources }}
       <title>VOD Playback of <%= stream %></title>
-      <link href="//unpkg.com/video.js@7.0.0/dist/video-js.css" rel="stylesheet">
-      <script src="//unpkg.com/video.js@7.0.0/dist/video.min.js"></script>
+      <script src="//cdn.jsdelivr.net/npm/hls.js@latest"></script>
       <script src="//webrtchacks.github.io/adapter/adapter-latest.js"></script>
       <script src="lib/screenfull/screenfull.min.js"></script>
       <link href="lib/red5pro/red5pro-media.css" rel="stylesheet">
@@ -50,12 +49,13 @@
     </head>
     <body>
       {{> top-bar }}
-      {{> navigation }}
-      {{> header }}
-      <div id="viewer-section">
-        <div id="subviewer-section">
-          <div id="subviewer-section-text">
-            <h1 class="red-text subviewer-title">VOD Subscribing to <span style="text-transform: none;"><%=stream%></span></h1>
+      <div class="container">
+        {{> header }}
+      </div>
+      <div id="viewer-section container">
+        <div id="subcontent-section" style="margin-top: 20px!important;">
+          <div id="subcontent-section-text">
+            <h1 style="text-align:center;color:#fff">VOD Subscribing to: <span style="text-transform: none;color:#dbdbdb;"><%=stream%></span></h1>
           </div>
         </div>
         <div class="content-section-story">
@@ -72,7 +72,7 @@
               </div>
             </div>
           </div>
-          <div class="event-container">
+          <div class="event-container hidden">
             <div class="status-field status-message"></div>
             <div class="stream-manager-info status-message hidden"></div>
             <div class="event-log-field">
@@ -120,6 +120,6 @@
       <script src="script/r5pro-sm-utils.js"></script>
       <script src="script/r5pro-autoplay-utils.js"></script>
       <script src="script/r5pro-viewer-vod-failover.js"></script>
-      {{> footer }}
+      <!-- {{> footer }} -->
     </body>
 </html>
