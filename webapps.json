@@ -1,8 +1,4 @@
 {
-  "r5pro-inspector": {
-    "repositoryUrl": "git@github.com:infrared5/automation.git",
-    "branch": "master"
-  },
   "r5pro-streammanager": {
     "repositoryUrl": "git@github.com:infrared5/red5pro-auto-scaling.git",
     "branch": "feature/FLIR-343"
