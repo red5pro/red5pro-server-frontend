@@ -1,7 +1,7 @@
 {
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "epic/BRAZILIAN"
+    "branch": "feature/query_params_RED5DEV-1628"
   },
   "truetime": {
     "datasync": {
