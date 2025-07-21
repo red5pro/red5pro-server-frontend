@@ -25,9 +25,9 @@ This document describes how to use the Red5 Pro WebRTC SDK to start a broadcast 
 
 # Requirements
 
-The **Red5 Pro WebRTC SDK** is intended to communicate with a [Red5 Pro Server](https://www.red5pro.com/), which allows for broadcasting and consuming live streams utilizing [WebRTC](https://developer.mozilla.org/en-US/docs/Web/Guide/API/WebRTC) and other protocols, including [RTMP](https://en.wikipedia.org/wiki/Real_Time_Messaging_Protocol) and [HLS](https://en.wikipedia.org/wiki/HTTP_Live_Streaming).
+The **Red5 Pro WebRTC SDK** is intended to communicate with a [Red5 Pro Server](https://www.red5.net/), which allows for broadcasting and consuming live streams utilizing [WebRTC](https://developer.mozilla.org/en-US/docs/Web/Guide/API/WebRTC) and other protocols, including [RTMP](https://en.wikipedia.org/wiki/Real_Time_Messaging_Protocol) and [HLS](https://en.wikipedia.org/wiki/HTTP_Live_Streaming).
 
-As such, you will need a distribution of the [Red5 Pro Server](https://www.red5pro.com/) running locally or accessible from the web, such as [Amazon Web Services](https://www.red5pro.com/docs/server/awsinstall/).
+As such, you will need a distribution of the [Red5 Pro Server](https://www.red5.net/) running locally or accessible from the web, such as [Amazon Web Services](https://www.red5.net/docs/server/awsinstall/).
 
 > **[Click here to start using the Red5 Pro Server today!](https://account.red5.net/login)**
 
@@ -95,7 +95,8 @@ _It is *highly* recommended to include [adapter.js](https://github.com/webrtcHac
 | forceVP8 | [-] | `false` | Flag to force VP8 as the encoder for the outgoing stream. _Marked for Deprecation._ |
 | videoEncoding | [-] | `undefined` | `PublishVideoEncoder` enum: `VP8` | `H264` | `H265` . _Replacement of `forceVP8`._ |
 | audioEncoding | [-] | `undefined` | `PublishAudioEncoder` enum. |
-| endpoint | [-] | `undefined` | The full URL of the endpoint to stream to. **This is primarily used in Stream Manager 2.0 integration for clients.** [Refer to the Stream Manager 2.0 Section](#stream-manager-20)
+| endpoint | [-] | `undefined` | The full URL of the endpoint to stream to. **This is primarily used in Stream Manager 2.0 integration for clients.** [Refer to the Stream Manager 2.0 Section](#stream-manager-20) |
+| offerSDPResolution | [-] | `false` | Request to send the initial resolution on the SDP offer in an attribute line with the following format: `a=framesize:${width}-${height}` |
 
 ## WebRTC Example
 
