@@ -2,9 +2,9 @@
   <img src="assets/red5pro_logo.png" alt="Red5 Pro Logo" />
 </h3>
 <p align="center">
+  <a href="WHIP_WHEP_README.md">WHIP/WHEP</a> &bull
   <a href="PUBLISHER_README.md">publisher</a> &bull;
   <a href="SUBSCRIBER_README.md">subscriber</a> &bull;
-  <a href="SHARED_OBJECT_README.md">shared object</a>
 </p>
 
 ---
@@ -28,12 +28,13 @@ This document describes how to use the Red5 Pro WebRTC SDK to subscribe to a bro
 * [Other Information](#other-information)
   * [Autoplay Restrictions](#autoplay-restrictions)
   * [Insertable Streams](#insertable-streams)
+* [Stream Manager 2.0 Integration](#stream-manager-20)
 
 # Requirements
 
-The **Red5 Pro WebRTC SDK** is intended to communicate with a [Red5 Pro Server](https://www.red5pro.com/), which allows for broadcasting and consuming live streams utilizing [WebRTC](https://developer.mozilla.org/en-US/docs/Web/Guide/API/WebRTC) and other protocols, [HLS](https://en.wikipedia.org/wiki/HTTP_Live_Streaming).
+The **Red5 Pro WebRTC SDK** is intended to communicate with a [Red5 Pro Server](https://www.red5.net/), which allows for broadcasting and consuming live streams utilizing [WebRTC](https://developer.mozilla.org/en-US/docs/Web/Guide/API/WebRTC) and other protocols, [HLS](https://en.wikipedia.org/wiki/HTTP_Live_Streaming).
 
-As such, you will need a distribution of the [Red5 Pro Server](https://www.red5pro.com/) running locally or accessible from the web, such as [Amazon Web Services](https://www.red5pro.com/docs/server/awsinstall/).
+As such, you will need a distribution of the [Red5 Pro Server](https://www.red5.net) running locally or accessible from the web, such as [Amazon Web Services](https://www.red5.net/docs/server/awsinstall/).
 
 > **[Click here to start using the Red5 Pro Server today!](https://account.red5.net/login)**
 
@@ -112,6 +113,7 @@ _It is *highly* recommended to include [adapter.js](https://github.com/webrtcHac
 | buffer | [-] | `0` | Request to set a buffer - in seconds - for playback.
 | maintainStreamVariant | [-] | `false` | Flag to instruct the server - when utilizing transcoding - to not switch subscriber stream variants when network conditions change. By setting this to `true`, when you request to playback a stream that is transcoded, the server will not deliver a variant of higher or lower quality dependending on current network conditions. |
 | liveSeek | [-] | *None* | Configuration object to enable live seek capability. See [Live Seek](#live-seek) for more information. |
+| endpoint | [-] | `undefined` | The full URL of the endpoint to stream to. **This is primarily used in Stream Manager 2.0 integration for clients.** [Refer to the Stream Manager 2.0 Section](#stream-manager-20)
 
 #### Live Seek
 
@@ -188,7 +190,7 @@ Provide an optional `options` configuration that will be assigned untouched to t
 
 Flag to use the default playback controls of the SDK to play, pause, live scrub, and additional actions. If setting this to `false`, you will need to create and manage your own controls to interact with the live and VOD content.
 
-> You can also provide your own custom controls and/or class declarations easily following this [guideline](https://www.red5pro.com/docs/development/playbackcontrols/overview/).
+> You can also provide your own custom controls and/or class declarations easily following this [guideline](https://www.red5.net/docs/development/playbackcontrols/overview/).
 
 #### Video Encoding Configuration
 
@@ -435,7 +437,7 @@ As such, specific failover targets - such as HLS - require native browser suppor
 
 It is entirely possible to playback streams in HLS using a 3rd-Party library (such as [VideoJS](https://videojs.com/)), but you will not be able to do so while utilizing the Red5 Pro WebRTC SDK.
 
-> For more information on how to playback HLS in browsers without native support, please refer to the *Using VideoJS for Playback* section of the [Migration Guide](https://www.red5pro.com/docs/streaming/migrationguide.html#migrating-from-350-to-400).
+> For more information on how to playback HLS in browsers without native support, please refer to the *Using VideoJS for Playback* section of the [Migration Guide](https://www.red5.net/docs/streaming/migrationguide.html#migrating-from-350-to-400).
 
 ## Initialization
 
@@ -654,7 +656,7 @@ The `4.0.0` release of the SDK introduces Playback API and Default Controls for 
 
 ## Autoplay Restrictions
 
-In an attempt to provide a more pleasing user experience and reduce data consumption on mobile devices, browsers are continuing to evolve their `autoplay` policies. While generally and attempt to keep websites (read: *ads*) from playing back unwanted and/or unsolicited video and audio, these policies also affect those sites in which the sole intent _is to_ playback video and/or audio - such as from a conference web application built utilizing [Red5 Pro](https://red5pro.com).
+In an attempt to provide a more pleasing user experience and reduce data consumption on mobile devices, browsers are continuing to evolve their `autoplay` policies. While generally and attempt to keep websites (read: *ads*) from playing back unwanted and/or unsolicited video and audio, these policies also affect those sites in which the sole intent _is to_ playback video and/or audio - such as from a conference web application built utilizing [Red5 Pro](https://red5.net).
 
 Naturally, this can cause some confusion and frustration as `autoplay` may have worked as expected prior to latest browser updates. Thankfully, you do have options when using the *Red5 Pro WebRTC SDK* to provide a better user experience.
 
@@ -960,3 +962,31 @@ const config = {
   }
 }
 ```
+
+# Stream Manager 2.0
+
+> This section provides information that relate to the release of Stream Manager 2.0 and its integration with WHIP/WHEP clients.
+
+The Stream Manager 2.0 simplifies the proxying of web clients to Origin and Edge nodes. As such, an initialization configuration property called `endpoint` was added to the WebRTC SDK. This `endpoint` value should be the full URL path to the proxy endpoint on the Stream Manager as is used as such:
+
+## RTCSubscriber Proxy
+
+```javascript
+const host = 'my-deployment'
+const streamName = 'mystream'
+const nodeGroup = 'my-node-group'
+const endpoint = `https://${host}/as/v1/proxy/ws/subscribe/live/${streamName}`
+const config = {
+  endpoint,
+  streamName,
+  connectionParams: {
+    nodeGroup
+  },
+  // additional configurations
+}
+const subscriber = await new RTCSubscriber().init(config)
+subscriber.on('*', (event) => console.log(event))
+await subscriber.subscribe()
+```
+
+> Note: The requirement of a `nodeGroup` connection parameter that is the target nodegroup within your Stream Manager deployment on which you want to proxy the Publisher and Subscriber client(s).

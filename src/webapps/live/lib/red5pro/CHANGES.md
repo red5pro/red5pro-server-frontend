@@ -1,5 +1,37 @@
 # Changes
 
+## 14.3.0
+
+- fix: viewless subscriber/whep response to metadata (Todd Anderson)
+
+## 14.2.0
+
+- fix: viewless subscriber and websocket signaling. (Todd Anderson)
+- feat: sending publish resolution on SDP. (Todd Anderson)
+- fix: transport type query paramms on whip/whep (Todd Anderson)
+
+## 14.0.0
+
+- fix: publish codec listings. (Todd Anderson)
+- fix: viewless subscriber for WHEPClient. (Todd Anderson)
+- feat: codec init param support for WHIP and RTC publishers. (Todd Anderson)
+
+## 13.0.0
+
+- fix: removal of SharedObject functionality. (Todd Anderson)
+- fix: NPE check for mute check util. (Todd Anderson)
+- feat: allowing for endpoint init config to explicitly provide endpoint to connect to for WS and WHIP/WHEP (Todd Anderson)
+
+## 12.5.1
+
+- fix: baseline munge for in and out. (Todd Anderson)
+
+## 12.2.0
+
+- default for WHIP/WHEP to use Session-Host if provided. (Todd Anderson)
+- fix for check on queries for WHIP/WHEP. (Todd Anderson)
+- monitoring streamingMode on WHEP client initial connection. (Todd Anderson)
+
 ## 12.0.0
 
 - Fix for safari VOD/HLS playback and playhead time. (Todd Anderson)
