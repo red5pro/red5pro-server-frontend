@@ -163,7 +163,6 @@
       assignIfDefined(<%=videoHeightMin%>, 'r5proVideoHeightMin');
       assignIfDefined(<%=videoHeightMax%>, 'r5proVideoHeightMax');
       assignIfDefined(<%=signalSocketOnly%>, 'r5proSignalSocketOnly');
-      assignIfDefined(<%=whipwhep%>, 'r5proWhipWhep');
 
       window.targetHost = '<%=ip%>';
       window.r5proIce = window.determineIceServers('<%=ice%>');

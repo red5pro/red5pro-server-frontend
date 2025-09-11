@@ -74,8 +74,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
   var targetViewTech = window.r5proViewTech
   var signalSocketOnly = !(window.r5proSignalSocketOnly === 0)
-  var whipwhep = window.r5proWhipWhep === 1
-  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtc', 'rtmp', 'hls']
+  var whipwhep = true
 
   var baseConfiguration = {
     host: window.targetHost,
@@ -94,8 +93,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       iceCandidatePoolSize: 2,
       bundlePolicy: 'max-bundle',
     },
-    signalingSocketOnly: signalSocketOnly,
-    enableChannelSignaling: whipwhep && signalSocketOnly,
+    includeDataChannel: signalSocketOnly,
   }
   var rtmpConfig = {
     protocol: 'rtmp',
@@ -301,17 +299,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   function determineSubscriber() {
     return promisify(function (resolve, reject) {
-      var config = !whipwhep
-        ? {
-            rtc: Object.assign({}, baseConfiguration, rtcConfig),
-            rtmp: Object.assign({}, baseConfiguration, rtmpConfig),
-            hls: Object.assign({}, baseConfiguration, hlsConfig),
-          }
-        : Object.assign({}, baseConfiguration, rtcConfig)
-
-      var subscriber = !whipwhep
-        ? new red5pro.Red5ProSubscriber().setPlaybackOrder(playbackOrder)
-        : new red5pro.WHEPClient()
+      var config = Object.assign({}, baseConfiguration, rtcConfig)
+      var subscriber = new red5pro.WHEPClient()
       subscriber.on('*', onSubscriberEvent)
       console.log(
         '[viewer]:: Configuration\r\n' + JSON.stringify(config, null, 2)
@@ -365,11 +354,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             '[subscriber]:: Subscriber started - ' + subscriber.getType()
           )
           if (subscriber.getType().toLowerCase() === 'rtc') {
-            if (whipwhep) {
-              removeLoadingIcon()
-            } else {
-              trackLoadingIcon(subscriber.getOptions().mediaElementId)
-            }
+            removeLoadingIcon()
             toggleReportTracking(subscriber, true)
             showHideReportsButton.classList.remove('hidden')
           } else {

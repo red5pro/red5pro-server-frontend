@@ -54,7 +54,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   }
   var iceServers = window.r5proIce
   var signalSocketOnly = !(window.r5proSignalSocketOnly === 0)
-  var whipwhep = window.r5proWhipWhep === 1
 
   var protocol = window.location.protocol
   protocol = protocol.substring(0, protocol.lastIndexOf(':'))
@@ -115,8 +114,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     },
     bandwidth: desiredBandwidth,
     mediaConstraints: forceQuality,
-    signalingSocketOnly: signalSocketOnly,
-    enableChannelSignaling: whipwhep && signalSocketOnly,
+    includeDataChannel: signalSocketOnly,
     trickleIce: true,
   }
 
@@ -332,7 +330,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     var type = publisher ? publisher.getType().toLowerCase() : undefined
     switch (type) {
       case 'rtc':
-        updateStatus(`Using ${whipwhep ? 'WHIP' : 'WebRTC'} Publisher`)
+        updateStatus(`Using WHIP Publisher`)
         break
       case 'rtmp':
         updateStatus('Using Flash Publisher.')
@@ -374,9 +372,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   function determinePublisherType() {
     return promisify(function (resolve, reject) {
-      var publisher = !whipwhep
-        ? new red5prosdk.RTCPublisher()
-        : new red5prosdk.WHIPClient()
+      var publisher = new red5prosdk.WHIPClient()
       publisher.on('*', onPublisherEvent)
 
       publisher
@@ -398,6 +394,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   function publish() {
     clearLog()
     var fn = startPublisher
+    var stream = publisher
+      ? publisher.getMediaStream()
+      : document.querySelector('#red5pro-publisher').srcObject
     window
       .r5pro_isStreamManager()
       .then(function () {
@@ -408,7 +407,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             streamManagerInfo.classList.remove('hidden')
             streamManagerInfo.innerText =
               'Using Stream Manager Origin at: ' + origin.serverAddress + '.'
-            fn()
+            fn(stream)
           })
           .catch(function (error) {
             var jsonError = typeof error === 'string' ? error : error.message
@@ -421,7 +420,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             showOrHideCameraSelect(null)
           })
       })
-      .catch(fn)
+      .catch(() => {
+        fn(stream)
+      })
   }
 
   function unpublish() {
@@ -457,7 +458,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
   }
 
-  function startPublisher() {
+  function startPublisher(existingStream) {
     var onSuccess = function () {
       updateStartStopButtonState({
         enabled: true,
@@ -481,10 +482,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       streamMode: mode,
       streamName: streamName,
     })
-    publisher = !whipwhep
-      ? new red5prosdk.RTCPublisher()
-      : new red5prosdk.WHIPClient()
-    publisher.init(rtcConfig).then(function () {
+    publisher = new red5prosdk.WHIPClient()
+    var init = existingStream
+      ? publisher.initWithStream(rtcConfig, existingStream)
+      : publisher.init(rtcConfig)
+    init.then(function () {
       var isRTC = publisher.getType().toLowerCase() === 'rtc'
       console.log(
         '[live]:: Publish options:\r\n' +

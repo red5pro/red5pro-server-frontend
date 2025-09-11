@@ -188,6 +188,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       this.stop().init(
         this.configuration,
         this.playbackOrder,
+        this.whipwhep,
         this.requiresStreamManagerCheck
       )
     }
@@ -440,13 +441,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   PlaybackBlock.prototype.init = function (
     configuration,
     playbackOrder,
-    whipwhep,
+    whipwhep = true,
     checkStreamManager
   ) {
     checkStreamManager = checkStreamManager || false
     this.configuration = configuration
     this.playbackOrder = playbackOrder
-    this.whipwhep = typeof whipwhep === 'undefined' ? true : whipwhep
+    this.whipwhep = whipwhep
     this.requiresStreamManagerCheck = checkStreamManager
     this.assignStreamAttributesToPlaybackConfigurations(
       this.streamName,
@@ -484,7 +485,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     return this
   }
 
-  PlaybackBlock.prototype.start = function (configuration, playbackOrder) {
+  PlaybackBlock.prototype.start = function (configuration) {
     this.expand()
     var self = this
     this.isHalted = false
@@ -493,14 +494,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       this.client.onPlaybackBlockStart(this)
     }
     this.setActive(true, this.isVOD)
-    var subscriber = !this.whipwhep
-      ? new red5pro.Red5ProSubscriber().setPlaybackOrder(playbackOrder)
+    var subscriber = this.isVOD
+      ? new red5pro.HLSSubscriber()
       : new red5pro.WHEPClient()
-    var subscriberConfig = !this.whipwhep
-      ? configuration
-      : configuration.rtc
-      ? configuration.rtc
-      : configuration
+    var subscriberConfig = this.isVOD ? configuration.hls : configuration.rtc
     subscriber
       .init(subscriberConfig)
       .then(function (subscriber) {
