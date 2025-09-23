@@ -1,7 +1,7 @@
 {
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "feature/sdk_20"
+    "branch": "epic/DEVON"
   },
   "truetime": {
     "datasync": {
