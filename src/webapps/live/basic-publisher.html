@@ -184,13 +184,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           protocol.indexOf(':') !== -1
             ? protocol.substring(0, protocol.lastIndexOf(':'))
             : protocol
-        var isSecure = protocol === 'https'
+        var isSecure = protocol === 'https' || protocol === 'wss'
         var port = getParameterByName('port') || (isSecure ? 443 : 5080)
         var host = getParameterByName('host') || window.location.hostname
         var app = getParameterByName('app') || 'live'
-        var order = getParameterByName('view') || ['rtc', 'rtmp']
         var streamName = getParameterByName('streamName')
-        var preferWhipWhep = getParameterByName('whipwhep') !== '0'
         var enableDataChannel = getParameterByName('dc') !== '0'
         var videoWidth = getParameterByName('vw') || 640
         var videoHeight = getParameterByName('vh') || 480
@@ -201,11 +199,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var allowVideo = getParameterByName('video') !== '0'
 
         var rtcConfig = {
-          host: host,
-          streamName: streamName,
-          app: app,
-          protocol: isSecure ? 'wss' : 'ws',
-          port: port,
+          host,
+          streamName,
+          app,
+          protocol,
+          port,
           bandwidth: {
             video: parseInt(bandwidthVideo, 10),
             audio: parseInt(bandwidthAudio, 10),
@@ -218,8 +216,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
             },
             audio: allowAudio,
           },
-          signalingSocketOnly: enableDataChannel,
-          enableChannelSignaling: enableDataChannel,
+          includeDataChannel: enableDataChannel,
         }
 
         var publisher
@@ -256,9 +253,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         console.log('[rtc] : ' + JSON.stringify(rtcConfig, null, 2))
 
         // Establish a broadcast session.
-        publisher = preferWhipWhep
-          ? new red5prosdk.WHIPClient()
-          : new red5prosdk.RTCPublisher()
+        publisher = new red5prosdk.WHIPClient()
         publisher
           .init(rtcConfig)
           .then(function (publisherImpl) {

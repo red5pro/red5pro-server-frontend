@@ -125,7 +125,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         block.setVODData(streamData, false, canPlayMP4Natively)
         block.setClient(playbackBlockClient)
         $item.appendChild(block.create().getElement())
-        block.init(subConfig, playbackOrder, false, false)
+        block.init(subConfig, playbackOrder, true, false)
         playbackBlocks.push(block)
       }
     }

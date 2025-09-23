@@ -490,13 +490,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           protocol.indexOf(':') !== -1
             ? protocol.substring(0, protocol.lastIndexOf(':'))
             : protocol
-        var port = getParameterByName('port') || window.location.port
+        var isSecure = protocol === 'https' || protocol === 'wss'
+        var port = getParameterByName('port') || (isSecure ? 443 : 5080)
         var host = getParameterByName('host') || window.location.hostname
         var app = getParameterByName('app') || 'live'
         var streamManagerAPI = getParameterByName('api') || 'v1'
         var nodeGroup = getParameterByName('nodeGroup') || 'default'
         var streamName = getParameterByName('streamName')
-        var isSecure = protocol === 'https'
         var smProtocol = protocol
         var smPort = isSecure ? '' : '5080'
         var wsProtocol = isSecure ? 'wss' : 'ws'
@@ -513,29 +513,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var cameraHeight = getParameterByName('cameraHeight')
           ? parseInt(getParameterByName('cameraHeight'), 10)
           : 480
-        var preferWhipWhep = true
-        if (getParameterByName('whipwhep')) {
-          var whipwhep = getParameterByName('whipwhep')
-          preferWhipWhep = whipwhep === '1' || whipwhep === 'true'
-        }
         var switchToDC = true
         if (getParameterByName('dc')) {
           var dc = getParameterByName('dc')
           switchToDC = dc === '1' || dc === 'true'
         }
-        var switchDelay = getParameterByName('delay')
-          ? parseInt(getParameterByName('delay'), 10)
-          : NaN
 
-        const httpProtocol = protocol === 'wss' ? 'https' : 'http'
-        const endpoint = !preferWhipWhep
-          ? `${protocol}://${host}:${port}/as/${streamManagerAPI}/proxy/ws/publish/${app}/${streamName}`
-          : `${httpProtocol}://${host}:${port}/as/${streamManagerAPI}/proxy/whip/${app}/${streamName}`
+        const httpProtocol = isSecure ? 'https' : 'http'
+        const endpoint = `${httpProtocol}://${host}:${port}/as/${streamManagerAPI}/proxy/whip/${app}/${streamName}`
         const rtcConfig = {
           endpoint,
           streamName,
-          signalingSocketOnly: switchToDC,
-          enableChannelSignaling: switchToDC,
+          includeDataChannel: switchToDC,
           mediaConstraints: {
             audio: audioFlag,
             video: {
@@ -547,7 +536,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
               },
             },
           },
-          socketSwitchDelay: !isNaN(switchDelay) || 1000,
           connectionParams: {
             nodeGroup,
           },
@@ -588,8 +576,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
             console.log('[rtc] : ' + JSON.stringify(rtcConfig, null, 2))
 
             // Establish a broadcast session.
-            const { WHIPClient, RTCPublisher } = red5prosdk
-            publisher = preferWhipWhep ? new WHIPClient() : new RTCPublisher()
+            const { WHIPClient } = red5prosdk
+            publisher = new WHIPClient()
             publisher.on('*', onPublisherEvent)
             await publisher.init(rtcConfig)
             await publisher.publish()

@@ -274,34 +274,28 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         // Configuration parameters.
         var host = getParameterByName('host') || window.location.hostname
         var protocol =
-          getParameterByName('protocol') || endpointIsUnsecure(host)
-            ? 'http'
-            : 'https'
-        var port = getParameterByName('port')
+          getParameterByName('protocol') || window.location.protocol
+        protocol =
+          protocol.indexOf(':') !== -1
+            ? protocol.substring(0, protocol.lastIndexOf(':'))
+            : protocol
+        var isSecure = protocol === 'https' || protocol === 'wss'
+        var port = getParameterByName('port') || (isSecure ? 443 : 5080)
         var app = getParameterByName('app') || 'live'
         var streamName = getParameterByName('streamName')
         var streamManagerAPI = getParameterByName('api') || 'v1'
         var nodeGroup = getParameterByName('nodeGroup') || 'default'
         var smUser = getParameterByName('smuser') || 'admin'
         var smPass = getParameterByName('smpass') || 'xyz123'
-        var isSecure = protocol === 'https'
         var smProtocol = protocol
         var smPort = isSecure ? '' : '5080'
         var wsProtocol = isSecure ? 'wss' : 'ws'
         var wsPort = isSecure ? 443 : 5080
-        var preferWhipWhep = true
-        if (getParameterByName('whipwhep')) {
-          var whipwhep = getParameterByName('whipwhep')
-          preferWhipWhep = whipwhep === '1' || whipwhep === 'true'
-        }
         var switchToDC = true
         if (getParameterByName('dc')) {
           var dc = getParameterByName('dc')
           switchToDC = dc === '1' || dc === 'true'
         }
-        var switchDelay = getParameterByName('delay')
-          ? parseInt(getParameterByName('delay'), 10)
-          : NaN
 
         let subscribers = []
 
@@ -311,9 +305,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           app: app,
           protocol: 'ws',
           port: 5080,
-          signalingSocketOnly: switchToDC,
-          enableChannelSignaling: switchToDC,
-          socketSwitchDelay: !isNaN(switchDelay) ? switchDelay : 5000,
+          includeDataChannel: switchToDC,
         }
 
         // Handler subscriber events.
@@ -427,9 +419,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           document.querySelector(`#grid`).appendChild(div)
 
           let subscriber
-          const { WHEPClient, RTCSubscriber } = red5prosdk
+          const { WHEPClient } = red5prosdk
           try {
-            subscriber = preferWhipWhep ? new WHEPClient() : new RTCSubscriber()
+            subscriber = new WHEPClient()
             subscriber.on('*', (event) => {
               onSubscriberEvent(event, prompt, edgeAddress)
             })
