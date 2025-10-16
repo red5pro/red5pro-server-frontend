@@ -382,6 +382,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           'background: #fff; color: #222'
         )
         console.log(
+          '%c [api] ' + '%c : The api version of SM 2.0. Default: `v1`.',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
+          '%c [nodeGroup] ' +
+            '%c : The cluster nodeGroup. Required, no default.',
+          'background: #222; color: #ebefd0',
+          'background: #fff; color: #222'
+        )
+        console.log(
           '%c [streamName] ' +
             '%c : The unique stream name to broadcast with. Required, no default.',
           'background: #222; color: #ebefd0',
@@ -390,12 +401,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         console.log(
           '%c [verbose] ' +
             '%c    : Flag to enable verbose logging in Dev Console. Optional.',
-          'background: #222; color: #ebefd0',
-          'background: #fff; color: #222'
-        )
-        console.log(
-          '%c [view] ' +
-            '%c       : Target broadcast tech (`rtc` or `rtmp`). Optional.',
           'background: #222; color: #ebefd0',
           'background: #fff; color: #222'
         )
@@ -433,7 +438,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         console.log(
           '%c [ EXAMPLE ] ' +
             '%c   : ' +
-            '%c proxy-publisher.html?host=myred5proserver.com&protocol=https&port=43&app=live&streamName=mystream&verbose=1  ',
+            '%c proxy-publisher.html?host=myred5proserver.com&protocol=https&port=443&app=live&streamName=mystream&verbose=1  ',
           'background: #222; color: #ebefd0',
           'background: #fff; color: #222',
           'background: #d0efd2; color: #222'
@@ -451,7 +456,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
     <script src="lib/es6/es6-promise.min.js"></script>
     <script src="lib/red5pro/red5pro-sdk.min.js"></script>
     <script>
-      ;(function (window, red5prosdk) {
+      ;((window, red5prosdk) => {
         // Easy access/parse query params.
         function getParameterByName(name, url) {
           // eslint-disable-line no-unused-vars
@@ -475,65 +480,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           red5prosdk.setLogLevel('error')
         }
 
-        // Request the origin server from Stream Manager.
-        function requestOrigin(
-          protocol,
-          port,
-          host,
-          app,
-          streamName,
-          isSecure
-        ) {
-          if (preferWhipWhep) {
-            return Promise.resolve(host)
-          }
-          var portURI = port.length > 0 ? ':' + port : ''
-          var baseUrl = isSecure
-            ? protocol + '://' + host
-            : protocol + '://' + host + portURI
-          var url =
-            baseUrl +
-            '/streammanager/api/4.0/event/' +
-            app +
-            '/' +
-            streamName +
-            '?action=broadcast'
-          return new Promise(function (resolve, reject) {
-            fetch(url)
-              .then(function (res) {
-                if (
-                  res.headers.get('content-type') &&
-                  res.headers
-                    .get('content-type')
-                    .toLowerCase()
-                    .indexOf('application/json') >= 0
-                ) {
-                  return res.json()
-                } else {
-                  throw new TypeError('Could not properly parse response.')
-                }
-              })
-              .then(function (json) {
-                if (json.errorMessage) {
-                  throw new Error(json.errorMessage)
-                } else {
-                  resolve(json.serverAddress)
-                }
-              })
-              .catch(function (error) {
-                var jsonError =
-                  typeof error === 'string'
-                    ? error
-                    : JSON.stringify(error, null, 2)
-                console.error(
-                  '[PublisherStreamManagerProxyTest] :: Error - Could not request Origin IP from Stream Manager. ' +
-                    jsonError
-                )
-                reject(error)
-              })
-          })
-        }
-
         // Configuration params.
         var protocol =
           getParameterByName('protocol') || window.location.protocol
@@ -541,11 +487,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           protocol.indexOf(':') !== -1
             ? protocol.substring(0, protocol.lastIndexOf(':'))
             : protocol
-        var port = getParameterByName('port') || window.location.port
+        var isSecure = protocol === 'https' || protocol === 'wss'
+        var port = getParameterByName('port') || (isSecure ? 443 : 5080)
         var host = getParameterByName('host') || window.location.hostname
         var app = getParameterByName('app') || 'live'
+        var streamManagerAPI = getParameterByName('api') || 'v1'
+        var nodeGroup = getParameterByName('nodeGroup') || 'default'
         var streamName = getParameterByName('streamName')
-        var isSecure = protocol === 'https'
         var smProtocol = protocol
         var smPort = isSecure ? '' : '5080'
         var wsProtocol = isSecure ? 'wss' : 'ws'
@@ -562,31 +510,31 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         var cameraHeight = getParameterByName('cameraHeight')
           ? parseInt(getParameterByName('cameraHeight'), 10)
           : 480
-        var preferWhipWhep = true
-        if (getParameterByName('whipwhep')) {
-          var whipwhep = getParameterByName('whipwhep')
-          preferWhipWhep = whipwhep === '1' || whipwhep === 'true'
-        }
         var switchToDC = true
         if (getParameterByName('dc')) {
           var dc = getParameterByName('dc')
           switchToDC = dc === '1' || dc === 'true'
         }
 
-        var rtcConfig = {
-          host: host,
-          streamName: streamName,
-          app: preferWhipWhep ? app : 'streammanager',
-          protocol: wsProtocol,
-          port: wsPort,
-          signalingSocketOnly: switchToDC,
-          enableChannelSignaling: switchToDC,
+        const httpProtocol = isSecure ? 'https' : 'http'
+        const endpoint = `${httpProtocol}://${host}:${port}/as/${streamManagerAPI}/proxy/whip/${app}/${streamName}`
+        const rtcConfig = {
+          endpoint,
+          streamName,
+          includeDataChannel: switchToDC,
           mediaConstraints: {
             audio: false,
             video: {
-              width: { exact: cameraWidth },
-              height: { exact: cameraHeight },
+              width: {
+                exact: cameraWidth,
+              },
+              height: {
+                exact: cameraHeight,
+              },
             },
+          },
+          connectionParams: {
+            nodeGroup,
           },
         }
 
@@ -619,54 +567,25 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
           }
         }
 
-        const { WHIPClient, RTCPublisher } = red5prosdk
-        var timeout = setTimeout(function () {
-          clearTimeout(timeout)
-          requestOrigin(smProtocol, smPort, host, app, streamName, isSecure)
-            .then(function (originHost) {
-              // Origin server request is successful.
-              rtcConfig.connectionParams = {
-                host: originHost,
-                app: app,
-              }
-
-              console.log('[rtc] : ' + JSON.stringify(rtcConfig, null, 2))
-
-              navigator.mediaDevices
-                .getDisplayMedia({
-                  audio: false,
-                  video: {
-                    width: cameraWidth,
-                    height: cameraHeight,
-                  },
-                })
-                .then(function (stream) {
-                  // Establish a broadcast session.
-                  publisher = preferWhipWhep
-                    ? new WHIPClient()
-                    : new RTCPublisher()
-                  publisher
-                    .initWithStream(rtcConfig, stream)
-                    .then(function (pub) {
-                      pub.on('*', onPublisherEvent)
-                      pub.publish()
-                    })
-                    .catch(function (error) {
-                      console.error(error)
-                      displayPrompt('Publish.Fail')
-                      shutdown()
-                    })
-                })
-                .catch(function (error) {
-                  console.error(error)
-                  displayPrompt('Publish.Fail')
-                })
+        const start = async () => {
+          try {
+            const { WHIPClient, RTCPublisher } = red5prosdk
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+              audio: false,
+              video: {
+                width: cameraWidth,
+                height: cameraHeight,
+              },
             })
-            .catch(function (error) {
-              console.error(error)
-              displayPrompt('Publish.Fail')
-            })
-        }, parseInt(launchDelay, 10))
+            publisher = new WHIPClient()
+            publisher.on('*', onPublisherEvent)
+            await publisher.initWithStream(rtcConfig, stream)
+            await publisher.publish()
+          } catch (error) {
+            console.error(error)
+            displayPrompt('Publish.Fail')
+          }
+        }
 
         const shutdown = async () => {
           if (publisher) {
@@ -682,6 +601,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
         }
         window.addEventListener('pagehide', shutdown)
         window.addEventListener('beforeunload', shutdown)
+
+        let timeout = setTimeout(() => {
+          clearTimeout(timeout)
+          start()
+        }, parseInt(launchDelay, 10))
       })(window, window.red5prosdk)
     </script>
   </body>

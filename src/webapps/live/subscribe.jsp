@@ -115,7 +115,6 @@
       assignIfDefined(<%=audioBandwidth%>, 'r5proAudioBandwidth');
       assignIfDefined(<%=videoBandwidth%>, 'r5proVideoBandwidth');
       assignIfDefined(<%=signalSocketOnly%>, 'r5proSignalSocketOnly');
-      assignIfDefined(<%=whipwhep%>, 'r5proWhipWhep');
 
       window.targetHost = "<%=ip%>";
       window.r5proIce = window.determineIceServers('<%=ice%>');

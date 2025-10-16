@@ -51,24 +51,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     host: host,
     app: 'live',
   }
-  var rtmpConfig = {
-    protocol: 'rtmp',
-    port: 1935,
-    mimeType: 'rtmp/flv',
-    width: '640',
-    height: '480',
-    embedWidth: '100%',
-    embedHeight: '480',
-    backgroundColor: '#000000',
-    buffer: isNaN(buffer) ? 2 : buffer,
-  }
   var hlsConfig = {
     protocol: protocol,
     port: port,
   }
 
   var targetViewTech = window.r5proViewTech
-  var playbackOrder = targetViewTech ? [targetViewTech] : ['rtmp', 'hls']
 
   function hasEstablishedSubscriber() {
     return typeof subscriber !== 'undefined'
@@ -277,52 +265,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   function determineSubscriber(types) {
     console.log('[playback]:: Available types - ' + types + '.')
     return promisify(function (resolve, reject) {
-      var subscriber = new red5pro.Red5ProSubscriber()
+      var subscriber = new red5pro.HLSSubscriber()
       subscriber.on('*', onSubscriberEvent)
-
-      var typeConfig = {
-        rtmp: rtmpConfig,
-        hls: hlsConfig,
-      }
-      var key
-      var config = {}
-      for (key in typeConfig) {
-        if (types.indexOf(key) > -1) {
-          config[key] = Object.assign({}, baseConfiguration, typeConfig[key])
-        }
-        if (
-          key === 'hls' &&
-          config.hasOwnProperty('hls') &&
-          config[key].streamName
-        ) {
-          config[key].streamName = config[key].streamName.substring(
-            0,
-            config[key].streamName.indexOf('.')
-          )
-        }
-      }
-      var order = playbackOrder
-      var index = order.length
-      while (--index > -1) {
-        if (types.indexOf(order[index]) === -1) {
-          order.splice(index, 1)
-        }
-      }
-      console.log('[playback]:: Playback Order - ' + order + '.')
-      console.log(
-        '[viewer]:: Configuration\r\n' + JSON.stringify(config, null, 2)
-      )
-
-      if (order.length === 0) {
-        var error = 'Cannot start playback. No available playback options.'
-        console.error(error)
-        throw new Error(error)
-        return
-      }
-
       subscriber
-        .setPlaybackOrder(order)
-        .init(config)
+        .init(hlsConfig)
         .then(function (selectedSubscriber) {
           subscriber.off('*', onSubscriberEvent)
           showSubscriberImplStatus(selectedSubscriber)
@@ -343,7 +289,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       switch (type) {
         case 'hls':
         case 'rtc':
-        case 'rtmp':
           resolve(subscriber)
           break
         default:
