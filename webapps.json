@@ -1,7 +1,7 @@
 {
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "epic/EXOTIC"
+    "branch": "feature/websocket_test_legacy_RED5DEV-1881"
   },
   "truetime": {
     "datasync": {
