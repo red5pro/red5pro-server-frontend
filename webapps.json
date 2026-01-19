@@ -1,7 +1,7 @@
 {
   "r5pro-testbed": {
     "repositoryUrl": "git@github.com:red5pro/streaming-html5.git",
-    "branch": "feature/of_stream_OF-40 branch"
+    "branch": "feature/of_stream_OF-40"
   },
   "truetime": {
     "datasync": {
