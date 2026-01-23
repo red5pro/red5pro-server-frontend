@@ -461,7 +461,7 @@
         }
 
         function refreshStatus() {
-            fetch('ReorderBuffer.jsp?getStatus=1')
+            fetch('transcoder.jsp?getStatus=1')
                 .then(response => response.json())
                 .then(data => {
                     updateTable(data.streams);
