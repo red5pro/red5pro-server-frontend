@@ -37,17 +37,17 @@ Not only does this free up resources consumed by WebSockets on the Red5 Server d
 ... Or if you know the version:
 
 ```html
-<script src=https://cdn.jsdelivr.net/npm/red5pro-webrtc-sdk@14.0.0/red5pro-sdk.min.js"></script>
+<script src=https://cdn.jsdelivr.net/npm/red5pro-webrtc-sdk@15.0.0/red5pro-sdk.min.js"></script>
 ```
 
 ## Using `npm` or `yarn` for you browser-based projects
 
 ```sh
-npm install --save-dev red5pro-webrtc-sdk
+npm install --save red5pro-webrtc-sdk
 ```
 
 ```sh
-yarn install --dev red5pro-webrtc-sdk
+yarn install red5pro-webrtc-sdk
 ```
 
 # Quick Start
@@ -75,11 +75,11 @@ You can sign up and download the Red5 Server to manage your own deployment at [h
     <!-- video containers -->
     <!-- publisher -->
     <div>
-      <video id="red5pro-publisher" width="640" height="480" muted autoplay></video>
+      <video id="red5pro-publisher" width="640" height="480" muted autoplay playsinline></video>
     </div>
     <!-- subscriber -->
     <div>
-      <video id="red5pro-subscriber" width="640" height="480" controls autoplay></video>
+      <video id="red5pro-subscriber" width="640" height="480" controls autoplay playsinline></video>
     </div>
     <!-- Red5 Pro SDK -->
     <script src="https://cdn.jsdelivr.net/npm/red5pro-webrtc-sdk@latest/red5pro-sdk.min.js"></script>
@@ -94,10 +94,7 @@ You can sign up and download the Red5 Server to manage your own deployment at [h
         const subscriber = new WHEPClient()
         
         const config = {
-          protocol: 'ws',
-          host: 'localhost',
-          port: 5080,
-          app: 'live',
+          host: 'mydeploy.red5.net',
           streamName: 'mystream'
         }
 
@@ -149,11 +146,11 @@ The Red5 Cloud deployment utilizes a Stream Manager for autoscaling. With the St
     <!-- video containers -->
     <!-- publisher -->
     <div>
-      <video id="red5pro-publisher" width="640" height="480" muted autoplay></video>
+      <video id="red5pro-publisher" width="640" height="480" muted autoplay playsinline></video>
     </div>
     <!-- subscriber -->
     <div>
-      <video id="red5pro-subscriber" width="640" height="480" controls autoplay></video>
+      <video id="red5pro-subscriber" width="640" height="480" controls autoplay playsinline></video>
     </div>
     <!-- Red5 Pro SDK -->
     <script src="https://cdn.jsdelivr.net/npm/red5pro-webrtc-sdk@latest/red5pro-sdk.min.js"></script>
@@ -202,9 +199,10 @@ The Red5 Cloud deployment utilizes a Stream Manager for autoscaling. With the St
           } catch(err) {
             console.error('Could not publish: ' + err)
           }
+        }
 
-          // Start Publisher first ->
-          publish()
+        // Start Publisher first ->
+        publish()
 
       }(window.red5prosdk))
     </script>
