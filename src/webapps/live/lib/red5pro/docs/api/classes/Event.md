@@ -1,4 +1,4 @@
-[**Red5 Pro WebRTC SDK vNEW-15.0.0.11-release.b189**](../README.md)
+[**Red5 Pro WebRTC SDK v15.5.0**](../README.md)
 
 ***
 
@@ -13,6 +13,8 @@ Base class for an Event within the Red5 Pro WebRTC SDK.
 - [`SubscriberEvent`](SubscriberEvent.md)
 - [`PublisherEvent`](PublisherEvent.md)
 - [`MessageTransportStateEvent`](MessageTransportStateEvent.md)
+- [`PubNubEvent`](PubNubEvent.md)
+- [`MessageChannelEvent`](MessageChannelEvent.md)
 
 ## Constructors
 

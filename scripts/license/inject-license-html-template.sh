@@ -18,7 +18,9 @@ while IFS= read -r -d '' file; do
         elif [ "$f" == "streams.jsp" ]; then
                 echo "skipping $file"
         elif [ "$f" == "bitrate.jsp" ]; then
-                echo "skipping $file"				
+                echo "skipping $file"
+        elif [ "$f" == "transcoder.jsp" ]; then
+                echo "skipping $file"
         elif grep -q "$STRING" "$file"; then
                 echo "$file"
                 echo "Already has license..."

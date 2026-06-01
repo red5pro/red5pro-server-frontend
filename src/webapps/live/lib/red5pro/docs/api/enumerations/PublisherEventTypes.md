@@ -1,4 +1,4 @@
-[**Red5 Pro WebRTC SDK vNEW-15.0.0.11-release.b189**](../README.md)
+[**Red5 Pro WebRTC SDK v15.5.0**](../README.md)
 
 ***
 
@@ -89,6 +89,24 @@
 ### PUBLISH\_SUFFICIENT\_BANDWIDTH
 
 > **PUBLISH\_SUFFICIENT\_BANDWIDTH**: `"Publish.SufficientBW"`
+
+***
+
+### RECONNECT\_FAILURE
+
+> **RECONNECT\_FAILURE**: `"Reconnect.Failure"`
+
+***
+
+### RECONNECT\_START
+
+> **RECONNECT\_START**: `"Reconnect.Start"`
+
+***
+
+### RECONNECT\_SUCCESS
+
+> **RECONNECT\_SUCCESS**: `"Reconnect.Success"`
 
 ***
 
