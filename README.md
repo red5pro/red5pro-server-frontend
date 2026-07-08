@@ -1,3 +1,13 @@
+# ALERT ALERT ALERT
+
+This repo has been deprecated!!!
+
+The original intent and use of the code provided in this repo is set to be sunset Q4, 2026. Any code provided here - though useful - is no longer being maintanted or considered production ready.
+
+> You have been forewarned.
+
+---
+
 <h3 align="center">
   <img src="assets/Red5_Truetime_black.png" alt="Red5 Pro Logo" height="65" />
 </h3>
